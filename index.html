@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Hello React!</title>
+        <link rel="stylesheet" href="node_modules/xterm/dist/xterm.css" />
+        <link href="style/global.css" rel="stylesheet">
+        <link href="style/split-pane.css" rel="stylesheet">
+        <link href="fonts/roboto.css" rel="stylesheet">
+        <!-- <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet"> -->
+    </head>
+    <body>
+        <div id="app"></div>
+
+        <!-- Dependencies -->
+        <script src="./node_modules/react/umd/react.development.js"></script>
+        <script src="./node_modules/react-dom/umd/react-dom.development.js"></script>
+        <script src="./node_modules/monaco-editor/min/vs/loader.js"></script>
+        <script>
+            require.config({ paths: { 'vs': 'node_modules/monaco-editor/min/vs' }});
+        </script>
+
+        <!-- Main -->
+        <script src="./dist/bundle.js"></script>
+    </body>
+</html>

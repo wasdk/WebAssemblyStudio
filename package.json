@@ -1,0 +1,37 @@
+{
+  "name": "wasm-fiddle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "build-watch": "webpack --watch --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wasdk/WasmFiddle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wasdk/WasmFiddle/issues"
+  },
+  "homepage": "https://github.com/wasdk/WasmFiddle#readme",
+  "dependencies": {
+    "@types/react-split-pane": "^0.1.10",
+    "@types/xterm": "^2.0.3",
+    "monaco-editor": "^0.10.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-split-pane": "^0.1.71",
+    "xterm": "^2.9.2"
+  },
+  "devDependencies": {
+    "@types/react": "^16.0.28",
+    "@types/react-dom": "^16.0.3",
+    "awesome-typescript-loader": "^3.4.1",
+    "source-map-loader": "^0.2.3",
+    "typescript": "^2.6.2",
+    "webpack": "^3.10.0"
+  }
+}
