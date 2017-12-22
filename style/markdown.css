@@ -1,0 +1,207 @@
+
+.hack {
+  padding: 10px;
+  font-size: 12px;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif
+}
+
+.hack blockquote, .hack em, .hack h1, .hack h2, .hack h3, .hack h4, .hack h5, .hack h6, .hack strong {
+  font-size: 14px;
+  font-style: normal;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif
+}
+
+.hack blockquote,
+/*.hack code,*/
+
+.hack em, .hack strong {
+  line-height: 20px
+}
+
+.hack blockquote,
+/*.hack code,*/
+
+.hack footer, .hack h1, .hack h2, .hack h3, .hack h4, .hack h5, .hack h6, .hack header, .hack li, .hack ol, .hack p, .hack section, .hack ul {
+  float: none;
+  margin: 0;
+  padding: 0
+}
+
+.hack blockquote, .hack h1, .hack ol, .hack p, .hack ul {
+  margin-top: 20px;
+  margin-bottom: 20px
+}
+
+.hack h1 {
+  position: relative;
+  display: inline-block;
+  display: table-cell;
+  padding: 20px 0 30px;
+  margin: 0;
+  overflow: hidden
+}
+
+.hack h1:after {
+  content: "====================================================================================================";
+  position: absolute;
+  bottom: 10px;
+  left: 0
+}
+
+.hack h1+* {
+  margin-top: 0
+}
+
+.hack h2, .hack h3, .hack h4, .hack h5, .hack h6 {
+  position: relative;
+  margin-bottom: 1.75rem
+}
+
+.hack h2:before, .hack h3:before, .hack h4:before, .hack h5:before, .hack h6:before {
+  display: inline
+}
+
+.hack h2:before {
+  content: "## "
+}
+
+.hack h3:before {
+  content: "### "
+}
+
+.hack h4:before {
+  content: "#### "
+}
+
+.hack h5:before {
+  content: "##### "
+}
+
+.hack h6:before {
+  content: "###### "
+}
+
+.hack li {
+  position: relative;
+  display: block;
+  padding-left: 20px
+}
+
+.hack li:after {
+  position: absolute;
+  top: 0;
+  left: 0
+}
+
+.hack ul>li:after {
+  content: "-"
+}
+
+.hack ol {
+  counter-reset: a
+}
+
+.hack ol>li:after {
+  content: counter(a) ".";
+  counter-increment: a
+}
+
+.hack blockquote {
+  position: relative;
+  padding-left: 17px;
+  padding-left: 2ch;
+  overflow: hidden
+}
+
+.hack blockquote:after {
+  content: ">\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>";
+  white-space: pre;
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 20px
+}
+
+.hack em:after, .hack em:before {
+  content: "*";
+  display: inline
+}
+
+.hack pre code:after, .hack pre code:before {
+  content: ''
+}
+
+.hack code {
+  font-weight: 700
+}
+
+.hack code:after, .hack code:before {
+  content: "`";
+  display: inline
+}
+
+.hack hr {
+  position: relative;
+  height: 20px;
+  overflow: hidden;
+  border: 0;
+  margin: 20px 0
+}
+
+.hack hr:after {
+  content: "----------------------------------------------------------------------------------------------------";
+  position: absolute;
+  top: 0;
+  left: 0;
+  line-height: 20px;
+  width: 100%;
+  word-wrap: break-word
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.75rem 0;
+  color: #778087
+}
+
+table td, table th {
+  vertical-align: top;
+  border: 1px solid #ccc;
+  line-height: 15px;
+  padding: 10px;
+  font-size: 12px;
+  color: white;
+}
+
+table thead th {
+  font-size: 12px;
+  color: white;
+}
+
+
+/*table tbody td:first-child {
+      font-weight: 700;
+      color: #333
+    }*/
+
+code {
+  font-size: 12px;
+  line-height: 1.2rem;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  border-left: 8px solid #333;
+  margin-left: 8px;
+  padding-left: 8px !important;
+}
+
+.hack pre code:after, .hack pre code:before {
+  content: ''
+}
+
+.hljs {
+  background: transparent;
+}
+
+.hack em {
+  color: #579fff;
+}

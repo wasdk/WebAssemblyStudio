@@ -3,7 +3,7 @@ import * as React from "react";
 import { Header } from "./Header";
 import { DirectoryTree } from "./DirectoryEntry";
 import { WorkspaceEntry } from "./WorkspaceEntry";
-import { Project, File, Directory } from "../Project";
+import { Project, File, Directory } from "../model";
 
 export interface WorkspaceProps {
   /**
@@ -11,7 +11,9 @@ export interface WorkspaceProps {
    */
   file: File,
   project: Project,
-  onSelect: (file: File) => void;
+  onClickFile: (file: File) => void;
+  onDoubleClickFile: (file: File) => void;
+  makeMenuItems?: (file: File) => JSX.Element [];
 }
 
 
@@ -39,8 +41,11 @@ export class Workspace extends React.Component<WorkspaceProps, {
         name="Files"
         expanded={this.state.showFiles}
         onClick={() => this.setState({ showFiles: !this.state.showFiles })}>
-        <DirectoryTree directory={project.root} value={this.props.file} onActivate={(file: File) => {
-          this.props.onSelect(file);
+        <DirectoryTree makeMenuItems={this.props.makeMenuItems} directory={project} value={this.props.file} onClickFile={(file: File) => {
+          this.props.onClickFile(file);
+        }}
+        onDoubleClickFile={(file: File) => {
+          this.props.onDoubleClickFile(file);
         }}/>
       </WorkspaceEntry>
     </div>;

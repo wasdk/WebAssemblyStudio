@@ -4,6 +4,7 @@ import { clamp } from "../index";
 
 export class Tabs extends React.Component<{
   onDoubleClick?: Function;
+  commands?: JSX.Element | JSX.Element [];
 }, {
     scrollLeft: number;
   }> {
@@ -31,8 +32,13 @@ export class Tabs extends React.Component<{
   }
 
   render() {
-    return <div ref="container" className="tabs-container" onWheel={this.onWheel} onDoubleClick={this.onDoubleClick}>
-      {this.props.children}
+    return <div className="tabs-container">
+      <div ref="container" className="tabs-tab-container" onWheel={this.onWheel} onDoubleClick={this.onDoubleClick}>
+        {this.props.children}
+      </div>
+      <div className="tabs-command-container">
+        {this.props.commands}
+      </div>
     </div>;
   }
   componentDidUpdate() {
@@ -44,6 +50,7 @@ export interface TabProps {
   label?: string;
   value?: any;
   isActive?: boolean;
+  isItalic?: boolean;
   onClick?: Function;
   onDoubleClick?: Function;
   onClose?: Function;
@@ -57,6 +64,7 @@ export class Tab extends React.Component<TabProps, {}> {
     let className = "tab";
     if (this.props.isActive) className += " active";
     if (this.props.isMarked) className += " marked";
+    if (this.props.isItalic) className += " italic";
     return <div className={className} onClick={(e: MouseEvent<HTMLElement>) => {
       e.stopPropagation();
       onClick && onClick(this.props.value);

@@ -8,12 +8,15 @@ import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 
 import { Tabs, Tab } from "./Tabs";
-import { EditorPane } from "./EditorPane";
-import { Project, File, FileType } from "../Project";
+import { EditorPane, View } from "./EditorPane";
+import { Project, File, FileType } from "../model";
 import { App } from "./App";
 
 import { layout, assert } from "../index";
 import { setInterval } from "timers";
+import { Split, SplitOrientation, SplitInfo } from "./Split";
+import { Z_STREAM_END } from "zlib";
+import { Button } from "./Button";
 
 class TabBasicTest extends React.Component<{
 }, {
@@ -95,9 +98,9 @@ class EditorPaneTest extends React.Component<{
     let b = new File("B", FileType.JavaScript);
     let c = new File("C", FileType.JavaScript);
 
-    a.onChange.register(() => this.forceUpdate());
-    b.onChange.register(() => this.forceUpdate());
-    c.onChange.register(() => this.forceUpdate());
+    a.onDidChangeData.register(() => this.forceUpdate());
+    b.onDidChangeData.register(() => this.forceUpdate());
+    c.onDidChangeData.register(() => this.forceUpdate());
 
     this.state = {
       file: a,
@@ -106,7 +109,7 @@ class EditorPaneTest extends React.Component<{
   }
   render() {
     return <div style={{ height: 128 }}>
-      <EditorPane file={this.state.file} files={this.state.files}
+      <EditorPane preview={this.state.file} file={this.state.file} files={this.state.files}
         onNewFile={
           () => {
             let { files } = this.state;
@@ -116,7 +119,7 @@ class EditorPaneTest extends React.Component<{
             this.setState({ files, file: files[files.length - 1] });
           }
         }
-        onSelect={
+        onClickFile={
           (x) => { this.setState({ file: x }) }
         }
         onClose={
@@ -134,18 +137,106 @@ class EditorPaneTest extends React.Component<{
 
 export class Test extends React.Component<{
 }, {
-
+  splits: SplitInfo [];
+  width: number;
   }> {
   constructor(props: any) {
     super(props);
+    this.state = {
+      splits: [
+        { min: 128, max: 192, value: 130 }, {}, {}, { value: 64 }
+      ],
+      width: 600
+    };
+  }
+  componentDidMount() {
+    layout();
   }
   render() {
+    let view = new View(new File("X", FileType.JavaScript), null);
+    view.file.buffer.setValue(`
+    render() {
+      let { splits } = this.state;
+      let resizerClassName = "resizer";
+      let isHorizontal = this.props.orientation === SplitOrientation.Horizontal;
+      if (isHorizontal) {
+        resizerClassName += " horizontal";
+      } else {
+        resizerClassName += " vertical";
+      }
+      // console.log("Splits", splits, sum(splits), this.state.size);
+      let count = React.Children.count(this.props.children);
+      let children: any[] = [];
+      React.Children.forEach(this.props.children, (child, i) => {
+        let style: any = {};
+        if (i < count - 1) {
+          style.flexBasis = toCSSPx(Math.round(splits[i]));
+        } else {
+          style.flex = 1;
+        }
+        children.push(<div key={i} className="split-pane" style={style}>{child}</div>);
+        if (i < count - 1) {
+          children.push(<div key={"split:" + i} className={resizerClassName} onMouseDown={this.onResizerMouseDown.bind(this, i)}>
+          </div>);
+        }
+      });
+      return <div className="split" ref="container" style={{ flexDirection: isHorizontal ? "column" : "row" }}>
+        {children}
+      </div>;
+    }
+    `);
     return <div>
-      <TabBasicTest />
+      {/* <TabBasicTest />
       <TabBasicScrollTest />
       <TabSelectTest />
-      <EditorPaneTest />
+      <EditorPaneTest /> */}
+      <div style={{ width: this.state.width, height: 128, border: "solid 1px red" }}>
+        <Split orientation={SplitOrientation.Vertical} splits={this.state.splits} onChange={(splits: SplitInfo []) => {
+          this.setState({splits});
+        }}>
+          <div>A</div>
+          <div>B</div>
+          <div>C</div>
+          <div>D</div>
+        </Split>
+      </div>
+        <Button label="Force Update" onClick={() => {
+          // this.setState({splits});
+          setInterval(() => {
+            let width = this.state.width - 10;
+            this.setState({width});
+          }, 100);
+          
+        }}></Button>
+
+      {/* <div>
+        App Layout
+      </div>
+      <div style={{ width: 1024, height: 512, border: "solid 1px red" }}>
+        <Split orientation={SplitOrientation.Vertical} splits={[
+          { min: 256, default: 256, resize: "fixed" }
+        ]}>
+          <div>Left Pane</div>
+          <Split orientation={SplitOrientation.Horizontal} onChange={layout}>
+            <Editor view={view} />
+            <Split orientation={SplitOrientation.Vertical}>
+              <Editor view={view} />
+              <Editor view={view} />
+              <Editor view={view} />
+            </Split>
+            <div className="fill">
+              <Tabs>
+                <Tab label="Output"></Tab>
+                <Tab label="Problems"></Tab>
+              </Tabs>
+              <div style={{height: "calc(100% - 40px)"}}>
+                <Editor view={view}></Editor>
+              </div>
+            </div>
+          </Split>
+        </Split>
+      </div> */}
       {/* <TabSelectRandomTest /> */}
     </div>;
   }
-}
+}                                                                                                                                                                                                                                                                                                 

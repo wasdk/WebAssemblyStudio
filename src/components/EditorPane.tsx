@@ -2,8 +2,12 @@ import * as React from "react";
 import { assert } from "../index";
 import { Tabs, Tab, TabProps } from "./Tabs";
 import { Editor } from "./Editor";
-import { Project, File, getIconForFileType } from "../Project";
+import { Project, File, getIconForFileType, FileType } from "../model";
 import "monaco-editor";
+import { Markdown } from "./Markdown";
+import { Button } from "./Button";
+import { GoBook, GoFile, GoKebabHorizontal } from "./Icons";
+import { Menu, MenuItem } from "./Menu";
 
 export class View {
   constructor(
@@ -13,14 +17,17 @@ export class View {
   }
 }
 
-class EditorPaneProps {
+export class EditorPaneProps {
   file: File;
   files: File[];
-  onSelect?: (file: File) => void;
+  preview: File;
+  onClickFile?: (file: File) => void;
+  onDoubleClickFile?: (file: File) => void;
   onClose?: (file: File) => void;
   onNewFile?: () => void;
   onFocus?: () => void;
   hasFocus?: boolean;
+  onSplitEditor?: () => void;
 }
 
 function diff(a: any[], b: any[]): { ab: any[], ba: any[] } {
@@ -56,36 +63,66 @@ export class EditorPane extends React.Component<EditorPaneProps, {
   }
 
   render() {
-    let { onSelect, onClose, file, hasFocus } = this.props;
+    let { onClickFile, onDoubleClickFile, onClose, file, preview, hasFocus } = this.props;
     let { views } = this.state;
     let view;
-    if (this.props.file) {
-      view = views.get(this.props.file);
+    if (file) {
+      view = views.get(file);
       assert(view);
     }
+    let viewer;
+    if (file && file.type === FileType.Markdown) {
+      viewer = <Markdown src={file.getData() as string} />;
+    }
+    else if (file) {
+      viewer = <Editor view={view} options={{ readOnly: file.isBufferReadOnly }} />
+    } else {
+      return <div className="editor-pane-container empty">
+        {/* <img width="80%" height="80%" src="svg/web-assembly-logo-black.svg" /> */}
+        {/* Build, Run and Share WebAssembly Fiddles */}
+      </div>;
+    }
     let className = "editor-pane-container";
-    if (hasFocus) className += " focus";
+    if (!hasFocus) className += " blurred";
     return <div className={className} onClick={this.props.onFocus}>
       <Tabs onDoubleClick={
         () => {
           this.props.onNewFile && this.props.onNewFile();
         }
-      }>
+      }
+        commands={[
+          <Button key="split" icon={<GoBook />} title="Split Editor" onClick={() => {
+            this.props.onSplitEditor && this.props.onSplitEditor();
+          }} />,
+          <Menu key={file.key}
+            activateOnLeftClick={true}
+            items={
+              [<MenuItem key="new file" label="New File" icon={<GoFile />} onClick={() => {
+
+              }} />]
+            }>
+            <Button icon={<GoKebabHorizontal />} title="Split Editor" />
+          </Menu>
+        ]
+        }
+      >
         {this.props.files.map(x => {
           return <Tab
             key={x.key}
             label={x.name}
             value={x}
             icon={getIconForFileType(x.type)}
-            isMarked={x.dirty}
+            isMarked={x.isDirty}
             isActive={x === file}
-            onClick={onSelect}
+            isItalic={x === preview}
+            onClick={onClickFile}
+            onDoubleClick={onDoubleClickFile}
             onClose={onClose}>
           </Tab>
         })}
       </Tabs>
-      <div style={{ paddingTop: "4px" }}>
-        {file ? <Editor view={view}></Editor> : <div>?</div>}
+      <div style={{ height: "calc(100% - 40px)" }}>
+        {viewer}
       </div>
     </div>;
   }
