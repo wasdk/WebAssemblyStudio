@@ -471,8 +471,8 @@ a {
 .modal {
   position: absolute;
   top: calc(50% - 180px);
-  left: calc(50% - 250px);
-  width: 500px;
+  left: calc(50% - 300px);
+  width: 600px;
   height: 360px;
   background-color: rgb(48, 48, 48);
   outline: none;
@@ -540,8 +540,20 @@ a {
 }
 
 .new-file-dialog-description {
+  height: 256px;
   padding: 8px;
   font-size: 12px; 
+}
+
+.new-project-dialog-description {
+  height: 256px;
+  padding: 8px;
+  font-size: 12px; 
+  overflow: scroll;
+}
+
+.new-project-dialog-description::-webkit-scrollbar-corner {
+  background: rgba(0,0,0,0);
 }
 
 .text-input-box {
@@ -583,3 +595,65 @@ a {
   background-color: var(--grey-850);
   height: 1px;
 }
+
+.md {
+  line-height: 1.5em;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+}
+
+.md footer, .md h1, .md h2, .md h3, .md h4, .md h5, .md h6, .md header, .md li, .md ol, .md p, .md section, .md ul {
+  float: none;
+  margin: 0;
+  padding: 0
+}
+
+.md h1, .md h2 {
+  font-family: 'Zilla Slab', serif;
+}
+
+.md blockquote, .md h1, .md ol, .md p, .md ul {
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.md li {
+  position: relative;
+  display: block;
+  padding-left: 14px
+}
+
+.md li:after {
+  position: absolute;
+  top: 0;
+  left: 0
+}
+
+.md ul>li:after {
+  content: "•";
+  font-size: 18px;
+}
+
+.md pre {
+  float: none;
+  margin: 8px;
+  padding: 0;
+}
+
+.md code {
+  font-size: 12px;
+  line-height: 1.2rem;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  border-left: 2px solid rgb(241, 167, 28);
+  padding-left: 8px !important;
+}
+
+/* 
+.md ol {
+  counter-reset: a
+}
+
+.md ol>li:after {
+  content: counter(a) "*";
+  counter-increment: a
+} */

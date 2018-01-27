@@ -410,7 +410,7 @@ export class Service {
     })
   }
 
-  static loadProject(uri: string, project: Project): Promise<any> {
+  static loadProject(json: any, project: Project): Promise<any> {
     function deserialize(json: IFile | IFile[]): any {
       if (Array.isArray(json)) {
         return json.map((x: any) => deserialize(x));
@@ -427,13 +427,11 @@ export class Service {
       }
     }
     return new Promise((resolve, reject) => {
-      Service.loadJSON(uri).then((json: any) => {
-        project.name = json.name;
-        deserialize(json.children).forEach((file: File) => {
-          project.addFile(file);
-        });
-        resolve(json);
+      project.name = json.name;
+      deserialize(json.children).forEach((file: File) => {
+        project.addFile(file);
       });
+      resolve(json);
     });
   }
 

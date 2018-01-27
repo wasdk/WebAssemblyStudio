@@ -31,6 +31,7 @@ import { Spacer, Divider } from "./Widgets";
 import { Cton } from "../languages/cton";
 import { X86 } from "../languages/x86";
 import { ShareDialog } from "./ShareDialog";
+import { NewProjectDialog, Template } from "./NewProjectDialog";
 
 export class Group {
   file: File;
@@ -103,6 +104,11 @@ export interface AppState {
   shareDialog: boolean;
 
   /**
+   * If true, the new project dialog is open.
+   */
+  newProjectDialog: boolean;
+
+  /**
    * Primary workspace split state.
    */
   workspaceSplits: SplitInfo[];
@@ -146,6 +152,8 @@ export class App extends React.Component<AppProps, AppState> {
 
       newFileDialogDirectory: null,
       editFileDialogFile: null,
+      newProjectDialog: !props.fiddle,
+      shareDialog: false,
       workspaceSplits: [
         {
           min: 200,
@@ -168,21 +176,26 @@ export class App extends React.Component<AppProps, AppState> {
     };
     this.registerLanguages();
   }
+  openProjectFiles(json: any) {
+    let groups = json.openedFiles.map((paths: string[]) => {
+      let files = paths.map(file => {
+        return this.project.getFile(file)
+      })
+      return new Group(files[0], null, files);
+    });
+    this.setState({ group: groups[0], groups });
+  }
   initializeProject(): any {
     this.project = new Project();
     if (this.state.fiddle) {
-      Service.loadProject(this.state.fiddle, this.project).then((json) => {
-        if (false && json.openedFiles) {
-          let groups = json.openedFiles.map((paths: string[]) => {
-            let files = paths.map(file => {
-              return this.project.getFile(file)
-            })
-            return new Group(files[0], null, files);
-          });
-          this.setState({ group: groups[0], groups });
-        }
-        this.logLn("Project Loaded ...");
-        this.forceUpdate();
+      Service.loadJSON(this.state.fiddle).then((json) => {
+        Service.loadProject(json, this.project).then((json) => {
+          if (false && json.openedFiles) {
+            // this.loadProject(json);
+          }
+          this.logLn("Project Loaded ...");
+          this.forceUpdate();
+        });
       });
     }
     this.project.onDidChangeBuffer.register(() => {
@@ -604,6 +617,21 @@ export class App extends React.Component<AppProps, AppState> {
       {makeEditorPanes(this.state.groups)}
     </Split>
     return <div className="fill">
+      {this.state.newProjectDialog &&
+        <NewProjectDialog isOpen={true} onCancel={() => {
+          this.setState({ newProjectDialog: null });
+        }}
+          onCreate={(template: Template) => {
+            if (!template.project) {
+              this.logLn("Template doesn't contain a project definition.", "error");
+            } else {
+              Service.loadProject(template.project, this.project).then((json) => {
+                this.openProjectFiles(json);
+              });
+            }
+            this.setState({ newProjectDialog: false });
+          }} />
+      }
       {this.state.newFileDialogDirectory &&
         <NewFileDialog isOpen={true} directory={this.state.newFileDialogDirectory} onCancel={() => {
           this.setState({ newFileDialogDirectory: null });

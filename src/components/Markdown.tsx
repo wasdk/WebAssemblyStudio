@@ -1,9 +1,11 @@
 import * as React from "react";
 import { Service } from "../service";
 
-export class Markdown extends React.Component<{
+export interface MarkdownProps {
   src: string
-}, {
+}
+
+export class Markdown extends React.Component<MarkdownProps, {
   html: string
 }> {
   constructor(props: any) {
@@ -17,7 +19,14 @@ export class Markdown extends React.Component<{
       this.setState({html});
     });
   }
+  componentWillReceiveProps(props: MarkdownProps) {
+    if (this.props.src !== props.src) {
+      Service.compileMarkdownToHtml(props.src).then((html) => {
+        this.setState({html});
+      });
+    }
+  }
   render() {
-    return <div className="hack" dangerouslySetInnerHTML={{__html: this.state.html}}/>;
+    return <div style={{padding: "8px"}} className="md" dangerouslySetInnerHTML={{__html: this.state.html}}/>;
   }
 }
