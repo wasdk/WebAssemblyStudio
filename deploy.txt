@@ -3,7 +3,7 @@ fonts
 svg
 img
 lib
-docs
+notes
 style
 node_modules/react
 node_modules/react-dom

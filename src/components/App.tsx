@@ -264,7 +264,6 @@ export class App extends React.Component<AppProps, AppState> {
       // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
     });
 
-
     fetch("lib/lib.es6.d.ts").then((response: any) => {
       response.text().then((src: string) => {
         monaco.languages.typescript.typescriptDefaults.addExtraLib(src);
@@ -283,7 +282,7 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   loadReleaseNotes() {
-    fetch("docs/notes.md").then((response: any) => {
+    fetch("notes/notes.md").then((response: any) => {
       response.text().then((src: string) => {
         let notes = new File("Release Notes", FileType.Markdown);
         notes.setData(src);
