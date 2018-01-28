@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Project, File, Directory, FileType } from "../model";
+import { Project, File, Directory, FileType, languageForFileType } from "../model";
 import { View, EditorPane } from "./EditorPane";
 import { objectId } from "../index";
 import "monaco-editor";
@@ -27,6 +27,10 @@ class Monaco extends React.Component<MonacoProps, {}> {
     if (view) {
       this.ensureEditor();
       this.editor.setModel(view.file.buffer);
+
+      // TODO: Weird that we need this to make monaco really think it needs to update the language.
+      monaco.editor.setModelLanguage(this.editor.getModel(), languageForFileType(view.file.type));
+
       this.editor.restoreViewState(view.state);
       this.editor.updateOptions({ readOnly: view.file.isBufferReadOnly });
     }
@@ -110,11 +114,8 @@ class Monaco extends React.Component<MonacoProps, {}> {
       minimap: {
         enabled: false
       },
-      // tabSize: 2,
-      // language: 'javascript',
       fontWeight: "bold",
       renderLineHighlight: "none",
-      // insertSpaces: true
     }, this.props.options);
     if (this.container.lastChild) {
       this.container.removeChild(this.container.lastChild);
@@ -135,7 +136,7 @@ class Monaco extends React.Component<MonacoProps, {}> {
   }
 }
 
-interface EditorProps {
+export interface EditorProps {
   view: View,
   options?: monaco.editor.IEditorConstructionOptions
 }

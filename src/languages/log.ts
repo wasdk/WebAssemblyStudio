@@ -9,9 +9,9 @@ export const Log = {
   MonarchTokensProvider: {
     tokenizer: {
       root: [
-        [/error:.*/, "custom-error"],
-        [/warn:.*/, "custom-warn"],
-        [/info:.*/, "custom-info"],
+        [/\[error.*/, "custom-error"],
+        [/\[notice.*/, "custom-notice"],
+        [/\[info.*/, "custom-info"]
       ]
     }
   }

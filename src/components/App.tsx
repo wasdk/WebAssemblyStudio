@@ -32,6 +32,7 @@ import { Cton } from "../languages/cton";
 import { X86 } from "../languages/x86";
 import { ShareDialog } from "./ShareDialog";
 import { NewProjectDialog, Template } from "./NewProjectDialog";
+import { Errors } from "../errors";
 
 export class Group {
   file: File;
@@ -348,7 +349,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
     message = message + "\n";
     if (kind) {
-      message = kind + ": " + message;
+      message = "[" + kind + "]: " + message;
     }
     let model = this.state.outputView.file.buffer;
     let lineCount = model.getLineCount();
@@ -407,14 +408,16 @@ export class App extends React.Component<AppProps, AppState> {
   }
   build() {
     let buildTs = this.project.getFile("build.ts");
+    let buildJS = this.project.getFile("build.js");
     if (buildTs) {
       buildTs.getEmitOutput().then((output: any) => {
-        let src = output.outputFiles[0].text;
-        run(src);
+        run(output.outputFiles[0].text);
       });
+    } else if (buildJS) {
+      run(buildJS.getData() as string);
     } else {
-      let src = this.project.getFile("build.js").getData() as string;
-      run(src);
+      this.logLn(Errors.BuildFileMissing, "error");
+      return;
     }
     let self = this;
     function run(src: string) {

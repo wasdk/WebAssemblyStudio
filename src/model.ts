@@ -32,7 +32,7 @@ export enum FileType {
   Cretonne = "cretonne"
 }
 
-function languageForFileType(type: FileType): string {
+export function languageForFileType(type: FileType): string {
   if (type == FileType.HTML) {
     return "html";
   } else if (type == FileType.CSS) {
