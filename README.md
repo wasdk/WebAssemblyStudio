@@ -1,6 +1,6 @@
 WasmFiddle
 ====
-This repository contains the WasmFiddle website source code.
+This repository contains the Web Assembly Studio website source code.
 
 Running your own local copy of the website
 ===
@@ -12,7 +12,7 @@ npm install
 npm install --dev
 ```
 
-To build WasmFiddle whenever a file changes run:
+To build Web Assembly Studio whenever a file changes run:
 
 ```
 npm run build-watch
