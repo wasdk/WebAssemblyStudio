@@ -332,6 +332,7 @@ function languageForFileType(type) {
     }
     return "";
 }
+exports.languageForFileType = languageForFileType;
 function nameForFileType(type) {
     if (type == FileType.HTML) {
         return "HTML";
@@ -464,13 +465,34 @@ class EventDispatcher {
     }
 }
 exports.EventDispatcher = EventDispatcher;
+function monacoSeverityToString(severity) {
+    switch (severity) {
+        case monaco.Severity.Info: return "info";
+        case monaco.Severity.Warning: return "warning";
+        case monaco.Severity.Error: return "error";
+        case monaco.Severity.Ignore: return "ignore";
+    }
+}
+class Problem {
+    constructor(description, severity, marker) {
+        this.description = description;
+        this.severity = severity;
+        this.marker = marker;
+    }
+    static fromMarker(marker) {
+        return new Problem(`${marker.message} (${marker.startLineNumber}, ${marker.startColumn})`, monacoSeverityToString(marker.severity), marker);
+    }
+}
+exports.Problem = Problem;
 class File {
     constructor(name, type) {
         this.isDirty = false;
         this.isBufferReadOnly = false;
         this.onDidChangeData = new EventDispatcher("File Data Change");
         this.onDidChangeBuffer = new EventDispatcher("File Buffer Change");
+        this.onDidChangeProblems = new EventDispatcher("File Problems Change");
         this.key = String(Math.random());
+        this.problems = [];
         this.name = name;
         this.type = type;
         this.data = null; // localStorage.getItem(this.name);
@@ -493,6 +515,14 @@ class File {
             this.description = "Read Only";
         }
         this.parent = null;
+    }
+    setProblems(problems) {
+        this.problems = problems;
+        let file = this;
+        while (file) {
+            file.onDidChangeProblems.dispatch();
+            file = file.parent;
+        }
     }
     getEmitOutput() {
         let model = this.buffer;
@@ -541,6 +571,15 @@ class File {
             return parent;
         }
         return null;
+    }
+    getDepth() {
+        let depth = 0;
+        let parent = this.parent;
+        while (parent) {
+            parent = parent.parent;
+            depth++;
+        }
+        return depth;
     }
     getPath() {
         let path = [];
@@ -3310,7 +3349,8 @@ class Service {
                 else if (message.indexOf("warning") >= 0) {
                     severity = monaco.Severity.Warning;
                 }
-                annotations.push({ severity, message,
+                annotations.push({
+                    severity, message,
                     startLineNumber: startLineNumber, startColumn: startColumn,
                     endLineNumber: startLineNumber, endColumn: startColumn
                 });
@@ -3330,7 +3370,8 @@ class Service {
                 else if (message.indexOf("warning") >= 0) {
                     severity = monaco.Severity.Warning;
                 }
-                annotations.push({ severity, message,
+                annotations.push({
+                    severity, message,
                     startLineNumber: parseInt(m[1]), startColumn: parseInt(m[2]),
                     endLineNumber: parseInt(m[3]), endColumn: parseInt(m[4])
                 });
@@ -3344,6 +3385,9 @@ class Service {
                 let markers = Service.getMarkers(result.tasks[0].console);
                 if (markers.length) {
                     monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
+                    file.setProblems(markers.map(marker => {
+                        return model_1.Problem.fromMarker(marker);
+                    }));
                 }
                 if (!result.success) {
                     reject();
@@ -3610,7 +3654,7 @@ class Service {
             });
         });
     }
-    static loadProject(uri, project) {
+    static loadProject(json, project) {
         function deserialize(json) {
             if (Array.isArray(json)) {
                 return json.map((x) => deserialize(x));
@@ -3629,13 +3673,11 @@ class Service {
             }
         }
         return new Promise((resolve, reject) => {
-            Service.loadJSON(uri).then((json) => {
-                project.name = json.name;
-                deserialize(json.children).forEach((file) => {
-                    project.addFile(file);
-                });
-                resolve(json);
+            project.name = json.name;
+            deserialize(json.children).forEach((file) => {
+                project.addFile(file);
             });
+            resolve(json);
         });
     }
     static lazyLoad(uri) {
@@ -6662,6 +6704,8 @@ class Monaco extends React.Component {
         if (view) {
             this.ensureEditor();
             this.editor.setModel(view.file.buffer);
+            // TODO: Weird that we need this to make monaco really think it needs to update the language.
+            monaco.editor.setModelLanguage(this.editor.getModel(), model_1.languageForFileType(view.file.type));
             this.editor.restoreViewState(view.state);
             this.editor.updateOptions({ readOnly: view.file.isBufferReadOnly });
         }
@@ -6727,8 +6771,6 @@ class Monaco extends React.Component {
             minimap: {
                 enabled: false
             },
-            // tabSize: 2,
-            // language: 'javascript',
             fontWeight: "bold",
             renderLineHighlight: "none",
         }, this.props.options);
@@ -6751,6 +6793,7 @@ class Monaco extends React.Component {
         return React.createElement("div", { className: "fill", ref: (ref) => this.setContainer(ref) });
     }
 }
+exports.Monaco = Monaco;
 class Editor extends React.Component {
     setMonaco(monaco) {
         this.monaco = monaco;
@@ -13640,9 +13683,7 @@ exports.base64Encode = base64Encode;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 const Workspace_1 = __webpack_require__(66);
-const Editor_1 = __webpack_require__(18);
 const Toolbar_1 = __webpack_require__(70);
-const Tabs_1 = __webpack_require__(19);
 const EditorPane_1 = __webpack_require__(36);
 const model_1 = __webpack_require__(2);
 const service_1 = __webpack_require__(13);
@@ -13651,7 +13692,6 @@ const index_1 = __webpack_require__(3);
 const wast_1 = __webpack_require__(72);
 const log_1 = __webpack_require__(73);
 const Mousetrap = __webpack_require__(74);
-const Sandbox_1 = __webpack_require__(75);
 const gulpy_1 = __webpack_require__(76);
 const Menu_1 = __webpack_require__(35);
 const Icons_1 = __webpack_require__(20);
@@ -13662,6 +13702,9 @@ const Widgets_1 = __webpack_require__(25);
 const cton_1 = __webpack_require__(91);
 const x86_1 = __webpack_require__(92);
 const ShareDialog_1 = __webpack_require__(95);
+const NewProjectDialog_1 = __webpack_require__(96);
+const errors_1 = __webpack_require__(97);
+const ControlCenter_1 = __webpack_require__(98);
 class Group {
     constructor(file, preview, files) {
         this.file = file;
@@ -13723,9 +13766,10 @@ class App extends React.Component {
                 group0,
             ],
             group: group0,
-            outputView: new EditorPane_1.View(new model_1.File("output", model_1.FileType.Log), null),
             newFileDialogDirectory: null,
             editFileDialogFile: null,
+            newProjectDialog: !props.fiddle,
+            shareDialog: false,
             workspaceSplits: [
                 {
                     min: 200,
@@ -13741,28 +13785,31 @@ class App extends React.Component {
                 { min: 40, value: 256 }
             ],
             editorSplits: [],
-            sandboxSplits: [
-                {},
-                { value: 256 }
-            ]
+            showProblems: true,
+            showSandbox: true
         };
         this.registerLanguages();
+    }
+    openProjectFiles(json) {
+        let groups = json.openedFiles.map((paths) => {
+            let files = paths.map(file => {
+                return this.project.getFile(file);
+            });
+            return new Group(files[0], null, files);
+        });
+        this.setState({ group: groups[0], groups });
     }
     initializeProject() {
         this.project = new model_1.Project();
         if (this.state.fiddle) {
-            service_1.Service.loadProject(this.state.fiddle, this.project).then((json) => {
-                if (false) {
-                    let groups = json.openedFiles.map((paths) => {
-                        let files = paths.map(file => {
-                            return this.project.getFile(file);
-                        });
-                        return new Group(files[0], null, files);
-                    });
-                    this.setState({ group: groups[0], groups });
-                }
-                this.logLn("Project Loaded ...");
-                this.forceUpdate();
+            service_1.Service.loadJSON(this.state.fiddle).then((json) => {
+                service_1.Service.loadProject(json, this.project).then((json) => {
+                    if (false) {
+                        // this.loadProject(json);
+                    }
+                    this.logLn("Project Loaded ...");
+                    this.forceUpdate();
+                });
             });
         }
         this.project.onDidChangeBuffer.register(() => {
@@ -13894,24 +13941,9 @@ class App extends React.Component {
         // });
     }
     logLn(message, kind = "") {
-        if (!this.outputViewEditor) {
-            return;
+        if (this.controlCenter) {
+            this.controlCenter.logLn(message, kind);
         }
-        message = message + "\n";
-        if (kind) {
-            message = kind + ": " + message;
-        }
-        let model = this.state.outputView.file.buffer;
-        let lineCount = model.getLineCount();
-        let lastLineLength = model.getLineMaxColumn(lineCount);
-        let range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
-        model.applyEdits([
-            { forceMoveMarkers: true, identifier: null, range, text: message }
-        ]);
-        this.outputViewEditor.revealLastLine();
-    }
-    setOutputViewEditor(editor) {
-        this.outputViewEditor = editor;
     }
     componentWillMount() {
         this.initializeProject();
@@ -13938,7 +13970,7 @@ class App extends React.Component {
             let blob = new Blob([src], { type: "text/javascript" });
             return `src="${window.URL.createObjectURL(blob)}"`;
         });
-        this.sandbox.run(this.project, src);
+        this.controlCenter.sandbox.run(this.project, src);
     }
     splitGroup() {
         let groups = this.state.groups;
@@ -13952,15 +13984,18 @@ class App extends React.Component {
     }
     build() {
         let buildTs = this.project.getFile("build.ts");
+        let buildJS = this.project.getFile("build.js");
         if (buildTs) {
             buildTs.getEmitOutput().then((output) => {
-                let src = output.outputFiles[0].text;
-                run(src);
+                run(output.outputFiles[0].text);
             });
         }
+        else if (buildJS) {
+            run(buildJS.getData());
+        }
         else {
-            let src = this.project.getFile("build.js").getData();
-            run(src);
+            this.logLn(errors_1.Errors.BuildFileMissing, "error");
+            return;
         }
         let self = this;
         function run(src) {
@@ -13988,9 +14023,6 @@ class App extends React.Component {
             history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
             this.setState({ fiddle });
         });
-    }
-    setSandbox(sandbox) {
-        this.sandbox = sandbox;
     }
     makeMenuItems(file) {
         let items = [];
@@ -14084,6 +14116,9 @@ class App extends React.Component {
             } }));
         return toolbarButtons;
     }
+    setControlCenter(controlCenter) {
+        this.controlCenter = controlCenter;
+    }
     render() {
         let self = this;
         function makeEditorPanes(groups) {
@@ -14130,6 +14165,20 @@ class App extends React.Component {
                 index_1.layout();
             } }, makeEditorPanes(this.state.groups));
         return React.createElement("div", { className: "fill" },
+            this.state.newProjectDialog &&
+                React.createElement(NewProjectDialog_1.NewProjectDialog, { isOpen: true, onCancel: () => {
+                        this.setState({ newProjectDialog: null });
+                    }, onCreate: (template) => {
+                        if (!template.project) {
+                            this.logLn("Template doesn't contain a project definition.", "error");
+                        }
+                        else {
+                            service_1.Service.loadProject(template.project, this.project).then((json) => {
+                                this.openProjectFiles(json);
+                            });
+                        }
+                        this.setState({ newProjectDialog: false });
+                    } }),
             this.state.newFileDialogDirectory &&
                 React.createElement(NewFileDialog_1.NewFileDialog, { isOpen: true, directory: this.state.newFileDialogDirectory, onCancel: () => {
                         this.setState({ newFileDialogDirectory: null });
@@ -14174,28 +14223,7 @@ class App extends React.Component {
                                     index_1.layout();
                                 } },
                                 editorPanes,
-                                React.createElement("div", { className: "fill" },
-                                    React.createElement("div", { style: { display: "flex" } },
-                                        React.createElement("div", null,
-                                            React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoThreeBars, null), title: "View Console", onClick: () => {
-                                                    // TODO: Figure out how the UX should work when toggling the console.
-                                                    let consoleSplits = this.state.consoleSplits;
-                                                    let second = consoleSplits[1];
-                                                    second.value = second.value == 40 ? 128 : 40;
-                                                    this.setState({ consoleSplits });
-                                                    index_1.layout();
-                                                } })),
-                                        React.createElement("div", null,
-                                            React.createElement(Tabs_1.Tabs, null,
-                                                React.createElement(Tabs_1.Tab, { label: "Output" }),
-                                                React.createElement(Tabs_1.Tab, { label: "Problems" })))),
-                                    React.createElement("div", { style: { height: "calc(100% - 40px)" } },
-                                        React.createElement(Split_1.Split, { name: "editor/sandbox", orientation: Split_1.SplitOrientation.Vertical, splits: this.state.sandboxSplits, onChange: (splits) => {
-                                                this.setState({ sandboxSplits: splits });
-                                                index_1.layout();
-                                            } },
-                                            React.createElement(Editor_1.Editor, { ref: (ref) => this.setOutputViewEditor(ref), view: this.state.outputView }),
-                                            React.createElement(Sandbox_1.Sandbox, { ref: (ref) => this.setSandbox(ref), logger: this }))))))))),
+                                React.createElement(ControlCenter_1.ControlCenter, { project: this.project, ref: (ref) => this.setControlCenter(ref) })))))),
             React.createElement("div", { className: "status-bar" },
                 React.createElement("div", { className: "status-bar-item" }, "Web Assembly Studio")));
     }
@@ -14394,8 +14422,15 @@ class Markdown extends React.Component {
             this.setState({ html });
         });
     }
+    componentWillReceiveProps(props) {
+        if (this.props.src !== props.src) {
+            service_1.Service.compileMarkdownToHtml(props.src).then((html) => {
+                this.setState({ html });
+            });
+        }
+    }
     render() {
-        return React.createElement("div", { className: "hack", dangerouslySetInnerHTML: { __html: this.state.html } });
+        return React.createElement("div", { style: { padding: "8px" }, className: "md", dangerouslySetInnerHTML: { __html: this.state.html } });
     }
 }
 exports.Markdown = Markdown;
@@ -14841,9 +14876,9 @@ exports.Log = {
     MonarchTokensProvider: {
         tokenizer: {
             root: [
-                [/error:.*/, "custom-error"],
-                [/warn:.*/, "custom-warn"],
-                [/info:.*/, "custom-info"],
+                [/\[error.*/, "custom-error"],
+                [/\[notice.*/, "custom-notice"],
+                [/\[info.*/, "custom-info"]
             ]
         }
     }
@@ -18564,6 +18599,277 @@ class ShareDialog extends React.Component {
     }
 }
 exports.ShareDialog = ShareDialog;
+
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+const service_1 = __webpack_require__(13);
+const ReactModal = __webpack_require__(37);
+const Button_1 = __webpack_require__(21);
+const Icons_1 = __webpack_require__(20);
+const Widgets_1 = __webpack_require__(25);
+class NewProjectDialog extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onChangeName = (event) => {
+            this.setState({ name: event.target.value });
+        };
+        this.state = {
+            template: null,
+            description: "",
+            name: "",
+            templates: []
+        };
+    }
+    nameError() {
+        // let directory = this.props.directory;
+        // if (this.state.name) {
+        //   if (!/^[a-z0-9\.\-\_]+$/i.test(this.state.name)) {
+        //     return "Illegal characters in file name.";
+        //   } else if (!this.state.name.endsWith(extensionForFileType(this.state.fileType))) {
+        //     return nameForFileType(this.state.fileType) + " file extension is missing.";
+        //   } else if (directory && directory.getImmediateChild(this.state.name)) {
+        //     return `File '${this.state.name}' already exists.`;
+        //   }
+        // }
+        // return "";
+    }
+    // fileName() {
+    //   let name = this.state.name;
+    //   let extension = extensionForFileType(this.state.template);
+    //   if (!name.endsWith("." + extension)) {
+    //     name += "." + extension;
+    //   }
+    //   return name;
+    // }
+    createButtonLabel() {
+        return "Create";
+    }
+    componentDidMount() {
+        fetch("templates/templates.js").then(response => {
+            response.text().then((js) => {
+                let templates = eval(js);
+                this.setState({ templates });
+                this.setTemplate(templates[0]);
+            });
+        });
+    }
+    setTemplate(template) {
+        this.setState({ template });
+        service_1.Service.compileMarkdownToHtml(template.description).then((description) => {
+            this.setState({ description });
+        });
+    }
+    render() {
+        return React.createElement(ReactModal, { isOpen: this.props.isOpen, contentLabel: "Create New Project", className: "modal", overlayClassName: "overlay", ariaHideApp: false },
+            React.createElement("div", { style: { display: "flex", flexDirection: "column", height: "100%" } },
+                React.createElement("div", { className: "modal-title-bar" }, "Create New Project"),
+                React.createElement("div", null,
+                    React.createElement("div", { style: { display: "flex" } },
+                        React.createElement("div", { style: { width: 200 } },
+                            React.createElement(Widgets_1.ListBox, { value: this.state.template, height: 240, onSelect: (template) => {
+                                    this.setTemplate(template);
+                                } }, this.state.templates.map((template) => {
+                                return React.createElement(Widgets_1.ListItem, { value: template, label: template.name, icon: React.createElement(Icons_1.Icon, { src: template.icon }) });
+                            }))),
+                        React.createElement("div", { style: { flex: 1 }, className: "new-project-dialog-description" },
+                            React.createElement("div", { className: "md", dangerouslySetInnerHTML: { __html: this.state.description } })))),
+                React.createElement("div", { style: { flex: 1, padding: "8px" } }),
+                React.createElement("div", null,
+                    React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoX, null), label: "Cancel", title: "Cancel", onClick: () => {
+                            this.props.onCancel();
+                        } }),
+                    React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoFile, null), label: this.createButtonLabel(), title: "Cancel", isDisabled: !this.state.template, onClick: () => {
+                            // let file = new File(this.fileName(), this.state.template);
+                            this.props.onCreate && this.props.onCreate(this.state.template);
+                        } }))));
+    }
+}
+exports.NewProjectDialog = NewProjectDialog;
+
+
+/***/ }),
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Errors = {
+    BuildFileMissing: "Build File (build.ts / build.js) is missing."
+};
+
+
+/***/ }),
+/* 98 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+const Split_1 = __webpack_require__(10);
+const Editor_1 = __webpack_require__(18);
+const Sandbox_1 = __webpack_require__(75);
+const Tabs_1 = __webpack_require__(19);
+const Icons_1 = __webpack_require__(20);
+const Button_1 = __webpack_require__(21);
+const EditorPane_1 = __webpack_require__(36);
+const model_1 = __webpack_require__(2);
+const model_2 = __webpack_require__(2);
+class TreeViewItem extends React.Component {
+    render() {
+        return React.createElement("div", { className: "tree-view-item" },
+            React.createElement("div", { style: { width: `calc(${this.props.depth}rem - 2px)` } }),
+            React.createElement("div", { className: "icon", style: {
+                    backgroundImage: `url(svg/${this.props.icon}.svg)`
+                } }),
+            React.createElement("div", { className: "label" }, this.props.label));
+    }
+}
+exports.TreeViewItem = TreeViewItem;
+class TreeViewProblemItem extends React.Component {
+    render() {
+        let problem = this.props.problem;
+        let marker = problem.marker;
+        let position = `(${marker.startLineNumber}, ${marker.startColumn})`;
+        return React.createElement("div", { className: "tree-view-item" },
+            React.createElement("div", { style: { width: `calc(${this.props.depth}rem - 2px)` } }),
+            React.createElement("div", { className: "icon", style: {
+                    backgroundImage: `url(svg/${problem.severity + "-dark"}.svg)`
+                } }),
+            React.createElement("div", { className: "label" },
+                marker.message,
+                " ",
+                React.createElement("span", { className: "problem-position" }, position)));
+    }
+}
+exports.TreeViewProblemItem = TreeViewProblemItem;
+class TreeView extends React.Component {
+    render() {
+        return React.createElement("div", { className: "tree-view" }, this.props.children);
+    }
+}
+exports.TreeView = TreeView;
+class Problems extends React.Component {
+    componentDidMount() {
+        // TODO: Unregister.
+        this.props.project.onDidChangeProblems.register(() => {
+            this.forceUpdate();
+        });
+    }
+    render() {
+        let treeViewItems = [];
+        function go(directory) {
+            directory.forEachFile((file) => {
+                if (file instanceof model_2.Directory) {
+                    go(file);
+                }
+                else {
+                    // let depth = file.getDepth();
+                    if (file.problems.length) {
+                        treeViewItems.push(React.createElement(TreeViewItem, { depth: 0, icon: model_1.getIconForFileType(file.type), label: file.name }));
+                        file.problems.forEach((problem) => {
+                            treeViewItems.push(React.createElement(TreeViewProblemItem, { depth: 1, problem: problem }));
+                        });
+                    }
+                }
+            });
+        }
+        go(this.props.project);
+        return React.createElement(TreeView, null, treeViewItems);
+    }
+}
+exports.Problems = Problems;
+class ControlCenter extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible: "problems",
+            splits: [
+                { min: 128, value: 512 },
+                { min: 128, value: 256 }
+            ]
+        };
+        this.outputView = new EditorPane_1.View(new model_2.File("output", model_1.FileType.Log), null);
+    }
+    setOutputViewEditor(editor) {
+        this.outputViewEditor = editor;
+    }
+    setSandbox(sandbox) {
+        this.sandbox = sandbox;
+    }
+    logLn(message, kind = "") {
+        if (!this.outputViewEditor) {
+            return;
+        }
+        message = message + "\n";
+        if (kind) {
+            message = "[" + kind + "]: " + message;
+        }
+        let model = this.outputView.file.buffer;
+        let lineCount = model.getLineCount();
+        let lastLineLength = model.getLineMaxColumn(lineCount);
+        let range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
+        model.applyEdits([
+            { forceMoveMarkers: true, identifier: null, range, text: message }
+        ]);
+        this.outputViewEditor.revealLastLine();
+        if (!this.logLnTimeout) {
+            this.logLnTimeout = window.setTimeout(() => {
+                this.forceUpdate();
+                this.logLnTimeout = null;
+            });
+        }
+    }
+    createPane() {
+        switch (this.state.visible) {
+            case "output":
+                return React.createElement(Editor_1.Editor, { ref: (ref) => this.setOutputViewEditor(ref), view: this.outputView });
+            case "problems":
+                return React.createElement(Problems, { project: this.props.project });
+            default:
+                null;
+        }
+    }
+    render() {
+        return React.createElement("div", { className: "fill" },
+            React.createElement("div", { style: { display: "flex" } },
+                React.createElement("div", null,
+                    React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoThreeBars, null), title: "View Console", onClick: () => {
+                            // TODO: Figure out how the UX should work when toggling the console.
+                            // let consoleSplits = this.state.consoleSplits;
+                            // let second = consoleSplits[1];
+                            // second.value = second.value == 40 ? 128 : 40;
+                            // this.setState({ consoleSplits });
+                            // layout();
+                        } })),
+                React.createElement("div", null,
+                    React.createElement(Tabs_1.Tabs, null,
+                        React.createElement(Tabs_1.Tab, { label: `Output (${this.outputView.file.buffer.getLineCount()})`, onClick: () => {
+                                this.setState({ visible: "output" });
+                            } }),
+                        React.createElement(Tabs_1.Tab, { label: "Problems", onClick: () => {
+                                this.setState({ visible: "problems" });
+                            } })))),
+            React.createElement("div", { style: { height: "calc(100% - 40px)" } },
+                React.createElement(Split_1.Split, { name: "editor/sandbox", orientation: Split_1.SplitOrientation.Vertical, defaultSplit: {
+                        min: 256,
+                    }, splits: this.state.splits, onChange: (splits) => {
+                        this.setState({ splits });
+                        // layout();
+                    } },
+                    this.createPane(),
+                    React.createElement(Sandbox_1.Sandbox, { ref: (ref) => this.setSandbox(ref), logger: this }))));
+    }
+}
+exports.ControlCenter = ControlCenter;
 
 
 /***/ })
