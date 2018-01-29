@@ -9,12 +9,12 @@ declare var window: any;
 // Lifecycle
 // https://cdn-images-1.medium.com/max/1600/0*VoYsN6eq7I_wjVV5.png
 
-interface MonacoProps {
+export interface MonacoProps {
   view: View,
   options?: monaco.editor.IEditorConstructionOptions
 }
 
-class Monaco extends React.Component<MonacoProps, {}> {
+export class Monaco extends React.Component<MonacoProps, {}> {
   editor: monaco.editor.IStandaloneCodeEditor;
   container: HTMLDivElement;
 

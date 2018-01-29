@@ -1,5 +1,5 @@
 import { BinaryReader, WasmDisassembler } from "wasmparser";
-import { File, Project, Directory, FileType } from "./model";
+import { File, Project, Directory, FileType, Problem } from "./model";
 import { debuglog } from "util";
 import "monaco-editor";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes } from "./util";
@@ -67,7 +67,7 @@ export interface IServiceRequestTask {
 
 export interface IServiceRequest {
   success: boolean;
-  tasks: IServiceRequestTask [];
+  tasks: IServiceRequestTask[];
   output: string;
 }
 
@@ -107,7 +107,8 @@ export class Service {
         } else if (message.indexOf("warning") >= 0) {
           severity = monaco.Severity.Warning;
         }
-        annotations.push({severity, message,
+        annotations.push({
+          severity, message,
           startLineNumber: startLineNumber, startColumn: startColumn,
           endLineNumber: startLineNumber, endColumn: startColumn
         });
@@ -126,7 +127,8 @@ export class Service {
         } else if (message.indexOf("warning") >= 0) {
           severity = monaco.Severity.Warning;
         }
-        annotations.push({severity, message,
+        annotations.push({
+          severity, message,
           startLineNumber: parseInt(m[1]), startColumn: parseInt(m[2]),
           endLineNumber: parseInt(m[3]), endColumn: parseInt(m[4])
         });
@@ -141,6 +143,9 @@ export class Service {
         let markers = Service.getMarkers(result.tasks[0].console);
         if (markers.length) {
           monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
+          file.setProblems(markers.map(marker => {
+            return Problem.fromMarker(marker);
+          }));
         }
         if (!result.success) {
           reject();
@@ -262,12 +267,12 @@ export class Service {
   static disassembleWasm(buffer: ArrayBuffer): Promise<string> {
     return new Promise((resolve, reject) => {
       function disassemble() {
-        var module = wabt.readWasm(buffer, {readDebugNames: true});
+        var module = wabt.readWasm(buffer, { readDebugNames: true });
         if (true) {
           module.generateNames();
           module.applyNames();
         }
-        return module.toText({foldExprs: false, inlineExport: true});
+        return module.toText({ foldExprs: false, inlineExport: true });
       }
       if (typeof wabt !== "undefined") {
         resolve(disassemble());
@@ -295,7 +300,7 @@ export class Service {
         var module = wabt.parseWat('test.wast', wast);
         module.resolveNames();
         module.validate();
-        let binary = module.toBinary({log: true, write_debug_names: true});
+        let binary = module.toBinary({ log: true, write_debug_names: true });
         return binary.buffer;
       }
       if (typeof wabt !== "undefined") {
@@ -386,7 +391,7 @@ export class Service {
     return uri;
   }
 
-  static saveProject(project: Project, openedFiles: string [][], uri?: string): Promise<string> {
+  static saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {
     return new Promise((resolve, reject) => {
       function serialize(file: File): any {
         if (file instanceof Directory) {

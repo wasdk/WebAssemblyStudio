@@ -33,6 +33,7 @@ import { X86 } from "../languages/x86";
 import { ShareDialog } from "./ShareDialog";
 import { NewProjectDialog, Template } from "./NewProjectDialog";
 import { Errors } from "../errors";
+import { ControlCenter } from "./ControlCenter";
 
 export class Group {
   file: File;
@@ -86,7 +87,6 @@ export interface AppState {
   fiddle: string;
   groups: Group[];
   group: Group;
-  outputView: View;
 
   /**
    * If not null, the the new file dialog is open and files are created in this
@@ -124,10 +124,8 @@ export interface AppState {
    */
   editorSplits: SplitInfo[];
 
-  /**
-   * Sandbox split state.
-   */
-  sandboxSplits: SplitInfo[];
+  showProblems: boolean;
+  showSandbox: boolean;
 }
 
 export interface AppProps {
@@ -138,7 +136,6 @@ export interface AppProps {
 export class App extends React.Component<AppProps, AppState> {
   fiddle: string;
   project: Project;
-  sandbox: Sandbox;
   constructor(props: AppProps) {
     super(props);
     let group0 = new Group(null, null, []);
@@ -149,8 +146,6 @@ export class App extends React.Component<AppProps, AppState> {
         group0,
       ],
       group: group0,
-      outputView: new View(new File("output", FileType.Log), null),
-
       newFileDialogDirectory: null,
       editFileDialogFile: null,
       newProjectDialog: !props.fiddle,
@@ -170,10 +165,8 @@ export class App extends React.Component<AppProps, AppState> {
         { min: 40, value: 256 }
       ],
       editorSplits: [],
-      sandboxSplits: [
-        {},
-        { value: 256 }
-      ]
+      showProblems: true,
+      showSandbox: true
     };
     this.registerLanguages();
   }
@@ -344,25 +337,9 @@ export class App extends React.Component<AppProps, AppState> {
     // });
   }
   logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
-    if (!this.outputViewEditor) {
-      return;
+    if (this.controlCenter) {
+      this.controlCenter.logLn(message, kind);
     }
-    message = message + "\n";
-    if (kind) {
-      message = "[" + kind + "]: " + message;
-    }
-    let model = this.state.outputView.file.buffer;
-    let lineCount = model.getLineCount();
-    let lastLineLength = model.getLineMaxColumn(lineCount);
-    let range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
-    model.applyEdits([
-      { forceMoveMarkers: true, identifier: null, range, text: message }
-    ]);
-    this.outputViewEditor.revealLastLine();
-  }
-  outputViewEditor: Editor;
-  setOutputViewEditor(editor: Editor) {
-    this.outputViewEditor = editor;
   }
   componentWillMount() {
     this.initializeProject();
@@ -393,8 +370,7 @@ export class App extends React.Component<AppProps, AppState> {
       let blob = new Blob([src], { type: "text/javascript" });
       return `src="${window.URL.createObjectURL(blob)}"`;
     });
-
-    this.sandbox.run(this.project, src);
+    this.controlCenter.sandbox.run(this.project, src);
   }
   splitGroup() {
     let groups = this.state.groups;
@@ -445,9 +421,6 @@ export class App extends React.Component<AppProps, AppState> {
       history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
       this.setState({ fiddle });
     });
-  }
-  setSandbox(sandbox: Sandbox) {
-    this.sandbox = sandbox;
   }
   makeMenuItems(file: File) {
     let items = [];
@@ -565,6 +538,10 @@ export class App extends React.Component<AppProps, AppState> {
       }} />);
     return toolbarButtons;
   }
+  private controlCenter: ControlCenter;
+  setControlCenter(controlCenter: ControlCenter) {
+    this.controlCenter = controlCenter;
+  }
   render() {
     let self = this;
 
@@ -619,6 +596,7 @@ export class App extends React.Component<AppProps, AppState> {
     }}>
       {makeEditorPanes(this.state.groups)}
     </Split>
+
     return <div className="fill">
       {this.state.newProjectDialog &&
         <NewProjectDialog isOpen={true} onCancel={() => {
@@ -689,35 +667,7 @@ export class App extends React.Component<AppProps, AppState> {
                 layout();
               }}>
                 {editorPanes}
-                <div className="fill">
-                  <div style={{ display: "flex" }}>
-                    <div>
-                      <Button icon={<GoThreeBars />} title="View Console" onClick={() => {
-                        // TODO: Figure out how the UX should work when toggling the console.
-                        let consoleSplits = this.state.consoleSplits;
-                        let second = consoleSplits[1];
-                        second.value = second.value == 40 ? 128 : 40;
-                        this.setState({ consoleSplits });
-                        layout();
-                      }} />
-                    </div>
-                    <div>
-                      <Tabs>
-                        <Tab label="Output"></Tab>
-                        <Tab label="Problems"></Tab>
-                      </Tabs>
-                    </div>
-                  </div>
-                  <div style={{ height: "calc(100% - 40px)" }}>
-                    <Split name="editor/sandbox" orientation={SplitOrientation.Vertical} splits={this.state.sandboxSplits} onChange={(splits) => {
-                      this.setState({ sandboxSplits: splits });
-                      layout();
-                    }}>
-                      <Editor ref={(ref) => this.setOutputViewEditor(ref)} view={this.state.outputView}></Editor>
-                      <Sandbox ref={(ref) => this.setSandbox(ref)} logger={this} />
-                    </Split>
-                  </div>
-                </div>
+                <ControlCenter project={this.project} ref={(ref) => this.setControlCenter(ref)}/>
               </Split>
             </div>
           </div>

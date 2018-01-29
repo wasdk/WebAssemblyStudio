@@ -164,6 +164,7 @@ a {
 }
 
 .directory-entry {
+  font-family:  -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
   display: flex;
   width: calc(100% - 10px);
   min-width: fit-content;
@@ -657,3 +658,49 @@ a {
   content: counter(a) "*";
   counter-increment: a
 } */
+
+
+
+.tree-view {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.tree-view::-webkit-scrollbar-corner {
+  background: rgba(0,0,0,0);
+}
+
+.tree-view-item {
+  font-family:  -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
+  display: flex;
+  width: calc(100% - 10px);
+  min-width: fit-content;
+  cursor: pointer;
+  padding-left: 10px;
+  align-items: center;
+  height: 24px;
+  user-select: none;
+}
+
+.tree-view-item:hover {
+  background: var(--grey-900);
+}
+
+.tree-view-item.active {
+  background: var(--grey-800);
+}
+
+.tree-view-item>.icon {
+  width: 16px;
+  height: 16px;
+}
+
+.tree-view-item>.label {
+  font-size: 14px;
+  padding-left: 4px;
+  flex: 1;
+}
+
+.tree-view-item .problem-position {
+  color: var(--grey-600);
+}

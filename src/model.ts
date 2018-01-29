@@ -3,6 +3,7 @@ import { assert } from "./index";
 import "minimatch"
 import { Minimatch } from "minimatch";
 import { Service } from "./service";
+import { Problems } from "./components/ControlCenter";
 
 declare var window: any;
 
@@ -139,7 +140,7 @@ export function getIconForFileType(fileType: FileType): string {
 
 export class EventDispatcher {
   readonly name: string;
-  private callbacks: Function [] = [];
+  private callbacks: Function[] = [];
   constructor(name: string) {
     this.name = name;
   }
@@ -164,6 +165,29 @@ export class EventDispatcher {
   }
 }
 
+function monacoSeverityToString(severity: monaco.Severity) {
+  switch (severity) {
+    case monaco.Severity.Info: return "info";
+    case monaco.Severity.Warning: return "warning";
+    case monaco.Severity.Error: return "error";
+    case monaco.Severity.Ignore: return "ignore";
+  }
+}
+export class Problem {
+  constructor(
+    public description: string,
+    public severity: "error" | "warning" | "info" | "ignore",
+    public marker?: monaco.editor.IMarkerData) {
+  }
+
+  static fromMarker(marker: monaco.editor.IMarkerData) {
+    return new Problem(
+      `${marker.message} (${marker.startLineNumber}, ${marker.startColumn})`,
+      monacoSeverityToString(marker.severity),
+      marker);
+  }
+}
+
 export class File {
   name: string;
   type: FileType;
@@ -173,9 +197,11 @@ export class File {
   isBufferReadOnly: boolean = false;
   readonly onDidChangeData = new EventDispatcher("File Data Change");
   readonly onDidChangeBuffer = new EventDispatcher("File Buffer Change");
+  readonly onDidChangeProblems = new EventDispatcher("File Problems Change");
   readonly key = String(Math.random());
   readonly buffer?: monaco.editor.IModel;
   description: string;
+  problems: Problem[] = [];
   constructor(name: string, type: FileType) {
     this.name = name;
     this.type = type;
@@ -200,6 +226,14 @@ export class File {
     }
     this.parent = null;
   }
+  setProblems(problems: Problem []) {
+    this.problems = problems;
+    let file: File = this;
+    while (file) {
+      file.onDidChangeProblems.dispatch();
+      file = file.parent;
+    }
+  }
   getEmitOutput(): Promise<string> {
     let model = this.buffer;
     if (this.type !== FileType.TypeScript) {
@@ -208,7 +242,7 @@ export class File {
     return new Promise((resolve, reject) => {
       monaco.languages.typescript.getTypeScriptWorker().then(function (worker) {
         worker(model.uri).then(function (client: any) {
-          client.getEmitOutput(model.uri.toString()).then(function(r: any) {
+          client.getEmitOutput(model.uri.toString()).then(function (r: any) {
             resolve(r);
           });
         });
@@ -247,6 +281,15 @@ export class File {
       return parent;
     }
     return null;
+  }
+  getDepth(): number {
+    let depth = 0;
+    let parent = this.parent;
+    while (parent) {
+      parent = parent.parent;
+      depth++;
+    }
+    return depth;
   }
   getPath(): string {
     let path = [];
@@ -291,7 +334,7 @@ export class Directory extends File {
   forEachFile(fn: (file: File) => void) {
     this.children.forEach(fn);
   }
-  mapEachFile<T>(fn: (file: File) => T): T [] {
+  mapEachFile<T>(fn: (file: File) => T): T[] {
     return this.children.map(fn);
   }
   addFile(file: File) {
@@ -307,7 +350,7 @@ export class Directory extends File {
     this.children.splice(i, 1);
     this.notifyDidChangeChildren();
   }
-  newDirectory(path: string | string []): Directory {
+  newDirectory(path: string | string[]): Directory {
     if (typeof path === "string") {
       path = path.split("/");
     }
@@ -326,7 +369,7 @@ export class Directory extends File {
     assert(directory instanceof Directory);
     return directory;
   }
-  newFile(path: string | string [], type: FileType): File {
+  newFile(path: string | string[], type: FileType): File {
     if (typeof path === "string") {
       path = path.split("/");
     }
@@ -363,8 +406,8 @@ export class Directory extends File {
     }
     return file;
   }
-  list(): string [] {
-    let list: string [] = [];
+  list(): string[] {
+    let list: string[] = [];
     function recurse(prefix: string, x: Directory) {
       if (prefix) {
         prefix += "/";
@@ -381,11 +424,11 @@ export class Directory extends File {
     recurse("", this);
     return list;
   }
-  glob(pattern: string): string [] {
+  glob(pattern: string): string[] {
     let mm = new Minimatch(pattern);
     return this.list().filter(path => mm.match(path));
   }
-  globFiles(pattern: string): File [] {
+  globFiles(pattern: string): File[] {
     return this.glob(pattern).map(path => this.getFile(path));
   }
 }
