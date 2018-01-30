@@ -21,5 +21,5 @@ npm run build-watch
 To start a dev web server run:
 
 ```
-webpack-dev-server
+npm run dev-server
 ```
