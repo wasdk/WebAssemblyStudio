@@ -1,5 +1,3 @@
-import {TextDecoder} from "text-encoding";
-
 export function toAddress(n: number) {
   var s = n.toString(16);
   while (s.length < 6) {
