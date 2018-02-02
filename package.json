@@ -24,7 +24,6 @@
     "@types/react-icons": "^2.2.4",
     "@types/react-modal": "^3.1.1",
     "@types/react-split-pane": "^0.1.10",
-    "@types/text-encoding": "0.0.32",
     "@types/xterm": "^2.0.3",
     "cassowary": "0.0.2",
     "minimatch": "^3.0.4",
@@ -35,8 +34,7 @@
     "react-icons": "^2.2.7",
     "react-modal": "^3.1.10",
     "react-split-pane": "^0.1.71",
-    "wasmparser": "^0.5.2",
-    "text-encoding": "^0.6.4"
+    "wasmparser": "^0.5.2"
   },
   "devDependencies": {
     "@types/react": "^16.0.28",
