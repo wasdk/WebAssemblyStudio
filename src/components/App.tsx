@@ -405,8 +405,12 @@ export class App extends React.Component<AppProps, AppState> {
     const fiddle = await Service.saveProject(this.project, []);
     this.logLn("Forked Project OK " + fiddle);
     let search = window.location.search;
-    assert(search.indexOf(this.state.fiddle) >= 0);
-    history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
+    if (this.state.fiddle) {
+      assert(search.indexOf(this.state.fiddle) >= 0);
+      history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
+    } else {
+      history.pushState({}, fiddle, `?f=${fiddle}`);
+    }
     this.setState({ fiddle });
   }
   // makeMenuItems(file: File) {

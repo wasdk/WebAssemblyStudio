@@ -611,6 +611,9 @@ a {
   font-size: 14px;
 }
 
+.md a {
+  color: cornflowerblue;
+}
 .md footer, .md h1, .md h2, .md h3, .md h4, .md h5, .md h6, .md header, .md li, .md ol, .md p, .md section, .md ul {
   float: none;
   margin: 0;
