@@ -265,6 +265,14 @@ process.umask = function() { return 0; };
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 __webpack_require__(5);
 const index_1 = __webpack_require__(3);
@@ -473,14 +481,20 @@ function monacoSeverityToString(severity) {
         case monaco.Severity.Ignore: return "ignore";
     }
 }
+let nextKey = 0;
+function getNextKey() {
+    return nextKey++;
+}
 class Problem {
-    constructor(description, severity, marker) {
+    constructor(file, description, severity, marker) {
+        this.file = file;
         this.description = description;
         this.severity = severity;
         this.marker = marker;
+        this.key = String(getNextKey());
     }
-    static fromMarker(marker) {
-        return new Problem(`${marker.message} (${marker.startLineNumber}, ${marker.startColumn})`, monacoSeverityToString(marker.severity), marker);
+    static fromMarker(file, marker) {
+        return new Problem(file, `${marker.message} (${marker.startLineNumber}, ${marker.startColumn})`, monacoSeverityToString(marker.severity), marker);
     }
 }
 exports.Problem = Problem;
@@ -491,7 +505,7 @@ class File {
         this.onDidChangeData = new EventDispatcher("File Data Change");
         this.onDidChangeBuffer = new EventDispatcher("File Buffer Change");
         this.onDidChangeProblems = new EventDispatcher("File Problems Change");
-        this.key = String(Math.random());
+        this.key = String(getNextKey());
         this.problems = [];
         this.name = name;
         this.type = type;
@@ -525,18 +539,14 @@ class File {
         }
     }
     getEmitOutput() {
-        let model = this.buffer;
-        if (this.type !== FileType.TypeScript) {
-            return Promise.resolve("");
-        }
-        return new Promise((resolve, reject) => {
-            monaco.languages.typescript.getTypeScriptWorker().then(function (worker) {
-                worker(model.uri).then(function (client) {
-                    client.getEmitOutput(model.uri.toString()).then(function (r) {
-                        resolve(r);
-                    });
-                });
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            let model = this.buffer;
+            if (this.type !== FileType.TypeScript) {
+                return Promise.resolve("");
+            }
+            const worker = yield monaco.languages.typescript.getTypeScriptWorker();
+            const client = yield worker(model.uri);
+            return client.getEmitOutput(model.uri.toString());
         });
     }
     setData(data, setBuffer = true) {
@@ -564,11 +574,13 @@ class File {
     }
     getProject() {
         let parent = this.parent;
-        while (parent.parent) {
-            parent = parent.parent;
-        }
-        if (parent instanceof Project) {
-            return parent;
+        if (parent) {
+            while (parent.parent) {
+                parent = parent.parent;
+            }
+            if (parent instanceof Project) {
+                return parent;
+            }
         }
         return null;
     }
@@ -620,9 +632,35 @@ class Directory extends File {
             directory = directory.parent;
         }
     }
-    forEachFile(fn) {
-        this.children.forEach(fn);
+    forEachFile(fn, recurse = false) {
+        if (recurse) {
+            this.children.forEach((file) => {
+                if (file instanceof Directory) {
+                    file.forEachFile(fn, recurse);
+                }
+                fn(file);
+            });
+        }
+        else {
+            this.children.forEach(fn);
+        }
     }
+    //     function go(directory: Directory) {
+    //       directory.forEachFile((file) => {
+    //         if (file instanceof Directory) {
+    //           go(file);
+    //         } else {
+    //           // let depth = file.getDepth();
+    //           if (file.problems.length) {
+    //             treeViewItems.push(<TreeViewItem depth={0} icon={getIconForFileType(file.type)} label={file.name}></TreeViewItem>);
+    //             file.problems.forEach((problem) => {
+    //               treeViewItems.push(<TreeViewProblemItem depth={1} problem={problem} />);
+    //             });
+    //           }
+    //         }
+    //       });
+    //     }
+    //     go(this.props.project);
     mapEachFile(fn) {
         return this.children.map(fn);
     }
@@ -811,7 +849,12 @@ exports.getUrlParameters = getUrlParameters;
 let parameters = getUrlParameters();
 let embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed"]);
 let fiddle = parameters["fiddle"] || parameters["f"];
-(window['require'])(['vs/editor/editor.main'], () => {
+(window['require'])(['vs/editor/editor.main', 'require'], (_, require) => {
+    window.Tree = require("vs/base/parts/tree/browser/treeImpl").Tree;
+    window.ContextMenuService = require("vs/platform/contextview/browser/contextMenuService").ContextMenuService;
+    window.ContextViewService = require("vs/platform/contextview/browser/contextViewService").ContextViewService;
+    window.TreeDefaults = require("vs/base/parts/tree/browser/treeDefaults");
+    window.Action = require("vs/base/common/actions").Action;
     ReactDOM.render(parameters["test"] ? React.createElement(Test_1.Test, null) : React.createElement(App_1.App, { embed: embed, fiddle: fiddle }), document.getElementById("app"));
 });
 
@@ -3298,6 +3341,14 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const wasmparser_1 = __webpack_require__(48);
 const model_1 = __webpack_require__(2);
@@ -3315,17 +3366,13 @@ var Language;
 })(Language = exports.Language || (exports.Language = {}));
 class Service {
     static sendRequest(command) {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.addEventListener("load", function () {
-                resolve(this);
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch("//wasmexplorer-service.herokuapp.com/service.php", {
+                method: "POST",
+                body: command,
+                headers: new Headers({ "Content-type": "application/x-www-form-urlencoded" })
             });
-            xhr.addEventListener("error", function () {
-                reject(this);
-            });
-            xhr.open("POST", "//wasmexplorer-service.herokuapp.com/service.php", true);
-            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            xhr.send(command);
+            return JSON.parse(yield response.text());
         });
     }
     static getMarkers(response) {
@@ -3380,185 +3427,126 @@ class Service {
         return annotations;
     }
     static compileFile(file, from, to, options = "") {
-        return new Promise((resolve, reject) => {
-            Service.compile(file.getData(), from, to, options).then((result) => {
-                let markers = Service.getMarkers(result.tasks[0].console);
-                if (markers.length) {
-                    monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
-                    file.setProblems(markers.map(marker => {
-                        return model_1.Problem.fromMarker(marker);
-                    }));
-                }
-                if (!result.success) {
-                    reject();
-                    return;
-                }
-                var buffer = atob(result.output);
-                var data = new Uint8Array(buffer.length);
-                for (var i = 0; i < buffer.length; i++) {
-                    data[i] = buffer.charCodeAt(i);
-                }
-                resolve(data);
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield Service.compile(file.getData(), from, to, options);
+            let markers = Service.getMarkers(result.tasks[0].console);
+            if (markers.length) {
+                monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
+                file.setProblems(markers.map(marker => {
+                    return model_1.Problem.fromMarker(file, marker);
+                }));
+            }
+            if (!result.success) {
+                throw new Error(result.message);
+            }
+            var buffer = atob(result.output);
+            var data = new Uint8Array(buffer.length);
+            for (var i = 0; i < buffer.length; i++) {
+                data[i] = buffer.charCodeAt(i);
+            }
+            return data;
         });
     }
     static compile(src, from, to, options = "") {
-        if (from === Language.C && to === Language.Wasm) {
-            let project = {
-                output: "wasm",
-                files: [
-                    {
-                        type: from,
-                        name: "file." + from,
-                        options,
-                        src
-                    }
-                ]
-            };
-            let input = encodeURIComponent(JSON.stringify(project)).replace('%20', '+');
-            return new Promise((resolve, reject) => {
-                this.sendRequest("input=" + input + "&action=build").then((x) => {
-                    try {
-                        resolve(JSON.parse(x.responseText));
-                    }
-                    catch (e) {
-                        console.error(e);
-                        reject();
-                    }
-                }).catch(() => {
-                    reject();
-                });
-            });
-        }
-        else if (from === Language.Wasm && to === Language.x86) {
-            let input = encodeURIComponent(base64js.fromByteArray(src));
-            return new Promise((resolve, reject) => {
-                this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options)).then((x) => {
-                    try {
-                        resolve(JSON.parse(x.responseText));
-                    }
-                    catch (e) {
-                        console.error(e);
-                        reject();
-                    }
-                }).catch(() => {
-                    reject();
-                });
-            });
-        }
-        return;
-        /*
-        src = encodeURIComponent(src).replace('%20', '+');
-        if (from === Language.C && to === Language.Wast) {
-          let action = "c2wast";
-          let version = "2";
-          options = "-O3 -fdiagnostics-print-source-range-info " + options;
-          let command = [
-            `input=${src}`,
-            `action=${action}`,
-            `version=${version}`,
-            `options=${encodeURIComponent(options)}`
-          ]
-          return new Promise((resolve, reject) => {
-            this.sendRequest(command.join("&")).then((x) => {
-              resolve(x);
-            }).catch(() => {
-              reject();
-            })
-          });
-        } else if (from === Language.Wast && to === Language.Wasm) {
-          let action = "wast2wasm";
-          let version = "";
-          let command = [
-            `input=${src}`,
-            `action=${action}`,
-            `version=${version}`,
-            `options=${encodeURIComponent(options)}`
-          ]
-          return new Promise((resolve, reject) => {
-            this.sendRequest(command.join("&")).then((x) => {
-              var buffer = atob(x.responseText.split('\n', 2)[1]);
+        return __awaiter(this, void 0, void 0, function* () {
+            if (from === Language.C && to === Language.Wasm) {
+                let project = {
+                    output: "wasm",
+                    files: [
+                        {
+                            type: from,
+                            name: "file." + from,
+                            options,
+                            src
+                        }
+                    ]
+                };
+                let input = encodeURIComponent(JSON.stringify(project)).replace('%20', '+');
+                return this.sendRequest("input=" + input + "&action=build");
+            }
+            else if (from === Language.Wasm && to === Language.x86) {
+                let input = encodeURIComponent(base64js.fromByteArray(src));
+                return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options));
+            }
+            /*
+            src = encodeURIComponent(src).replace('%20', '+');
+            if (from === Language.C && to === Language.Wast) {
+              let action = "c2wast";
+              let version = "2";
+              options = "-O3 -fdiagnostics-print-source-range-info " + options;
+              let command = [
+                `input=${src}`,
+                `action=${action}`,
+                `version=${version}`,
+                `options=${encodeURIComponent(options)}`
+              ]
+              return this.sendRequest(command.join("&"));
+            } else if (from === Language.Wast && to === Language.Wasm) {
+              let action = "wast2wasm";
+              let version = "";
+              let command = [
+                `input=${src}`,
+                `action=${action}`,
+                `version=${version}`,
+                `options=${encodeURIComponent(options)}`
+              ]
+              const x = await this.sendRequest(command.join("&"));
+              var buffer = atob(x.split('\n', 2)[1]);
               var data = new Uint8Array(buffer.length);
               for (var i = 0; i < buffer.length; i++) {
                 data[i] = buffer.charCodeAt(i);
               }
-              resolve(data);
-            }).catch(() => {
-              reject();
-            })
-          });
-        } else if (from === Language.Wast && to === Language.x86) {
-          let action = "wast2assembly";
-          let version = "";
-          let command = [
-            `input=${src}`,
-            `action=${action}`,
-            `version=${version}`,
-            `options=${encodeURIComponent(options)}`
-          ]
-          return new Promise((resolve, reject) => {
-            this.sendRequest(command.join("&")).then((x) => {
-              let data = JSON.parse(x.responseText)
-              resolve(data);
-            }).catch(() => {
-              reject();
-            })
-          });
-        }
-        */
+              return data;
+            } else if (from === Language.Wast && to === Language.x86) {
+              let action = "wast2assembly";
+              let version = "";
+              let command = [
+                `input=${src}`,
+                `action=${action}`,
+                `version=${version}`,
+                `options=${encodeURIComponent(options)}`
+              ]
+              return this.sendRequest(command.join("&"));
+            }
+            */
+        });
     }
     static disassembleWasm(buffer) {
-        return new Promise((resolve, reject) => {
-            function disassemble() {
-                var module = wabt.readWasm(buffer, { readDebugNames: true });
-                if (true) {
-                    module.generateNames();
-                    module.applyNames();
-                }
-                return module.toText({ foldExprs: false, inlineExport: true });
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof wabt === "undefined") {
+                yield Service.lazyLoad("lib/libwabt.js");
             }
-            if (typeof wabt !== "undefined") {
-                resolve(disassemble());
+            var module = wabt.readWasm(buffer, { readDebugNames: true });
+            if (true) {
+                module.generateNames();
+                module.applyNames();
             }
-            else {
-                Service.lazyLoad("lib/libwabt.js").then(() => {
-                    wabt.ready.then(() => {
-                        resolve(disassemble());
-                    });
-                });
-            }
+            return module.toText({ foldExprs: false, inlineExport: true });
         });
     }
     static disassembleWasmWithWabt(file) {
-        Service.disassembleWasm(file.getData()).then((result) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield Service.disassembleWasm(file.getData());
             let output = file.parent.newFile(file.name + ".wast", model_1.FileType.Wast);
             output.description = "Disassembled from " + file.name + " using Wabt.";
             output.setData(result);
         });
     }
     static assembleWast(wast) {
-        return new Promise((resolve, reject) => {
-            function assemble() {
-                var module = wabt.parseWat('test.wast', wast);
-                module.resolveNames();
-                module.validate();
-                let binary = module.toBinary({ log: true, write_debug_names: true });
-                return binary.buffer;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof wabt === "undefined") {
+                yield Service.lazyLoad("lib/libwabt.js");
             }
-            if (typeof wabt !== "undefined") {
-                resolve(assemble());
-            }
-            else {
-                Service.lazyLoad("lib/libwabt.js").then(() => {
-                    wabt.ready.then(() => {
-                        resolve(assemble());
-                    });
-                });
-            }
+            var module = wabt.parseWat('test.wast', wast);
+            module.resolveNames();
+            module.validate();
+            let binary = module.toBinary({ log: true, write_debug_names: true });
+            return binary.buffer;
         });
     }
     static assembleWastWithWabt(file) {
-        Service.assembleWast(file.getData()).then((result) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield Service.assembleWast(file.getData());
             let output = file.parent.newFile(file.name + ".wasm", model_1.FileType.Wasm);
             output.description = "Assembled from " + file.name + " using Wabt.";
             output.setData(result);
@@ -3578,19 +3566,12 @@ class Service {
         return;
     }
     static loadJSON(uri) {
-        return new Promise((resolve, reject) => {
-            var xhr = new XMLHttpRequest();
-            let self = this;
-            xhr.addEventListener("load", function () {
-                resolve(JSON.parse(this.response));
-            });
-            xhr.addEventListener("error", function () {
-                reject(this.response);
-            });
+        return __awaiter(this, void 0, void 0, function* () {
             let url = "https://api.myjson.com/bins/" + uri;
-            xhr.open("GET", url, true);
-            xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-            xhr.send();
+            const response = yield fetch(url, {
+                headers: new Headers({ "Content-type": "application/json; charset=utf-8" })
+            });
+            return JSON.parse(yield response.text());
         });
     }
     static saveJSON(json, uri) {
@@ -3631,7 +3612,7 @@ class Service {
         return uri;
     }
     static saveProject(project, openedFiles, uri) {
-        return new Promise((resolve, reject) => {
+        return __awaiter(this, void 0, void 0, function* () {
             function serialize(file) {
                 if (file instanceof model_1.Directory) {
                     return {
@@ -3649,35 +3630,39 @@ class Service {
             }
             let json = serialize(project);
             json.openedFiles = openedFiles;
-            this.saveJSON(json, uri).then((result) => {
-                resolve(result);
-            });
+            return yield this.saveJSON(json, uri);
         });
     }
     static loadProject(json, project) {
-        function deserialize(json) {
-            if (Array.isArray(json)) {
-                return json.map((x) => deserialize(x));
-            }
-            else if (json.children) {
-                let directory = new model_1.Directory(json.name);
-                deserialize(json.children).forEach((file) => {
-                    directory.addFile(file);
+        return __awaiter(this, void 0, void 0, function* () {
+            function deserialize(json, basePath) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    if (Array.isArray(json)) {
+                        return Promise.all(json.map((x) => deserialize(x, basePath)));
+                    }
+                    if (json.children) {
+                        const directory = new model_1.Directory(json.name);
+                        (yield deserialize(json.children, basePath + "/" + json.name)).forEach((file) => {
+                            directory.addFile(file);
+                        });
+                        return directory;
+                    }
+                    const file = new model_1.File(json.name, json.type);
+                    if (json.data) {
+                        file.setData(json.data);
+                    }
+                    else {
+                        const request = yield fetch(basePath + "/" + json.name);
+                        file.setData(yield request.text());
+                    }
+                    return file;
                 });
-                return directory;
             }
-            else {
-                let file = new model_1.File(json.name, json.type);
-                file.setData(json.data);
-                return file;
-            }
-        }
-        return new Promise((resolve, reject) => {
             project.name = json.name;
-            deserialize(json.children).forEach((file) => {
+            (yield deserialize(json.children, "templates/" + json.directory)).forEach((file) => {
                 project.addFile(file);
             });
-            resolve(json);
+            return json;
         });
     }
     static lazyLoad(uri) {
@@ -3695,71 +3680,49 @@ class Service {
         });
     }
     static optimizeWasmWithBinaryen(file) {
-        function optimize() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof Binaryen === "undefined") {
+                yield Service.lazyLoad("lib/binaryen.js");
+            }
             let data = file.getData();
             let module = Binaryen.readBinary(data);
             module.optimize();
             data = module.emitBinary();
             file.setData(data);
-            Service.disassembleWasm(data).then((result) => {
-                file.buffer.setValue(result);
-            });
-        }
-        if (typeof Binaryen !== "undefined") {
-            optimize();
-        }
-        else {
-            Service.lazyLoad("lib/binaryen.js").then(() => {
-                optimize();
-            });
-        }
+            file.buffer.setValue(yield Service.disassembleWasm(data));
+        });
     }
     static validateWasmWithBinaryen(file) {
-        function validate() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof Binaryen === "undefined") {
+                yield Service.lazyLoad("lib/binaryen.js");
+            }
             let data = file.getData();
             let module = Binaryen.readBinary(data);
             alert(module.validate());
-        }
-        if (typeof Binaryen !== "undefined") {
-            validate();
-        }
-        else {
-            Service.lazyLoad("lib/binaryen.js").then(() => {
-                validate();
-            });
-        }
+        });
     }
     static validateWastWithBinaryen(file) {
-        function validate() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof Binaryen === "undefined") {
+                yield Service.lazyLoad("lib/binaryen.js");
+            }
             let data = file.getData();
             let module = Binaryen.parseText(data);
             alert(module.validate());
-        }
-        if (typeof Binaryen !== "undefined") {
-            validate();
-        }
-        else {
-            Service.lazyLoad("lib/binaryen.js").then(() => {
-                validate();
-            });
-        }
+        });
     }
     static disassembleWasmWithBinaryen(file) {
-        function disassemble() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof Binaryen === "undefined") {
+                yield Service.lazyLoad("lib/binaryen.js");
+            }
             let data = file.getData();
             let module = Binaryen.readBinary(data);
             let output = file.parent.newFile(file.name + ".wast", model_1.FileType.Wast);
             output.description = "Disassembled from " + file.name + " using Binaryen.";
             output.setData(module.emitText());
-        }
-        if (typeof Binaryen !== "undefined") {
-            disassemble();
-        }
-        else {
-            Service.lazyLoad("lib/binaryen.js").then(() => {
-                disassemble();
-            });
-        }
+        });
     }
     static download(file) {
         if (!Service.downloadLink) {
@@ -3777,98 +3740,86 @@ class Service {
     }
     // Kudos to https://github.com/tbfleming/cib
     static clangFormat(file) {
-        function format() {
-            let result = Service.clangFormatModule.ccall('formatCode', 'string', ['string'], [file.buffer.getValue()]);
-            file.buffer.setValue(result);
-        }
-        if (Service.clangFormatModule) {
-            format();
-        }
-        else {
-            Service.lazyLoad("lib/clang-format.js").then(() => {
+        return __awaiter(this, void 0, void 0, function* () {
+            function format() {
+                let result = Service.clangFormatModule.ccall('formatCode', 'string', ['string'], [file.buffer.getValue()]);
+                file.buffer.setValue(result);
+            }
+            if (Service.clangFormatModule) {
+                format();
+            }
+            else {
+                yield Service.lazyLoad("lib/clang-format.js");
+                const response = yield fetch('lib/clang-format.wasm');
+                const wasmBinary = yield response.arrayBuffer();
                 let module = {
                     postRun() {
                         format();
                     },
+                    wasmBinary
                 };
-                fetch('lib/clang-format.wasm').then(response => response.arrayBuffer()).then(wasmBinary => {
-                    module.wasmBinary = wasmBinary;
-                    Service.clangFormatModule = Module(module);
-                });
-            });
-        }
+                Service.clangFormatModule = Module(module);
+            }
+        });
     }
     static disassembleX86(file, options = "") {
-        let output = file.parent.newFile(file.name + ".x86", model_1.FileType.x86);
-        function toBytes(a) {
-            return a.map(function (x) { return util_1.padLeft(Number(x).toString(16), 2, "0"); }).join(" ");
-        }
-        function disassemble() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof capstone === "undefined") {
+                yield Service.lazyLoad("lib/capstone.x86.min.js");
+            }
+            let output = file.parent.newFile(file.name + ".x86", model_1.FileType.x86);
+            function toBytes(a) {
+                return a.map(function (x) { return util_1.padLeft(Number(x).toString(16), 2, "0"); }).join(" ");
+            }
             let data = file.getData();
-            Service.compile(data, Language.Wasm, Language.x86, options).then((json) => {
-                let s = "";
-                var cs = new capstone.Cs(capstone.ARCH_X86, capstone.MODE_64);
-                var annotations = [];
-                var assemblyInstructionsByAddress = Object.create(null);
-                for (var i = 0; i < json.regions.length; i++) {
-                    var region = json.regions[i];
-                    s += region.name + ":\n";
-                    var csBuffer = util_1.decodeRestrictedBase64ToBytes(region.bytes);
-                    var instructions = cs.disasm(csBuffer, region.entry);
-                    var basicBlocks = {};
-                    instructions.forEach(function (instr, i) {
-                        assemblyInstructionsByAddress[instr.address] = instr;
-                        if (util_1.isBranch(instr)) {
-                            var targetAddress = parseInt(instr.op_str);
-                            if (!basicBlocks[targetAddress]) {
-                                basicBlocks[targetAddress] = [];
-                            }
-                            basicBlocks[targetAddress].push(instr.address);
-                            if (i + 1 < instructions.length) {
-                                basicBlocks[instructions[i + 1].address] = [];
-                            }
+            const json = yield Service.compile(data, Language.Wasm, Language.x86, options);
+            let s = "";
+            var cs = new capstone.Cs(capstone.ARCH_X86, capstone.MODE_64);
+            var annotations = [];
+            var assemblyInstructionsByAddress = Object.create(null);
+            for (var i = 0; i < json.regions.length; i++) {
+                var region = json.regions[i];
+                s += region.name + ":\n";
+                var csBuffer = util_1.decodeRestrictedBase64ToBytes(region.bytes);
+                var instructions = cs.disasm(csBuffer, region.entry);
+                var basicBlocks = {};
+                instructions.forEach(function (instr, i) {
+                    assemblyInstructionsByAddress[instr.address] = instr;
+                    if (util_1.isBranch(instr)) {
+                        var targetAddress = parseInt(instr.op_str);
+                        if (!basicBlocks[targetAddress]) {
+                            basicBlocks[targetAddress] = [];
                         }
-                    });
-                    instructions.forEach(function (instr) {
-                        if (basicBlocks[instr.address]) {
-                            s += " " + util_1.padRight(util_1.toAddress(instr.address) + ":", 39, " ");
-                            if (basicBlocks[instr.address].length > 0) {
-                                s += "; " + util_1.toAddress(instr.address) + " from: [" + basicBlocks[instr.address].map(util_1.toAddress).join(", ") + "]";
-                            }
-                            s += "\n";
+                        basicBlocks[targetAddress].push(instr.address);
+                        if (i + 1 < instructions.length) {
+                            basicBlocks[instructions[i + 1].address] = [];
                         }
-                        s += "  " + util_1.padRight(instr.mnemonic + " " + instr.op_str, 38, " ");
-                        s += "; " + util_1.toAddress(instr.address) + " " + toBytes(instr.bytes) + "\n";
-                    });
-                    s += "\n";
-                }
-                output.setData(s);
-            });
-        }
-        if (typeof capstone !== "undefined") {
-            disassemble();
-        }
-        else {
-            Service.lazyLoad("lib/capstone.x86.min.js").then(() => {
-                disassemble();
-            });
-        }
+                    }
+                });
+                instructions.forEach(function (instr) {
+                    if (basicBlocks[instr.address]) {
+                        s += " " + util_1.padRight(util_1.toAddress(instr.address) + ":", 39, " ");
+                        if (basicBlocks[instr.address].length > 0) {
+                            s += "; " + util_1.toAddress(instr.address) + " from: [" + basicBlocks[instr.address].map(util_1.toAddress).join(", ") + "]";
+                        }
+                        s += "\n";
+                    }
+                    s += "  " + util_1.padRight(instr.mnemonic + " " + instr.op_str, 38, " ");
+                    s += "; " + util_1.toAddress(instr.address) + " " + toBytes(instr.bytes) + "\n";
+                });
+                s += "\n";
+            }
+            output.setData(s);
+        });
     }
     static compileMarkdownToHtml(src) {
-        return new Promise((resolve, reject) => {
-            function compile() {
-                var converter = new showdown.Converter({ tables: true });
-                showdown.setFlavor('github');
-                resolve(converter.makeHtml(src));
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof showdown === "undefined") {
+                yield Service.lazyLoad("lib/showdown.min.js");
             }
-            if (typeof showdown !== "undefined") {
-                compile();
-            }
-            else {
-                Service.lazyLoad("lib/showdown.min.js").then(() => {
-                    compile();
-                });
-            }
+            var converter = new showdown.Converter({ tables: true });
+            showdown.setFlavor('github');
+            return converter.makeHtml(src);
         });
     }
 }
@@ -13680,6 +13631,14 @@ exports.base64Encode = base64Encode;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 const Workspace_1 = __webpack_require__(66);
@@ -13693,12 +13652,10 @@ const wast_1 = __webpack_require__(72);
 const log_1 = __webpack_require__(73);
 const Mousetrap = __webpack_require__(74);
 const gulpy_1 = __webpack_require__(76);
-const Menu_1 = __webpack_require__(35);
 const Icons_1 = __webpack_require__(20);
 const Button_1 = __webpack_require__(21);
 const NewFileDialog_1 = __webpack_require__(77);
 const EditFileDialog_1 = __webpack_require__(89);
-const Widgets_1 = __webpack_require__(25);
 const cton_1 = __webpack_require__(91);
 const x86_1 = __webpack_require__(92);
 const ShareDialog_1 = __webpack_require__(95);
@@ -13754,6 +13711,73 @@ exports.Group = Group;
 class App extends React.Component {
     constructor(props) {
         super(props);
+        // makeMenuItems(file: File) {
+        //   let items = [];
+        //   let directory = file.type === FileType.Directory ? file : file.parent;
+        //   items.push(
+        //     <MenuItem key="new file" label="New File" icon={<GoFile />} onClick={() => {
+        //       this.setState({ newFileDialogDirectory: directory as Directory });
+        //     }} />
+        //   );
+        //   if (file.type === FileType.Wasm) {
+        //     items.push(
+        //       <MenuItem key="opt bin" label="Optimize w/ Binaryen" icon={<GoGear />} onClick={() => {
+        //         Service.optimizeWasmWithBinaryen(file);
+        //       }} />
+        //     );
+        //     items.push(
+        //       <MenuItem key="val bin" label="Validate w/ Binaryen" icon={<GoVerified />} onClick={() => {
+        //         Service.validateWasmWithBinaryen(file);
+        //       }} />
+        //     );
+        //     items.push(
+        //       <MenuItem key="dld bin" label="Download" icon={<GoDesktopDownload />} onClick={() => {
+        //         Service.download(file);
+        //       }} />
+        //     );
+        //     items.push(
+        //       <MenuItem key="dis bin" label="Disassemble w/ Wabt" icon={<GoFileCode />} onClick={() => {
+        //         Service.disassembleWasmWithWabt(file);
+        //       }} />
+        //     );
+        //     items.push(
+        //       <MenuItem key="dis x86" label="Firefox x86" icon={<GoFileBinary />} onClick={() => {
+        //         Service.disassembleX86(file);
+        //       }} />,
+        //       <MenuItem key="dis x86 base" label="Firefox x86 Baseline" icon={<GoFileBinary />} onClick={() => {
+        //         Service.disassembleX86(file, "--wasm-always-baseline");
+        //       }} />
+        //     );
+        //   } else if (file.type === FileType.C || file.type === FileType.Cpp) {
+        //     items.push(
+        //       <MenuItem key="format" label="Format w/ Clang" icon={<GoQuote />} onClick={() => {
+        //         Service.clangFormat(file);
+        //       }} />
+        //     );
+        //   } else if (file.type === FileType.Wast) {
+        //     items.push(
+        //       <MenuItem key="asm bin" label="Assemble w/ Wabt" icon={<GoFileBinary />} onClick={() => {
+        //         Service.assembleWastWithWabt(file);
+        //       }} />
+        //     );
+        //   }
+        //   items.push(<Divider key="divider" height={8} />);
+        //   items.push(<MenuItem key="edit" label="Edit" icon={<GoPencil />} onClick={() => {
+        //     this.setState({ editFileDialogFile: file });
+        //   }} />);
+        //   items.push(<MenuItem key="delete" label="Delete" icon={<GoDelete />} onClick={() => {
+        //     let message = "";
+        //     if (file instanceof Directory) {
+        //       message = `Are you sure you want to delete '${file.name}' and its contents?`;
+        //     } else {
+        //       message = `Are you sure you want to delete '${file.name}'?`;
+        //     }
+        //     if (confirm(message)) {
+        //       file.parent.removeFile(file);
+        //     }
+        //   }} />);
+        //   return items;
+        // }
         /**
          * Remember workspace split.
          */
@@ -13800,29 +13824,29 @@ class App extends React.Component {
         this.setState({ group: groups[0], groups });
     }
     initializeProject() {
-        this.project = new model_1.Project();
-        if (this.state.fiddle) {
-            service_1.Service.loadJSON(this.state.fiddle).then((json) => {
-                service_1.Service.loadProject(json, this.project).then((json) => {
-                    if (false) {
-                        // this.loadProject(json);
-                    }
-                    this.logLn("Project Loaded ...");
-                    this.forceUpdate();
-                });
+        return __awaiter(this, void 0, void 0, function* () {
+            this.project = new model_1.Project();
+            if (this.state.fiddle) {
+                let json = yield service_1.Service.loadJSON(this.state.fiddle);
+                json = yield service_1.Service.loadProject(json, this.project);
+                if (false) {
+                    // this.loadProject(json);
+                }
+                this.logLn("Project Loaded ...");
+                this.forceUpdate();
+            }
+            this.project.onDidChangeBuffer.register(() => {
+                this.forceUpdate();
             });
-        }
-        this.project.onDidChangeBuffer.register(() => {
-            this.forceUpdate();
-        });
-        this.project.onDidChangeData.register(() => {
-            this.forceUpdate();
-        });
-        this.project.onDidChangeChildren.register(() => {
-            this.forceUpdate();
-        });
-        this.project.onDirtyFileUsed.register((file) => {
-            this.logLn(`Changes in ${file.getPath()} were ignored, save your changes.`, "warn");
+            this.project.onDidChangeData.register(() => {
+                this.forceUpdate();
+            });
+            this.project.onDidChangeChildren.register(() => {
+                this.forceUpdate();
+            });
+            this.project.onDirtyFileUsed.register((file) => {
+                this.logLn(`Changes in ${file.getPath()} were ignored, save your changes.`, "warn");
+            });
         });
     }
     // TODO: Optimize
@@ -13834,73 +13858,69 @@ class App extends React.Component {
     //   return false;
     // }
     registerLanguages() {
-        monaco.editor.defineTheme("fiddle-theme", {
-            base: 'vs-dark',
-            inherit: true,
-            rules: [
-                { token: 'custom-info', foreground: 'd4d4d4' },
-                { token: 'custom-warn', foreground: 'ff9900' },
-                { token: 'custom-error', background: '00ff00', foreground: 'ff0000', fontStyle: 'bold' }
-            ]
-        });
-        // Wast
-        monaco.languages.register({
-            id: "wast"
-        });
-        monaco.languages.onLanguage("wast", () => {
-            monaco.languages.setMonarchTokensProvider("wast", wast_1.Wast.MonarchDefinitions);
-            monaco.languages.setLanguageConfiguration("wast", wast_1.Wast.LanguageConfiguration);
-            monaco.languages.registerCompletionItemProvider("wast", wast_1.Wast.CompletionItemProvider);
-            monaco.languages.registerHoverProvider("wast", wast_1.Wast.HoverProvider);
-        });
-        // Log
-        monaco.languages.register({
-            id: "log"
-        });
-        monaco.languages.onLanguage("log", () => {
-            monaco.languages.setMonarchTokensProvider("log", log_1.Log.MonarchTokensProvider);
-        });
-        // Cretonne
-        monaco.languages.register({
-            id: "cton"
-        });
-        monaco.languages.onLanguage("cton", () => {
-            monaco.languages.setMonarchTokensProvider("cton", cton_1.Cton.MonarchDefinitions);
-            // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
-            // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
-            // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
-        });
-        // X86
-        monaco.languages.register({
-            id: "x86"
-        });
-        monaco.languages.onLanguage("x86", () => {
-            monaco.languages.setMonarchTokensProvider("x86", x86_1.X86.MonarchDefinitions);
-            // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
-            // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
-            // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
-        });
-        fetch("lib/lib.es6.d.ts").then((response) => {
-            response.text().then((src) => {
-                monaco.languages.typescript.typescriptDefaults.addExtraLib(src);
+        return __awaiter(this, void 0, void 0, function* () {
+            monaco.editor.defineTheme("fiddle-theme", {
+                base: 'vs-dark',
+                inherit: true,
+                rules: [
+                    { token: 'custom-info', foreground: 'd4d4d4' },
+                    { token: 'custom-warn', foreground: 'ff9900' },
+                    { token: 'custom-error', background: '00ff00', foreground: 'ff0000', fontStyle: 'bold' }
+                ]
             });
-        });
-        fetch("lib/fiddle.d.ts").then((response) => {
-            response.text().then((src) => {
-                monaco.languages.typescript.typescriptDefaults.addExtraLib(src);
+            // Wast
+            monaco.languages.register({
+                id: "wast"
             });
+            monaco.languages.onLanguage("wast", () => {
+                monaco.languages.setMonarchTokensProvider("wast", wast_1.Wast.MonarchDefinitions);
+                monaco.languages.setLanguageConfiguration("wast", wast_1.Wast.LanguageConfiguration);
+                monaco.languages.registerCompletionItemProvider("wast", wast_1.Wast.CompletionItemProvider);
+                monaco.languages.registerHoverProvider("wast", wast_1.Wast.HoverProvider);
+            });
+            // Log
+            monaco.languages.register({
+                id: "log"
+            });
+            monaco.languages.onLanguage("log", () => {
+                monaco.languages.setMonarchTokensProvider("log", log_1.Log.MonarchTokensProvider);
+            });
+            // Cretonne
+            monaco.languages.register({
+                id: "cton"
+            });
+            monaco.languages.onLanguage("cton", () => {
+                monaco.languages.setMonarchTokensProvider("cton", cton_1.Cton.MonarchDefinitions);
+                // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
+                // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
+                // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
+            });
+            // X86
+            monaco.languages.register({
+                id: "x86"
+            });
+            monaco.languages.onLanguage("x86", () => {
+                monaco.languages.setMonarchTokensProvider("x86", x86_1.X86.MonarchDefinitions);
+                // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
+                // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
+                // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
+            });
+            let response = yield fetch("lib/lib.es6.d.ts");
+            monaco.languages.typescript.typescriptDefaults.addExtraLib(yield response.text());
+            response = yield fetch("lib/fiddle.d.ts");
+            monaco.languages.typescript.typescriptDefaults.addExtraLib(yield response.text());
+            monaco.languages.typescript.typescriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
+            monaco.languages.typescript.javascriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
         });
-        monaco.languages.typescript.typescriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
-        monaco.languages.typescript.javascriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
     }
     loadReleaseNotes() {
-        fetch("notes/notes.md").then((response) => {
-            response.text().then((src) => {
-                let notes = new model_1.File("Release Notes", model_1.FileType.Markdown);
-                notes.setData(src);
-                this.state.group.open(notes);
-                this.forceUpdate();
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch("notes/notes.md");
+            const src = yield response.text();
+            let notes = new model_1.File("Release Notes", model_1.FileType.Markdown);
+            notes.setData(src);
+            this.state.group.open(notes);
+            this.forceUpdate();
         });
     }
     registerShortcuts() {
@@ -13983,99 +14003,48 @@ class App extends React.Component {
         this.setState({ group });
     }
     build() {
-        let buildTs = this.project.getFile("build.ts");
-        let buildJS = this.project.getFile("build.js");
-        if (buildTs) {
-            buildTs.getEmitOutput().then((output) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            const run = (src) => {
+                let fn = new Function("gulp", "project", "Service", "logLn", src);
+                let gulp = new gulpy_1.Gulpy();
+                fn(gulp, this.project, service_1.Service, this.logLn.bind(self));
+                gulp.run("default");
+            };
+            let buildTs = this.project.getFile("build.ts");
+            let buildJS = this.project.getFile("build.js");
+            if (buildTs) {
+                const output = yield buildTs.getEmitOutput();
                 run(output.outputFiles[0].text);
-            });
-        }
-        else if (buildJS) {
-            run(buildJS.getData());
-        }
-        else {
-            this.logLn(errors_1.Errors.BuildFileMissing, "error");
-            return;
-        }
-        let self = this;
-        function run(src) {
-            let fn = new Function("gulp", "project", "Service", "logLn", src);
-            let gulp = new gulpy_1.Gulpy();
-            fn(gulp, self.project, service_1.Service, self.logLn.bind(self));
-            gulp.run("default");
-        }
+            }
+            else if (buildJS) {
+                run(buildJS.getData());
+            }
+            else {
+                this.logLn(errors_1.Errors.BuildFileMissing, "error");
+                return;
+            }
+        });
     }
     update() {
-        this.logLn("Saving Project ...");
-        let openedFiles = this.state.groups.map((group) => {
-            return group.files.map((file) => file.getPath());
-        });
-        service_1.Service.saveProject(this.project, openedFiles, this.state.fiddle).then((uri) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logLn("Saving Project ...");
+            let openedFiles = this.state.groups.map((group) => {
+                return group.files.map((file) => file.getPath());
+            });
+            yield service_1.Service.saveProject(this.project, openedFiles, this.state.fiddle);
             this.logLn("Saved Project OK");
         });
     }
     fork() {
-        this.logLn("Forking Project ...");
-        service_1.Service.saveProject(this.project, []).then((fiddle) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logLn("Forking Project ...");
+            const fiddle = yield service_1.Service.saveProject(this.project, []);
             this.logLn("Forked Project OK " + fiddle);
             let search = window.location.search;
             index_1.assert(search.indexOf(this.state.fiddle) >= 0);
             history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
             this.setState({ fiddle });
         });
-    }
-    makeMenuItems(file) {
-        let items = [];
-        let directory = file.type === model_1.FileType.Directory ? file : file.parent;
-        items.push(React.createElement(Menu_1.MenuItem, { key: "new file", label: "New File", icon: React.createElement(Icons_1.GoFile, null), onClick: () => {
-                this.setState({ newFileDialogDirectory: directory });
-            } }));
-        if (file.type === model_1.FileType.Wasm) {
-            items.push(React.createElement(Menu_1.MenuItem, { key: "opt bin", label: "Optimize w/ Binaryen", icon: React.createElement(Icons_1.GoGear, null), onClick: () => {
-                    service_1.Service.optimizeWasmWithBinaryen(file);
-                } }));
-            items.push(React.createElement(Menu_1.MenuItem, { key: "val bin", label: "Validate w/ Binaryen", icon: React.createElement(Icons_1.GoVerified, null), onClick: () => {
-                    service_1.Service.validateWasmWithBinaryen(file);
-                } }));
-            items.push(React.createElement(Menu_1.MenuItem, { key: "dld bin", label: "Download", icon: React.createElement(Icons_1.GoDesktopDownload, null), onClick: () => {
-                    service_1.Service.download(file);
-                } }));
-            items.push(React.createElement(Menu_1.MenuItem, { key: "dis bin", label: "Disassemble w/ Wabt", icon: React.createElement(Icons_1.GoFileCode, null), onClick: () => {
-                    service_1.Service.disassembleWasmWithWabt(file);
-                } }));
-            items.push(React.createElement(Menu_1.MenuItem, { key: "dis x86", label: "Firefox x86", icon: React.createElement(Icons_1.GoFileBinary, null), onClick: () => {
-                    service_1.Service.disassembleX86(file);
-                } }), React.createElement(Menu_1.MenuItem, { key: "dis x86 base", label: "Firefox x86 Baseline", icon: React.createElement(Icons_1.GoFileBinary, null), onClick: () => {
-                    service_1.Service.disassembleX86(file, "--wasm-always-baseline");
-                } }));
-        }
-        else if (file.type === model_1.FileType.C || file.type === model_1.FileType.Cpp) {
-            items.push(React.createElement(Menu_1.MenuItem, { key: "format", label: "Format w/ Clang", icon: React.createElement(Icons_1.GoQuote, null), onClick: () => {
-                    service_1.Service.clangFormat(file);
-                } }));
-        }
-        else if (file.type === model_1.FileType.Wast) {
-            items.push(React.createElement(Menu_1.MenuItem, { key: "asm bin", label: "Assemble w/ Wabt", icon: React.createElement(Icons_1.GoFileBinary, null), onClick: () => {
-                    service_1.Service.assembleWastWithWabt(file);
-                } }));
-        }
-        items.push(React.createElement(Widgets_1.Divider, { key: "divider", height: 8 }));
-        items.push(React.createElement(Menu_1.MenuItem, { key: "edit", label: "Edit", icon: React.createElement(Icons_1.GoPencil, null), onClick: () => {
-                this.setState({ editFileDialogFile: file });
-            } }));
-        items.push(React.createElement(Menu_1.MenuItem, { key: "delete", label: "Delete", icon: React.createElement(Icons_1.GoDelete, null), onClick: () => {
-                let message = "";
-                if (file instanceof model_1.Directory) {
-                    message = `Are you sure you want to delete '${file.name}' and its contents?`;
-                }
-                else {
-                    message = `Are you sure you want to delete '${file.name}'?`;
-                }
-                if (confirm(message)) {
-                    file.parent.removeFile(file);
-                }
-            } }));
-        return items;
     }
     makeToolbarButtons() {
         let toolbarButtons = [
@@ -14168,17 +14137,16 @@ class App extends React.Component {
             this.state.newProjectDialog &&
                 React.createElement(NewProjectDialog_1.NewProjectDialog, { isOpen: true, onCancel: () => {
                         this.setState({ newProjectDialog: null });
-                    }, onCreate: (template) => {
+                    }, onCreate: (template) => __awaiter(this, void 0, void 0, function* () {
                         if (!template.project) {
                             this.logLn("Template doesn't contain a project definition.", "error");
                         }
                         else {
-                            service_1.Service.loadProject(template.project, this.project).then((json) => {
-                                this.openProjectFiles(json);
-                            });
+                            const json = yield service_1.Service.loadProject(template.project, this.project);
+                            this.openProjectFiles(json);
                         }
                         this.setState({ newProjectDialog: false });
-                    } }),
+                    }) }),
             this.state.newFileDialogDirectory &&
                 React.createElement(NewFileDialog_1.NewFileDialog, { isOpen: true, directory: this.state.newFileDialogDirectory, onCancel: () => {
                         this.setState({ newFileDialogDirectory: null });
@@ -14204,7 +14172,22 @@ class App extends React.Component {
                         this.setState({ workspaceSplits: splits });
                         index_1.layout();
                     } },
-                    React.createElement(Workspace_1.Workspace, { project: this.project, makeMenuItems: this.makeMenuItems.bind(this), file: this.state.file, onClickFile: (file) => {
+                    React.createElement(Workspace_1.Workspace, { project: this.project, file: this.state.file, onNewFile: (directory) => {
+                            this.setState({ newFileDialogDirectory: directory });
+                        }, onEditFile: (file) => {
+                            this.setState({ editFileDialogFile: file });
+                        }, onDeleteFile: (file) => {
+                            let message = "";
+                            if (file instanceof model_1.Directory) {
+                                message = `Are you sure you want to delete '${file.name}' and its contents?`;
+                            }
+                            else {
+                                message = `Are you sure you want to delete '${file.name}'?`;
+                            }
+                            if (confirm(message)) {
+                                file.parent.removeFile(file);
+                            }
+                        }, onClickFile: (file) => {
                             this.state.group.open(file);
                             this.forceUpdate();
                         }, onDoubleClickFile: (file) => {
@@ -14240,27 +14223,31 @@ exports.App = App;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 const Header_1 = __webpack_require__(67);
-const DirectoryEntry_1 = __webpack_require__(68);
-const WorkspaceEntry_1 = __webpack_require__(69);
+const DirectoryTree_1 = __webpack_require__(100);
+const Split_1 = __webpack_require__(10);
 class Workspace extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             showProject: false,
-            showFiles: true
+            showFiles: true,
+            splits: []
         };
     }
     render() {
         let project = this.props.project;
         return React.createElement("div", { className: "workspaceContainer" },
             React.createElement(Header_1.Header, null),
-            React.createElement(WorkspaceEntry_1.WorkspaceEntry, { name: "Project " + project.name, expanded: this.state.showProject, onClick: () => this.setState({ showProject: !this.state.showProject }) }),
-            React.createElement(WorkspaceEntry_1.WorkspaceEntry, { name: "Files", expanded: this.state.showFiles, onClick: () => this.setState({ showFiles: !this.state.showFiles }) },
-                React.createElement(DirectoryEntry_1.DirectoryTree, { makeMenuItems: this.props.makeMenuItems, directory: project, value: this.props.file, onClickFile: (file) => {
-                        this.props.onClickFile(file);
-                    }, onDoubleClickFile: (file) => {
-                        this.props.onDoubleClickFile(file);
-                    } })));
+            React.createElement("div", { style: { height: "calc(100% - 41px)" } },
+                React.createElement(Split_1.Split, { name: "Workspace", orientation: Split_1.SplitOrientation.Horizontal, splits: this.state.splits, onChange: (splits) => {
+                        this.setState({ splits: splits });
+                    } },
+                    React.createElement("div", null),
+                    React.createElement(DirectoryTree_1.DirectoryTree, { directory: project, value: this.props.file, onNewFile: this.props.onNewFile, onNewDirectory: this.props.onNewDirectory, onEditFile: this.props.onEditFile, onDeleteFile: this.props.onDeleteFile, onClickFile: (file) => {
+                            this.props.onClickFile(file);
+                        }, onDoubleClickFile: (file) => {
+                            this.props.onDoubleClickFile(file);
+                        } }))));
     }
 }
 exports.Workspace = Workspace;
@@ -14284,108 +14271,8 @@ exports.Header = Header;
 
 
 /***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(0);
-const model_1 = __webpack_require__(2);
-const Menu_1 = __webpack_require__(35);
-class DirectoryEntry extends React.Component {
-    constructor() {
-        super(...arguments);
-        this.onClick = () => {
-            this.props.onClick && this.props.onClick(this.props.value);
-        };
-        this.onDoubleClick = () => {
-            this.props.onDoubleClick && this.props.onDoubleClick(this.props.value);
-        };
-    }
-    render() {
-        let className = "directory-entry";
-        if (this.props.active) {
-            className += " active";
-        }
-        if (this.props.marked) {
-            className += " marked";
-        }
-        return React.createElement("div", { className: className, onClick: this.onClick, onDoubleClick: this.onDoubleClick },
-            React.createElement("div", { style: { width: `calc(${this.props.depth}rem - 2px)` } }),
-            React.createElement("div", { className: "icon", style: {
-                    backgroundImage: `url(svg/${this.props.icon}.svg)`
-                } }),
-            React.createElement("div", { className: "label" }, this.props.label),
-            React.createElement("div", { className: "close" }));
-    }
-}
-exports.DirectoryEntry = DirectoryEntry;
-class DirectoryTree extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    makeDirectoryEntries(directory) {
-        let self = this;
-        let entries = [];
-        let { makeMenuItems, onClickFile, onDoubleClickFile } = this.props;
-        function go(directory, depth) {
-            directory.forEachFile(file => {
-                let icon = model_1.getIconForFileType(file.type);
-                if (file instanceof model_1.Directory && file.isOpen) {
-                    icon = "default_folder_opened";
-                }
-                entries.push(React.createElement(Menu_1.Menu, { key: file.key, items: makeMenuItems ? makeMenuItems(file) : null },
-                    React.createElement(DirectoryEntry, { icon: icon, marked: file.isDirty, label: file.name, depth: depth, value: file, onClick: () => {
-                            if (file instanceof model_1.Directory) {
-                                file.isOpen = !file.isOpen;
-                                self.forceUpdate();
-                            }
-                            else if (self.props.onClickFile) {
-                                onClickFile(file);
-                            }
-                        }, onDoubleClick: () => {
-                            onDoubleClickFile && onDoubleClickFile(file);
-                        }, active: self.props.value === file })));
-                if (file instanceof model_1.Directory && file.isOpen) {
-                    go(file, depth + 1);
-                }
-            });
-        }
-        go(directory, 1);
-        return entries;
-    }
-    render() {
-        return React.createElement("div", null, this.makeDirectoryEntries(this.props.directory));
-    }
-}
-exports.DirectoryTree = DirectoryTree;
-
-
-/***/ }),
-/* 69 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(0);
-class WorkspaceEntry extends React.Component {
-    render() {
-        return React.createElement("div", null,
-            React.createElement("div", { className: "workspaceEntry", onClick: this.props.onClick },
-                React.createElement("svg", { style: { verticalAlign: "middle", width: "1em", height: "1em", paddingRight: "1rem" }, fill: "currentColor", preserveAspectRatio: "xMidYMid meet", height: "1em", width: "1em", viewBox: "0 0 40 40" },
-                    React.createElement("g", null,
-                        React.createElement("path", { d: "m12.3 13l7.7 7.7 7.7-7.7 2.3 2.4-10 10-10-10z" }))),
-                React.createElement("span", null, this.props.name)),
-            this.props.expanded &&
-                React.createElement("div", null, this.props.children));
-    }
-}
-exports.WorkspaceEntry = WorkspaceEntry;
-
-
-/***/ }),
+/* 68 */,
+/* 69 */,
 /* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14407,6 +14294,14 @@ exports.Toolbar = Toolbar;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 const service_1 = __webpack_require__(13);
@@ -14418,16 +14313,18 @@ class Markdown extends React.Component {
         };
     }
     componentDidMount() {
-        service_1.Service.compileMarkdownToHtml(this.props.src).then((html) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            const html = yield service_1.Service.compileMarkdownToHtml(this.props.src);
             this.setState({ html });
         });
     }
     componentWillReceiveProps(props) {
-        if (this.props.src !== props.src) {
-            service_1.Service.compileMarkdownToHtml(props.src).then((html) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.props.src !== props.src) {
+                const html = yield service_1.Service.compileMarkdownToHtml(props.src);
                 this.setState({ html });
-            });
-        }
+            }
+        });
     }
     render() {
         return React.createElement("div", { style: { padding: "8px" }, className: "md", dangerouslySetInnerHTML: { __html: this.state.html } });
@@ -16016,6 +15913,14 @@ exports.Sandbox = Sandbox;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 class Task {
     constructor(dependencies, promiseMaker) {
@@ -16050,8 +15955,9 @@ class GulpySession {
         return instance;
     }
     runInstance(instance) {
-        let dependencies = instance.task.dependencies.map(x => this.ensureInstance(x));
-        return Promise.all(dependencies.map(x => this.runInstance(x))).then((results) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            let dependencies = instance.task.dependencies.map(x => this.ensureInstance(x));
+            yield Promise.all(dependencies.map(x => this.runInstance(x)));
             return instance.makePromise();
         });
     }
@@ -18607,6 +18513,14 @@ exports.ShareDialog = ShareDialog;
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 const service_1 = __webpack_require__(13);
@@ -18652,18 +18566,18 @@ class NewProjectDialog extends React.Component {
         return "Create";
     }
     componentDidMount() {
-        fetch("templates/templates.js").then(response => {
-            response.text().then((js) => {
-                let templates = eval(js);
-                this.setState({ templates });
-                this.setTemplate(templates[0]);
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch("templates/templates.js");
+            const js = yield response.text();
+            let templates = eval(js);
+            this.setState({ templates });
+            this.setTemplate(templates[0]);
         });
     }
     setTemplate(template) {
-        this.setState({ template });
-        service_1.Service.compileMarkdownToHtml(template.description).then((description) => {
-            this.setState({ description });
+        return __awaiter(this, void 0, void 0, function* () {
+            const description = yield service_1.Service.compileMarkdownToHtml(template.description);
+            this.setState({ template, description });
         });
     }
     render() {
@@ -18723,70 +18637,7 @@ const Button_1 = __webpack_require__(21);
 const EditorPane_1 = __webpack_require__(36);
 const model_1 = __webpack_require__(2);
 const model_2 = __webpack_require__(2);
-class TreeViewItem extends React.Component {
-    render() {
-        return React.createElement("div", { className: "tree-view-item" },
-            React.createElement("div", { style: { width: `calc(${this.props.depth}rem - 2px)` } }),
-            React.createElement("div", { className: "icon", style: {
-                    backgroundImage: `url(svg/${this.props.icon}.svg)`
-                } }),
-            React.createElement("div", { className: "label" }, this.props.label));
-    }
-}
-exports.TreeViewItem = TreeViewItem;
-class TreeViewProblemItem extends React.Component {
-    render() {
-        let problem = this.props.problem;
-        let marker = problem.marker;
-        let position = `(${marker.startLineNumber}, ${marker.startColumn})`;
-        return React.createElement("div", { className: "tree-view-item" },
-            React.createElement("div", { style: { width: `calc(${this.props.depth}rem - 2px)` } }),
-            React.createElement("div", { className: "icon", style: {
-                    backgroundImage: `url(svg/${problem.severity + "-dark"}.svg)`
-                } }),
-            React.createElement("div", { className: "label" },
-                marker.message,
-                " ",
-                React.createElement("span", { className: "problem-position" }, position)));
-    }
-}
-exports.TreeViewProblemItem = TreeViewProblemItem;
-class TreeView extends React.Component {
-    render() {
-        return React.createElement("div", { className: "tree-view" }, this.props.children);
-    }
-}
-exports.TreeView = TreeView;
-class Problems extends React.Component {
-    componentDidMount() {
-        // TODO: Unregister.
-        this.props.project.onDidChangeProblems.register(() => {
-            this.forceUpdate();
-        });
-    }
-    render() {
-        let treeViewItems = [];
-        function go(directory) {
-            directory.forEachFile((file) => {
-                if (file instanceof model_2.Directory) {
-                    go(file);
-                }
-                else {
-                    // let depth = file.getDepth();
-                    if (file.problems.length) {
-                        treeViewItems.push(React.createElement(TreeViewItem, { depth: 0, icon: model_1.getIconForFileType(file.type), label: file.name }));
-                        file.problems.forEach((problem) => {
-                            treeViewItems.push(React.createElement(TreeViewProblemItem, { depth: 1, problem: problem }));
-                        });
-                    }
-                }
-            });
-        }
-        go(this.props.project);
-        return React.createElement(TreeView, null, treeViewItems);
-    }
-}
-exports.Problems = Problems;
+const Problems_1 = __webpack_require__(99);
 class ControlCenter extends React.Component {
     constructor(props) {
         super(props);
@@ -18833,7 +18684,7 @@ class ControlCenter extends React.Component {
             case "output":
                 return React.createElement(Editor_1.Editor, { ref: (ref) => this.setOutputViewEditor(ref), view: this.outputView });
             case "problems":
-                return React.createElement(Problems, { project: this.props.project });
+                return React.createElement(Problems_1.Problems, { project: this.props.project });
             default:
                 null;
         }
@@ -18870,6 +18721,413 @@ class ControlCenter extends React.Component {
     }
 }
 exports.ControlCenter = ControlCenter;
+
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+const model_1 = __webpack_require__(2);
+const DirectoryTree_1 = __webpack_require__(100);
+class ProblemTemplate {
+    constructor(container) {
+        this.monacoIconLabel = document.createElement("div");
+        this.monacoIconLabel.className = "monaco-icon-label";
+        this.monacoIconLabel.style.display = "flex";
+        container.appendChild(this.monacoIconLabel);
+        let labelDescriptionContainer = document.createElement("div");
+        labelDescriptionContainer.className = "monaco-icon-label-description-container";
+        this.monacoIconLabel.appendChild(labelDescriptionContainer);
+        this.label = document.createElement("a");
+        this.label.className = "label-name";
+        labelDescriptionContainer.appendChild(this.label);
+        this.description = document.createElement("span");
+        this.description.className = "label-description";
+        labelDescriptionContainer.appendChild(this.description);
+    }
+    dispose() {
+    }
+    set(problem) {
+        let icon = "";
+        let marker = problem.marker;
+        let position = `(${marker.startLineNumber}, ${marker.startColumn})`;
+        this.label.innerHTML = marker.message;
+        this.description.innerHTML = position;
+    }
+}
+class Problems extends React.Component {
+    constructor(props) {
+        super(props);
+        this.lastClickedTime = Date.now();
+        this.contextViewService = new window.ContextViewService(document.documentElement);
+        this.contextMenuService = new window.ContextMenuService(document.documentElement, null, null, this.contextViewService);
+    }
+    setContainer(container) {
+        if (container == null)
+            return;
+        if (this.container !== container) {
+            // ...
+        }
+        this.container = container;
+    }
+    ensureTree() {
+        if (this.container.lastChild) {
+            this.container.removeChild(this.container.lastChild);
+        }
+        let self = this;
+        class Controller extends window.TreeDefaults.DefaultController {
+            onContextMenu(tree, file, event) {
+                tree.setFocus(file);
+                const anchor = { x: event.posx, y: event.posy };
+                let actions = [];
+                self.contextMenuService.showContextMenu({
+                    getAnchor: () => anchor,
+                    getActions: () => {
+                        return monaco.Promise.as(actions);
+                    },
+                    getActionItem: (action) => {
+                        // const keybinding = this._keybindingService.lookupKeybinding(action.id);
+                        // if (keybinding) {
+                        //   return new ActionItem(action, action, { label: true, keybinding: keybinding.getLabel() });
+                        // }
+                        return null;
+                    },
+                    onHide: (wasCancelled) => {
+                        if (wasCancelled) {
+                            tree.DOMFocus();
+                        }
+                    }
+                });
+                super.onContextMenu(tree, file, event);
+                return true;
+            }
+        }
+        this.tree = new window.Tree(this.container, {
+            dataSource: {
+                /**
+                 * Returns the unique identifier of the given element.
+                 * No more than one element may use a given identifier.
+                 */
+                getId: function (tree, element) {
+                    return element.key;
+                },
+                /**
+                 * Returns a boolean value indicating whether the element has children.
+                 */
+                hasChildren: function (tree, element) {
+                    if (element instanceof model_1.Directory && element.children.length) {
+                        return true;
+                    }
+                    else if (element instanceof model_1.File) {
+                        return element.problems.length > 0;
+                    }
+                    return false;
+                },
+                /**
+                 * Returns the element's children as an array in a promise.
+                 */
+                getChildren: function (tree, element) {
+                    if (element instanceof model_1.Directory && element.children.length) {
+                        let children = [];
+                        element.forEachFile((file) => {
+                            if (file.problems.length) {
+                                children.push(file);
+                            }
+                        }, true);
+                        return monaco.Promise.as(children);
+                    }
+                    else if (element instanceof model_1.File) {
+                        return monaco.Promise.as(element.problems);
+                    }
+                    return null;
+                },
+                /**
+                 * Returns the element's parent in a promise.
+                 */
+                getParent: function (tree, element) {
+                    if (element instanceof model_1.File) {
+                        return monaco.Promise.as(element.getProject());
+                    }
+                    return monaco.Promise.as(element.file);
+                }
+            },
+            renderer: {
+                getHeight: function (tree, element) {
+                    return 24;
+                },
+                getTemplateId(tree, element) {
+                    if (element instanceof model_1.File) {
+                        return "file";
+                    }
+                    return "problem";
+                },
+                renderTemplate: function (tree, templateId, container) {
+                    return templateId == "problem" ? new ProblemTemplate(container) : new DirectoryTree_1.FileTemplate(container);
+                },
+                renderElement: function (tree, element, templateId, templateData) {
+                    templateData.set(element);
+                },
+                disposeTemplate: function (tree, templateId, templateData) {
+                    templateData.dispose();
+                }
+            },
+            controller: new Controller()
+        });
+    }
+    onClickFile(file) {
+    }
+    componentDidMount() {
+        this.ensureTree();
+        this.tree.model.setInput(this.props.project);
+        this.props.project.onDidChangeProblems.register(() => {
+            this.tree.refresh();
+        });
+    }
+    componentWillReceiveProps(props) {
+        this.tree.refresh();
+        this.tree.expandAll();
+    }
+    render() {
+        return React.createElement("div", { className: "fill", ref: (ref) => this.setContainer(ref) });
+    }
+}
+exports.Problems = Problems;
+
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+const model_1 = __webpack_require__(2);
+const service_1 = __webpack_require__(13);
+class FileTemplate {
+    constructor(container) {
+        this.monacoIconLabel = document.createElement("div");
+        this.monacoIconLabel.className = "monaco-icon-label";
+        this.monacoIconLabel.style.display = "flex";
+        container.appendChild(this.monacoIconLabel);
+        let labelDescriptionContainer = document.createElement("div");
+        labelDescriptionContainer.className = "monaco-icon-label-description-container";
+        this.monacoIconLabel.appendChild(labelDescriptionContainer);
+        this.label = document.createElement("a");
+        this.label.className = "label-name";
+        labelDescriptionContainer.appendChild(this.label);
+        this.description = document.createElement("span");
+        this.description.className = "label-description";
+        labelDescriptionContainer.appendChild(this.description);
+    }
+    dispose() {
+    }
+    set(file) {
+        let icon = "";
+        switch (file.type) {
+            case model_1.FileType.C:
+                icon = "c-lang-file-icon";
+                break;
+            case model_1.FileType.Cpp:
+                icon = "cpp-lang-file-icon";
+                break;
+            case model_1.FileType.JavaScript:
+                icon = "javascript-lang-file-icon";
+                break;
+            case model_1.FileType.HTML:
+                icon = "html-lang-file-icon";
+                break;
+            case model_1.FileType.TypeScript:
+                icon = "typescript-lang-file-icon";
+                break;
+            case model_1.FileType.Markdown:
+                icon = "markdown-lang-file-icon";
+                break;
+        }
+        if (file instanceof model_1.Directory) {
+            this.monacoIconLabel.classList.add("folder-icon");
+        }
+        else {
+            this.monacoIconLabel.classList.add("file-icon");
+        }
+        if (icon) {
+            this.monacoIconLabel.classList.add(icon);
+        }
+        this.label.innerHTML = file.name;
+        this.monacoIconLabel.classList.toggle("dirty", file.isDirty);
+    }
+}
+exports.FileTemplate = FileTemplate;
+class DirectoryTree extends React.Component {
+    constructor(props) {
+        super(props);
+        this.lastClickedTime = Date.now();
+        this.contextViewService = new window.ContextViewService(document.documentElement);
+        this.contextMenuService = new window.ContextMenuService(document.documentElement, null, null, this.contextViewService);
+    }
+    setContainer(container) {
+        if (container == null)
+            return;
+        if (this.container !== container) {
+            // ...
+        }
+        this.container = container;
+    }
+    ensureTree() {
+        if (this.container.lastChild) {
+            this.container.removeChild(this.container.lastChild);
+        }
+        let self = this;
+        class Controller extends window.TreeDefaults.DefaultController {
+            onContextMenu(tree, file, event) {
+                tree.setFocus(file);
+                const anchor = { x: event.posx, y: event.posy };
+                let actions = [];
+                if (file instanceof model_1.Directory) {
+                    actions.push(new window.Action("x", "New File", "", true, () => {
+                        self.props.onNewFile && self.props.onNewFile(file);
+                    }));
+                    actions.push(new window.Action("x", "New Directory", "", true, () => {
+                        self.props.onNewDirectory && self.props.onNewDirectory(file);
+                    }));
+                }
+                else if (file.type === model_1.FileType.Wasm) {
+                    actions.push(new window.Action("x", "Optimize w/ Binaryen", "", true, () => {
+                        service_1.Service.optimizeWasmWithBinaryen(file);
+                    }));
+                    actions.push(new window.Action("x", "Validate w/ Binaryen", "", true, () => {
+                        service_1.Service.validateWasmWithBinaryen(file);
+                    }));
+                    actions.push(new window.Action("x", "Download", "", true, () => {
+                        service_1.Service.download(file);
+                    }));
+                    actions.push(new window.Action("x", "Disassemble w/ Wabt", "", true, () => {
+                        service_1.Service.disassembleWasmWithWabt(file);
+                    }));
+                    actions.push(new window.Action("x", "Firefox x86", "", true, () => {
+                        service_1.Service.disassembleX86(file);
+                    }));
+                    actions.push(new window.Action("x", "Firefox x86 Baseline", "", true, () => {
+                        service_1.Service.disassembleX86(file, "--wasm-always-baseline");
+                    }));
+                }
+                else if (file.type === model_1.FileType.C || file.type === model_1.FileType.Cpp) {
+                    actions.push(new window.Action("x", "Format w/ Clang", "", true, () => {
+                        service_1.Service.clangFormat(file);
+                    }));
+                }
+                else if (file.type === model_1.FileType.Wast) {
+                    actions.push(new window.Action("x", "Assemble w/ Wabt", "", true, () => {
+                        service_1.Service.assembleWastWithWabt(file);
+                    }));
+                }
+                actions.push(new window.Action("x", "Edit", "", true, () => {
+                    self.props.onEditFile && self.props.onEditFile(file);
+                }));
+                actions.push(new window.Action("x", "Delete", "", true, () => {
+                    self.props.onDeleteFile && self.props.onDeleteFile(file);
+                }));
+                self.contextMenuService.showContextMenu({
+                    getAnchor: () => anchor,
+                    getActions: () => {
+                        return monaco.Promise.as(actions);
+                    },
+                    getActionItem: (action) => {
+                        // const keybinding = this._keybindingService.lookupKeybinding(action.id);
+                        // if (keybinding) {
+                        //   return new ActionItem(action, action, { label: true, keybinding: keybinding.getLabel() });
+                        // }
+                        return null;
+                    },
+                    onHide: (wasCancelled) => {
+                        if (wasCancelled) {
+                            tree.DOMFocus();
+                        }
+                    }
+                });
+                super.onContextMenu(tree, file, event);
+                return true;
+            }
+        }
+        this.tree = new window.Tree(this.container, {
+            dataSource: {
+                /**
+                 * Returns the unique identifier of the given element.
+                 * No more than one element may use a given identifier.
+                 */
+                getId: function (tree, element) {
+                    return element.key;
+                },
+                /**
+                 * Returns a boolean value indicating whether the element has children.
+                 */
+                hasChildren: function (tree, element) {
+                    return element instanceof model_1.Directory;
+                },
+                /**
+                 * Returns the element's children as an array in a promise.
+                 */
+                getChildren: function (tree, element) {
+                    return monaco.Promise.as(element.children);
+                },
+                /**
+                 * Returns the element's parent in a promise.
+                 */
+                getParent: function (tree, element) {
+                    return monaco.Promise.as(element.parent);
+                }
+            },
+            renderer: {
+                getHeight: function (tree, element) {
+                    return 24;
+                },
+                renderTemplate: function (tree, templateId, container) {
+                    return new FileTemplate(container);
+                },
+                renderElement: function (tree, element, templateId, templateData) {
+                    templateData.set(element);
+                },
+                disposeTemplate: function (tree, templateId, templateData) {
+                    templateData.dispose();
+                }
+            },
+            controller: new Controller()
+        });
+    }
+    onClickFile(file) {
+        if (file instanceof model_1.Directory) {
+            return;
+        }
+        if (Date.now() - this.lastClickedTime < 1000 && this.props.onDoubleClickFile) {
+            this.props.onDoubleClickFile(file);
+        }
+        else if (this.props.onClickFile) {
+            this.props.onClickFile(file);
+        }
+        this.lastClickedTime = Date.now();
+    }
+    componentDidMount() {
+        this.ensureTree();
+        this.tree.model.setInput(this.props.directory);
+        this.tree.model.onDidSelect((e) => {
+            if (e.selection.length) {
+                this.onClickFile(e.selection[0]);
+            }
+        });
+    }
+    componentWillReceiveProps(props) {
+        this.tree.refresh();
+        this.tree.expandAll();
+    }
+    render() {
+        return React.createElement("div", { className: "fill", ref: (ref) => this.setContainer(ref) });
+    }
+}
+exports.DirectoryTree = DirectoryTree;
 
 
 /***/ })
