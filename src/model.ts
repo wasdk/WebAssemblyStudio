@@ -234,20 +234,14 @@ export class File {
       file = file.parent;
     }
   }
-  getEmitOutput(): Promise<string> {
+  async getEmitOutput(): Promise<any> {
     let model = this.buffer;
     if (this.type !== FileType.TypeScript) {
       return Promise.resolve("");
     }
-    return new Promise((resolve, reject) => {
-      monaco.languages.typescript.getTypeScriptWorker().then(function (worker) {
-        worker(model.uri).then(function (client: any) {
-          client.getEmitOutput(model.uri.toString()).then(function (r: any) {
-            resolve(r);
-          });
-        });
-      });
-    });
+    const worker = await monaco.languages.typescript.getTypeScriptWorker();
+    const client = await worker(model.uri);
+    return client.getEmitOutput(model.uri.toString());
   }
   setData(data: string | ArrayBuffer, setBuffer = true) {
     this.data = data;

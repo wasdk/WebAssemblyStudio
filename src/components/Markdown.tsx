@@ -14,16 +14,14 @@ export class Markdown extends React.Component<MarkdownProps, {
       html: "Loading ..."
     };
   }
-  componentDidMount() {
-    Service.compileMarkdownToHtml(this.props.src).then((html) => {
-      this.setState({html});
-    });
+  async componentDidMount() {
+    const html = await Service.compileMarkdownToHtml(this.props.src);
+    this.setState({html});
   }
-  componentWillReceiveProps(props: MarkdownProps) {
+  async componentWillReceiveProps(props: MarkdownProps) {
     if (this.props.src !== props.src) {
-      Service.compileMarkdownToHtml(props.src).then((html) => {
-        this.setState({html});
-      });
+      const html = await Service.compileMarkdownToHtml(props.src);
+      this.setState({html});
     }
   }
   render() {
