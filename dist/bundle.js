@@ -14041,8 +14041,13 @@ class App extends React.Component {
             const fiddle = yield service_1.Service.saveProject(this.project, []);
             this.logLn("Forked Project OK " + fiddle);
             let search = window.location.search;
-            index_1.assert(search.indexOf(this.state.fiddle) >= 0);
-            history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
+            if (this.state.fiddle) {
+                index_1.assert(search.indexOf(this.state.fiddle) >= 0);
+                history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
+            }
+            else {
+                history.pushState({}, fiddle, `?f=${fiddle}`);
+            }
             this.setState({ fiddle });
         });
     }
