@@ -52,9 +52,9 @@ export enum Language {
 
 interface IFile {
   name: string;
-  type: string;
   children: IFile[];
-  data: string;
+  type?: string;
+  data?: string;
 }
 
 export interface IServiceRequestTask {
@@ -72,19 +72,13 @@ export interface IServiceRequest {
 }
 
 export class Service {
-  static sendRequest(command: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.addEventListener("load", function () {
-        resolve(this);
-      });
-      xhr.addEventListener("error", function () {
-        reject(this);
-      });
-      xhr.open("POST", "//wasmexplorer-service.herokuapp.com/service.php", true);
-      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      xhr.send(command);
+  static async sendRequest(command: string): Promise<IServiceRequest> {
+    const response = await fetch("//wasmexplorer-service.herokuapp.com/service.php", {
+      method: "POST",
+      body: command,
+      headers: new Headers({ "Content-type": "application/x-www-form-urlencoded" })
     });
+    return JSON.parse(await response.text());
   }
 
   static getMarkers(response: string): monaco.editor.IMarkerData[] {
@@ -137,31 +131,27 @@ export class Service {
     return annotations;
   }
 
-  static compileFile(file: File, from: Language, to: Language, options = ""): Promise<any> {
-    return new Promise((resolve, reject) => {
-      Service.compile(file.getData(), from, to, options).then((result) => {
-        let markers = Service.getMarkers(result.tasks[0].console);
-        if (markers.length) {
-          monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
-          file.setProblems(markers.map(marker => {
-            return Problem.fromMarker(marker);
-          }));
-        }
-        if (!result.success) {
-          reject();
-          return;
-        }
-        var buffer = atob(result.output);
-        var data = new Uint8Array(buffer.length);
-        for (var i = 0; i < buffer.length; i++) {
-          data[i] = buffer.charCodeAt(i);
-        }
-        resolve(data);
-      });
-    });
+  static async compileFile(file: File, from: Language, to: Language, options = ""): Promise<any> {
+    const result = await Service.compile(file.getData(), from, to, options);
+    let markers = Service.getMarkers(result.tasks[0].console);
+    if (markers.length) {
+      monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
+      file.setProblems(markers.map(marker => {
+        return Problem.fromMarker(marker);
+      }));
+    }
+    if (!result.success) {
+      throw new Error((result as any).message);
+    }
+    var buffer = atob(result.output);
+    var data = new Uint8Array(buffer.length);
+    for (var i = 0; i < buffer.length; i++) {
+      data[i] = buffer.charCodeAt(i);
+    }
+    return data;
   }
 
-  static compile(src: string | ArrayBuffer, from: Language, to: Language, options = ""): Promise<IServiceRequest> {
+  static async compile(src: string | ArrayBuffer, from: Language, to: Language, options = ""): Promise<IServiceRequest> {
     if (from === Language.C && to === Language.Wasm) {
       let project = {
         output: "wasm",
@@ -175,34 +165,11 @@ export class Service {
         ]
       };
       let input = encodeURIComponent(JSON.stringify(project)).replace('%20', '+');
-      return new Promise((resolve, reject) => {
-        this.sendRequest("input=" + input + "&action=build").then((x) => {
-          try {
-            resolve(JSON.parse(x.responseText) as IServiceRequest);
-          } catch (e) {
-            console.error(e);
-            reject();
-          }
-        }).catch(() => {
-          reject();
-        })
-      });
+      return this.sendRequest("input=" + input + "&action=build");
     } else if (from === Language.Wasm && to === Language.x86) {
       let input = encodeURIComponent(base64js.fromByteArray(src as ArrayBuffer));
-      return new Promise((resolve, reject) => {
-        this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options)).then((x) => {
-          try {
-            resolve(JSON.parse(x.responseText) as IServiceRequest);
-          } catch (e) {
-            console.error(e);
-            reject();
-          }
-        }).catch(() => {
-          reject();
-        })
-      });
+      return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options));
     }
-    return;
     /*
     src = encodeURIComponent(src).replace('%20', '+');
     if (from === Language.C && to === Language.Wast) {
@@ -215,13 +182,7 @@ export class Service {
         `version=${version}`,
         `options=${encodeURIComponent(options)}`
       ]
-      return new Promise((resolve, reject) => {
-        this.sendRequest(command.join("&")).then((x) => {
-          resolve(x);
-        }).catch(() => {
-          reject();
-        })
-      });
+      return this.sendRequest(command.join("&"));
     } else if (from === Language.Wast && to === Language.Wasm) {
       let action = "wast2wasm";
       let version = "";
@@ -231,18 +192,13 @@ export class Service {
         `version=${version}`,
         `options=${encodeURIComponent(options)}`
       ]
-      return new Promise((resolve, reject) => {
-        this.sendRequest(command.join("&")).then((x) => {
-          var buffer = atob(x.responseText.split('\n', 2)[1]);
-          var data = new Uint8Array(buffer.length);
-          for (var i = 0; i < buffer.length; i++) {
-            data[i] = buffer.charCodeAt(i);
-          }
-          resolve(data);
-        }).catch(() => {
-          reject();
-        })
-      });
+      const x = await this.sendRequest(command.join("&"));
+      var buffer = atob(x.split('\n', 2)[1]);
+      var data = new Uint8Array(buffer.length);
+      for (var i = 0; i < buffer.length; i++) {
+        data[i] = buffer.charCodeAt(i);
+      }
+      return data;
     } else if (from === Language.Wast && to === Language.x86) {
       let action = "wast2assembly";
       let version = "";
@@ -252,75 +208,46 @@ export class Service {
         `version=${version}`,
         `options=${encodeURIComponent(options)}`
       ]
-      return new Promise((resolve, reject) => {
-        this.sendRequest(command.join("&")).then((x) => {
-          let data = JSON.parse(x.responseText)
-          resolve(data);
-        }).catch(() => {
-          reject();
-        })
-      });
+      return this.sendRequest(command.join("&"));
     }
     */
   }
 
-  static disassembleWasm(buffer: ArrayBuffer): Promise<string> {
-    return new Promise((resolve, reject) => {
-      function disassemble() {
-        var module = wabt.readWasm(buffer, { readDebugNames: true });
-        if (true) {
-          module.generateNames();
-          module.applyNames();
-        }
-        return module.toText({ foldExprs: false, inlineExport: true });
-      }
-      if (typeof wabt !== "undefined") {
-        resolve(disassemble());
-      } else {
-        Service.lazyLoad("lib/libwabt.js").then(() => {
-          wabt.ready.then(() => {
-            resolve(disassemble());
-          });
-        });
-      }
-    });
+  static async disassembleWasm(buffer: ArrayBuffer): Promise<string> {
+    if (typeof wabt === "undefined") {
+      await Service.lazyLoad("lib/libwabt.js");
+    }
+    var module = wabt.readWasm(buffer, { readDebugNames: true });
+    if (true) {
+      module.generateNames();
+      module.applyNames();
+    }
+    return module.toText({ foldExprs: false, inlineExport: true });
   }
 
-  static disassembleWasmWithWabt(file: File) {
-    Service.disassembleWasm(file.getData() as ArrayBuffer).then((result) => {
-      let output = file.parent.newFile(file.name + ".wast", FileType.Wast);
-      output.description = "Disassembled from " + file.name + " using Wabt.";
-      output.setData(result);
-    });
+  static async disassembleWasmWithWabt(file: File) {
+    const result = await Service.disassembleWasm(file.getData() as ArrayBuffer);
+    let output = file.parent.newFile(file.name + ".wast", FileType.Wast);
+    output.description = "Disassembled from " + file.name + " using Wabt.";
+    output.setData(result);
   }
 
-  static assembleWast(wast: string): Promise<ArrayBuffer> {
-    return new Promise((resolve, reject) => {
-      function assemble() {
-        var module = wabt.parseWat('test.wast', wast);
-        module.resolveNames();
-        module.validate();
-        let binary = module.toBinary({ log: true, write_debug_names: true });
-        return binary.buffer;
-      }
-      if (typeof wabt !== "undefined") {
-        resolve(assemble());
-      } else {
-        Service.lazyLoad("lib/libwabt.js").then(() => {
-          wabt.ready.then(() => {
-            resolve(assemble());
-          });
-        });
-      }
-    });
+  static async assembleWast(wast: string): Promise<ArrayBuffer> {
+    if (typeof wabt === "undefined") {
+      await Service.lazyLoad("lib/libwabt.js");
+    }
+    var module = wabt.parseWat('test.wast', wast);
+    module.resolveNames();
+    module.validate();
+    let binary = module.toBinary({ log: true, write_debug_names: true });
+    return binary.buffer;
   }
 
-  static assembleWastWithWabt(file: File) {
-    Service.assembleWast(file.getData() as string).then((result) => {
-      let output = file.parent.newFile(file.name + ".wasm", FileType.Wasm);
-      output.description = "Assembled from " + file.name + " using Wabt.";
-      output.setData(result);
-    });
+  static async assembleWastWithWabt(file: File) {
+    const result = await Service.assembleWast(file.getData() as string);
+    let output = file.parent.newFile(file.name + ".wasm", FileType.Wasm);
+    output.description = "Assembled from " + file.name + " using Wabt.";
+    output.setData(result);
   }
 
   static disassembleWasmWithWasmDisassembler(file: File) {
@@ -337,21 +264,12 @@ export class Service {
     return;
   }
 
-  static loadJSON(uri: string): Promise<{}> {
-    return new Promise((resolve, reject) => {
-      var xhr = new XMLHttpRequest();
-      let self = this;
-      xhr.addEventListener("load", function () {
-        resolve(JSON.parse(this.response));
-      });
-      xhr.addEventListener("error", function () {
-        reject(this.response);
-      });
-      let url = "https://api.myjson.com/bins/" + uri;
-      xhr.open("GET", url, true);
-      xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-      xhr.send();
+  static async loadJSON(uri: string): Promise<{}> {
+    let url = "https://api.myjson.com/bins/" + uri;
+    const response = await fetch(url, {
+      headers: new Headers({ "Content-type": "application/json; charset=utf-8" })
     });
+    return JSON.parse(await response.text());
   }
 
   static saveJSON(json: object, uri: string): Promise<string> {
@@ -391,53 +309,52 @@ export class Service {
     return uri;
   }
 
-  static saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      function serialize(file: File): any {
-        if (file instanceof Directory) {
-          return {
-            name: file.name,
-            children: file.mapEachFile((file: File) => serialize(file))
-          }
-        } else {
-          return {
-            name: file.name,
-            type: file.type,
-            data: file.data
-          }
+  static async saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {
+    function serialize(file: File): any {
+      if (file instanceof Directory) {
+        return {
+          name: file.name,
+          children: file.mapEachFile((file: File) => serialize(file))
+        }
+      } else {
+        return {
+          name: file.name,
+          type: file.type,
+          data: file.data
         }
       }
-      let json = serialize(project);
-      json.openedFiles = openedFiles;
-      this.saveJSON(json, uri).then((result) => {
-        resolve(result);
-      });
-    })
+    }
+    let json = serialize(project);
+    json.openedFiles = openedFiles;
+    return await this.saveJSON(json, uri);
   }
 
-  static loadProject(json: any, project: Project): Promise<any> {
-    function deserialize(json: IFile | IFile[]): any {
+  static async loadProject(json: any, project: Project): Promise<any> {
+    async function deserialize(json: IFile | IFile[], basePath: string): Promise<any> {
       if (Array.isArray(json)) {
-        return json.map((x: any) => deserialize(x));
-      } else if (json.children) {
-        let directory = new Directory(json.name);
-        deserialize(json.children).forEach((file: File) => {
+        return Promise.all(json.map((x: any) => deserialize(x, basePath)));
+      }
+      if (json.children) {
+        const directory = new Directory(json.name);
+        (await deserialize(json.children, basePath + "/" + json.name)).forEach((file: File) => {
           directory.addFile(file);
         });
         return directory;
-      } else {
-        let file = new File(json.name, json.type as FileType);
-        file.setData(json.data);
-        return file;
       }
+      const file = new File(json.name, json.type as FileType);
+      if (json.data) {
+        file.setData(json.data);
+      } else {
+        const request = await fetch(basePath + "/" + json.name);
+        file.setData(await request.text());
+      }
+      return file;
     }
-    return new Promise((resolve, reject) => {
-      project.name = json.name;
-      deserialize(json.children).forEach((file: File) => {
-        project.addFile(file);
-      });
-      resolve(json);
+    project.name = json.name;
+    (await deserialize(json.children, "templates/" + json.directory)).forEach((file: File) => {
+      project.addFile(file);
     });
+    return json;
   }
 
   static lazyLoad(uri: string): Promise<any> {
@@ -455,71 +372,45 @@ export class Service {
     });
   }
 
-  static optimizeWasmWithBinaryen(file: File) {
-    function optimize() {
-      let data = file.getData() as ArrayBuffer;
-      let module = Binaryen.readBinary(data);
-      module.optimize();
-      data = module.emitBinary();
-      file.setData(data);
-      Service.disassembleWasm(data).then((result) => {
-        file.buffer.setValue(result);
-      });
+  static async optimizeWasmWithBinaryen(file: File) {
+    if (typeof Binaryen === "undefined") {
+      await Service.lazyLoad("lib/binaryen.js");
     }
-    if (typeof Binaryen !== "undefined") {
-      optimize();
-    } else {
-      Service.lazyLoad("lib/binaryen.js").then(() => {
-        optimize();
-      });
-    }
+    let data = file.getData() as ArrayBuffer;
+    let module = Binaryen.readBinary(data);
+    module.optimize();
+    data = module.emitBinary();
+    file.setData(data);
+    file.buffer.setValue(await Service.disassembleWasm(data));
   }
 
-  static validateWasmWithBinaryen(file: File) {
-    function validate() {
-      let data = file.getData() as ArrayBuffer;
-      let module = Binaryen.readBinary(data);
-      alert(module.validate());
+  static async validateWasmWithBinaryen(file: File) {
+    if (typeof Binaryen === "undefined") {
+      await Service.lazyLoad("lib/binaryen.js");
     }
-    if (typeof Binaryen !== "undefined") {
-      validate();
-    } else {
-      Service.lazyLoad("lib/binaryen.js").then(() => {
-        validate();
-      });
-    }
+    let data = file.getData() as ArrayBuffer;
+    let module = Binaryen.readBinary(data);
+    alert(module.validate());
   }
 
-  static validateWastWithBinaryen(file: File) {
-    function validate() {
-      let data = file.getData() as string;
-      let module = Binaryen.parseText(data);
-      alert(module.validate());
+  static async validateWastWithBinaryen(file: File) {
+    if (typeof Binaryen === "undefined") {
+      await Service.lazyLoad("lib/binaryen.js");
     }
-    if (typeof Binaryen !== "undefined") {
-      validate();
-    } else {
-      Service.lazyLoad("lib/binaryen.js").then(() => {
-        validate();
-      });
-    }
+    let data = file.getData() as string;
+    let module = Binaryen.parseText(data);
+    alert(module.validate());
   }
 
-  static disassembleWasmWithBinaryen(file: File) {
-    function disassemble() {
-      let data = file.getData() as ArrayBuffer;
-      let module = Binaryen.readBinary(data);
-      let output = file.parent.newFile(file.name + ".wast", FileType.Wast);
-      output.description = "Disassembled from " + file.name + " using Binaryen.";
-      output.setData(module.emitText());
+  static async disassembleWasmWithBinaryen(file: File) {
+    if (typeof Binaryen === "undefined") {
+      await Service.lazyLoad("lib/binaryen.js");
     }
-    if (typeof Binaryen !== "undefined") {
-      disassemble();
-    } else {
-      Service.lazyLoad("lib/binaryen.js").then(() => {
-        disassemble();
-      });
-    }
+    let data = file.getData() as ArrayBuffer;
+    let module = Binaryen.readBinary(data);
+    let output = file.parent.newFile(file.name + ".wast", FileType.Wast);
+    output.description = "Disassembled from " + file.name + " using Binaryen.";
+    output.setData(module.emitText());
   }
 
   static downloadLink: HTMLAnchorElement = null;
@@ -547,99 +438,85 @@ export class Service {
 
   static clangFormatModule: any = null;
   // Kudos to https://github.com/tbfleming/cib
-  static clangFormat(file: File) {
+  static async clangFormat(file: File) {
     function format() {
       let result = Service.clangFormatModule.ccall('formatCode', 'string', ['string'], [file.buffer.getValue()]);
       file.buffer.setValue(result);
     }
+
     if (Service.clangFormatModule) {
       format();
     } else {
-      Service.lazyLoad("lib/clang-format.js").then(() => {
-        let module: any = {
-          postRun() {
-            format();
-          },
-        }
-        fetch('lib/clang-format.wasm').then(response => response.arrayBuffer()).then(wasmBinary => {
-          module.wasmBinary = wasmBinary;
-          Service.clangFormatModule = Module(module);
-        });
-      });
+      await Service.lazyLoad("lib/clang-format.js");
+      const response = await fetch('lib/clang-format.wasm');
+      const wasmBinary = await response.arrayBuffer();
+      let module: any = {
+        postRun() {
+          format();
+        },
+        wasmBinary
+      };
+      Service.clangFormatModule = Module(module);
     }
   }
 
-  static disassembleX86(file: File, options = "") {
+  static async disassembleX86(file: File, options = "") {
+    if (typeof capstone === "undefined") {
+      await Service.lazyLoad("lib/capstone.x86.min.js");
+    }
     let output = file.parent.newFile(file.name + ".x86", FileType.x86);
 
     function toBytes(a: any) {
       return a.map(function (x: any) { return padLeft(Number(x).toString(16), 2, "0"); }).join(" ");
     }
-    function disassemble() {
-      let data = file.getData() as string;
-      Service.compile(data, Language.Wasm, Language.x86, options).then((json: any) => {
-        let s = "";
-        var cs = new capstone.Cs(capstone.ARCH_X86, capstone.MODE_64);
-        var annotations: any[] = [];
-        var assemblyInstructionsByAddress = Object.create(null);
-        for (var i = 0; i < json.regions.length; i++) {
-          var region = json.regions[i];
-          s += region.name + ":\n";
-          var csBuffer = decodeRestrictedBase64ToBytes(region.bytes);
-          var instructions = cs.disasm(csBuffer, region.entry);
-          var basicBlocks: any = {};
-          instructions.forEach(function (instr: any, i: any) {
-            assemblyInstructionsByAddress[instr.address] = instr;
-            if (isBranch(instr)) {
-              var targetAddress = parseInt(instr.op_str);
-              if (!basicBlocks[targetAddress]) {
-                basicBlocks[targetAddress] = [];
-              }
-              basicBlocks[targetAddress].push(instr.address);
-              if (i + 1 < instructions.length) {
-                basicBlocks[instructions[i + 1].address] = [];
-              }
-            }
-          });
-          instructions.forEach(function (instr: any) {
-            if (basicBlocks[instr.address]) {
-              s += " " + padRight(toAddress(instr.address) + ":", 39, " ");
-              if (basicBlocks[instr.address].length > 0) {
-                s += "; " + toAddress(instr.address) + " from: [" + basicBlocks[instr.address].map(toAddress).join(", ") + "]";
-              }
-              s += "\n";
-            }
-            s += "  " + padRight(instr.mnemonic + " " + instr.op_str, 38, " ");
-            s += "; " + toAddress(instr.address) + " " + toBytes(instr.bytes) + "\n";
-          });
+
+    let data = file.getData() as string;
+    const json: any = await Service.compile(data, Language.Wasm, Language.x86, options);
+    let s = "";
+    var cs = new capstone.Cs(capstone.ARCH_X86, capstone.MODE_64);
+    var annotations: any[] = [];
+    var assemblyInstructionsByAddress = Object.create(null);
+    for (var i = 0; i < json.regions.length; i++) {
+      var region = json.regions[i];
+      s += region.name + ":\n";
+      var csBuffer = decodeRestrictedBase64ToBytes(region.bytes);
+      var instructions = cs.disasm(csBuffer, region.entry);
+      var basicBlocks: any = {};
+      instructions.forEach(function (instr: any, i: any) {
+        assemblyInstructionsByAddress[instr.address] = instr;
+        if (isBranch(instr)) {
+          var targetAddress = parseInt(instr.op_str);
+          if (!basicBlocks[targetAddress]) {
+            basicBlocks[targetAddress] = [];
+          }
+          basicBlocks[targetAddress].push(instr.address);
+          if (i + 1 < instructions.length) {
+            basicBlocks[instructions[i + 1].address] = [];
+          }
+        }
+      });
+      instructions.forEach(function (instr: any) {
+        if (basicBlocks[instr.address]) {
+          s += " " + padRight(toAddress(instr.address) + ":", 39, " ");
+          if (basicBlocks[instr.address].length > 0) {
+            s += "; " + toAddress(instr.address) + " from: [" + basicBlocks[instr.address].map(toAddress).join(", ") + "]";
+          }
           s += "\n";
         }
-        output.setData(s);
+        s += "  " + padRight(instr.mnemonic + " " + instr.op_str, 38, " ");
+        s += "; " + toAddress(instr.address) + " " + toBytes(instr.bytes) + "\n";
       });
+      s += "\n";
     }
-    if (typeof capstone !== "undefined") {
-      disassemble();
-    } else {
-      Service.lazyLoad("lib/capstone.x86.min.js").then(() => {
-        disassemble();
-      });
-    }
+    output.setData(s);
   }
 
-  static compileMarkdownToHtml(src: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      function compile() {
-        var converter = new showdown.Converter({ tables: true });
-        showdown.setFlavor('github');
-        resolve(converter.makeHtml(src));
-      }
-      if (typeof showdown !== "undefined") {
-        compile();
-      } else {
-        Service.lazyLoad("lib/showdown.min.js").then(() => {
-          compile();
-        });
-      }
-    });
+  static async compileMarkdownToHtml(src: string): Promise<string> {
+    if (typeof showdown === "undefined") {
+      await Service.lazyLoad("lib/showdown.min.js");
+    }
+    var converter = new showdown.Converter({ tables: true });
+    showdown.setFlavor('github');
+    return converter.makeHtml(src);
   }
 }
