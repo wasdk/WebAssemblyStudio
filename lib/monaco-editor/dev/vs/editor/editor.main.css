@@ -1,6 +1,6 @@
 /*!-----------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.10.1(ebbf400719be21761361804bf63fb3916e64a845)
+ * Version: 0.9.0(7b4e363f7a8f6635e1936a318ac3fa5d8e2ddb1e)
  * Released under the MIT license
  * https://github.com/Microsoft/vscode/blob/master/LICENSE.txt
  *-----------------------------------------------------------*/
@@ -44,6 +44,10 @@
 
 .monaco-action-bar.vertical .actions-container {
 	display: inline-block;
+}
+
+.monaco-action-bar.reverse .actions-container {
+	flex-direction: row-reverse;
 }
 
 .monaco-action-bar .action-item {
@@ -314,7 +318,7 @@
 /* ---------- Icon label ---------- */
 
 .monaco-icon-label {
-	display: inline-block; /* required for icons support :before rule */
+	display: flex; /* required for icons support :before rule */
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
@@ -333,28 +337,50 @@
 	/* fonts icons */
 	-webkit-font-smoothing: antialiased;
 	vertical-align: top;
+
+	flex-shrink: 0; /* fix for https://github.com/Microsoft/vscode/issues/13787 */
 }
 
-.monaco-icon-label > .label-name {
+.monaco-icon-label > .monaco-icon-label-description-container {
+	overflow: hidden; /* this causes the label/description to shrink first if decorations are enabled */
+	text-overflow: ellipsis;
+}
+
+.monaco-icon-label > .monaco-icon-label-description-container > .label-name {
 	color: inherit;
 	white-space: pre; /* enable to show labels that include multiple whitespaces */
 }
 
-.monaco-icon-label > .label-description {
+.monaco-icon-label > .monaco-icon-label-description-container > .label-description {
 	opacity: 0.7;
 	margin-left: 0.5em;
 	font-size: 0.9em;
 	white-space: pre; /* enable to show labels that include multiple whitespaces */
 }
 
-.monaco-icon-label > .label-description.empty {
-	margin-left: 0;
-}
-
-.monaco-icon-label.italic > .label-name,
-.monaco-icon-label.italic > .label-description {
+.monaco-icon-label.italic > .monaco-icon-label-description-container > .label-name,
+.monaco-icon-label.italic > .monaco-icon-label-description-container > .label-description {
 	font-style: italic;
 }
+
+.monaco-icon-label::after {
+	opacity: 0.75;
+	font-size: 90%;
+	font-weight: 600;
+	padding: 0 12px 0 5px;
+	margin-left: auto;
+	text-align: center;
+}
+
+/* make sure selection color wins when a label is being selected */
+.monaco-tree.focused .selected .monaco-icon-label, /* tree */
+.monaco-tree.focused .selected .monaco-icon-label::after,
+.monaco-list:focus .selected .monaco-icon-label, /* list */
+.monaco-list:focus .selected .monaco-icon-label::after
+{
+	color: inherit !important;
+}
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -520,6 +546,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 .monaco-list {
+	position: relative;
 	height: 100%;
 	width: 100%;
 	white-space: nowrap;
@@ -559,7 +586,9 @@
 }
 
 /* Focus */
-.monaco-list.element-focused { outline: 0 !important; }
+.monaco-list.element-focused, .monaco-list.selection-single, .monaco-list.selection-multiple {
+	outline: 0 !important;
+}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -968,6 +997,70 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+/* Require .monaco-shell for ContextView dropdown */
+
+.monaco-shell .select-box-dropdown-container {
+	display: none;
+}
+
+.monaco-shell .select-box-dropdown-container.visible {
+	display: flex;
+	flex-direction: column;
+	text-align: left;
+	width: 1px;
+	overflow: hidden;
+}
+
+.monaco-shell .select-box-dropdown-container > .select-box-dropdown-list-container {
+	flex: 0 0 auto;
+	align-self: flex-start;
+	padding-bottom: 1px;
+	padding-top: 1px;
+	padding-left: 1px;
+	padding-right: 1px;
+	width: 100%;
+	overflow: hidden;
+	-webkit-box-sizing:	border-box;
+	-o-box-sizing:		border-box;
+	-moz-box-sizing:	border-box;
+	-ms-box-sizing:		border-box;
+	box-sizing:			border-box;
+}
+
+.monaco-shell.hc-black .select-box-dropdown-container > .select-box-dropdown-list-container {
+	padding-bottom: 4px;
+	padding-top: 3px;
+}
+
+.monaco-shell .select-box-dropdown-container > .select-box-dropdown-list-container .monaco-list .monaco-list-row > .option-text {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	padding-left: 3.5px;
+	white-space: nowrap;
+}
+
+.monaco-shell .select-box-dropdown-container > .select-box-dropdown-container-width-control {
+	flex: 1 1 auto;
+	align-self: flex-start;
+	opacity: 0;
+}
+
+.monaco-shell .select-box-dropdown-container > .select-box-dropdown-container-width-control > .width-control-div {
+	overflow: hidden;
+	max-height: 0px;
+}
+
+.monaco-shell .select-box-dropdown-container > .select-box-dropdown-container-width-control > .width-control-div > .option-text-width-control {
+	padding-left: 4px;
+	padding-right: 8px;
+	white-space: nowrap;
+}
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 .quick-open-widget {
 	position: absolute;
 	width: 600px;
@@ -1116,7 +1209,7 @@
 }
 
 .monaco-tree .monaco-tree-row > .content.actions > .primary-action-bar .action-label {
-	margin-right: 0.2em;
+	margin-right: 0.4em;
 	margin-top: 4px;
 	background-repeat: no-repeat;
 	width: 16px;
@@ -1307,6 +1400,10 @@
 	top: 0;
 	box-sizing: border-box;
 }
+
+.monaco-editor .margin-view-overlays .current-line-margin.current-line-margin-both {
+	border-right: 0;
+}
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -1371,14 +1468,14 @@
 	width: 100%;
 }
 
-.monaco-workbench .monaco-editor .margin-view-overlays .line-numbers {
+.monaco-editor .margin-view-overlays .line-numbers {
 	cursor: -webkit-image-set(
 		url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNSIgaGVpZ2h0PSIyMSIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCAxNSAyMSIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTUgMjE7Ij48cG9seWdvbiBzdHlsZT0iZmlsbDojRkZGRkZGO3N0cm9rZTojMDAwMDAwIiBwb2ludHM9IjE0LjUsMS4yIDEuOSwxMy44IDcuMSwxMy44IDQuNSwxOS4xIDcuNywyMC4xIDEwLjMsMTQuOSAxNC41LDE4Ii8+PC9zdmc+") 1x,
 		url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMzAiIGhlaWdodD0iNDIiIHZpZXdCb3g9IjAgMCAzMCA0MiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMzAgNDI7Ij48cG9seWdvbiBzdHlsZT0iZmlsbDojRkZGRkZGO3N0cm9rZTojMDAwMDAwO3N0cm9rZS13aWR0aDoyOyIgcG9pbnRzPSIyOSwyLjQgMy44LDI3LjYgMTQuMywyNy42IDksMzguMSAxNS40LDQwLjIgMjAuNiwyOS43IDI5LDM2Ii8+PC9zdmc+Cg==") 2x
 	) 30 0, default;
 }
 
-.monaco-workbench .monaco-editor.mac .margin-view-overlays .line-numbers {
+.monaco-editor.mac .margin-view-overlays .line-numbers {
 	cursor: -webkit-image-set(
 		url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxOCIgdmlld0JveD0iMCAwIDEyIDE4Ij48c3R5bGU+LnN0MHtmaWxsOiNmZmZ9PC9zdHlsZT48dGl0bGU+ZmxpcHBlZC1jdXJzb3ItbWFjPC90aXRsZT48cGF0aCBkPSJNNC4zIDE2LjVsMS42LTQuNkgxLjFMMTEuNSAxLjJ2MTQuNEw4LjcgMTNsLTEuNiA0LjV6Ii8+PHBhdGggY2xhc3M9InN0MCIgZD0iTTExIDE0LjVsLTIuNS0yLjNMNyAxNi43IDUgMTZsMS42LTQuNWgtNGw4LjUtOU0wIDEyLjVoNS4ybC0xLjUgNC4xTDcuNSAxOCA5IDE0LjJsMi45IDIuM1YwTDAgMTIuNXoiLz48L3N2Zz4=") 1x,
 		url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIzNiIgdmlld0JveD0iMCAwIDI0IDM2LjEiPjxkZWZzPjxzdHlsZT4uYXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5mbGlwcGVkLWN1cnNvci1tYWMtMng8L3RpdGxlPjxwb2x5Z29uIHBvaW50cz0iOC42IDMzLjEgMTEuOCAyMy45IDIuMiAyMy45IDIzIDIuNSAyMyAzMS4zIDE3LjQgMjYuMSAxNC4yIDM1LjEgOC42IDMzLjEiLz48cGF0aCBjbGFzcz0iYSIgZD0iTTIyLDI5LjFsLTUtNC42LTMuMDYyLDguOTM4LTQuMDYyLTEuNUwxMywyM0g1TDIyLDVNMCwyNUgxMC40bC0zLDguM0wxNSwzNi4xbDMuMTI1LTcuNjYyTDI0LDMzVjBaIi8+PC9zdmc+") 2x
@@ -1569,9 +1666,7 @@
 .monaco-editor .cursors-layer > .cursor {
 	position: absolute;
 	cursor: text;
-}
-.monaco-editor .cursors-layer > .cursor.secondary {
-	opacity: 0.6;
+	overflow: hidden;
 }
 
 /* -- block-outline-style -- */
@@ -1951,20 +2046,21 @@
 .colorpicker-header .picked-color {
 	width: 216px;
 	text-align: center;
-	text-shadow: 0.5px 0.5px 0.5px black;
-	line-height: 20px;
+	line-height: 24px;
 	cursor: pointer;
-}
-
-.colorpicker-header .picked-color {
+	color: white;
 	flex: 1;
 	text-align: center;
-	color: rgba(255, 255, 255, 1);
+}
+
+.colorpicker-header .picked-color.light {
+	color: black;
 }
 
 .colorpicker-header .original-color {
 	width: 74px;
 	z-index: inherit;
+	cursor: pointer;
 }
 
 
@@ -1995,7 +2091,7 @@
 	margin: -5px 0 0 -5px;
 	border: 1px solid rgb(255, 255, 255);
 	border-radius: 100%;
-	box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.3);
+	box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.8);
 	position: absolute;
 }
 
@@ -2020,15 +2116,22 @@
 	image-rendering: pixelated;
 }
 
+.colorpicker-body .strip.grabbing {
+	cursor: -webkit-grabbing;
+}
+
 .colorpicker-body .slider {
 	position: absolute;
 	top: 0;
-	width: 100%;
-	background: rgba(100, 100, 100, 0.7);
-	height: 5px;
+	left: -2px;
+	width: calc(100% + 4px);
+	height: 4px;
+	box-sizing: border-box;
+	border: 1px solid rgba(255, 255, 255, 0.71);
+	box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.85);
 }
 
-.colorpicker-body .opacity-strip .opacity-overlay {
+.colorpicker-body .strip .overlay {
 	height: 150px;
 	pointer-events: none;
 }
@@ -2443,7 +2546,7 @@
 }
 
 .monaco-editor .margin-view-overlays:hover .folding,
-.monaco-editor.alwaysShowFoldIcons .margin-view-overlays .folding {
+.monaco-editor .margin-view-overlays .folding.alwaysShowFoldIcons {
 	opacity: 1;
 }
 
@@ -2481,50 +2584,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-editor .monaco-editor-overlaymessage {
-	padding-bottom: 8px;
-}
-
-@keyframes fadeIn {
-	from { opacity: 0; }
-	to { opacity: 1; }
-}
-.monaco-editor .monaco-editor-overlaymessage.fadeIn {
-	animation: fadeIn 150ms ease-out;
-}
-
-@keyframes fadeOut {
-	from { opacity: 1; }
-	to { opacity: 0; }
-}
-.monaco-editor .monaco-editor-overlaymessage.fadeOut {
-	animation: fadeOut 100ms ease-out;
-}
-
-.monaco-editor .monaco-editor-overlaymessage .message {
-	padding: 1px 4px;
-}
-
-.monaco-editor .monaco-editor-overlaymessage .anchor {
-	width: 0 !important;
-	height: 0 !important;
-	border-color: transparent;
-	border-style: solid;
-	z-index: 1000;
-	border-width: 8px;
-	position: absolute;
-}
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
 /* marker zone */
 
 .monaco-editor .marker-widget {
 	padding-left: 2px;
-	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
@@ -2545,6 +2608,7 @@
 }
 
 .monaco-editor .marker-widget .descriptioncontainer {
+	position: relative;
 	white-space: pre;
 	-webkit-user-select: text;
 	user-select: text;
@@ -2577,14 +2641,6 @@
 
 .monaco-editor-hover .monaco-editor-hover-content {
 	max-width: 500px;
-}
-
-/*
- * https://github.com/Microsoft/monaco-editor/issues/417
- * Safari 10.1, fails inherit correct visibility from parent when we change the visibility of parent element from hidden to inherit, in this particular case.
- */
-.monaco-editor-hover .monaco-scrollable-element {
-	visibility: visible;
 }
 
 .monaco-editor-hover .hover-row {
@@ -2627,6 +2683,7 @@
 	white-space: pre-wrap;
 	word-break: break-all;
 }
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -2634,10 +2691,50 @@
 .monaco-editor .detected-link,
 .monaco-editor .detected-link-active {
 	text-decoration: underline;
+	text-underline-position: under;
 }
 
 .monaco-editor .detected-link-active {
 	cursor: pointer;
+}
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-editor .monaco-editor-overlaymessage {
+	padding-bottom: 8px;
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+.monaco-editor .monaco-editor-overlaymessage.fadeIn {
+	animation: fadeIn 150ms ease-out;
+}
+
+@keyframes fadeOut {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+.monaco-editor .monaco-editor-overlaymessage.fadeOut {
+	animation: fadeOut 100ms ease-out;
+}
+
+.monaco-editor .monaco-editor-overlaymessage .message {
+	padding: 1px 4px;
+}
+
+.monaco-editor .monaco-editor-overlaymessage .anchor {
+	width: 0 !important;
+	height: 0 !important;
+	border-color: transparent;
+	border-style: solid;
+	z-index: 1000;
+	border-width: 8px;
+	position: absolute;
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -2688,6 +2785,19 @@
 .monaco-editor .parameter-hints-widget .docs {
 	padding: 0 10px 0 5px;
 	white-space: pre-wrap;
+}
+
+.monaco-editor .parameter-hints-widget .docs.markdown-docs {
+	white-space: initial;
+}
+
+.monaco-editor .parameter-hints-widget .docs .code {
+	white-space: pre-wrap;
+}
+
+.monaco-editor .parameter-hints-widget .docs code {
+	border-radius: 3px;
+	padding: 0 0.4em;
 }
 
 .monaco-editor .parameter-hints-widget .buttons {
@@ -2771,16 +2881,13 @@
 	align-items: center;
 	justify-content: center;
 	height: 16px;
-	width: 16px;
-}
-
-.monaco-editor .lightbulb-glyph.hidden {
-	display: none;
-	visibility: hidden;
+	width: 20px;
+	padding-left: 2px;
 }
 
 .monaco-editor .lightbulb-glyph:hover {
 	cursor: pointer;
+	/* transform: scale(1.3, 1.3); */
 }
 
 .monaco-editor.vs .lightbulb-glyph {
@@ -2791,6 +2898,82 @@
 .monaco-editor.hc-black .lightbulb-glyph {
 	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIGhlaWdodD0iMTYiIHdpZHRoPSIxNiI+PHBhdGggZmlsbD0iIzFFMUUxRSIgZD0iTTEzLjUgNC4yQzEzLjEgMi4xIDEwLjggMCA5LjMgMEg2LjdjLS40IDAtLjYuMi0uNi4yQzQgLjggMi41IDIuNyAyLjUgNC45YzAgLjUtLjEgMi4zIDEuNyAzLjguNS41IDEuMiAyIDEuMyAyLjR2My4zTDcuMSAxNmgybDEuNS0xLjZWMTFjLjEtLjQuOC0xLjkgMS4zLTIuMyAxLjEtLjkgMS41LTEuOSAxLjYtMi43VjQuMnoiLz48Zz48ZyBmaWxsPSIjQzVDNUM1Ij48cGF0aCBkPSJNNi41IDEyaDN2MWgtM3pNNy41IDE1aDEuMWwuOS0xaC0zeiIvPjwvZz48cGF0aCBmaWxsPSIjRERCMjA0IiBkPSJNMTIuNiA1YzAtMi4zLTEuOC00LjEtNC4xLTQuMS0uMSAwLTEuNC4xLTEuNC4xLTIuMS4zLTMuNyAyLTMuNyA0IDAgLjEtLjIgMS42IDEuNCAzIC43LjcgMS41IDIuNCAxLjYgMi45bC4xLjFoM2wuMS0uMmMuMS0uNS45LTIuMiAxLjYtMi45IDEuNi0xLjMgMS40LTIuOCAxLjQtMi45em0tMyAxbC0uNSAzaC0uNlY2YzEuMSAwIC45LTEgLjktMUg2LjV2LjFjMCAuMi4xLjkgMSAuOXYzSDdsLS4yLS43TDYuNSA2Yy0uNyAwLS45LS40LTEtLjd2LS40YzAtLjguOS0uOS45LS45aDMuMXMxIC4xIDEgMWMwIDAgLjEgMS0uOSAxeiIvPjwvZz48cGF0aCBmaWxsPSIjMjUyNTI2IiBkPSJNMTAuNSA1YzAtLjktMS0xLTEtMUg2LjRzLS45LjEtLjkuOXYuNGMwIC4zLjMuNy45LjdsLjQgMi4zLjIuN2guNVY2Yy0xIDAtMS0uNy0xLS45VjVoM3MuMSAxLS45IDF2M2guNmwuNS0zYy45IDAgLjgtMSAuOC0xeiIvPjwvc3ZnPg==") center center no-repeat;
 }
+
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.monaco-editor .peekview-widget .head {
+	-webkit-box-sizing:	border-box;
+	-o-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing:	border-box;
+	display: flex;
+}
+
+.monaco-editor .peekview-widget .head .peekview-title {
+	display: inline-block;
+	font-size: 13px;
+	margin-left: 20px;
+	cursor: pointer;
+}
+
+.monaco-editor .peekview-widget .head .peekview-title .dirname:not(:empty) {
+	font-size: 0.9em;
+	margin-left: 0.5em;
+}
+
+.monaco-editor .peekview-widget .head .peekview-actions {
+	flex: 1;
+	text-align: right;
+	padding-right: 2px;
+}
+
+.monaco-editor .peekview-widget .head .peekview-actions > .monaco-action-bar {
+	display: inline-block;
+}
+
+.monaco-editor .peekview-widget .head .peekview-actions > .monaco-action-bar,
+.monaco-editor .peekview-widget .head .peekview-actions > .monaco-action-bar > .actions-container {
+	height: 100%;
+}
+
+.monaco-editor .peekview-widget .head .peekview-actions > .monaco-action-bar .action-item {
+	margin-left: 4px;
+}
+
+.monaco-editor .peekview-widget .head .peekview-actions > .monaco-action-bar .action-label {
+	width: 16px;
+	height: 100%;
+	margin: 0;
+	line-height: inherit;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.monaco-editor .peekview-widget .head .peekview-actions > .monaco-action-bar .action-label.octicon {
+	margin: 0;
+}
+
+.monaco-editor .peekview-widget .head .peekview-actions .action-label.icon.close-peekview-action {
+	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMyAzIDE2IDE2IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDMgMyAxNiAxNiI+PHBvbHlnb24gZmlsbD0iIzQyNDI0MiIgcG9pbnRzPSIxMi41OTcsMTEuMDQyIDE1LjQsMTMuODQ1IDEzLjg0NCwxNS40IDExLjA0MiwxMi41OTggOC4yMzksMTUuNCA2LjY4MywxMy44NDUgOS40ODUsMTEuMDQyIDYuNjgzLDguMjM5IDguMjM4LDYuNjgzIDExLjA0Miw5LjQ4NiAxMy44NDUsNi42ODMgMTUuNCw4LjIzOSIvPjwvc3ZnPg==") center center no-repeat;
+}
+
+.monaco-editor .peekview-widget > .body {
+	border-top: 1px solid;
+	position: relative;
+}
+
+/* Dark Theme */
+/* High Contrast Theme */
+
+.monaco-editor.hc-black .peekview-widget .head .peekview-actions .action-label.icon.close-peekview-action,
+.monaco-editor.vs-dark .peekview-widget .head .peekview-actions .action-label.icon.close-peekview-action {
+	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMyAzIDE2IDE2IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDMgMyAxNiAxNiI+PHBvbHlnb24gZmlsbD0iI2U4ZThlOCIgcG9pbnRzPSIxMi41OTcsMTEuMDQyIDE1LjQsMTMuODQ1IDEzLjg0NCwxNS40IDExLjA0MiwxMi41OTggOC4yMzksMTUuNCA2LjY4MywxMy44NDUgOS40ODUsMTEuMDQyIDYuNjgzLDguMjM5IDguMjM4LDYuNjgzIDExLjA0Miw5LjQ4NiAxMy44NDUsNi42ODMgMTUuNCw4LjIzOSIvPjwvc3ZnPg==") center center no-repeat;
+}
+
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -2821,8 +3004,7 @@
 }
 
 .monaco-editor .reference-zone-widget .ref-tree {
-	line-height: 22px;
-	font-size: 13px;
+	line-height: 23px;
 }
 
 .monaco-editor .reference-zone-widget .ref-tree .reference {
@@ -2831,23 +3013,20 @@
 }
 
 .monaco-editor .reference-zone-widget .ref-tree .reference-file {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+	display: inline-flex;
+	width: 100%;
+	height: 100%;
 }
 
-.monaco-editor .reference-zone-widget .monaco-count-badge {
-	margin-right: .5em;
-	height: 15px;
-	padding: 0 .5em .5em .5em
+.monaco-editor .reference-zone-widget .ref-tree .reference-file .count {
+	margin-right: 12px;
+	margin-left: auto;
 }
 
 /* High Contrast Theming */
 
 .monaco-editor.hc-black .reference-zone-widget .ref-tree .reference-file {
 	font-weight: bold;
-	display: flex;
-	justify-content: space-between;
 }
 
 /*---------------------------------------------------------------------------------------------
@@ -2869,9 +3048,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.monaco-editor.vs		.snippet-placeholder { background-color: rgba(10, 50, 100, 0.1); }
-.monaco-editor.vs-dark	.snippet-placeholder { background-color: rgba(124, 124, 124, 0.1); }
-.monaco-editor.hc-black	.snippet-placeholder { background-color: rgba(124, 124, 124, 0.1); }
+.monaco-editor.vs		.snippet-placeholder { background-color: rgba(10, 50, 100, 0.2); min-width: 2px; }
+.monaco-editor.vs-dark	.snippet-placeholder { background-color: rgba(124, 124, 124, 0.3); min-width: 2px; }
+.monaco-editor.hc-black	.snippet-placeholder { background-color: rgba(124, 124, 124, 0.3); min-width: 2px; }
 
 .monaco-editor.vs		.finish-snippet-placeholder { outline: rgba(10, 50, 100, 0.5) solid 1px; }
 .monaco-editor.vs-dark	.finish-snippet-placeholder	{ outline: #525252 solid 1px; }
@@ -2960,6 +3139,7 @@
 	display: flex;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	white-space: pre;
 }
 
 .monaco-editor .suggest-widget:not(.frozen) .monaco-highlighted-label .highlight {
@@ -3051,7 +3231,7 @@
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.enum { background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojZjZmNmY2fS5pY29uLXZzLW91dHtmaWxsOiNmNmY2ZjZ9Lmljb24tdnMtZmd7ZmlsbDojZjBlZmYxfS5pY29uLXZzLWFjdGlvbi1vcmFuZ2V7ZmlsbDojYzI3ZDFhfTwvc3R5bGU+PHBhdGggY2xhc3M9Imljb24tY2FudmFzLXRyYW5zcGFyZW50IiBkPSJNMTYgMTZIMFYwaDE2djE2eiIgaWQ9ImNhbnZhcyIvPjxwYXRoIGNsYXNzPSJpY29uLXZzLW91dCIgZD0iTTE0LjQxNCAxTDE2IDIuNTg2djUuODI4TDE0LjQxNCAxMEgxMHYzLjQxNkw4LjQxNCAxNUgxLjU4NkwwIDEzLjQxNnYtNS44M0wxLjU4NiA2SDZWMi41ODZMNy41ODYgMWg2LjgyOHoiIGlkPSJvdXRsaW5lIi8+PHBhdGggY2xhc3M9Imljb24tdnMtZmciIGQ9Ik0yIDEzaDZWOEgydjV6bTEtNGg0djFIM1Y5em0wIDJoNHYxSDN2LTF6bTExLTVWM0g4djNoLjQxNEw5IDYuNTg2VjZoNHYxSDkuNDE0bC41ODYuNTg2VjhoNFY2em0tMS0xSDlWNGg0djF6IiBpZD0iaWNvbkZnIi8+PHBhdGggY2xhc3M9Imljb24tdnMtYWN0aW9uLW9yYW5nZSIgZD0iTTMgMTFoNC4wMDF2MUgzdi0xem0wLTFoNC4wMDFWOUgzdjF6bTYtMnY1bC0xIDFIMmwtMS0xVjhsMS0xaDZsMSAxek04IDhIMnY1aDZWOHptMS0ybDEgMWgzVjZIOXptMC0xaDRWNEg5djF6bTUtM0g4TDcgM3YzaDFWM2g2djVoLTR2MWg0bDEtMVYzbC0xLTF6IiBpZD0iaWNvbkJnIi8+PC9zdmc+"); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.enum-member { background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojZjZmNmY2fS5pY29uLXZzLW91dHtmaWxsOiNmNmY2ZjZ9Lmljb24tdnMtZmd7ZmlsbDojZjBlZmYxfS5pY29uLXZzLWFjdGlvbi1ibHVle2ZpbGw6IzAwNTM5Y308L3N0eWxlPjxwYXRoIGNsYXNzPSJpY29uLWNhbnZhcy10cmFuc3BhcmVudCIgZD0iTTE2IDE2SDBWMGgxNnYxNnoiIGlkPSJjYW52YXMiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1vdXQiIGQ9Ik0wIDE1VjZoNlYyLjU4Nkw3LjU4NSAxaDYuODI5TDE2IDIuNTg2djUuODI5TDE0LjQxNCAxMEgxMHY1SDB6bTMtNnoiIGlkPSJvdXRsaW5lIi8+PHBhdGggY2xhc3M9Imljb24tdnMtZmciIGQ9Ik04IDN2M2g1djFoLTN2MWg0VjNIOHptNSAySDlWNGg0djF6TTIgOHY1aDZWOEgyem01IDNIM3YtMWg0djF6IiBpZD0iaWNvbkZnIi8+PHBhdGggY2xhc3M9Imljb24tdnMtYWN0aW9uLWJsdWUiIGQ9Ik0xMCA2aDN2MWgtM1Y2ek05IDR2MWg0VjRIOXptNS0ySDhMNyAzdjNoMVYzaDZ2NWgtNHYxaDRsMS0xVjNsLTEtMXptLTcgOEgzdjFoNHYtMXptMi0zdjdIMVY3aDh6TTggOEgydjVoNlY4eiIgaWQ9Imljb25CZyIvPjwvc3ZnPg=="); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.keyword { background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojZjZmNmY2fS5pY29uLXZzLW91dHtmaWxsOiNmNmY2ZjZ9Lmljb24tdnMtYmd7ZmlsbDojNDI0MjQyfS5pY29uLXZzLWZne2ZpbGw6I2YwZWZmMX08L3N0eWxlPjxwYXRoIGNsYXNzPSJpY29uLWNhbnZhcy10cmFuc3BhcmVudCIgZD0iTTE2IDE2SDBWMGgxNnYxNnoiIGlkPSJjYW52YXMiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1vdXQiIGQ9Ik0xNiA1VjJIOVYxSDB2MTRoMTN2LTNoM1Y5aC0xVjZIOVY1aDd6bS04IDdWOWgxdjNIOHoiIGlkPSJvdXRsaW5lIi8+PHBhdGggY2xhc3M9Imljb24tdnMtZmciIGQ9Ik0yIDNoNXYxSDJWM3oiIGlkPSJpY29uRmciLz48cGF0aCBjbGFzcz0iaWNvbi12cy1iZyIgZD0iTTE1IDRoLTVWM2g1djF6bS0xIDNoLTJ2MWgyVjd6bS00IDBIMXYxaDlWN3ptMiA2SDF2MWgxMXYtMXptLTUtM0gxdjFoNnYtMXptOCAwaC01djFoNXYtMXpNOCAydjNIMVYyaDd6TTcgM0gydjFoNVYzeiIgaWQ9Imljb25CZyIvPjwvc3ZnPg=="); }
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.text { background-image: url(contrib/suggest/browser/media/String_16x.svg); }
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.text { background-image: url(contrib/suggest/media/String_16x.svg); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.color { background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojZjZmNmY2fS5pY29uLXZzLW91dHtmaWxsOiNmNmY2ZjZ9Lmljb24tdnMtYmd7ZmlsbDojNDI0MjQyfS5pY29uLXZzLXJlZHtmaWxsOiNlNTE0MDB9Lmljb24tdnMteWVsbG93e2ZpbGw6I2ZmY2MwMH0uaWNvbi12cy1ncmVlbntmaWxsOiMzMzk5MzN9Lmljb24tdnMtYmx1ZXtmaWxsOiMxYmExZTJ9Lmljb24tdnMtYWN0aW9uLXB1cnBsZXtmaWxsOiM2NTJkOTB9Lmljb24td2hpdGV7ZmlsbDojZmZmZmZmfTwvc3R5bGU+PHBhdGggY2xhc3M9Imljb24tY2FudmFzLXRyYW5zcGFyZW50IiBkPSJNMTYgMTZIMFYwaDE2djE2eiIgaWQ9ImNhbnZhcyIvPjxwYXRoIGNsYXNzPSJpY29uLXZzLW91dCIgZD0iTTE2IDhjMCA0LjQxMS0zLjU4OSA4LTggOGEyLjgwMyAyLjgwMyAwIDAgMS0yLjgtMi44YzAtLjgzMy4yNzItMS42MjkuNzY2LTIuMjQxYS41OTYuNTk2IDAgMCAwIC4xMDEtLjM1OS42NjcuNjY3IDAgMCAwLS42NjctLjY2Ni41OC41OCAwIDAgMC0uMzU4LjEwMkEzLjU4NCAzLjU4NCAwIDAgMSAyLjggMTAuOCAyLjgwMyAyLjgwMyAwIDAgMSAwIDhjMC00LjQxMSAzLjU4OS04IDgtOHM4IDMuNTg5IDggOHoiIGlkPSJvdXRsaW5lIi8+PHBhdGggY2xhc3M9Imljb24td2hpdGUiIGQ9Ik01LjQgNy45MzNhMi42NyAyLjY3IDAgMCAxIDIuNjY3IDIuNjY2YzAgLjYwNi0uMTkzIDEuMTc5LS41NDQgMS42MTRhMS41OTkgMS41OTkgMCAwIDAtLjMyMy45ODcuOC44IDAgMCAwIC44LjhjMy4zMDkgMCA2LTIuNjkxIDYtNnMtMi42OTEtNi02LTYtNiAyLjY5MS02IDZjMCAuNDQxLjM1OS44LjguOC4zNzggMCAuNzI5LS4xMTQuOTg2LS4zMjJBMi41NjggMi41NjggMCAwIDEgNS40IDcuOTMzeiIgaWQ9Imljb25GZyIvPjxnIGlkPSJpY29uQmciPjxwYXRoIGNsYXNzPSJpY29uLXZzLWJnIiBkPSJNOCAxNWMtLjk5MiAwLTEuOC0uODA4LTEuOC0xLjggMC0uNjA2LjE5My0xLjE3OS41NDQtMS42MTMuMjA4LS4yNTkuMzIzLS42MDkuMzIzLS45ODcgMC0uOTE5LS43NDgtMS42NjYtMS42NjctMS42NjYtLjM3NyAwLS43MjguMTE1LS45ODYuMzIzQTIuNTggMi41OCAwIDAgMSAyLjggOS44QzEuODA4IDkuOCAxIDguOTkyIDEgOGMwLTMuODYgMy4xNC03IDctNyAzLjg1OSAwIDcgMy4xNCA3IDcgMCAzLjg1OS0zLjE0MSA3LTcgN3pNNS40IDcuOTMzYTIuNjcgMi42NyAwIDAgMSAyLjY2NyAyLjY2NmMwIC42MDYtLjE5MyAxLjE3OS0uNTQ0IDEuNjE0YTEuNTk5IDEuNTk5IDAgMCAwLS4zMjMuOTg3LjguOCAwIDAgMCAuOC44YzMuMzA5IDAgNi0yLjY5MSA2LTZzLTIuNjkxLTYtNi02LTYgMi42OTEtNiA2YzAgLjQ0MS4zNTkuOC44LjguMzc4IDAgLjcyOS0uMTE0Ljk4Ni0uMzIyQTIuNTY4IDIuNTY4IDAgMCAxIDUuNCA3LjkzM3oiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1hY3Rpb24tcHVycGxlIiBkPSJNNC41IDUuMzc1YS44NzUuODc1IDAgMSAwIDAgMS43NS44NzUuODc1IDAgMCAwIDAtMS43NXoiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1ibHVlIiBkPSJNNy4xMjUgMy42MjVhLjg3NS44NzUgMCAxIDAgMCAxLjc1Ljg3NS44NzUgMCAwIDAgMC0xLjc1eiIvPjxwYXRoIGNsYXNzPSJpY29uLXZzLWdyZWVuIiBkPSJNMTAuNjI1IDQuNWEuODc1Ljg3NSAwIDEgMCAwIDEuNzUuODc1Ljg3NSAwIDAgMCAwLTEuNzV6Ii8+PHBhdGggY2xhc3M9Imljb24tdnMteWVsbG93IiBkPSJNMTEuNSA4YS44NzUuODc1IDAgMSAwIDAgMS43NS44NzUuODc1IDAgMCAwIDAtMS43NXoiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1yZWQiIGQ9Ik05Ljc1IDEwLjYyNWEuODc1Ljg3NSAwIDEgMCAwIDEuNzUuODc1Ljg3NSAwIDAgMCAwLTEuNzV6Ii8+PC9nPjwvc3ZnPg=="); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.file { background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojZjZmNmY2fS5pY29uLXZzLW91dHtmaWxsOiNmNmY2ZjZ9Lmljb24tdnMtYmd7ZmlsbDojNDI0MjQyfS5pY29uLXZzLWZne2ZpbGw6I2YwZWZmMX08L3N0eWxlPjxwYXRoIGNsYXNzPSJpY29uLWNhbnZhcy10cmFuc3BhcmVudCIgZD0iTTE2IDE2SDBWMGgxNnYxNnoiIGlkPSJjYW52YXMiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1vdXQiIGQ9Ik0xNSAxNkgyVjBoOC42MjFMMTUgNC4zNzlWMTZ6IiBpZD0ib3V0bGluZSIvPjxwYXRoIGNsYXNzPSJpY29uLXZzLWZnIiBkPSJNMTMgMTRINFYyaDV2NGg0djh6bS0zLTlWMi4yMDdMMTIuNzkzIDVIMTB6IiBpZD0iaWNvbkZnIi8+PHBhdGggY2xhc3M9Imljb24tdnMtYmciIGQ9Ik0zIDF2MTRoMTFWNC43OTNMMTAuMjA3IDFIM3ptMTAgMTNINFYyaDV2NGg0djh6bS0zLTlWMi4yMDdMMTIuNzkzIDVIMTB6IiBpZD0iaWNvbkJnIi8+PC9zdmc+"); }
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.reference { background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojZjZmNmY2fS5pY29uLXZzLW91dHtmaWxsOiNmNmY2ZjZ9Lmljb24tdnMtYmd7ZmlsbDojNDI0MjQyfS5pY29uLXZzLWZne2ZpbGw6I2YwZWZmMX0uaWNvbi12cy1hY3Rpb24tYmx1ZXtmaWxsOiMwMDUzOWN9PC9zdHlsZT48cGF0aCBjbGFzcz0iaWNvbi1jYW52YXMtdHJhbnNwYXJlbnQiIGQ9Ik0xNiAxNkgwVjBoMTZ2MTZ6IiBpZD0iY2FudmFzIi8+PHBhdGggY2xhc3M9Imljb24tdnMtb3V0IiBkPSJNMTQgNC41NTZWMTNjMCAuOTctLjcwMSAyLTIgMkg0Yy0uOTcgMC0yLS43MDEtMi0yVjYuNjQ5QTMuNDk1IDMuNDk1IDAgMCAxIDAgMy41QzAgMS41NyAxLjU3IDAgMy41IDBINXYxaDUuMDYxTDE0IDQuNTU2eiIgaWQ9Im91dGxpbmUiIHN0eWxlPSJkaXNwbGF5OiBub25lOyIvPjxwYXRoIGNsYXNzPSJpY29uLXZzLWJnIiBkPSJNMTMgNXY4cy0uMDM1IDEtMS4wMzUgMWgtOFMzIDE0IDMgMTNWOWgxdjRoOFY2SDkuMzk3bC41MTctLjUyTDkgNC41NzJWM0g3LjQxOUw2LjQxMyAyaDMuMjI4TDEzIDV6IiBpZD0iaWNvbkJnIi8+PHBhdGggY2xhc3M9Imljb24tdnMtZmciIGQ9Ik03LjQxOSAzSDl2MS41NzJMNy40MTkgM3ptMS45NzggM0w2LjQxNiA5SDR2NGg4VjZIOS4zOTd6IiBpZD0iaWNvbkZnIiBzdHlsZT0iZGlzcGxheTogbm9uZTsiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1hY3Rpb24tYmx1ZSIgZD0iTTUuOTg4IDZIMy41YTIuNSAyLjUgMCAxIDEgMC01SDR2MWgtLjVDMi42NzMgMiAyIDIuNjczIDIgMy41UzIuNjczIDUgMy41IDVoMi41MTNMNCAzaDJsMi41IDIuNDg0TDYgOEg0bDEuOTg4LTJ6IiBpZD0iY29sb3JBY3Rpb24iLz48L3N2Zz4="); }
@@ -3091,7 +3271,6 @@
 	box-sizing: border-box;
 	height: 100%;
 	width: 100%;
-	white-space: pre-wrap;
 }
 
 .monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > .header > .type {
@@ -3107,12 +3286,26 @@
 .monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > .docs {
 	margin: 0;
 	padding: 4px 5px;
+	white-space: pre-wrap;
+}
+
+.monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > .docs.markdown-docs {
+	white-space: initial;
+}
+
+.monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > .docs .code {
+	white-space: pre-wrap;
+	word-wrap: break-word;
 }
 
 .monaco-editor .suggest-widget .details > .monaco-scrollable-element > .body > p:empty {
 	display: none;
 }
 
+.monaco-editor .suggest-widget .details code {
+	border-radius: 3px;
+	padding: 0 0.4em;
+}
 
 /* High Contrast and Dark Theming */
 
@@ -3179,7 +3372,7 @@
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.keyword { background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojMmQyZDMwfS5pY29uLXZzLW91dHtmaWxsOiMyZDJkMzB9Lmljb24tdnMtYmd7ZmlsbDojYzVjNWM1fS5pY29uLXZzLWZne2ZpbGw6IzJiMjgyZX08L3N0eWxlPjxwYXRoIGNsYXNzPSJpY29uLWNhbnZhcy10cmFuc3BhcmVudCIgZD0iTTE2IDE2SDBWMGgxNnYxNnoiIGlkPSJjYW52YXMiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1vdXQiIGQ9Ik0xNiA1VjJIOVYxSDB2MTRoMTN2LTNoM1Y5aC0xVjZIOVY1aDd6bS04IDdWOWgxdjNIOHoiIGlkPSJvdXRsaW5lIi8+PHBhdGggY2xhc3M9Imljb24tdnMtZmciIGQ9Ik0yIDNoNXYxSDJWM3oiIGlkPSJpY29uRmciLz48cGF0aCBjbGFzcz0iaWNvbi12cy1iZyIgZD0iTTE1IDRoLTVWM2g1djF6bS0xIDNoLTJ2MWgyVjd6bS00IDBIMXYxaDlWN3ptMiA2SDF2MWgxMXYtMXptLTUtM0gxdjFoNnYtMXptOCAwaC01djFoNXYtMXpNOCAydjNIMVYyaDd6TTcgM0gydjFoNVYzeiIgaWQ9Imljb25CZyIvPjwvc3ZnPg=="); }
 
 .monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.text,
-.monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.text { background-image: url(contrib/suggest/browser/media/String_inverse_16x.svg); }
+.monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.text { background-image: url(contrib/suggest/media/String_inverse_16x.svg); }
 
 .monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.color,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.color { background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHN0eWxlPi5pY29uLWNhbnZhcy10cmFuc3BhcmVudHtvcGFjaXR5OjA7ZmlsbDojMmQyZDMwfS5pY29uLXZzLW91dHtmaWxsOiMyZDJkMzB9Lmljb24tdnMtYmd7ZmlsbDojYzVjNWM1fS5pY29uLXZzLXJlZHtmaWxsOiNmNDg3NzF9Lmljb24tdnMteWVsbG93e2ZpbGw6I2ZmY2MwMH0uaWNvbi12cy1ncmVlbntmaWxsOiMzMzk5MzN9Lmljb24tdnMtYmx1ZXtmaWxsOiMxYmExZTJ9Lmljb24tdnMtYWN0aW9uLXB1cnBsZXtmaWxsOiNiMTgwZDd9Lmljb24td2hpdGV7ZmlsbDojMDAwMDAwfTwvc3R5bGU+PHBhdGggY2xhc3M9Imljb24tY2FudmFzLXRyYW5zcGFyZW50IiBkPSJNMTYgMTZIMFYwaDE2djE2eiIgaWQ9ImNhbnZhcyIvPjxwYXRoIGNsYXNzPSJpY29uLXZzLW91dCIgZD0iTTE2IDhjMCA0LjQxMS0zLjU4OSA4LTggOGEyLjgwMyAyLjgwMyAwIDAgMS0yLjgtMi44YzAtLjgzMy4yNzItMS42MjkuNzY2LTIuMjQxYS41OTYuNTk2IDAgMCAwIC4xMDEtLjM1OS42NjcuNjY3IDAgMCAwLS42NjctLjY2Ni41OC41OCAwIDAgMC0uMzU4LjEwMkEzLjU4NCAzLjU4NCAwIDAgMSAyLjggMTAuOCAyLjgwMyAyLjgwMyAwIDAgMSAwIDhjMC00LjQxMSAzLjU4OS04IDgtOHM4IDMuNTg5IDggOHoiIGlkPSJvdXRsaW5lIi8+PHBhdGggY2xhc3M9Imljb24td2hpdGUiIGQ9Ik01LjQgNy45MzNhMi42NyAyLjY3IDAgMCAxIDIuNjY3IDIuNjY2YzAgLjYwNi0uMTkzIDEuMTc5LS41NDQgMS42MTRhMS41OTkgMS41OTkgMCAwIDAtLjMyMy45ODcuOC44IDAgMCAwIC44LjhjMy4zMDkgMCA2LTIuNjkxIDYtNnMtMi42OTEtNi02LTYtNiAyLjY5MS02IDZjMCAuNDQxLjM1OS44LjguOC4zNzggMCAuNzI5LS4xMTQuOTg2LS4zMjJBMi41NjggMi41NjggMCAwIDEgNS40IDcuOTMzeiIgaWQ9Imljb25GZyIvPjxnIGlkPSJpY29uQmciPjxwYXRoIGNsYXNzPSJpY29uLXZzLWJnIiBkPSJNOCAxNWMtLjk5MiAwLTEuOC0uODA4LTEuOC0xLjggMC0uNjA2LjE5My0xLjE3OS41NDQtMS42MTMuMjA4LS4yNTkuMzIzLS42MDkuMzIzLS45ODcgMC0uOTE5LS43NDgtMS42NjYtMS42NjctMS42NjYtLjM3NyAwLS43MjguMTE1LS45ODYuMzIzQTIuNTggMi41OCAwIDAgMSAyLjggOS44QzEuODA4IDkuOCAxIDguOTkyIDEgOGMwLTMuODYgMy4xNC03IDctNyAzLjg1OSAwIDcgMy4xNCA3IDcgMCAzLjg1OS0zLjE0MSA3LTcgN3pNNS40IDcuOTMzYTIuNjcgMi42NyAwIDAgMSAyLjY2NyAyLjY2NmMwIC42MDYtLjE5MyAxLjE3OS0uNTQ0IDEuNjE0YTEuNTk5IDEuNTk5IDAgMCAwLS4zMjMuOTg3LjguOCAwIDAgMCAuOC44YzMuMzA5IDAgNi0yLjY5MSA2LTZzLTIuNjkxLTYtNi02LTYgMi42OTEtNiA2YzAgLjQ0MS4zNTkuOC44LjguMzc4IDAgLjcyOS0uMTE0Ljk4Ni0uMzIyQTIuNTY4IDIuNTY4IDAgMCAxIDUuNCA3LjkzM3oiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1hY3Rpb24tcHVycGxlIiBkPSJNNC41IDUuMzc1YS44NzUuODc1IDAgMSAwIDAgMS43NS44NzUuODc1IDAgMCAwIDAtMS43NXoiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1ibHVlIiBkPSJNNy4xMjUgMy42MjVhLjg3NS44NzUgMCAxIDAgMCAxLjc1Ljg3NS44NzUgMCAwIDAgMC0xLjc1eiIvPjxwYXRoIGNsYXNzPSJpY29uLXZzLWdyZWVuIiBkPSJNMTAuNjI1IDQuNWEuODc1Ljg3NSAwIDEgMCAwIDEuNzUuODc1Ljg3NSAwIDAgMCAwLTEuNzV6Ii8+PHBhdGggY2xhc3M9Imljb24tdnMteWVsbG93IiBkPSJNMTEuNSA4YS44NzUuODc1IDAgMSAwIDAgMS43NS44NzUuODc1IDAgMCAwIDAtMS43NXoiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1yZWQiIGQ9Ik05Ljc1IDEwLjYyNWEuODc1Ljg3NSAwIDEgMCAwIDEuNzUuODc1Ljg3NSAwIDAgMCAwLTEuNzV6Ii8+PC9nPjwvc3ZnPg=="); }
@@ -3198,62 +3391,6 @@
 
 .monaco-editor.vs-dark .suggest-widget .monaco-list .monaco-list-row .icon.folder,
 .monaco-editor.hc-black .suggest-widget .monaco-list .monaco-list-row .icon.folder { background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHN0eWxlIHR5cGU9InRleHQvY3NzIj4uaWNvbi1jYW52YXMtdHJhbnNwYXJlbnR7b3BhY2l0eTowO2ZpbGw6I0Y2RjZGNjt9IC5pY29uLXZzLW91dHtvcGFjaXR5OjA7ZmlsbDojRjZGNkY2O30gLmljb24tdnMtZmd7b3BhY2l0eTowO2ZpbGw6I0YwRUZGMTt9IC5pY29uLWZvbGRlcntmaWxsOiNDNUM1QzU7fTwvc3R5bGU+PHBhdGggY2xhc3M9Imljb24tY2FudmFzLXRyYW5zcGFyZW50IiBkPSJNMTYgMTZoLTE2di0xNmgxNnYxNnoiIGlkPSJjYW52YXMiLz48cGF0aCBjbGFzcz0iaWNvbi12cy1vdXQiIGQ9Ik0xNiAyLjV2MTBjMCAuODI3LS42NzMgMS41LTEuNSAxLjVoLTExLjk5NmMtLjgyNyAwLTEuNS0uNjczLTEuNS0xLjV2LThjMC0uODI3LjY3My0xLjUgMS41LTEuNWgyLjg4NmwxLTJoOC4xMWMuODI3IDAgMS41LjY3MyAxLjUgMS41eiIgaWQ9Im91dGxpbmUiLz48cGF0aCBjbGFzcz0iaWNvbi1mb2xkZXIiIGQ9Ik0xNC41IDJoLTcuNDkybC0xIDJoLTMuNTA0Yy0uMjc3IDAtLjUuMjI0LS41LjV2OGMwIC4yNzYuMjIzLjUuNS41aDExLjk5NmMuMjc1IDAgLjUtLjIyNC41LS41di0xMGMwLS4yNzYtLjIyNS0uNS0uNS0uNXptLS40OTYgMmgtNi40OTZsLjUtMWg1Ljk5NnYxeiIgaWQ9Imljb25CZyIvPjxwYXRoIGNsYXNzPSJpY29uLXZzLWZnIiBkPSJNMTQgM3YxaC02LjVsLjUtMWg2eiIgaWQ9Imljb25GZyIvPjwvc3ZnPg=="); }
-
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-.monaco-editor .peekview-widget .head {
-	-webkit-box-sizing:	border-box;
-	-o-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-ms-box-sizing: border-box;
-	box-sizing:	border-box;
-}
-
-.monaco-editor .peekview-widget .head .peekview-title {
-	display: inline-block;
-	font-size: 13px;
-	margin-left: 20px;
-	cursor: pointer;
-}
-
-.monaco-editor .peekview-widget .head .peekview-title .dirname:not(:empty) {
-	font-size: 0.9em;
-	margin-left: 0.5em;
-}
-
-.monaco-editor .peekview-widget .head .peekview-actions {
-	display: inline-block;
-	position: absolute;
-	right: 2px;
-	top: 2px;
-}
-
-.monaco-editor .peekview-widget .head .peekview-actions .action-label {
-	width: 16px;
-	height: 16px;
-	margin: 2px 0;
-}
-
-.monaco-editor .peekview-widget .head .peekview-actions .action-label.icon.close-peekview-action {
-	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMyAzIDE2IDE2IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDMgMyAxNiAxNiI+PHBvbHlnb24gZmlsbD0iIzQyNDI0MiIgcG9pbnRzPSIxMi41OTcsMTEuMDQyIDE1LjQsMTMuODQ1IDEzLjg0NCwxNS40IDExLjA0MiwxMi41OTggOC4yMzksMTUuNCA2LjY4MywxMy44NDUgOS40ODUsMTEuMDQyIDYuNjgzLDguMjM5IDguMjM4LDYuNjgzIDExLjA0Miw5LjQ4NiAxMy44NDUsNi42ODMgMTUuNCw4LjIzOSIvPjwvc3ZnPg==") center center no-repeat;
-}
-
-.monaco-editor .peekview-widget > .body {
-	border-top: 1px solid;
-	position: relative;
-}
-
-/* Dark Theme */
-/* High Contrast Theme */
-
-.monaco-editor.hc-black .peekview-widget .head .peekview-actions .action-label.icon.close-peekview-action,
-.monaco-editor.vs-dark .peekview-widget .head .peekview-actions .action-label.icon.close-peekview-action {
-	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMyAzIDE2IDE2IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDMgMyAxNiAxNiI+PHBvbHlnb24gZmlsbD0iI2U4ZThlOCIgcG9pbnRzPSIxMi41OTcsMTEuMDQyIDE1LjQsMTMuODQ1IDEzLjg0NCwxNS40IDExLjA0MiwxMi41OTggOC4yMzksMTUuNCA2LjY4MywxMy44NDUgOS40ODUsMTEuMDQyIDYuNjgzLDguMjM5IDguMjM4LDYuNjgzIDExLjA0Miw5LjQ4NiAxMy44NDUsNi42ODMgMTUuNCw4LjIzOSIvPjwvc3ZnPg==") center center no-repeat;
-}
-
 
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -3648,13 +3785,17 @@
 	}
 
 	/* squiggles */
-	.monaco-editor.vs .redsquiggly,
-	.monaco-editor.vs-dark .redsquiggly {
+	.monaco-editor.vs .squiggly-c-error,
+	.monaco-editor.vs-dark .squiggly-c-error {
 		background: transparent !important;
 		border-bottom: 4px double #E47777;
 	}
-	.monaco-editor.vs .greensquiggly,
-	.monaco-editor.vs-dark .greensquiggly {
+	.monaco-editor.vs .squiggly-b-warning,
+	.monaco-editor.vs-dark .squiggly-b-warning {
+		border-bottom: 4px double #71B771;
+	}
+	.monaco-editor.vs .squiggly-a-info,
+	.monaco-editor.vs-dark .squiggly-a-info {
 		border-bottom: 4px double #71B771;
 	}
 

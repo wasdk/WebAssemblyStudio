@@ -144,7 +144,7 @@ export class Service {
         if (markers.length) {
           monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
           file.setProblems(markers.map(marker => {
-            return Problem.fromMarker(marker);
+            return Problem.fromMarker(file, marker);
           }));
         }
         if (!result.success) {

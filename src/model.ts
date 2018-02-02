@@ -3,7 +3,6 @@ import { assert } from "./index";
 import "minimatch"
 import { Minimatch } from "minimatch";
 import { Service } from "./service";
-import { Problems } from "./components/ControlCenter";
 
 declare var window: any;
 
@@ -173,15 +172,23 @@ function monacoSeverityToString(severity: monaco.Severity) {
     case monaco.Severity.Ignore: return "ignore";
   }
 }
+
+let nextKey = 0;
+function getNextKey() {
+  return nextKey++;
+}
 export class Problem {
+  readonly key = String(getNextKey());
   constructor(
+    public file: File,
     public description: string,
     public severity: "error" | "warning" | "info" | "ignore",
     public marker?: monaco.editor.IMarkerData) {
   }
 
-  static fromMarker(marker: monaco.editor.IMarkerData) {
+  static fromMarker(file: File, marker: monaco.editor.IMarkerData) {
     return new Problem(
+      file,
       `${marker.message} (${marker.startLineNumber}, ${marker.startColumn})`,
       monacoSeverityToString(marker.severity),
       marker);
@@ -198,7 +205,7 @@ export class File {
   readonly onDidChangeData = new EventDispatcher("File Data Change");
   readonly onDidChangeBuffer = new EventDispatcher("File Buffer Change");
   readonly onDidChangeProblems = new EventDispatcher("File Problems Change");
-  readonly key = String(Math.random());
+  readonly key = String(getNextKey());
   readonly buffer?: monaco.editor.IModel;
   description: string;
   problems: Problem[] = [];
@@ -274,11 +281,13 @@ export class File {
   }
   getProject(): Project {
     let parent = this.parent;
-    while (parent.parent) {
-      parent = parent.parent;
-    }
-    if (parent instanceof Project) {
-      return parent;
+    if (parent) {
+      while (parent.parent) {
+        parent = parent.parent;
+      }
+      if (parent instanceof Project) {
+        return parent;
+      }
     }
     return null;
   }
@@ -318,7 +327,7 @@ export class File {
 
 export class Directory extends File {
   name: string;
-  private children: File[] = [];
+  children: File[] = [];
   isOpen: boolean = true;
   readonly onDidChangeChildren = new EventDispatcher("Directory Changed ");
   constructor(name: string) {
@@ -331,9 +340,34 @@ export class Directory extends File {
       directory = directory.parent;
     }
   }
-  forEachFile(fn: (file: File) => void) {
-    this.children.forEach(fn);
+  forEachFile(fn: (file: File) => void, recurse = false) {
+    if (recurse) {
+      this.children.forEach((file: File) => {
+        if (file instanceof Directory) {
+          file.forEachFile(fn, recurse);
+        }
+        fn(file);
+      });
+    } else {
+      this.children.forEach(fn);
+    }
   }
+  //     function go(directory: Directory) {
+//       directory.forEachFile((file) => {
+//         if (file instanceof Directory) {
+//           go(file);
+//         } else {
+//           // let depth = file.getDepth();
+//           if (file.problems.length) {
+//             treeViewItems.push(<TreeViewItem depth={0} icon={getIconForFileType(file.type)} label={file.name}></TreeViewItem>);
+//             file.problems.forEach((problem) => {
+//               treeViewItems.push(<TreeViewProblemItem depth={1} problem={problem} />);
+//             });
+//           }
+//         }
+//       });
+//     }
+//     go(this.props.project);
   mapEachFile<T>(fn: (file: File) => T): T[] {
     return this.children.map(fn);
   }

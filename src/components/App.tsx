@@ -422,73 +422,73 @@ export class App extends React.Component<AppProps, AppState> {
       this.setState({ fiddle });
     });
   }
-  makeMenuItems(file: File) {
-    let items = [];
-    let directory = file.type === FileType.Directory ? file : file.parent;
-    items.push(
-      <MenuItem key="new file" label="New File" icon={<GoFile />} onClick={() => {
-        this.setState({ newFileDialogDirectory: directory as Directory });
-      }} />
-    );
-    if (file.type === FileType.Wasm) {
-      items.push(
-        <MenuItem key="opt bin" label="Optimize w/ Binaryen" icon={<GoGear />} onClick={() => {
-          Service.optimizeWasmWithBinaryen(file);
-        }} />
-      );
-      items.push(
-        <MenuItem key="val bin" label="Validate w/ Binaryen" icon={<GoVerified />} onClick={() => {
-          Service.validateWasmWithBinaryen(file);
-        }} />
-      );
-      items.push(
-        <MenuItem key="dld bin" label="Download" icon={<GoDesktopDownload />} onClick={() => {
-          Service.download(file);
-        }} />
-      );
-      items.push(
-        <MenuItem key="dis bin" label="Disassemble w/ Wabt" icon={<GoFileCode />} onClick={() => {
-          Service.disassembleWasmWithWabt(file);
-        }} />
-      );
-      items.push(
-        <MenuItem key="dis x86" label="Firefox x86" icon={<GoFileBinary />} onClick={() => {
-          Service.disassembleX86(file);
-        }} />,
-        <MenuItem key="dis x86 base" label="Firefox x86 Baseline" icon={<GoFileBinary />} onClick={() => {
-          Service.disassembleX86(file, "--wasm-always-baseline");
-        }} />
-      );
-    } else if (file.type === FileType.C || file.type === FileType.Cpp) {
-      items.push(
-        <MenuItem key="format" label="Format w/ Clang" icon={<GoQuote />} onClick={() => {
-          Service.clangFormat(file);
-        }} />
-      );
-    } else if (file.type === FileType.Wast) {
-      items.push(
-        <MenuItem key="asm bin" label="Assemble w/ Wabt" icon={<GoFileBinary />} onClick={() => {
-          Service.assembleWastWithWabt(file);
-        }} />
-      );
-    }
-    items.push(<Divider key="divider" height={8} />);
-    items.push(<MenuItem key="edit" label="Edit" icon={<GoPencil />} onClick={() => {
-      this.setState({ editFileDialogFile: file });
-    }} />);
-    items.push(<MenuItem key="delete" label="Delete" icon={<GoDelete />} onClick={() => {
-      let message = "";
-      if (file instanceof Directory) {
-        message = `Are you sure you want to delete '${file.name}' and its contents?`;
-      } else {
-        message = `Are you sure you want to delete '${file.name}'?`;
-      }
-      if (confirm(message)) {
-        file.parent.removeFile(file);
-      }
-    }} />);
-    return items;
-  }
+  // makeMenuItems(file: File) {
+  //   let items = [];
+  //   let directory = file.type === FileType.Directory ? file : file.parent;
+  //   items.push(
+  //     <MenuItem key="new file" label="New File" icon={<GoFile />} onClick={() => {
+  //       this.setState({ newFileDialogDirectory: directory as Directory });
+  //     }} />
+  //   );
+  //   if (file.type === FileType.Wasm) {
+  //     items.push(
+  //       <MenuItem key="opt bin" label="Optimize w/ Binaryen" icon={<GoGear />} onClick={() => {
+  //         Service.optimizeWasmWithBinaryen(file);
+  //       }} />
+  //     );
+  //     items.push(
+  //       <MenuItem key="val bin" label="Validate w/ Binaryen" icon={<GoVerified />} onClick={() => {
+  //         Service.validateWasmWithBinaryen(file);
+  //       }} />
+  //     );
+  //     items.push(
+  //       <MenuItem key="dld bin" label="Download" icon={<GoDesktopDownload />} onClick={() => {
+  //         Service.download(file);
+  //       }} />
+  //     );
+  //     items.push(
+  //       <MenuItem key="dis bin" label="Disassemble w/ Wabt" icon={<GoFileCode />} onClick={() => {
+  //         Service.disassembleWasmWithWabt(file);
+  //       }} />
+  //     );
+  //     items.push(
+  //       <MenuItem key="dis x86" label="Firefox x86" icon={<GoFileBinary />} onClick={() => {
+  //         Service.disassembleX86(file);
+  //       }} />,
+  //       <MenuItem key="dis x86 base" label="Firefox x86 Baseline" icon={<GoFileBinary />} onClick={() => {
+  //         Service.disassembleX86(file, "--wasm-always-baseline");
+  //       }} />
+  //     );
+  //   } else if (file.type === FileType.C || file.type === FileType.Cpp) {
+  //     items.push(
+  //       <MenuItem key="format" label="Format w/ Clang" icon={<GoQuote />} onClick={() => {
+  //         Service.clangFormat(file);
+  //       }} />
+  //     );
+  //   } else if (file.type === FileType.Wast) {
+  //     items.push(
+  //       <MenuItem key="asm bin" label="Assemble w/ Wabt" icon={<GoFileBinary />} onClick={() => {
+  //         Service.assembleWastWithWabt(file);
+  //       }} />
+  //     );
+  //   }
+  //   items.push(<Divider key="divider" height={8} />);
+  //   items.push(<MenuItem key="edit" label="Edit" icon={<GoPencil />} onClick={() => {
+  //     this.setState({ editFileDialogFile: file });
+  //   }} />);
+  //   items.push(<MenuItem key="delete" label="Delete" icon={<GoDelete />} onClick={() => {
+  //     let message = "";
+  //     if (file instanceof Directory) {
+  //       message = `Are you sure you want to delete '${file.name}' and its contents?`;
+  //     } else {
+  //       message = `Are you sure you want to delete '${file.name}'?`;
+  //     }
+  //     if (confirm(message)) {
+  //       file.parent.removeFile(file);
+  //     }
+  //   }} />);
+  //   return items;
+  // }
 
   /**
    * Remember workspace split.
@@ -644,8 +644,24 @@ export class App extends React.Component<AppProps, AppState> {
           layout();
         }}>
           <Workspace project={this.project}
-            makeMenuItems={this.makeMenuItems.bind(this)}
             file={this.state.file}
+            onNewFile={(directory: Directory) => {
+              this.setState({ newFileDialogDirectory: directory});
+            }}
+            onEditFile={(file: File) => {
+              this.setState({ editFileDialogFile: file});
+            }}
+            onDeleteFile={(file: File) => {
+              let message = "";
+              if (file instanceof Directory) {
+                message = `Are you sure you want to delete '${file.name}' and its contents?`;
+              } else {
+                message = `Are you sure you want to delete '${file.name}'?`;
+              }
+              if (confirm(message)) {
+                file.parent.removeFile(file);
+              }
+            }}
             onClickFile={(file: File) => {
               this.state.group.open(file);
               this.forceUpdate();
@@ -667,7 +683,7 @@ export class App extends React.Component<AppProps, AppState> {
                 layout();
               }}>
                 {editorPanes}
-                <ControlCenter project={this.project} ref={(ref) => this.setControlCenter(ref)}/>
+                <ControlCenter project={this.project} ref={(ref) => this.setControlCenter(ref)} />
               </Split>
             </div>
           </div>

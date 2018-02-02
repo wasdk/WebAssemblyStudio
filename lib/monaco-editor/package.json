@@ -1,37 +1,20 @@
 {
-  "_from": "monaco-editor",
-  "_id": "monaco-editor@0.10.1",
-  "_inBundle": false,
-  "_integrity": "sha1-jJbE8VtrUli/ksvek8rYp+MAfhQ=",
-  "_location": "/monaco-editor",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "tag",
-    "registry": true,
-    "raw": "monaco-editor",
-    "name": "monaco-editor",
-    "escapedName": "monaco-editor",
-    "rawSpec": "",
-    "saveSpec": null,
-    "fetchSpec": "latest"
-  },
-  "_requiredBy": [
-    "#USER",
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.10.1.tgz",
-  "_shasum": "8c96c4f15b6b5258bf92cbde93cad8a7e3007e14",
-  "_spec": "monaco-editor",
-  "_where": "/Users/mbebenita/Workspace/WasmFiddle2",
-  "author": {
-    "name": "Microsoft Corporation"
-  },
-  "bugs": {
-    "url": "https://github.com/Microsoft/monaco-editor/issues"
-  },
-  "bundleDependencies": false,
-  "deprecated": false,
+  "name": "monaco-editor",
+  "private": false,
+  "version": "0.10.1",
   "description": "A browser based code editor",
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "scripts": {
+    "simpleserver": "gulp simpleserver",
+    "release": "gulp release",
+    "website": "gulp website"
+  },
+  "typings": "./monaco.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/monaco-editor"
+  },
   "devDependencies": {
     "clean-css": "^3.4.20",
     "event-stream": "^3.3.2",
@@ -39,7 +22,7 @@
     "gulp-typedoc": "^2.0.0",
     "http-server": "^0.9.0",
     "monaco-css": "1.3.3",
-    "monaco-editor-core": "0.10.1",
+    "monaco-editor-core": "file:../vscode/out-monaco-editor-core",
     "monaco-html": "1.3.2",
     "monaco-json": "1.3.2",
     "monaco-languages": "0.9.0",
@@ -47,20 +30,5 @@
     "rimraf": "^2.5.2",
     "typedoc": "^0.8.0",
     "uncss": "^0.14.1"
-  },
-  "homepage": "https://github.com/Microsoft/monaco-editor#readme",
-  "license": "MIT",
-  "name": "monaco-editor",
-  "private": false,
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Microsoft/monaco-editor.git"
-  },
-  "scripts": {
-    "release": "gulp release",
-    "simpleserver": "gulp simpleserver",
-    "website": "gulp website"
-  },
-  "typings": "./monaco.d.ts",
-  "version": "0.10.1"
+  }
 }

@@ -59,7 +59,7 @@ input {
 }
 
 a {
-  color: #6caedd;
+  /* color: #6caedd; */
 }
 
 ::-webkit-scrollbar {
@@ -161,6 +161,14 @@ a {
 
 .monaco-editor.vs-dark .monaco-editor-background {
   background: var(--grey-1000);
+}
+
+.monaco-tree {
+  font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
+}
+.monaco-tree-row {
+  font-size: 14px;
+  line-height: 24px;
 }
 
 .directory-entry {
@@ -703,4 +711,18 @@ a {
 
 .tree-view-item .problem-position {
   color: var(--grey-600);
+}
+
+.vs-dark .context-view.monaco-menu-container {
+  color: #fff;
+}
+
+.action-label {
+  font-family:  -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
+  font-weight: bold;
+}
+
+.monaco-icon-label.dirty::after {
+  font-family: octicons;
+  content: "\f052";
 }
