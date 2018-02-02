@@ -42,11 +42,10 @@ class GulpySession {
     this.tasks.set(task, instance);
     return instance;
   }
-  runInstance(instance: TaskInstance): Promise<any> {
+  async runInstance(instance: TaskInstance): Promise<any> {
     let dependencies = instance.task.dependencies.map(x => this.ensureInstance(x));
-    return Promise.all(dependencies.map(x => this.runInstance(x))).then((results) => {
-      return instance.makePromise();
-    });
+    await Promise.all(dependencies.map(x => this.runInstance(x)));
+    return instance.makePromise();
   }
   run(task: Task): Promise<any> {
     return this.runInstance(this.ensureInstance(task))

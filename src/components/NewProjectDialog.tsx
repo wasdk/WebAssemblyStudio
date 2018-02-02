@@ -60,20 +60,16 @@ export class NewProjectDialog extends React.Component<{
   createButtonLabel() {
     return "Create";
   }
-  componentDidMount() {
-    fetch("templates/templates.js").then(response => {
-      response.text().then((js) => {
-        let templates = eval(js);
-        this.setState({templates});
-        this.setTemplate(templates[0]);
-      });
-    });
+  async componentDidMount() {
+    const response = await fetch("templates/templates.js");
+    const js = await response.text();
+    let templates = eval(js);
+    this.setState({templates});
+    this.setTemplate(templates[0]);
   }
-  setTemplate(template: Template) {
-    this.setState({ template });
-    Service.compileMarkdownToHtml(template.description).then((description) => {
-      this.setState({description});
-    });
+  async setTemplate(template: Template) {
+    const description = await Service.compileMarkdownToHtml(template.description);
+    this.setState({template, description});
   }
   render() {
     return <ReactModal

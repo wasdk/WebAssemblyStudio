@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "build-watch": "webpack --watch --config webpack.config.js"
+    "build-watch": "webpack --watch --config webpack.config.js",
+    "dev-server": "webpack-dev-server --config webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,7 @@
     "awesome-typescript-loader": "^3.4.1",
     "source-map-loader": "^0.2.3",
     "typescript": "^2.6.2",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.0"
   }
 }
