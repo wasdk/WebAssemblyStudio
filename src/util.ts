@@ -1,3 +1,5 @@
+import {TextDecoder} from "text-encoding";
+
 export function toAddress(n: number) {
   var s = n.toString(16);
   while (s.length < 6) {
@@ -78,6 +80,6 @@ export function decodeRestrictedBase64ToBytes(encoded: any) {
 }
 
 export function base64Encode(buffer: ArrayBuffer): string {
-  var bytes = new TextEncoder('utf-8').encode(buffer);
+  var bytes = new TextDecoder('utf-8').decode(buffer);
   return 
 }
