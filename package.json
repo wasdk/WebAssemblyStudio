@@ -6,7 +6,9 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "build-watch": "webpack --watch --config webpack.config.js",
-    "dev-server": "webpack-dev-server --config webpack.config.js"
+    "dev-server": "webpack-dev-server --config webpack.config.js",
+    "clean": "rm -r dist/*",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
