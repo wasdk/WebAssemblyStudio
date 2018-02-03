@@ -27,6 +27,7 @@ import { Button } from "./Button";
 import * as ReactModal from "react-modal";
 import { NewFileDialog } from "./NewFileDialog";
 import { EditFileDialog } from "./EditFileDialog";
+import { Toast } from "./Toast";
 import { Spacer, Divider } from "./Widgets";
 import { Cton } from "../languages/cton";
 import { X86 } from "../languages/x86";
@@ -124,6 +125,11 @@ export interface AppState {
    */
   editorSplits: SplitInfo[];
 
+  /**
+   * Gists saved
+   */
+  toast: string;
+
   showProblems: boolean;
   showSandbox: boolean;
 }
@@ -165,6 +171,7 @@ export class App extends React.Component<AppProps, AppState> {
         { min: 40, value: 256 }
       ],
       editorSplits: [],
+      toast: null,
       showProblems: true,
       showSandbox: true
     };
@@ -418,11 +425,21 @@ export class App extends React.Component<AppProps, AppState> {
     const gistURI = await Service.exportProject(this.project, this.state.fiddle);
     this.logLn("Project Gist CREATED ");
     if (gistURI) {
+        this.setState({
+            toast:  gistURI
+        });
         console.log(`Gist created: ${gistURI}`);
     } else {
         console.log('Failed!');
     }
   }
+
+  dismissToast(index: number){
+      this.setState({
+          toast:  null
+      });
+  }
+
   // makeMenuItems(file: File) {
   //   let items = [];
   //   let directory = file.type === FileType.Directory ? file : file.parent;
@@ -528,7 +545,7 @@ export class App extends React.Component<AppProps, AppState> {
         }} />,
         <Button icon={<GoGist />} label="Gist" title="Export to Gist" onClick={() => {
           this.gist();
-        }} />,		
+        }} />,
         <Button icon={<GoRocket />} label="Share" onClick={() => {
           this.share();
         }} />);
@@ -602,6 +619,9 @@ export class App extends React.Component<AppProps, AppState> {
     </Split>
 
     return <div className="fill">
+      {this.state.toast &&
+          <Toast onDismiss={this.dismissToast.bind(this)} uri={this.state.toast}/>
+      }
       {this.state.newProjectDialog &&
         <NewProjectDialog isOpen={true} onCancel={() => {
           this.setState({ newProjectDialog: null });

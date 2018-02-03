@@ -328,7 +328,8 @@ export class Service {
     let files: any = {};
     function serialize(file: File) {
       if (file instanceof Directory) {
-        file.mapEachFile((file: File) => serialize(file));
+        if(file.name!=="out")
+			file.mapEachFile((file: File) => serialize(file));
       } else {
         files[file.name] = {content: file.data};
       }
