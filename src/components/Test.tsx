@@ -200,15 +200,6 @@ export class Test extends React.Component<{
           <div>D</div>
         </Split>
       </div>
-        <Button label="Force Update" onClick={() => {
-          // this.setState({splits});
-          setInterval(() => {
-            let width = this.state.width - 10;
-            this.setState({width});
-          }, 100);
-          
-        }}></Button>
-
       {/* <div>
         App Layout
       </div>
