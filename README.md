@@ -1,4 +1,4 @@
-WasmFiddle
+Web Assembly Studio
 ====
 This repository contains the Web Assembly Studio website source code.
 
