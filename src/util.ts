@@ -76,8 +76,3 @@ export function decodeRestrictedBase64ToBytes(encoded: any) {
   }
   return decoded;
 }
-
-export function base64Encode(buffer: ArrayBuffer): string {
-  var bytes = new TextEncoder('utf-8').encode(buffer);
-  return 
-}
