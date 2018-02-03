@@ -21,7 +21,7 @@ import * as Mousetrap from "mousetrap";
 import { Sandbox } from "./Sandbox";
 import { Gulpy, testGulpy } from "../gulpy";
 import { Menu, MenuItem } from "./Menu";
-import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload, GoBook, GoRepoForked, GoRocket, GoBeaker, GoThreeBars } from "./Icons";
+import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload, GoBook, GoRepoForked, GoRocket, GoBeaker, GoThreeBars, GoGist } from "./Icons";
 import { Button } from "./Button";
 
 import * as ReactModal from "react-modal";
@@ -413,6 +413,16 @@ export class App extends React.Component<AppProps, AppState> {
     }
     this.setState({ fiddle });
   }
+  async gist() {
+    this.logLn("Exporting Project ...");
+    const gistURI = await Service.exportProject(this.project, this.state.fiddle);
+    this.logLn("Project Gist CREATED ");
+    if (gistURI) {
+        console.log(`Gist created: ${gistURI}`);
+    } else {
+        console.log('Failed!');
+    }
+  }
   // makeMenuItems(file: File) {
   //   let items = [];
   //   let directory = file.type === FileType.Directory ? file : file.parent;
@@ -516,6 +526,9 @@ export class App extends React.Component<AppProps, AppState> {
         <Button icon={<GoRepoForked />} label="Fork" title="Fork Fiddle" onClick={() => {
           this.fork();
         }} />,
+        <Button icon={<GoGist />} label="Gist" title="Export to Gist" onClick={() => {
+          this.gist();
+        }} />,		
         <Button icon={<GoRocket />} label="Share" onClick={() => {
           this.share();
         }} />);
