@@ -5,10 +5,14 @@ export class Button extends React.Component<{
   label?: string;
   title?: string;
   isDisabled?: boolean;
-  onClick?: Function
+  onClick?: Function;
+  customClass?: string;
 }, {}> {
   render() {
     let className = "button";
+    if(this.props.customClass){
+        className = this.props.customClass
+    }
     if (this.props.isDisabled) {
       className += " disabled";
     }

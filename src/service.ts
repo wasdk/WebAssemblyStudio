@@ -263,7 +263,23 @@ export class Service {
     output.setData(result);
     return;
   }
-
+  
+  static exportJson(json: object): Promise<string> {
+    return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.addEventListener("load", function () {
+        let jsonURI = JSON.parse(this.response).html_url;
+        resolve(jsonURI);
+      });
+      xhr.addEventListener("error", function () {
+        reject()
+      });
+      xhr.open("POST", "https://api.github.com/gists", true);
+      xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
+      xhr.send(JSON.stringify(json));
+    });
+  }
+  
   static async loadJSON(uri: string): Promise<{}> {
     let url = "https://api.myjson.com/bins/" + uri;
     const response = await fetch(url, {
@@ -308,7 +324,24 @@ export class Service {
     }
     return uri;
   }
-
+  static async exportProject(project: Project, uri?: string): Promise<string> {
+    let files: any = {};
+    function serialize(file: File) {
+      if (file instanceof Directory) {
+        if(file.name!=="out")
+			file.mapEachFile((file: File) => serialize(file));
+      } else {
+        files[file.name] = {content: file.data};
+      }
+    }
+    let json: any = { description: "source: http://webassembly.studio", public: true, files: {}};
+    serialize(project);
+    json.files = files;
+    if(!isUndefined(uri))
+      json["description"] = json["description"] + `/?f=${uri}`;
+    return await this.exportJson(json);
+  }
+  
   static async saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {
     function serialize(file: File): any {
       if (file instanceof Directory) {
