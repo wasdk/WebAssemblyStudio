@@ -424,12 +424,12 @@ export class App extends React.Component<AppProps, AppState> {
     const gistURI = await Service.exportProjectToGist(this.project, this.state.fiddle);
     this.logLn("Project Gist CREATED ");
     if (gistURI) {
-        this.setState({
-            toast:  gistURI
-        });
-        console.log(`Gist created: ${gistURI}`);
+      this.setState({
+        toast:  gistURI
+      });
+      console.log(`Gist created: ${gistURI}`);
     } else {
-        console.log("Failed!");
+      console.log("Failed!");
     }
   }
 
