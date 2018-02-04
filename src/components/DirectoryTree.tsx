@@ -239,6 +239,6 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
     this.tree.expandAll();
   }
   render() {
-    return <div className="fill" ref={(ref) => this.setContainer(ref)}></div>;
+    return <div className="fill" ref={(ref) => this.setContainer(ref)}/>;
   }
 }

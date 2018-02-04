@@ -86,18 +86,27 @@ export class NewProjectDialog extends React.Component<{
         <div>
           <div style={{ display: "flex" }}>
             <div style={{ width: 200 }}>
-              <ListBox value={this.state.template} height={240} onSelect={(template) => {
-                this.setTemplate(template);
-              }}>
+              <ListBox
+                value={this.state.template}
+                height={240}
+                onSelect={(template) => {
+                  this.setTemplate(template);
+                }}
+              >
               {
                 this.state.templates.map((template) => {
-                  return <ListItem value={template} label={template.name} icon={<Icon src={template.icon} />} />;
+                  return <ListItem
+                    key={template.name}
+                    value={template}
+                    label={template.name}
+                    icon={<Icon src={template.icon}/>}
+                  />;
                 })
               }
               </ListBox>
             </div>
             <div style={{ flex: 1 }} className="new-project-dialog-description">
-              <div className="md" dangerouslySetInnerHTML={{__html: this.state.description}}></div>
+              <div className="md" dangerouslySetInnerHTML={{__html: this.state.description}}/>
             </div>
           </div>
         </div>
@@ -105,13 +114,24 @@ export class NewProjectDialog extends React.Component<{
           {/* <TextInputBox label={"Name: " + (this.props.directory ? this.props.directory.getPath() + "/": "")} error={this.nameError()} value={this.state.name} onChange={this.onChangeName}/> */}
         </div>
         <div>
-          <Button icon={<GoX />} label="Cancel" title="Cancel" onClick={() => {
-            this.props.onCancel();
-          }} />
-          <Button icon={<GoFile />} label={this.createButtonLabel()} title="Cancel" isDisabled={!this.state.template} onClick={() => {
-            // let file = new File(this.fileName(), this.state.template);
-            return this.props.onCreate && this.props.onCreate(this.state.template);
-          }} />
+          <Button
+            icon={<GoX />}
+            label="Cancel"
+            title="Cancel"
+            onClick={() => {
+              this.props.onCancel();
+            }}
+          />
+          <Button
+            icon={<GoFile />}
+            label={this.createButtonLabel()}
+            title="Cancel"
+            isDisabled={!this.state.template}
+            onClick={() => {
+              // let file = new File(this.fileName(), this.state.template);
+              return this.props.onCreate && this.props.onCreate(this.state.template);
+            }}
+          />
         </div>
       </div>
     </ReactModal>;

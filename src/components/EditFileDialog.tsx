@@ -57,12 +57,23 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, {
           <TextInputBox label="Description:" error={this.error()} value={this.state.description} onChange={this.onChangeDescription}/>
         </div>
         <div>
-          <Button icon={<GoX />} label="Cancel" title="Cancel" onClick={() => {
-            this.props.onCancel();
-          }} />
-          <Button icon={<GoPencil />} label="Edit" title="Edit" isDisabled={!this.state.name || !!this.error()} onClick={() => {
-            return this.props.onChange && this.props.onChange(this.state.name, this.state.description);
-          }} />
+          <Button
+            icon={<GoX />}
+            label="Cancel"
+            title="Cancel"
+            onClick={() => {
+              this.props.onCancel();
+            }}
+          />
+          <Button
+            icon={<GoPencil />}
+            label="Edit"
+            title="Edit"
+            isDisabled={!this.state.name || !!this.error()}
+            onClick={() => {
+              return this.props.onChange && this.props.onChange(this.state.name, this.state.description);
+            }}
+          />
         </div>
       </div>
     </ReactModal>;

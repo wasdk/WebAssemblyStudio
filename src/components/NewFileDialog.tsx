@@ -67,17 +67,20 @@ export class NewFileDialog extends React.Component<{
         <div>
           <div style={{ display: "flex" }}>
             <div style={{ width: 250 }}>
-              <ListBox value={this.state.fileType} height={240} onSelect={(fileType) => {
-                let description = "";
-                switch (fileType) {
-                  case FileType.C: description = "Creates a file containing C source code."; break;
-                  case FileType.Cpp: description = "Creates a file containing C++ source code."; break;
-                  case FileType.Cretonne: description = "Cretonne intermediate language (IL) source code."; break;
-                  default: description = "N/A";
-                           break;
-                }
-                this.setState({ fileType, description });
-              }}>
+              <ListBox
+                value={this.state.fileType}
+                height={240}
+                onSelect={(fileType) => {
+                  let description = "";
+                  switch (fileType) {
+                    case FileType.C: description = "Creates a file containing C source code."; break;
+                    case FileType.Cpp: description = "Creates a file containing C++ source code."; break;
+                    case FileType.Cretonne: description = "Cretonne intermediate language (IL) source code."; break;
+                    default: description = "N/A"; break;
+                  }
+                  this.setState({ fileType, description });
+                }}
+              >
                 <ListItem value={FileType.C} label={"C File (.c)"} icon={<Icon src="svg/file_type_c.svg" />} />
                 <ListItem value={FileType.Cpp} label={"C++ File (.cpp)"} icon={<Icon src="svg/file_type_cpp.svg" />} />
                 <ListItem value={FileType.Rust} label={"Rust File (.rs)"} icon={<Icon src="svg/file_type_rust.svg" />} />
@@ -101,13 +104,24 @@ export class NewFileDialog extends React.Component<{
           <TextInputBox label={"Name: " + (this.props.directory ? this.props.directory.getPath() + "/" : "")} error={this.nameError()} value={this.state.name} onChange={this.onChangeName}/>
         </div>
         <div>
-          <Button icon={<GoX />} label="Cancel" title="Create New File" onClick={() => {
-            this.props.onCancel();
-          }} />
-          <Button icon={<GoFile />} label={this.createButtonLabel()} title="Create New File" isDisabled={!this.state.fileType || !this.state.name || !!this.nameError()} onClick={() => {
-            const file = new File(this.fileName(), this.state.fileType);
-            return this.props.onCreate && this.props.onCreate(file);
-          }} />
+          <Button
+            icon={<GoX />}
+            label="Cancel"
+            title="Create New File"
+            onClick={() => {
+              this.props.onCancel();
+            }}
+          />
+          <Button
+            icon={<GoFile />}
+            label={this.createButtonLabel()}
+            title="Create New File"
+            isDisabled={!this.state.fileType || !this.state.name || !!this.nameError()}
+            onClick={() => {
+              const file = new File(this.fileName(), this.state.fileType);
+              return this.props.onCreate && this.props.onCreate(file);
+            }}
+          />
         </div>
       </div>
     </ReactModal>;
