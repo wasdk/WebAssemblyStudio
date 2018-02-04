@@ -18,65 +18,65 @@ import {
   GoThreeBars,
   GoVerified,
   GoX
-} from "../../src/components/Icons"
+} from "../../src/components/Icons";
 
 describe("Tests for Icon component", () => {
-  let setup = () => {
+  const setup = () => {
     const props = {
       src: ""
-    }
-    return shallow(<Icon {...props}/>)
-  }
+    };
+    return shallow(<Icon {...props}/>);
+  };
 
   it("Icon renders correctly", () => {
-    let wrapper = setup()
-  })
+    setup();
+  });
   it("GoRepoForked renders correctly", () => {
-    shallow(<GoRepoForked/>)
-  })
+    shallow(<GoRepoForked/>);
+  });
   it("GoBeaker renders correctly", () => {
-    shallow(<GoBeaker/>)
-  })
+    shallow(<GoBeaker/>);
+  });
   it("GoGear renders correctly", () => {
-    shallow(<GoGear/>)
-  })
+    shallow(<GoGear/>);
+  });
   it("GoRocket renders correctly", () => {
-    shallow(<GoRocket/>)
-  })
+    shallow(<GoRocket/>);
+  });
   it("GoPencil renders correctly", () => {
-    shallow(<GoPencil/>)
-  })
+    shallow(<GoPencil/>);
+  });
   it("GoDelete renders correctly", () => {
-    shallow(<GoDelete/>)
-  })
+    shallow(<GoDelete/>);
+  });
   it("GoVerified renders correctly", () => {
-    shallow(<GoVerified/>)
-  })
+    shallow(<GoVerified/>);
+  });
   it("GoFile renders correctly", () => {
-    shallow(<GoFile/>)
-  })
+    shallow(<GoFile/>);
+  });
   it("GoFileBinary renders correctly", () => {
-    shallow(<GoFileBinary/>)
-  })
+    shallow(<GoFileBinary/>);
+  });
   it("GoFileCode renders correctly", () => {
-    shallow(<GoFileCode/>)
-  })
+    shallow(<GoFileCode/>);
+  });
   it("GoQuote renders correctly", () => {
-    shallow(<GoQuote/>)
-  })
+    shallow(<GoQuote/>);
+  });
   it("GoDesktopDownload renders correctly", () => {
-    shallow(<GoDesktopDownload/>)
-  })
+    shallow(<GoDesktopDownload/>);
+  });
   it("GoX renders correctly", () => {
-    shallow(<GoX/>)
-  })
+    shallow(<GoX/>);
+  });
   it("GoKebabHorizontal renders correctly", () => {
-    shallow(<GoKebabHorizontal/>)
-  })
+    shallow(<GoKebabHorizontal/>);
+  });
   it("GoThreeBars renders correctly", () => {
-    shallow(<GoThreeBars/>)
-  })
+    shallow(<GoThreeBars/>);
+  });
   it("GoBook renders correctly", () => {
-    shallow(<GoBook/>)
-  })
-})
+    shallow(<GoBook/>);
+  });
+});

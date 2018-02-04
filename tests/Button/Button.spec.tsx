@@ -1,19 +1,20 @@
 import * as React from "react";
 import {shallow} from "enzyme";
-import {Button} from "../../src/components/Button"
+import {Button} from "../../src/components/Button";
 
 describe("Tests for button component", () => {
-  let setup = (value: any) => {
+  const setup = (value: any) => {
     const props = {
       isDisabled: value,
+      // tslint:disable-next-line:no-empty
       onClick: () => {},
       icon: <button></button>,
       label: "",
       title: ""
-    }
-    return shallow(<Button {...props}/>)
-  }
+    };
+    return shallow(<Button {...props}/>);
+  };
   it("Button renders correctly", () => {
-    let wrapper = setup(false)
-  })
-})
+    setup(false);
+  });
+});
