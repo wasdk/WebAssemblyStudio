@@ -47,7 +47,7 @@ class TabSelectTest extends React.Component<{
     super(props);
     this.state = {
       selectedTab: 0,
-      tabs: ["Arabaalelealel", "Bannanananana", "Copaoappaoasasoas", "Dendododlaoadad"]
+      tabs: ["One Large Tab", "One Large Tab", "One Large Tab", "One Large Tab"]
     };
   }
   render() {

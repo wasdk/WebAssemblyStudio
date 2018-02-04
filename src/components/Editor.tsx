@@ -6,7 +6,7 @@ import "monaco-editor";
 
 declare var window: any;
 
-// Lifecycle
+// Life Cycle
 // https://cdn-images-1.medium.com/max/1600/0*VoYsN6eq7I_wjVV5.png
 
 export interface MonacoProps {

@@ -100,7 +100,7 @@ export interface SplitProps {
   splits?: SplitInfo[];
   defaultSplit?: SplitInfo;
   children: React.ReactNode;
-  name?: string; // TODO: Remove, for deubgging.
+  name?: string; // TODO: Remove, for debugging.
 }
 
 export class Split extends React.Component<SplitProps, {

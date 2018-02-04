@@ -47,7 +47,7 @@ export class Group {
     const files = this.files;
     const index = files.indexOf(file);
     if (index >= 0) {
-      // Switch to file if it's aleady open.
+      // Switch to file if it's already open.
       this.file = file;
       if (!shouldPreview) {
         this.preview = null;
