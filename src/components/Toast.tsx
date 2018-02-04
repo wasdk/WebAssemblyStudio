@@ -23,7 +23,7 @@ export class Toast extends React.Component<{
           {this.props.message}
         </div>
         <div className={"button-toast-container"}>
-          <Button icon={<GoX />} customClassName={" button-toast"} label="Dismiss" title="Dismiss" onClick={this.props.onDismiss} />
+          <Button icon={<GoX />} customClassName={"button-toast"} label="Dismiss" title="Dismiss" onClick={this.props.onDismiss} />
         </div>
       </div>
     </ReactModal>;

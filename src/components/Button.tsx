@@ -9,7 +9,7 @@ export class Button extends React.Component<{
   customClassName?: string;
 }, {}> {
   render() {
-    let className = "button";
+    let className = "button ";
     if (this.props.customClassName) {
       className += this.props.customClassName;
     }

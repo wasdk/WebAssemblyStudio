@@ -433,7 +433,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  dismissToast(index: number) {
+  onToastDismiss(index: number) {
       this.setState({
           toast:  null
       });
@@ -619,7 +619,7 @@ export class App extends React.Component<AppProps, AppState> {
 
     return <div className="fill">
       {this.state.toast &&
-        <Toast onDismiss={this.dismissToast.bind(this)}
+        <Toast onDismiss={this.onToastDismiss.bind(this)}
                message={["Gist Created!", <a href={this.state.toast} target="_blank" className="gist-link">Open in new tab.</a>]}
         />
       }
