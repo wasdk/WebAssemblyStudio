@@ -84,22 +84,34 @@ export class EditorPane extends React.Component<EditorPaneProps, {
     let className = "editor-pane-container";
     if (!hasFocus) { className += " blurred"; }
     return <div className={className} onClick={this.props.onFocus}>
-      <Tabs onDoubleClick={
-        () => {
+      <Tabs
+        onDoubleClick={() => {
           return this.props.onNewFile && this.props.onNewFile();
         }
       }
         commands={[
-          <Button key="split" icon={<GoBook />} title="Split Editor" onClick={() => {
-            return this.props.onSplitEditor && this.props.onSplitEditor();
-          }} />,
-          <Menu key={file.key}
+          <Button
+            key="split"
+            icon={<GoBook />}
+            title="Split Editor"
+            onClick={() => {
+              return this.props.onSplitEditor && this.props.onSplitEditor();
+            }}
+          />,
+          <Menu
+            key={file.key}
             activateOnLeftClick={true}
             items={
-              [<MenuItem key="new file" label="New File" icon={<GoFile />} onClick={() => {
-                // TODO
-              }} />]
-            }>
+              [<MenuItem
+                  key="new file"
+                  label="New File"
+                  icon={<GoFile />}
+                  onClick={() => {
+                    // TODO
+                  }}
+              />]
+            }
+          >
             <Button icon={<GoKebabHorizontal />} title="Split Editor" />
           </Menu>
         ]
@@ -116,8 +128,8 @@ export class EditorPane extends React.Component<EditorPaneProps, {
             isItalic={x === preview}
             onClick={onClickFile}
             onDoubleClick={onDoubleClickFile}
-            onClose={onClose}>
-          </Tab>;
+            onClose={onClose}
+          />;
         })}
       </Tabs>
       <div style={{ height: "calc(100% - 40px)" }}>

@@ -12,10 +12,16 @@ export class Button extends React.Component<{
     if (this.props.isDisabled) {
       className += " disabled";
     }
-    return <div className={className} onClick={() => {
-      if (this.props.onClick && !this.props.isDisabled) {
-        this.props.onClick();
-      }
-    }} title={this.props.title}>{this.props.icon} {this.props.label}</div>;
+    return <div
+      className={className}
+      onClick={() => {
+        if (this.props.onClick && !this.props.isDisabled) {
+          this.props.onClick();
+        }
+      }}
+      title={this.props.title}
+    >
+      {this.props.icon} {this.props.label}
+    </div>;
   }
 }

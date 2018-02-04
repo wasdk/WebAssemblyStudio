@@ -487,45 +487,79 @@ export class App extends React.Component<AppProps, AppState> {
 
   makeToolbarButtons() {
     const toolbarButtons = [
-      <Button icon={<GoThreeBars />} title="View Workspace" onClick={() => {
-        const workspaceSplits = this.state.workspaceSplits;
-        const first = workspaceSplits[0];
-        const second = workspaceSplits[1];
-        if (this.workspaceSplit) {
-          Object.assign(first, this.workspaceSplit);
-          this.workspaceSplit = null;
-          delete second.value;
-        } else {
-          this.workspaceSplit = Object.assign({}, first);
-          first.max = first.min = 0;
-        }
-        this.setState({ workspaceSplits });
-      }} />
+      <Button
+        key="View Workspace"
+        icon={<GoThreeBars />}
+        title="View Workspace"
+        onClick={() => {
+          const workspaceSplits = this.state.workspaceSplits;
+          const first = workspaceSplits[0];
+          const second = workspaceSplits[1];
+          if (this.workspaceSplit) {
+            Object.assign(first, this.workspaceSplit);
+            this.workspaceSplit = null;
+            delete second.value;
+          } else {
+            this.workspaceSplit = Object.assign({}, first);
+            first.max = first.min = 0;
+          }
+          this.setState({ workspaceSplits });
+        }}
+      />
     ];
     if (this.props.embed) {
       toolbarButtons.push(
-        <Button icon={<GoPencil />} label="Edit in Web Assembly Studio" title="Edit in WebAssembly Fiddle" onClick={() => {
-          // this.update();
-        }} />);
+        <Button
+          icon={<GoPencil />}
+          label="Edit in Web Assembly Studio"
+          title="Edit in WebAssembly Fiddle"
+          onClick={() => {
+            // this.update();
+          }}
+        />);
     } else {
       toolbarButtons.push(
-        <Button icon={<GoPencil />} label="Update" title="Update Fiddle" onClick={() => {
-          this.update();
-        }} />,
-        <Button icon={<GoRepoForked />} label="Fork" title="Fork Fiddle" onClick={() => {
-          this.fork();
-        }} />,
-        <Button icon={<GoRocket />} label="Share" onClick={() => {
-          this.share();
-        }} />);
+        <Button
+          icon={<GoPencil />}
+          label="Update"
+          title="Update Fiddle"
+          onClick={() => {
+            this.update();
+          }}
+        />,
+        <Button
+          icon={<GoRepoForked />}
+          label="Fork"
+          title="Fork Fiddle"
+          onClick={() => {
+            this.fork();
+          }}
+        />,
+        <Button
+          icon={<GoRocket />}
+          label="Share"
+          onClick={() => {
+            this.share();
+          }}
+        />);
     }
     toolbarButtons.push(
-      <Button icon={<GoBeaker />} label="Build" title="Build: CtrlCmd + B" onClick={() => {
-        this.build();
-      }} />,
-      <Button icon={<GoGear />} label="Run" title="Run: CtrlCmd + Enter" onClick={() => {
-        this.run();
-      }} />);
+      <Button
+        icon={<GoBeaker />}
+        label="Build"
+        title="Build: CtrlCmd + B"
+        onClick={() => {
+          this.build();
+        }}
+      />,
+      <Button
+        icon={<GoGear />}
+        label="Run"
+        title="Run: CtrlCmd + Enter"
+        onClick={() => {
+          this.run();
+        }}
+      />);
     return toolbarButtons;
   }
   private controlCenter: ControlCenter;
@@ -540,7 +574,11 @@ export class App extends React.Component<AppProps, AppState> {
         return <div>No Groups</div>;
       }
       return groups.map(group => {
-        return <EditorPane files={group.files.slice(0)} file={group.file} preview={group.preview}
+        // tslint:disable-next-line:jsx-key
+        return <EditorPane
+          files={group.files.slice(0)}
+          file={group.file}
+          preview={group.preview}
           onSplitEditor={() => {
             self.splitGroup();
           }}
@@ -574,24 +612,33 @@ export class App extends React.Component<AppProps, AppState> {
             } else {
               self.setState({ group });
             }
-          }} />;
+          }}
+        />;
       });
     }
 
-    const editorPanes = <Split name="Editors" orientation={SplitOrientation.Vertical} defaultSplit={{
-      min: 128,
-    }} splits={this.state.editorSplits} onChange={(splits) => {
-      this.setState({ editorSplits: splits });
-      layout();
-    }}>
+    const editorPanes = <Split
+      name="Editors"
+      orientation={SplitOrientation.Vertical}
+      defaultSplit={{
+        min: 128,
+      }}
+      splits={this.state.editorSplits}
+      onChange={(splits) => {
+        this.setState({ editorSplits: splits });
+        layout();
+      }}
+    >
       {makeEditorPanes(this.state.groups)}
     </Split>;
 
     return <div className="fill">
       {this.state.newProjectDialog &&
-        <NewProjectDialog isOpen={true} onCancel={() => {
-          this.setState({ newProjectDialog: null });
-        }}
+        <NewProjectDialog
+          isOpen={true}
+          onCancel={() => {
+            this.setState({ newProjectDialog: null });
+          }}
           onCreate={async (template: Template) => {
             if (!template.project) {
               this.logLn("Template doesn't contain a project definition.", "error");
@@ -600,39 +647,58 @@ export class App extends React.Component<AppProps, AppState> {
               this.openProjectFiles(json);
             }
             this.setState({ newProjectDialog: false });
-          }} />
+          }}
+        />
       }
       {this.state.newFileDialogDirectory &&
-        <NewFileDialog isOpen={true} directory={this.state.newFileDialogDirectory} onCancel={() => {
-          this.setState({ newFileDialogDirectory: null });
-        }}
+        <NewFileDialog
+          isOpen={true}
+          directory={this.state.newFileDialogDirectory}
+          onCancel={() => {
+            this.setState({ newFileDialogDirectory: null });
+          }}
           onCreate={(file: File) => {
             this.project.addFile(file);
             this.setState({ newFileDialogDirectory: null });
-          }} />
+          }}
+        />
       }
       {this.state.editFileDialogFile &&
-        <EditFileDialog isOpen={true} file={this.state.editFileDialogFile} onCancel={() => {
-          this.setState({ editFileDialogFile: null });
-        }}
+        <EditFileDialog
+          isOpen={true}
+          file={this.state.editFileDialogFile}
+          onCancel={() => {
+            this.setState({ editFileDialogFile: null });
+          }}
           onChange={(name: string, description) => {
             const file = this.state.editFileDialogFile;
             file.name = name;
             file.description = description;
             this.setState({ editFileDialogFile: null });
-          }} />
+          }}
+        />
       }
       {this.state.shareDialog &&
-        <ShareDialog isOpen={true} fiddle={this.state.fiddle} onCancel={() => {
-          this.setState({ shareDialog: false });
-        }} />
+        <ShareDialog
+          isOpen={true}
+          fiddle={this.state.fiddle}
+          onCancel={() => {
+            this.setState({ shareDialog: false });
+          }}
+        />
       }
       <div style={{ height: "calc(100% - 22px)" }}>
-        <Split name="Workspace" orientation={SplitOrientation.Vertical} splits={this.state.workspaceSplits} onChange={(splits) => {
-          this.setState({ workspaceSplits: splits });
-          layout();
-        }}>
-          <Workspace project={this.project}
+        <Split
+          name="Workspace"
+          orientation={SplitOrientation.Vertical}
+          splits={this.state.workspaceSplits}
+          onChange={(splits) => {
+            this.setState({ workspaceSplits: splits });
+            layout();
+          }}
+        >
+          <Workspace
+            project={this.project}
             file={this.state.file}
             onNewFile={(directory: Directory) => {
               this.setState({ newFileDialogDirectory: directory});
@@ -661,16 +727,22 @@ export class App extends React.Component<AppProps, AppState> {
               }
               this.state.group.open(file, false);
               this.forceUpdate();
-            }}></Workspace>
+            }}
+          />
           <div className="fill">
             <div style={{ height: "40px" }}>
               <Toolbar>{this.makeToolbarButtons()}</Toolbar>
             </div>
             <div style={{ height: "calc(100% - 40px)" }}>
-              <Split name="Console" orientation={SplitOrientation.Horizontal} splits={this.state.consoleSplits} onChange={(splits) => {
-                this.setState({ consoleSplits: splits });
-                layout();
-              }}>
+              <Split
+                name="Console"
+                orientation={SplitOrientation.Horizontal}
+                splits={this.state.consoleSplits}
+                onChange={(splits) => {
+                  this.setState({ consoleSplits: splits });
+                  layout();
+                }}
+              >
                 {editorPanes}
                 <ControlCenter project={this.project} ref={(ref) => this.setControlCenter(ref)} />
               </Split>

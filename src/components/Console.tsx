@@ -25,6 +25,6 @@ export class Console extends React.Component<{}, {}> {
     this.xterm.write(data);
   }
   render() {
-    return <div ref="container"></div>;
+    return <div ref="container"/>;
   }
 }

@@ -65,24 +65,32 @@ export class Tab extends React.Component<TabProps, {}> {
     if (this.props.isActive) { className += " active"; }
     if (this.props.isMarked) { className += " marked"; }
     if (this.props.isItalic) { className += " italic"; }
-    return <div className={className} onClick={(e: MouseEvent<HTMLElement>) => {
-      e.stopPropagation();
-      return onClick && onClick(this.props.value);
-    }}
-    onDoubleClick={(e: MouseEvent<HTMLElement>) => {
-      e.stopPropagation();
-      return onDoubleClick && onDoubleClick(this.props.value);
-    }}>
-      {this.props.icon && <div className="icon"
+    return <div
+      className={className}
+      onClick={(e: MouseEvent<HTMLElement>) => {
+        e.stopPropagation();
+        return onClick && onClick(this.props.value);
+      }}
+      onDoubleClick={(e: MouseEvent<HTMLElement>) => {
+        e.stopPropagation();
+        return onDoubleClick && onDoubleClick(this.props.value);
+      }}
+    >
+      {this.props.icon && <div
+        className="icon"
         style={{
           backgroundImage: `url(svg/${this.props.icon}.svg)`
-        }}></div>
+        }}
+      />
       }
       <div className="label">{this.props.label}</div>
-      <div className="close" onClick={(e: MouseEvent<HTMLElement>) => {
-        e.stopPropagation();
-        return onClose && onClose(this.props.value);
-      }}></div>
+      <div
+        className="close"
+        onClick={(e: MouseEvent<HTMLElement>) => {
+          e.stopPropagation();
+          return onClose && onClose(this.props.value);
+        }}
+      />
     </div>;
   }
 }

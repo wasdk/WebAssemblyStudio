@@ -52,6 +52,7 @@
     "react-dom": "^16.2.0",
     "react-icons": "^2.2.7",
     "react-modal": "^3.1.10",
+    "tslint-react": "^3.4.0",
     "wasmparser": "^0.5.3"
   },
   "devDependencies": {

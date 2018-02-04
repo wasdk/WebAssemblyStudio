@@ -73,7 +73,10 @@ export class ControlCenter extends React.Component<{
   createPane() {
     switch (this.state.visible) {
       case "output":
-        return <Editor ref={(ref) => this.setOutputViewEditor(ref)} view={this.outputView}></Editor>;
+        return <Editor
+          ref={(ref) => this.setOutputViewEditor(ref)}
+          view={this.outputView}
+        />;
       case "problems":
         return <Problems project={this.props.project} />;
       default:
@@ -84,34 +87,49 @@ export class ControlCenter extends React.Component<{
     return <div className="fill">
       <div style={{ display: "flex" }}>
         <div>
-          <Button icon={<GoThreeBars />} title="View Console" onClick={() => {
+          <Button
+            icon={<GoThreeBars />}
+            title="View Console"
+            onClick={() => {
             // TODO: Figure out how the UX should work when toggling the console.
             // let consoleSplits = this.state.consoleSplits;
             // let second = consoleSplits[1];
             // second.value = second.value == 40 ? 128 : 40;
             // this.setState({ consoleSplits });
             // layout();
-          }} />
+            }}
+          />
         </div>
         <div>
           <Tabs>
-            <Tab label={`Output (${this.outputView.file.buffer.getLineCount()})`} onClick={() => {
-              this.setState({ visible: "output" });
-            }}></Tab>
-            <Tab label="Problems" onClick={() => {
-              this.setState({ visible: "problems" });
-            }}></Tab>
+            <Tab
+              label={`Output (${this.outputView.file.buffer.getLineCount()})`}
+              onClick={() => {
+                this.setState({ visible: "output" });
+              }}
+            />
+            <Tab
+              label="Problems"
+              onClick={() => {
+                this.setState({ visible: "problems" });
+              }}
+            />
           </Tabs>
         </div>
       </div>
       <div style={{ height: "calc(100% - 40px)" }}>
-        <Split name="editor/sandbox" orientation={SplitOrientation.Vertical} defaultSplit={{
-          min: 256,
-        }}
-          splits={this.state.splits} onChange={(splits) => {
+        <Split
+          name="editor/sandbox"
+          orientation={SplitOrientation.Vertical}
+          defaultSplit={{
+            min: 256,
+          }}
+          splits={this.state.splits}
+          onChange={(splits) => {
             this.setState({ splits });
             // layout();
-          }}>
+          }}
+        >
           {this.createPane()}
           <Sandbox ref={(ref) => this.setSandbox(ref)} logger={this} />
         </Split>

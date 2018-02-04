@@ -27,12 +27,12 @@ class TabBasicTest extends React.Component<{
   render() {
     return <div>
       <Tabs>
-        <Tab label="A"></Tab>
-        <Tab label="Really Long Name That I Can't Fit In This Tab"></Tab>
-        <Tab label="Ion" icon="default_file"></Tab>
-        <Tab label="Active" isActive></Tab>
-        <Tab label="Marked" isMarked></Tab>
-        <Tab label="Active & Marked" isActive isMarked></Tab>
+        <Tab label="A"/>
+        <Tab label="Really Long Name That I Can't Fit In This Tab"/>
+        <Tab label="Ion" icon="default_file"/>
+        <Tab label="Active" isActive/>
+        <Tab label="Marked" isMarked/>
+        <Tab label="Active & Marked" isActive isMarked/>
       </Tabs>
     </div>;
   }
@@ -54,11 +54,14 @@ class TabSelectTest extends React.Component<{
     return <div>
       <Tabs>
         {this.state.tabs.map((x, i) => {
-          return <Tab key={x} label={x}
+          return <Tab
+            key={x}
+            label={x}
             onClick={() => {
               this.setState({ selectedTab: i });
             }}
-            isActive={i === this.state.selectedTab} />;
+            isActive={i === this.state.selectedTab}
+          />;
         })}
       </Tabs>
     </div>;
@@ -107,7 +110,10 @@ class EditorPaneTest extends React.Component<{
   }
   render() {
     return <div style={{ height: 128 }}>
-      <EditorPane preview={this.state.file} file={this.state.file} files={this.state.files}
+      <EditorPane
+        preview={this.state.file}
+        file={this.state.file}
+        files={this.state.files}
         onNewFile={
           () => {
             const { files } = this.state;
@@ -118,7 +124,9 @@ class EditorPaneTest extends React.Component<{
           }
         }
         onClickFile={
-          (x) => { this.setState({ file: x }); }
+          (x) => {
+            this.setState({ file: x });
+          }
         }
         onClose={
           (x) => {
@@ -189,9 +197,13 @@ export class Test extends React.Component<{
       <TabSelectTest />
       <EditorPaneTest /> */}
       <div style={{ width: this.state.width, height: 128, border: "solid 1px red" }}>
-        <Split orientation={SplitOrientation.Vertical} splits={this.state.splits} onChange={(splits: SplitInfo []) => {
+        <Split
+          orientation={SplitOrientation.Vertical}
+          splits={this.state.splits}
+          onChange={(splits: SplitInfo []) => {
           this.setState({splits});
-        }}>
+          }}
+        >
           <div>A</div>
           <div>B</div>
           <div>C</div>

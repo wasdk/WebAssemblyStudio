@@ -33,7 +33,10 @@
       "variable-name": [true, "check-format", "allow-leading-underscore", "allow-pascal-case"],
       "jsx-wrap-multiline": false,
       "jsx-no-multiline-js": false,
-      "jsx-no-lambda": false
+      "jsx-no-lambda": false,
+      "jsx-no-bind": false,
+      "jsx-no-string-ref": false,
+      "jsx-boolean-value": false
     },
     "rulesDirectory": []
 }
