@@ -132,7 +132,7 @@ export class Monaco extends React.Component<MonacoProps, {}> {
     this.container = container;
   }
   render() {
-    return <div className="fill" ref={(ref) => this.setContainer(ref)}></div>;
+    return <div className="fill" ref={(ref) => this.setContainer(ref)}/>;
   }
 }
 

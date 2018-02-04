@@ -8,7 +8,7 @@ describe("Tests for button component", () => {
       isDisabled: value,
       // tslint:disable-next-line:no-empty
       onClick: () => {},
-      icon: <button></button>,
+      icon: <button/>,
       label: "",
       title: ""
     };

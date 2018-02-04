@@ -18,10 +18,13 @@ export class Divider extends React.Component<{
   height: number
 }, {}> {
   render() {
-    return <div className="divider" style={{
-      marginTop: this.props.height / 2,
-      marginBottom: this.props.height / 2
-    }} />;
+    return <div
+      className="divider"
+      style={{
+        marginTop: this.props.height / 2,
+        marginBottom: this.props.height / 2
+      }}
+    />;
   }
 }
 
@@ -95,9 +98,12 @@ export class ListBox extends React.Component<{
       });
     });
 
-    return <div className="list-box" style={{
-      height: this.props.height
-    }}>
+    return <div
+      className="list-box"
+      style={{
+        height: this.props.height
+      }}
+    >
       {newChildren}
     </div>;
   }

@@ -1,7 +1,8 @@
 {
     "defaultSeverity": "error",
     "extends": [
-        "tslint:recommended"
+        "tslint:recommended",
+        "tslint-react"
     ],
     "exclude": [ "./src/languages/*.ts", "src/monaco-extra.ts", "lib/**/*.ts" ],
     "jsRules": {},
@@ -29,7 +30,10 @@
       "interface-name": false,
       "object-literal-shorthand": false,
       "no-empty-interface": false,
-      "variable-name": [true, "check-format", "allow-leading-underscore", "allow-pascal-case"]
+      "variable-name": [true, "check-format", "allow-leading-underscore", "allow-pascal-case"],
+      "jsx-wrap-multiline": false,
+      "jsx-no-multiline-js": false,
+      "jsx-no-lambda": false
     },
     "rulesDirectory": []
 }

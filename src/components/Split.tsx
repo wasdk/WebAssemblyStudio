@@ -329,8 +329,11 @@ export class Split extends React.Component<SplitProps, {
       }
       children.push(<div key={i} className="split-pane" style={style}>{child}</div>);
       if (i < count - 1) {
-        children.push(<div key={"split:" + i} className={resizerClassName} onMouseDown={this.onResizerMouseDown.bind(this, i)}>
-        </div>);
+        children.push(<div
+          key={"split:" + i}
+          className={resizerClassName}
+          onMouseDown={this.onResizerMouseDown.bind(this, i)}
+        />);
       }
     });
     return <div className="split" ref="container" style={{ flexDirection: isHorizontal ? "column" : "row" }}>

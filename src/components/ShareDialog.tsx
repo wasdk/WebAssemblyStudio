@@ -39,9 +39,14 @@ export class ShareDialog extends React.Component<{
           <TextInputBox label="IFrame" value={`<iframe src="${urlPrefix}?embed&f=${this.props.fiddle}" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`}/>
         </div>
         <div>
-          <Button icon={<GoX />} label="Cancel" title="Cancel" onClick={() => {
-            this.props.onCancel();
-          }} />
+          <Button
+            icon={<GoX />}
+            label="Cancel"
+            title="Cancel"
+            onClick={() => {
+              this.props.onCancel();
+            }}
+          />
         </div>
       </div>
     </ReactModal>;

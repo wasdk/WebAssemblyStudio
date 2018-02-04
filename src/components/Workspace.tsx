@@ -39,11 +39,18 @@ export class Workspace extends React.Component<WorkspaceProps, {
     return <div className="workspaceContainer">
       <Header />
       <div style={{ height: "calc(100% - 41px)" }}>
-        <Split name="Workspace" orientation={SplitOrientation.Horizontal} splits={this.state.splits} onChange={(splits) => {
-          this.setState({ splits: splits });
-        }}>
-          <div></div>
-          <DirectoryTree directory={project} value={this.props.file}
+        <Split
+          name="Workspace"
+          orientation={SplitOrientation.Horizontal}
+          splits={this.state.splits}
+          onChange={(splits) => {
+            this.setState({ splits: splits });
+          }}
+        >
+          <div/>
+          <DirectoryTree
+            directory={project}
+            value={this.props.file}
             onNewFile={this.props.onNewFile}
             onNewDirectory={this.props.onNewDirectory}
             onEditFile={this.props.onEditFile}
@@ -53,7 +60,8 @@ export class Workspace extends React.Component<WorkspaceProps, {
             }}
             onDoubleClickFile={(file: File) => {
               this.props.onDoubleClickFile(file);
-            }} />
+            }}
+          />
         </Split>
       </div>
     </div>;

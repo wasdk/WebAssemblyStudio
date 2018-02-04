@@ -192,6 +192,6 @@ export class Problems extends React.Component<ProblemsProps, {
     this.tree.expandAll();
   }
   render() {
-    return <div className="fill" ref={(ref) => this.setContainer(ref)}></div>;
+    return <div className="fill" ref={(ref) => this.setContainer(ref)}/>;
   }
 }
