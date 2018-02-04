@@ -1,6 +1,6 @@
 import { BinaryReader, WasmDisassembler } from "wasmparser";
 import { File, Project, Directory, FileType, Problem } from "./model";
-import { debuglog } from "util";
+import { isUndefined } from "util";
 import "monaco-editor";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes } from "./util";
 import { assert } from "./index";
@@ -263,7 +263,23 @@ export class Service {
     output.setData(result);
     return;
   }
-
+  
+  static createGist(json: object): Promise<string> {
+    return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.addEventListener("load", function () {
+        let jsonURI = JSON.parse(this.response).html_url;
+        resolve(jsonURI);
+      });
+      xhr.addEventListener("error", function () {
+        reject()
+      });
+      xhr.open("POST", "https://api.github.com/gists", true);
+      xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
+      xhr.send(JSON.stringify(json));
+    });
+  }
+  
   static async loadJSON(uri: string): Promise<{}> {
     const url = "https://api.myjson.com/bins/" + uri;
     const response = await fetch(url, {
@@ -308,7 +324,23 @@ export class Service {
     }
     return uri;
   }
-
+  static async exportProjectToGist(project: Project, uri?: string): Promise<string> {
+    let files: any = {};
+    function serialize(file: File) {
+      if (file instanceof Directory) {
+        if(file.name!=="out")
+          file.mapEachFile((file: File) => serialize(file));
+      } else {
+        files[file.name] = {content: file.data};
+      }
+    }
+    serialize(project);
+    let json: any = { description: "source: http://webassembly.studio", public: true, files};
+    if(!isUndefined(uri))
+      json["description"] = json["description"] + `/?f=${uri}`;
+    return await this.createGist(json);
+  }
+  
   static async saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {
     function serialize(file: File): any {
       if (file instanceof Directory) {
