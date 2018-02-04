@@ -1,5 +1,5 @@
 {
-  "name": "wasm-fiddle",
+  "name": "web-assembly-studio",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wasdk/WasmFiddle.git"
+    "url": "git+https://github.com/mbebenita/WebAssemblyStudio.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/wasdk/WasmFiddle/issues"
+    "url": "https://github.com/mbebenita/WebAssemblyStudio/issues"
   },
-  "homepage": "https://github.com/wasdk/WasmFiddle#readme",
+  "homepage": "https://github.com/mbebenita/WebAssemblyStudio",
   "dependencies": {
     "@types/minimatch": "^3.0.2",
     "@types/mousetrap": "^1.5.34",
