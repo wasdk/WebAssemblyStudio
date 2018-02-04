@@ -25,3 +25,9 @@ To start a dev web server run:
 ```
 npm run dev-server
 ```
+
+Before submitting a pull request run:
+
+```
+npm test
+```
