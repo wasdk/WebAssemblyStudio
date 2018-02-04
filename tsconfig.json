@@ -11,7 +11,8 @@
       "declaration": true
   },
   "include": [
-      "./src/**/*"
+      "./src/**/*",
+      "./tests/**/*"
   ],
   "exclude": [
       "./templates/**/*"

@@ -3,7 +3,7 @@ import {shallow} from "enzyme";
 import {Button} from "../../src/components/Button"
 
 describe("Tests for button component", () => {
-  let setup = (value) => {
+  let setup = (value: any) => {
     const props = {
       isDisabled: value,
       onClick: () => {},
