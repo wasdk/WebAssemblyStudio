@@ -2,7 +2,7 @@ import * as React from "react";
 import { Service } from "../service";
 
 export interface MarkdownProps {
-  src: string
+  src: string;
 }
 
 export class Markdown extends React.Component<MarkdownProps, {

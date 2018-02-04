@@ -18,7 +18,7 @@ import { Service } from "./service";
 declare var window: any;
 
 export function layout() {
-  var event = new Event("layout");
+  const event = new Event("layout");
   document.dispatchEvent(event);
 }
 
@@ -30,9 +30,9 @@ export function assert(c: any, message?: string) {
 
 let nextObjectId = 0;
 export function objectId(o: any): number {
-  if (!o) return o;
+  if (!o) { return o; }
   assert(typeof o === "object");
-  if ("__id__" in o) return o.__id__;
+  if ("__id__" in o) { return o.__id__; }
   return o.__id__ = nextObjectId++;
 }
 
@@ -48,10 +48,10 @@ window.addEventListener("resize", () => {
 export function forEachUrlParameter(callback: (key: string, value: any) => void) {
   let url = window.location.search.substring(1);
   url = url.replace(/\/$/, ""); // Replace / at the end that gets inserted by browsers.
-  let params = {};
-  url.split('&').forEach(function (s: any) {
-    let t = s.split('=');
-    if (t.length == 2) {
+  const params = {};
+  url.split("&").forEach(function(s: any) {
+    const t = s.split("=");
+    if (t.length === 2) {
       callback(t[0], decodeURIComponent(t[1]));
     } else {
       callback(t[0], true);
@@ -60,18 +60,18 @@ export function forEachUrlParameter(callback: (key: string, value: any) => void)
 }
 
 export function getUrlParameters(): any {
-  let params: any = {};
+  const params: any = {};
   forEachUrlParameter((key, value) => {
     params[key] = value;
   });
   return params;
-};
+}
 
-let parameters = getUrlParameters();
-let embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed"]);
-let fiddle = parameters["fiddle"] || parameters["f"];
+const parameters = getUrlParameters();
+const embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed"], 10);
+const fiddle = parameters["fiddle"] || parameters["f"];
 
-(window['require'])(['vs/editor/editor.main', 'require'], (_: any, require: any) => {
+(window["require"])(["vs/editor/editor.main", "require"], (_: any, require: any) => {
   window.Tree = require("vs/base/parts/tree/browser/treeImpl").Tree;
   window.ContextMenuService = require("vs/platform/contextview/browser/contextMenuService").ContextMenuService;
   window.ContextViewService = require("vs/platform/contextview/browser/contextViewService").ContextViewService;

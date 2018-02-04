@@ -26,19 +26,20 @@ export class FileTemplate {
     this.monacoIconLabel.style.display = "flex";
     container.appendChild(this.monacoIconLabel);
 
-    let labelDescriptionContainer = document.createElement("div");
+    const labelDescriptionContainer = document.createElement("div");
     labelDescriptionContainer.className = "monaco-icon-label-description-container";
     this.monacoIconLabel.appendChild(labelDescriptionContainer);
 
     this.label = document.createElement("a");
     this.label.className = "label-name";
     labelDescriptionContainer.appendChild(this.label);
-    
+
     this.description = document.createElement("span");
     this.description.className = "label-description";
     labelDescriptionContainer.appendChild(this.description);
   }
   dispose() {
+    // TODO
   }
   set(file: File) {
     let icon = "";
@@ -77,7 +78,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
 
   container: HTMLDivElement;
   private setContainer(container: HTMLDivElement) {
-    if (container == null) return;
+    if (container == null) { return; }
     if (this.container !== container) {
       // ...
     }
@@ -87,19 +88,19 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
     if (this.container.lastChild) {
       this.container.removeChild(this.container.lastChild);
     }
-    let self = this;
+    const self = this;
     class Controller extends (window as any).TreeDefaults.DefaultController {
       onContextMenu(tree: ITree, file: File, event: ContextMenuEvent): boolean {
         tree.setFocus(file);
         const anchor = { x: event.posx, y: event.posy };
-        let actions: any[] = [];
+        const actions: any[] = [];
 
         if (file instanceof Directory) {
           actions.push(new (window as any).Action("x", "New File", "", true, () => {
-            self.props.onNewFile && self.props.onNewFile(file as Directory);
+            return self.props.onNewFile && self.props.onNewFile(file as Directory);
           }));
           actions.push(new (window as any).Action("x", "New Directory", "", true, () => {
-            self.props.onNewDirectory && self.props.onNewDirectory(file as Directory);
+            return self.props.onNewDirectory && self.props.onNewDirectory(file as Directory);
           }));
         } else if (file.type === FileType.Wasm) {
           actions.push(new (window as any).Action("x", "Optimize w/ Binaryen", "", true, () => {
@@ -130,10 +131,10 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           }));
         }
         actions.push(new (window as any).Action("x", "Edit", "", true, () => {
-          self.props.onEditFile && self.props.onEditFile(file as Directory);
+          return self.props.onEditFile && self.props.onEditFile(file as Directory);
         }));
         actions.push(new (window as any).Action("x", "Delete", "", true, () => {
-          self.props.onDeleteFile && self.props.onDeleteFile(file as Directory);
+          return self.props.onDeleteFile && self.props.onDeleteFile(file as Directory);
         }));
 
         self.contextMenuService.showContextMenu({
@@ -169,42 +170,42 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
          * Returns the unique identifier of the given element.
          * No more than one element may use a given identifier.
          */
-        getId: function (tree: ITree, element: File): string {
+        getId: function(tree: ITree, element: File): string {
           return element.key;
         },
 
         /**
          * Returns a boolean value indicating whether the element has children.
          */
-        hasChildren: function (tree: ITree, element: File): boolean {
+        hasChildren: function(tree: ITree, element: File): boolean {
           return element instanceof Directory;
         },
 
         /**
          * Returns the element's children as an array in a promise.
          */
-        getChildren: function (tree: ITree, element: Directory): monaco.Promise<any> {
+        getChildren: function(tree: ITree, element: Directory): monaco.Promise<any> {
           return monaco.Promise.as(element.children);
         },
 
         /**
          * Returns the element's parent in a promise.
          */
-        getParent: function (tree: ITree, element: File): monaco.Promise<any> {
+        getParent: function(tree: ITree, element: File): monaco.Promise<any> {
           return monaco.Promise.as(element.parent);
         }
       },
       renderer: {
-        getHeight: function (tree: ITree, element: File): number {
+        getHeight: function(tree: ITree, element: File): number {
           return 24;
         },
-        renderTemplate: function (tree: ITree, templateId: string, container: any): any {
+        renderTemplate: function(tree: ITree, templateId: string, container: any): any {
           return new FileTemplate(container);
         },
-        renderElement: function (tree: ITree, element: File, templateId: string, templateData: any): void {
+        renderElement: function(tree: ITree, element: File, templateId: string, templateData: any): void {
           (templateData as FileTemplate).set(element);
         },
-        disposeTemplate: function (tree: ITree, templateId: string, templateData: any): void {
+        disposeTemplate: function(tree: ITree, templateId: string, templateData: any): void {
           (templateData as FileTemplate).dispose();
         }
       },

@@ -1,16 +1,16 @@
 import "monaco-editor";
 import { assert } from "./index";
-import "minimatch"
+import "minimatch";
 import { Minimatch } from "minimatch";
 import { Service } from "./service";
 
 declare var window: any;
 
 export function shallowCompare(a: any[], b: any[]) {
-  if (a === b) return true;
-  if (a.length != b.length) return false;
+  if (a === b) { return true; }
+  if (a.length !== b.length) { return false; }
   for (let i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
+    if (a[i] !== b[i]) { return false; }
   }
   return true;
 }
@@ -33,17 +33,17 @@ export enum FileType {
 }
 
 export function languageForFileType(type: FileType): string {
-  if (type == FileType.HTML) {
+  if (type === FileType.HTML) {
     return "html";
-  } else if (type == FileType.CSS) {
+  } else if (type === FileType.CSS) {
     return "css";
-  } else if (type == FileType.JavaScript) {
+  } else if (type === FileType.JavaScript) {
     return "javascript";
-  } else if (type == FileType.TypeScript) {
+  } else if (type === FileType.TypeScript) {
     return "typescript";
-  } else if (type == FileType.C || type == FileType.Cpp) {
+  } else if (type === FileType.C || type === FileType.Cpp) {
     return "cpp";
-  } else if (type == FileType.Wast || type == FileType.Wasm) {
+  } else if (type === FileType.Wast || type === FileType.Wasm) {
     return "wast";
   } else if (type === FileType.Log) {
     return "log";
@@ -58,21 +58,21 @@ export function languageForFileType(type: FileType): string {
 }
 
 export function nameForFileType(type: FileType): string {
-  if (type == FileType.HTML) {
+  if (type === FileType.HTML) {
     return "HTML";
-  } else if (type == FileType.CSS) {
+  } else if (type === FileType.CSS) {
     return "CSS";
-  } else if (type == FileType.JavaScript) {
+  } else if (type === FileType.JavaScript) {
     return "JavaScript";
-  } else if (type == FileType.TypeScript) {
+  } else if (type === FileType.TypeScript) {
     return "TypeScript";
-  } else if (type == FileType.C) {
+  } else if (type === FileType.C) {
     return "C";
-  } else if (type == FileType.Cpp) {
+  } else if (type === FileType.Cpp) {
     return "C++";
-  } else if (type == FileType.Wast) {
+  } else if (type === FileType.Wast) {
     return "Wast";
-  } else if (type == FileType.Wasm) {
+  } else if (type === FileType.Wasm) {
     return "Wasm";
   } else if (type === FileType.Markdown) {
     return "Markdown";
@@ -85,21 +85,21 @@ export function nameForFileType(type: FileType): string {
 }
 
 export function extensionForFileType(type: FileType): string {
-  if (type == FileType.HTML) {
+  if (type === FileType.HTML) {
     return "html";
-  } else if (type == FileType.CSS) {
+  } else if (type === FileType.CSS) {
     return "css";
-  } else if (type == FileType.JavaScript) {
+  } else if (type === FileType.JavaScript) {
     return "js";
-  } else if (type == FileType.TypeScript) {
+  } else if (type === FileType.TypeScript) {
     return "ts";
-  } else if (type == FileType.C) {
+  } else if (type === FileType.C) {
     return "c";
-  } else if (type == FileType.Cpp) {
+  } else if (type === FileType.Cpp) {
     return "cpp";
-  } else if (type == FileType.Wast) {
+  } else if (type === FileType.Wast) {
     return "wast";
-  } else if (type == FileType.Wasm) {
+  } else if (type === FileType.Wasm) {
     return "wasm";
   } else if (type === FileType.Markdown) {
     return "md";
@@ -112,11 +112,11 @@ export function extensionForFileType(type: FileType): string {
 }
 
 export function mimeTypeForFileType(type: FileType): string {
-  if (type == FileType.HTML) {
+  if (type === FileType.HTML) {
     return "text/html";
-  } else if (type == FileType.JavaScript) {
+  } else if (type === FileType.JavaScript) {
     return "application/javascript";
-  } else if (type == FileType.Wasm) {
+  } else if (type === FileType.Wasm) {
     return "application/wasm";
   }
   return "";
@@ -150,7 +150,7 @@ export class EventDispatcher {
     this.callbacks.push(callback);
   }
   unregister(callback: Function) {
-    let i = this.callbacks.indexOf(callback);
+    const i = this.callbacks.indexOf(callback);
     if (i < 0) {
       throw new Error("Unknown callback.");
     }
@@ -216,7 +216,7 @@ export class File {
     this.buffer = monaco.editor.createModel(this.data as any, languageForFileType(type));
     this.buffer.updateOptions({ tabSize: 2, insertSpaces: true });
     this.buffer.onDidChangeContent((e) => {
-      let dispatch = !this.isDirty;
+      const dispatch = !this.isDirty;
       this.isDirty = true;
       if (dispatch) {
         let file: File = this;
@@ -242,7 +242,7 @@ export class File {
     }
   }
   async getEmitOutput(): Promise<any> {
-    let model = this.buffer;
+    const model = this.buffer;
     if (this.type !== FileType.TypeScript) {
       return Promise.resolve("");
     }
@@ -266,7 +266,7 @@ export class File {
   }
   getData(): string | ArrayBuffer {
     if (this.isDirty && !this.isBufferReadOnly) {
-      let project = this.getProject();
+      const project = this.getProject();
       if (project) {
         project.onDirtyFileUsed.dispatch(this);
       }
@@ -295,7 +295,7 @@ export class File {
     return depth;
   }
   getPath(): string {
-    let path = [];
+    const path = [];
     let parent = this.parent;
     if (!parent) {
       return "";
@@ -373,7 +373,7 @@ export class Directory extends File {
   }
   removeFile(file: File) {
     assert(file.parent === this);
-    let i = this.children.indexOf(file);
+    const i = this.children.indexOf(file);
     assert(i >= 0);
     this.children.splice(i, 1);
     this.notifyDidChangeChildren();
@@ -384,7 +384,7 @@ export class Directory extends File {
     }
     let directory: Directory = this;
     while (path.length) {
-      let name = path.shift();
+      const name = path.shift();
       let file = directory.getImmediateChild(name);
       if (file) {
         directory = file as Directory;
@@ -405,10 +405,10 @@ export class Directory extends File {
     if (path.length > 1) {
       directory = this.newDirectory(path.slice(0, path.length - 1));
     }
-    let name = path[path.length - 1];
+    const name = path[path.length - 1];
     let file = directory.getFile(name);
     if (file) {
-      assert(file.type == type);
+      assert(file.type === type);
     } else {
       file = new File(path[path.length - 1], type);
       directory.addFile(file);
@@ -424,9 +424,9 @@ export class Directory extends File {
     if (typeof path === "string") {
       path = path.split("/");
     }
-    let file = this.getImmediateChild(path[0]);
+    const file = this.getImmediateChild(path[0]);
     if (path.length > 1) {
-      if (file && file.type == FileType.Directory) {
+      if (file && file.type === FileType.Directory) {
         return (file as Directory).getFile(path.slice(1));
       } else {
         return null;
@@ -435,7 +435,7 @@ export class Directory extends File {
     return file;
   }
   list(): string[] {
-    let list: string[] = [];
+    const list: string[] = [];
     function recurse(prefix: string, x: Directory) {
       if (prefix) {
         prefix += "/";
@@ -445,7 +445,7 @@ export class Directory extends File {
         if (file instanceof Directory) {
           recurse(path, file);
         } else {
-          list.push(path)
+          list.push(path);
         }
       });
     }
@@ -453,7 +453,7 @@ export class Directory extends File {
     return list;
   }
   glob(pattern: string): string[] {
-    let mm = new Minimatch(pattern);
+    const mm = new Minimatch(pattern);
     return this.list().filter(path => mm.match(path));
   }
   globFiles(pattern: string): File[] {

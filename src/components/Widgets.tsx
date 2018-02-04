@@ -6,13 +6,11 @@ import { GoGear, GoFile, GoX, Icon } from "./Icons";
 import { File, FileType, Directory, extensionForFileType, nameForFileType } from "../model";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 
-
-
 export class Spacer extends React.Component<{
   height: number
 }, {}> {
   render() {
-    return <div style={{ height: this.props.height }} />
+    return <div style={{ height: this.props.height }} />;
   }
 }
 
@@ -20,10 +18,10 @@ export class Divider extends React.Component<{
   height: number
 }, {}> {
   render() {
-    return <div className="divider" style={{ 
+    return <div className="divider" style={{
       marginTop: this.props.height / 2,
-      marginBottom: this.props.height / 2 
-    }} />
+      marginBottom: this.props.height / 2
+    }} />;
   }
 }
 
@@ -39,13 +37,13 @@ export class TextInputBox extends React.Component<{
     super(props);
   }
   render() {
-    const input = <input className="text-input-box" type="text" value={this.props.value} onChange={this.props.onChange} />
+    const input = <input className="text-input-box" type="text" value={this.props.value} onChange={this.props.onChange} />;
     if (this.props.label) {
       return <div style={{ display: "flex", flexDirection: "row" }}>
         <div className="text-input-box-label">{this.props.label}</div>
         <div style={{ flex: 1 }}>{input}</div>
         {this.props.error && <div className="text-input-box-error">{this.props.error}</div>}
-      </div>
+      </div>;
     } else {
       return input;
     }
@@ -70,7 +68,7 @@ export class ListItem extends React.Component<{
     return <div className={className} onClick={this.props.onClick as any}>
       <div className="icon">{this.props.icon}</div>
       <div className="label">{this.props.label}</div>
-    </div>
+    </div>;
   }
 }
 
@@ -88,10 +86,10 @@ export class ListBox extends React.Component<{
   render() {
     const { children, onSelect } = this.props;
 
-    var newChildren = React.Children.map(children, (child: any, index) => {
+    const newChildren = React.Children.map(children, (child: any, index) => {
       return React.cloneElement(child as any, {
         onClick: () => {
-          onSelect && onSelect(child.props.value);
+          return onSelect && onSelect(child.props.value);
         },
         selected: this.props.value === child.props.value
       });
