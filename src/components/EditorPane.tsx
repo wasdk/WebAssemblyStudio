@@ -7,7 +7,6 @@ import "monaco-editor";
 import { Markdown } from "./Markdown";
 import { Button } from "./Button";
 import { GoBook, GoFile, GoKebabHorizontal } from "./Icons";
-import { Menu, MenuItem } from "./Menu";
 
 export class View {
   constructor(
@@ -97,25 +96,8 @@ export class EditorPane extends React.Component<EditorPaneProps, {
             onClick={() => {
               return this.props.onSplitEditor && this.props.onSplitEditor();
             }}
-          />,
-          <Menu
-            key={file.key}
-            activateOnLeftClick={true}
-            items={
-              [<MenuItem
-                  key="new file"
-                  label="New File"
-                  icon={<GoFile />}
-                  onClick={() => {
-                    // TODO
-                  }}
-              />]
-            }
-          >
-            <Button icon={<GoKebabHorizontal />} title="Split Editor" />
-          </Menu>
-        ]
-        }
+          />
+        ]}
       >
         {this.props.files.map(x => {
           return <Tab
