@@ -31,14 +31,14 @@ export class ControlCenter extends React.Component<{
         { min: 128, value: 512 },
         { min: 128, value: 256 }
       ]
-    }
+    };
     this.outputView = new View(new File("output", FileType.Log), null);
   }
   sandbox: Sandbox;
   outputView: View;
   refs: {
     container: HTMLDivElement;
-  }
+  };
   outputViewEditor: Editor;
   setOutputViewEditor(editor: Editor) {
     this.outputViewEditor = editor;
@@ -55,10 +55,10 @@ export class ControlCenter extends React.Component<{
     if (kind) {
       message = "[" + kind + "]: " + message;
     }
-    let model = this.outputView.file.buffer;
-    let lineCount = model.getLineCount();
-    let lastLineLength = model.getLineMaxColumn(lineCount);
-    let range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
+    const model = this.outputView.file.buffer;
+    const lineCount = model.getLineCount();
+    const lastLineLength = model.getLineMaxColumn(lineCount);
+    const range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
     model.applyEdits([
       { forceMoveMarkers: true, identifier: null, range, text: message }
     ]);
@@ -77,7 +77,7 @@ export class ControlCenter extends React.Component<{
       case "problems":
         return <Problems project={this.props.project} />;
       default:
-        null;
+        return null;
     }
   }
   render() {
@@ -116,6 +116,6 @@ export class ControlCenter extends React.Component<{
           <Sandbox ref={(ref) => this.setSandbox(ref)} logger={this} />
         </Split>
       </div>
-    </div>
+    </div>;
   }
 }

@@ -11,12 +11,12 @@ export class MenuItem extends React.Component<{
     return <div className="menu-entry" onClick={this.props.onClick as any}>
       <div className="icon">{this.props.icon}</div>
       <div className="label">{this.props.label}</div>
-    </div>
+    </div>;
   }
 }
 
 function inFirefox() {
-  return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+  return navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 }
 
 export class Menu extends React.Component<{
@@ -54,10 +54,11 @@ export class Menu extends React.Component<{
   onContextMenu(e: MouseEvent<any>) {
     Menu.closeActive();
     Menu.active = this;
-    let offset = 4;
-    let popupMenuWidth = 256;
-    let onRight = e.clientX + offset + popupMenuWidth < window.innerWidth;
-    let x = 0, y = 0;
+    const offset = 4;
+    const popupMenuWidth = 256;
+    const onRight = e.clientX + offset + popupMenuWidth < window.innerWidth;
+    let x = 0;
+    let y = 0;
     if (onRight) {
       x = e.clientX + offset;
     } else {

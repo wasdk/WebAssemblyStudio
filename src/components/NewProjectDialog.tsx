@@ -63,7 +63,7 @@ export class NewProjectDialog extends React.Component<{
   async componentDidMount() {
     const response = await fetch("templates/templates.js");
     const js = await response.text();
-    let templates = eval(js);
+    const templates = eval(js);
     this.setState({templates});
     this.setTemplate(templates[0]);
   }
@@ -91,7 +91,7 @@ export class NewProjectDialog extends React.Component<{
               }}>
               {
                 this.state.templates.map((template) => {
-                  return <ListItem value={template} label={template.name} icon={<Icon src={template.icon} />} />
+                  return <ListItem value={template} label={template.name} icon={<Icon src={template.icon} />} />;
                 })
               }
               </ListBox>
@@ -110,7 +110,7 @@ export class NewProjectDialog extends React.Component<{
           }} />
           <Button icon={<GoFile />} label={this.createButtonLabel()} title="Cancel" isDisabled={!this.state.template} onClick={() => {
             // let file = new File(this.fileName(), this.state.template);
-            this.props.onCreate && this.props.onCreate(this.state.template);
+            return this.props.onCreate && this.props.onCreate(this.state.template);
           }} />
         </div>
       </div>

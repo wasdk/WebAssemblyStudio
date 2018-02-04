@@ -12,7 +12,7 @@ function getCompletionItems() {
     return completionItems;
   }
   return completionItems = [
-    
+
   ];
 }
 
@@ -24,25 +24,25 @@ const LanguageConfiguration: IRichLanguageConfiguration = {
   //   blockComment: ['/*', '*/'],
   // },
   brackets: [
-    ['{', '}'],
-    ['[', ']'],
-    ['(', ')'],
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"],
   ],
-  
+
   autoClosingPairs: [
-    { open: '{', close: '}' },
-    { open: '[', close: ']' },
-    { open: '(', close: ')' },
+    { open: "{", close: "}" },
+    { open: "[", close: "]" },
+    { open: "(", close: ")" },
     { open: '"', close: '"' },
-    { open: '\'', close: '\'' },
+    { open: "'", close: "'" },
   ],
   surroundingPairs: [
-    { open: '{', close: '}' },
-    { open: '[', close: ']' },
-    { open: '(', close: ')' },
+    { open: "{", close: "}" },
+    { open: "[", close: "]" },
+    { open: "(", close: ")" },
     { open: '"', close: '"' },
-    { open: '\'', close: '\'' },
-    { open: '<', close: '>' },
+    { open: "'", close: "'" },
+    { open: "<", close: ">" },
   ]
 };
 
@@ -51,11 +51,11 @@ const MonarchDefinitions = {
   // defaultToken: 'invalid',
 
   keywords: [
-    'function', 'jump'
+    "function", "jump"
   ],
 
   typeKeywords: [
-    'i32', 'i64', 'f32', 'f64'
+    "i32", "i64", "f32", "f64"
   ],
 
   operators: [
@@ -84,9 +84,9 @@ const MonarchDefinitions = {
       // identifiers and keywords
       [/[a-z_$][\w$\.]*/, {
         cases: {
-          '@keywords': 'keyword',
-          '@typeKeywords': 'type',
-          '@default': 'type.identifier'
+          "@keywords": "keyword",
+          "@typeKeywords": "type",
+          "@default": "type.identifier"
         }
       }],
       // [/[A-Z][\w\$]*/, 'type.identifier' ],  // to show class names nicely
@@ -108,21 +108,21 @@ const MonarchDefinitions = {
       // // numbers
       // [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
       // [/0[xX][0-9a-fA-F]+/, 'number.hex'],
-      [/\d+/, 'number'],
+      [/\d+/, "number"],
 
       // // delimiter: after number because of .\d floats
       // [/[;,.]/, 'delimiter'],
 
       // strings
       // [/"([^"\\]|\\.)*$/, 'string.invalid' ],  // non-teminated string
-      [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
+      [/"/, { token: "string.quote", bracket: "@open", next: "@string" }],
 
       // // characters
       // [/'[^\\']'/, 'string'],
       // [/(')(@escapes)(')/, ['string','string.escape','string']],
       // [/'/, 'string.invalid']
 
-      [/[{}()\[\]]/, '@brackets']
+      [/[{}()\[\]]/, "@brackets"]
     ] as any,
 
     // comment: [
@@ -134,15 +134,15 @@ const MonarchDefinitions = {
     // ],
 
     string: [
-      [/[^\\"]+/, 'string'],
-      [/@escapes/, 'string.escape'],
-      [/\\./, 'string.escape.invalid'],
-      [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
+      [/[^\\"]+/, "string"],
+      [/@escapes/, "string.escape"],
+      [/\\./, "string.escape.invalid"],
+      [/"/, { token: "string.quote", bracket: "@close", next: "@pop" }]
     ],
 
     whitespace: [
-      [/[ \t\r\n]+/, 'white'],
-      [/;.*$/,    'comment']
+      [/[ \t\r\n]+/, "white"],
+      [/;.*$/,    "comment"]
       // [/\/\*/, 'comment', '@comment'],
       // [/\/\/.*$/, 'comment'],
     ],
@@ -153,19 +153,19 @@ export const Cton = {
   MonarchDefinitions,
   LanguageConfiguration,
   CompletionItemProvider: {
-    provideCompletionItems: function (model: IModel, position: IPosition) {
+    provideCompletionItems: function(model: IModel, position: IPosition) {
       return getCompletionItems();
     }
   },
   HoverProvider: {
-    provideHover: function (model: IModel, position: IPosition) {
+    provideHover: function(model: IModel, position: IPosition) {
       return {
         range: new monaco.Range(1, 1, model.getLineCount(), model.getLineMaxColumn(model.getLineCount())),
         contents: [
-          '**DETAILS**',
-          { language: 'html', value: "TODO" }
+          "**DETAILS**",
+          { language: "html", value: "TODO" }
         ]
-      }
+      };
     }
   }
-}
+};

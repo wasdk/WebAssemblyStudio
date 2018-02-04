@@ -1,13 +1,13 @@
 import * as React from "react";
-import * as XTerm from 'xterm';
+import * as XTerm from "xterm";
 
-(XTerm as any).loadAddon('fit');
+(XTerm as any).loadAddon("fit");
 
 export class Console extends React.Component<{}, {}> {
   xterm: XTerm;
   refs: {
     container: HTMLDivElement;
-  }
+  };
   componentDidMount() {
     this.xterm = new XTerm({
       cursorBlink: true
@@ -19,7 +19,7 @@ export class Console extends React.Component<{}, {}> {
     setInterval(() => {
       this.xterm.writeln("> " + new Date());
     }, 1000);
-    this.xterm.on('data', this.onInput);
+    this.xterm.on("data", this.onInput);
   }
   onInput = (data: any) => {
     this.xterm.write(data);

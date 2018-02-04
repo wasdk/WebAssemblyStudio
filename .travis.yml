@@ -17,8 +17,6 @@ before_install:
 - npm update
 install:
 - npm install
-before_script:
-- npm run clean
 script:
 - npm run build
 - npm test

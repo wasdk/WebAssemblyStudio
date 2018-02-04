@@ -7,9 +7,9 @@ import { File, FileType, Directory, extensionForFileType, nameForFileType } from
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, TextInputBox, Spacer } from "./Widgets";
 
-interface EditFileDialogProps {
+export interface EditFileDialogProps {
   isOpen: boolean;
-  file: File
+  file: File;
   onChange: (name: string, description: string) => void;
   onCancel: () => void;
 }
@@ -31,15 +31,15 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, {
     this.setState({ description: event.target.value });
   }
   error() {
-    let directory = this.props.file.parent;
-    let file = directory.getImmediateChild(this.state.name);
+    const directory = this.props.file.parent;
+    const file = directory.getImmediateChild(this.state.name);
     if (file && file !== this.props.file) {
       return `A file with the same name already exists.`;
     }
     return "";
   }
   render() {
-    let file = this.props.file;
+    const file = this.props.file;
     return <ReactModal
       isOpen={this.props.isOpen}
       contentLabel={"Edit " + (file instanceof Directory ? "Directory" : "File")}
@@ -61,7 +61,7 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, {
             this.props.onCancel();
           }} />
           <Button icon={<GoPencil />} label="Edit" title="Edit" isDisabled={!this.state.name || !!this.error()} onClick={() => {
-            this.props.onChange && this.props.onChange(this.state.name, this.state.description);
+            return this.props.onChange && this.props.onChange(this.state.name, this.state.description);
           }} />
         </div>
       </div>

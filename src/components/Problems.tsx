@@ -21,24 +21,25 @@ class ProblemTemplate {
     this.monacoIconLabel.style.display = "flex";
     container.appendChild(this.monacoIconLabel);
 
-    let labelDescriptionContainer = document.createElement("div");
+    const labelDescriptionContainer = document.createElement("div");
     labelDescriptionContainer.className = "monaco-icon-label-description-container";
     this.monacoIconLabel.appendChild(labelDescriptionContainer);
 
     this.label = document.createElement("a");
     this.label.className = "label-name";
     labelDescriptionContainer.appendChild(this.label);
-    
+
     this.description = document.createElement("span");
     this.description.className = "label-description";
     labelDescriptionContainer.appendChild(this.description);
   }
   dispose() {
+    // TODO
   }
   set(problem: Problem) {
-    let icon = "";
-    let marker = problem.marker;
-    let position = `(${marker.startLineNumber}, ${marker.startColumn})`;
+    const icon = "";
+    const marker = problem.marker;
+    const position = `(${marker.startLineNumber}, ${marker.startColumn})`;
     this.label.innerHTML = marker.message;
     this.description.innerHTML = position;
   }
@@ -58,7 +59,7 @@ export class Problems extends React.Component<ProblemsProps, {
 
   container: HTMLDivElement;
   private setContainer(container: HTMLDivElement) {
-    if (container == null) return;
+    if (container == null) { return; }
     if (this.container !== container) {
       // ...
     }
@@ -68,12 +69,12 @@ export class Problems extends React.Component<ProblemsProps, {
     if (this.container.lastChild) {
       this.container.removeChild(this.container.lastChild);
     }
-    let self = this;
+    const self = this;
     class Controller extends (window as any).TreeDefaults.DefaultController {
       onContextMenu(tree: ITree, file: File, event: ContextMenuEvent): boolean {
         tree.setFocus(file);
         const anchor = { x: event.posx, y: event.posy };
-        let actions: any[] = [];
+        const actions: any[] = [];
 
         self.contextMenuService.showContextMenu({
           getAnchor: () => anchor,
@@ -108,14 +109,14 @@ export class Problems extends React.Component<ProblemsProps, {
          * Returns the unique identifier of the given element.
          * No more than one element may use a given identifier.
          */
-        getId: function (tree: ITree, element: File): string {
+        getId: function(tree: ITree, element: File): string {
           return element.key;
         },
 
         /**
          * Returns a boolean value indicating whether the element has children.
          */
-        hasChildren: function (tree: ITree, element: File | Problem): boolean {
+        hasChildren: function(tree: ITree, element: File | Problem): boolean {
           if (element instanceof Directory && element.children.length) {
             return true;
           } else if (element instanceof File) {
@@ -127,9 +128,9 @@ export class Problems extends React.Component<ProblemsProps, {
         /**
          * Returns the element's children as an array in a promise.
          */
-        getChildren: function (tree: ITree, element: File | Problem): monaco.Promise<any> {
+        getChildren: function(tree: ITree, element: File | Problem): monaco.Promise<any> {
           if (element instanceof Directory && element.children.length) {
-            let children: File [] = [];
+            const children: File [] = [];
             element.forEachFile((file: File) => {
               if (file.problems.length) {
                 children.push(file);
@@ -145,7 +146,7 @@ export class Problems extends React.Component<ProblemsProps, {
         /**
          * Returns the element's parent in a promise.
          */
-        getParent: function (tree: ITree, element: File | Problem): monaco.Promise<any> {
+        getParent: function(tree: ITree, element: File | Problem): monaco.Promise<any> {
           if (element instanceof File) {
             return monaco.Promise.as(element.getProject());
           }
@@ -153,7 +154,7 @@ export class Problems extends React.Component<ProblemsProps, {
         }
       },
       renderer: {
-        getHeight: function (tree: ITree, element: File): number {
+        getHeight: function(tree: ITree, element: File): number {
           return 24;
         },
         getTemplateId(tree: ITree, element: File | Problem): string {
@@ -162,13 +163,13 @@ export class Problems extends React.Component<ProblemsProps, {
           }
           return "problem";
         },
-        renderTemplate: function (tree: ITree, templateId: string, container: any): any {
-          return templateId == "problem" ? new ProblemTemplate(container) : new FileTemplate(container);
+        renderTemplate: function(tree: ITree, templateId: string, container: any): any {
+          return templateId === "problem" ? new ProblemTemplate(container) : new FileTemplate(container);
         },
-        renderElement: function (tree: ITree, element: File | Problem, templateId: string, templateData: any): void {
+        renderElement: function(tree: ITree, element: File | Problem, templateId: string, templateData: any): void {
           templateData.set(element);
         },
-        disposeTemplate: function (tree: ITree, templateId: string, templateData: any): void {
+        disposeTemplate: function(tree: ITree, templateId: string, templateData: any): void {
           templateData.dispose();
         }
       },
@@ -177,7 +178,7 @@ export class Problems extends React.Component<ProblemsProps, {
   }
   lastClickedTime = Date.now();
   onClickFile(file: File) {
-
+    // TODO
   }
   componentDidMount() {
     this.ensureTree();

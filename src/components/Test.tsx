@@ -48,7 +48,7 @@ class TabSelectTest extends React.Component<{
     this.state = {
       selectedTab: 0,
       tabs: ["Arabaalelealel", "Bannanananana", "Copaoappaoasasoas", "Dendododlaoadad"]
-    }
+    };
   }
   render() {
     return <div>
@@ -58,13 +58,12 @@ class TabSelectTest extends React.Component<{
             onClick={() => {
               this.setState({ selectedTab: i });
             }}
-            isActive={i === this.state.selectedTab} />
+            isActive={i === this.state.selectedTab} />;
         })}
       </Tabs>
     </div>;
   }
 }
-
 
 class TabSelectRandomTest extends TabSelectTest {
   constructor(props: any) {
@@ -82,7 +81,7 @@ class TabBasicScrollTest extends React.Component<{
   render() {
     return <div style={{ width: 512 }}>
       <TabBasicTest />
-    </div>
+    </div>;
   }
 }
 
@@ -93,9 +92,9 @@ class EditorPaneTest extends React.Component<{
   }> {
   constructor(props: any) {
     super(props);
-    let a = new File("A", FileType.JavaScript);
-    let b = new File("B", FileType.JavaScript);
-    let c = new File("C", FileType.JavaScript);
+    const a = new File("A", FileType.JavaScript);
+    const b = new File("B", FileType.JavaScript);
+    const c = new File("C", FileType.JavaScript);
 
     a.onDidChangeData.register(() => this.forceUpdate());
     b.onDidChangeData.register(() => this.forceUpdate());
@@ -104,33 +103,33 @@ class EditorPaneTest extends React.Component<{
     this.state = {
       file: a,
       files: [a, b, c]
-    }
+    };
   }
   render() {
     return <div style={{ height: 128 }}>
       <EditorPane preview={this.state.file} file={this.state.file} files={this.state.files}
         onNewFile={
           () => {
-            let { files } = this.state;
-            let f = new File("X", FileType.JavaScript);
+            const { files } = this.state;
+            const f = new File("X", FileType.JavaScript);
             files.push(f);
             // files.splice(i, 1);
             this.setState({ files, file: files[files.length - 1] });
           }
         }
         onClickFile={
-          (x) => { this.setState({ file: x }) }
+          (x) => { this.setState({ file: x }); }
         }
         onClose={
           (x) => {
-            let { files } = this.state;
-            let i = files.indexOf(x);
+            const { files } = this.state;
+            const i = files.indexOf(x);
             files.splice(i, 1);
             this.setState({ files, file: files[0] });
           }
         }
       />
-    </div>
+    </div>;
   }
 }
 
@@ -152,7 +151,7 @@ export class Test extends React.Component<{
     layout();
   }
   render() {
-    let view = new View(new File("X", FileType.JavaScript), null);
+    const view = new View(new File("X", FileType.JavaScript), null);
     view.file.buffer.setValue(`
     render() {
       let { splits } = this.state;
