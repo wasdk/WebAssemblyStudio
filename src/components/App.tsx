@@ -422,7 +422,7 @@ export class App extends React.Component<AppProps, AppState> {
   }
   async gist() {
     this.logLn("Exporting Project ...");
-    const gistURI = await Service.exportProject(this.project, this.state.fiddle);
+    const gistURI = await Service.exportProjectToGist(this.project, this.state.fiddle);
     this.logLn("Project Gist CREATED ");
     if (gistURI) {
         this.setState({
@@ -620,7 +620,9 @@ export class App extends React.Component<AppProps, AppState> {
 
     return <div className="fill">
       {this.state.toast &&
-          <Toast onDismiss={this.dismissToast.bind(this)} uri={this.state.toast}/>
+        <Toast onDismiss={this.dismissToast.bind(this)}
+               message={["Gist Created!", <a href={this.state.toast} target='_blank' className='gist-link'>Open in new tab.</a>]}
+        />
       }
       {this.state.newProjectDialog &&
         <NewProjectDialog isOpen={true} onCancel={() => {

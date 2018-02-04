@@ -497,7 +497,7 @@ a {
   box-shadow: 1px 1px 4px black;
 }
 
-.toast {
+.toast-container {
   position: fixed;
   top: 0;
   left: calc(50% - 300px);
@@ -508,6 +508,11 @@ a {
   box-shadow: 1px 1px 4px black;
 }
 
+.toast {
+    flexDirection: "column";
+    height: "100%";
+}
+
 .overlay {
   position: fixed;
   top: 0;
@@ -516,6 +521,11 @@ a {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 2;
+}
+
+.toast-overlay {
+  background: "rgba(255, 255, 255, 0)";
+  position: "inherit";
 }
 
 .modal-title-bar {
@@ -531,6 +541,10 @@ a {
 .toast-title {
   line-height: 30px;
   display: inline-block;
+}
+
+a.gist-link {
+    color: #fff;
 }
 
 .list-box {
