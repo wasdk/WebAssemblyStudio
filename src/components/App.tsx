@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Workspace } from "./Workspace";
-import { Console } from "./Console";
 import { Editor } from "./Editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
@@ -19,7 +18,6 @@ import { Log } from "../languages/log";
 import * as Mousetrap from "mousetrap";
 import { Sandbox } from "./Sandbox";
 import { Gulpy, testGulpy } from "../gulpy";
-import { Menu, MenuItem } from "./Menu";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload, GoBook, GoRepoForked, GoRocket, GoBeaker, GoThreeBars } from "./Icons";
 import { Button } from "./Button";
 

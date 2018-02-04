@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Workspace } from "./components/Workspace";
-import { Console } from "./components/Console";
 import { Editor } from "./components/Editor";
 import { Project } from "./model";
 import { Header } from "./components/Header";

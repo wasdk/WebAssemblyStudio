@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Project, File, Directory, FileType, getIconForFileType } from "../model";
-import { Menu, MenuItem } from "./Menu";
 import { Service } from "../service";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./Icons";
 import { ITree, ContextMenuEvent } from "../monaco-extra";

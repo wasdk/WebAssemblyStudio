@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Workspace } from "./Workspace";
-import { Console } from "./Console";
 import { Editor } from "./Editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
