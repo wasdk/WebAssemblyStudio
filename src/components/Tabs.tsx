@@ -8,9 +8,7 @@ export class Tabs extends React.Component<{
 }, {
     scrollLeft: number;
   }> {
-  refs: {
-    container: HTMLDivElement;
-  };
+  container: HTMLDivElement;
   constructor(props: any) {
     super(props);
     this.state = {
@@ -22,7 +20,7 @@ export class Tabs extends React.Component<{
     let { scrollLeft } = this.state;
     scrollLeft += delta;
     // TODO: Work out the details of scrolling.
-    scrollLeft = clamp(scrollLeft, 0, this.refs.container.clientWidth);
+    scrollLeft = clamp(scrollLeft, 0, this.container.clientWidth);
     this.setState({ scrollLeft });
     e.preventDefault();
   }
@@ -33,7 +31,12 @@ export class Tabs extends React.Component<{
 
   render() {
     return <div className="tabs-container">
-      <div ref="container" className="tabs-tab-container" onWheel={this.onWheel} onDoubleClick={this.onDoubleClick}>
+      <div
+        ref={(ref) => { this.container = ref; }}
+        className="tabs-tab-container"
+        onWheel={this.onWheel}
+        onDoubleClick={this.onDoubleClick}
+      >
         {this.props.children}
       </div>
       <div className="tabs-command-container">
@@ -42,7 +45,7 @@ export class Tabs extends React.Component<{
     </div>;
   }
   componentDidUpdate() {
-    this.refs.container.scrollLeft = this.state.scrollLeft;
+    this.container.scrollLeft = this.state.scrollLeft;
   }
 }
 

@@ -106,9 +106,7 @@ export interface SplitProps {
 export class Split extends React.Component<SplitProps, {
   splits: SplitInfo[];
 }> {
-  refs: {
-    container: HTMLDivElement;
-  };
+  container: HTMLDivElement;
   static onGlobalResize = new EventDispatcher("Split Resize");
   static onResizeBegin = new EventDispatcher("Resize Begin");
   static onResizeEnd = new EventDispatcher("Resize End");
@@ -148,7 +146,7 @@ export class Split extends React.Component<SplitProps, {
     }
     const vars = this.vars;
     const isVertical = this.props.orientation === SplitOrientation.Vertical;
-    const container = this.refs.container;
+    const container = this.container;
     const rect = container.getBoundingClientRect();
     const mouseOffset = isVertical ? e.clientX - rect.left : e.clientY - rect.top;
     this.solver.suggestValue(vars[this.index + 1], mouseOffset);
@@ -180,7 +178,7 @@ export class Split extends React.Component<SplitProps, {
   }
 
   private getContainerSize(orientation: SplitOrientation): number {
-    return orientation === SplitOrientation.Horizontal ? this.refs.container.clientHeight : this.refs.container.clientWidth;
+    return orientation === SplitOrientation.Horizontal ? this.container.clientHeight : this.container.clientWidth;
   }
 
   private canonicalizeSplits(props: SplitProps): SplitInfo[] {
@@ -336,7 +334,11 @@ export class Split extends React.Component<SplitProps, {
         />);
       }
     });
-    return <div className="split" ref="container" style={{ flexDirection: isHorizontal ? "column" : "row" }}>
+    return <div
+      className="split"
+      ref={(ref) => { this.container = ref; }}
+      style={{ flexDirection: isHorizontal ? "column" : "row" }}
+    >
       {children}
     </div>;
   }
