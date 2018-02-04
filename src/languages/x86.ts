@@ -24,57 +24,57 @@ const LanguageConfiguration: IRichLanguageConfiguration = {
   //   blockComment: ['/*', '*/'],
   // },
   brackets: [
-    ['{', '}'],
-    ['[', ']'],
-    ['(', ')'],
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"],
   ],
 
   autoClosingPairs: [
-    { open: '{', close: '}' },
-    { open: '[', close: ']' },
-    { open: '(', close: ')' },
+    { open: "{", close: "}" },
+    { open: "[", close: "]" },
+    { open: "(", close: ")" },
     { open: '"', close: '"' },
-    { open: '\'', close: '\'' },
+    { open: "'", close: "'" },
   ],
   surroundingPairs: [
-    { open: '{', close: '}' },
-    { open: '[', close: ']' },
-    { open: '(', close: ')' },
+    { open: "{", close: "}" },
+    { open: "[", close: "]" },
+    { open: "(", close: ")" },
     { open: '"', close: '"' },
-    { open: '\'', close: '\'' },
-    { open: '<', close: '>' },
+    { open: "'", close: "'" },
+    { open: "<", close: ">" },
   ]
 };
 
 const MonarchDefinitions = {
   // Set defaultToken to invalid to see what you do not tokenize yet
-  defaultToken: 'invalid',
+  defaultToken: "invalid",
 
   ignoreCase: true,
 
   keywords: [
-    'qword', 'ptr'
+    "qword", "ptr"
   ],
 
   typeKeywords: [
-    'i32', 'i64', 'f32', 'f64'
+    "i32", "i64", "f32", "f64"
   ],
 
   ops: [
-    'add',
-    'sub',
-    'mov',
-    'jmp',
-    'ret',
-    'int3',
-    'nop',
-    'cmp'
+    "add",
+    "sub",
+    "mov",
+    "jmp",
+    "ret",
+    "int3",
+    "nop",
+    "cmp"
   ],
 
   registers: [
-    'R8', 'R9', 'R10', 'R11', 'R12', 'R13', 'R14', 'R15',
-    'CS', 'DS', 'ES', 'FS', 'GS', 'SS', 'RAX', 'EAX', 'RBX', 'EBX', 'RCX', 'ECX', 'RDX', 'EDX', 
-    'RCX', 'RIP', 'EIP', 'IP', 'RSP', 'ESP', 'SP', 'RSI', 'ESI', 'SI', 'RDI', 'EDI', 'DI', 'RFLAGS', 'EFLAGS', 'FLAGS'
+    "R8", "R9", "R10", "R11", "R12", "R13", "R14", "R15",
+    "CS", "DS", "ES", "FS", "GS", "SS", "RAX", "EAX", "RBX", "EBX", "RCX", "ECX", "RDX", "EDX",
+    "RCX", "RIP", "EIP", "IP", "RSP", "ESP", "SP", "RSI", "ESI", "SI", "RDI", "EDI", "DI", "RFLAGS", "EFLAGS", "FLAGS"
   ],
   // operators: [
   //   // '=', '>', '<', '!', '~', '?', ':', '==', '<=', '>=', '!=',
@@ -102,17 +102,17 @@ const MonarchDefinitions = {
       // identifiers and keywords
       [/[a-z_$][\w$\.]*/, {
         cases: {
-          '@ops': 'keyword',
-          '@registers': 'type', 
-          '@keywords': 'keyword',
-          '@typeKeywords': 'keyword.type',
-          '@default': 'identifier'
+          "@ops": "keyword",
+          "@registers": "type",
+          "@keywords": "keyword",
+          "@typeKeywords": "keyword.type",
+          "@default": "identifier"
         }
       }],
       // [/[A-Z][\w\$]*/, 'type.identifier' ],  // to show class names nicely
 
       // // whitespace
-      { include: '@whitespace' },
+      { include: "@whitespace" },
 
       // // delimiters and operators
       // [/[{}()\[\]]/, '@brackets'],
@@ -127,26 +127,26 @@ const MonarchDefinitions = {
 
       // // numbers
       // [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
-      [/0[xX][0-9a-fA-F]+/, 'number.hex'],
-      [/\d+/, 'number'],
+      [/0[xX][0-9a-fA-F]+/, "number.hex"],
+      [/\d+/, "number"],
 
       // // delimiter: after number because of .\d floats
-      [/[;,.]/, 'delimiter'],
+      [/[;,.]/, "delimiter"],
 
       // strings
       // [/"([^"\\]|\\.)*$/, 'string.invalid' ],  // non-teminated string
-      [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
+      [/"/, { token: "string.quote", bracket: "@open", next: "@string" }],
 
       // // characters
       // [/'[^\\']'/, 'string'],
       // [/(')(@escapes)(')/, ['string','string.escape','string']],
       // [/'/, 'string.invalid']
 
-      [/[{}()\[\]]/, '@brackets']
+      [/[{}()\[\]]/, "@brackets"]
     ] as any,
 
     comment: [
-      [/;.*/, 'comment'],
+      [/;.*/, "comment"],
       // [/[^\/*]+/, 'comment'],
       // [/[^\/*]+/, 'comment'],
       // [/\/\*/, 'comment', '@push'],    // nested comment
@@ -155,15 +155,15 @@ const MonarchDefinitions = {
     ],
 
     string: [
-      [/[^\\"]+/, 'string'],
-      [/@escapes/, 'string.escape'],
-      [/\\./, 'string.escape.invalid'],
-      [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
+      [/[^\\"]+/, "string"],
+      [/@escapes/, "string.escape"],
+      [/\\./, "string.escape.invalid"],
+      [/"/, { token: "string.quote", bracket: "@close", next: "@pop" }]
     ],
 
     whitespace: [
-      [/[ \t\r\n]+/, 'white'],
-      [/;.*$/, 'comment']
+      [/[ \t\r\n]+/, "white"],
+      [/;.*$/, "comment"]
       // [/\/\*/, 'comment', '@comment'],
       // [/\/\/.*$/, 'comment'],
     ],
@@ -174,19 +174,19 @@ export const X86 = {
   MonarchDefinitions,
   LanguageConfiguration,
   CompletionItemProvider: {
-    provideCompletionItems: function (model: IModel, position: IPosition) {
+    provideCompletionItems: function(model: IModel, position: IPosition) {
       return getCompletionItems();
     }
   },
   HoverProvider: {
-    provideHover: function (model: IModel, position: IPosition) {
+    provideHover: function(model: IModel, position: IPosition) {
       return {
         range: new monaco.Range(1, 1, model.getLineCount(), model.getLineMaxColumn(model.getLineCount())),
         contents: [
-          '**DETAILS**',
-          { language: 'html', value: "TODO" }
+          "**DETAILS**",
+          { language: "html", value: "TODO" }
         ]
-      }
+      };
     }
   }
-}
+};

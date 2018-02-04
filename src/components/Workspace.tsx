@@ -10,8 +10,8 @@ export interface WorkspaceProps {
   /**
    * Active file.
    */
-  file: File,
-  project: Project,
+  file: File;
+  project: Project;
   onEditFile?: (file: File) => void;
   onDeleteFile?: (file: File) => void;
   onRenameFile?: (file: File) => void;
@@ -20,7 +20,6 @@ export interface WorkspaceProps {
   onClickFile: (file: File) => void;
   onDoubleClickFile?: (file: File) => void;
 }
-
 
 export class Workspace extends React.Component<WorkspaceProps, {
   showProject: boolean;
@@ -33,10 +32,10 @@ export class Workspace extends React.Component<WorkspaceProps, {
       showProject: false,
       showFiles: true,
       splits: []
-    }
+    };
   }
   render() {
-    let project = this.props.project;
+    const project = this.props.project;
     return <div className="workspaceContainer">
       <Header />
       <div style={{ height: "calc(100% - 41px)" }}>

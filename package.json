@@ -1,29 +1,31 @@
 {
-  "name": "wasm-fiddle",
+  "name": "web-assembly-studio",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "build-watch": "webpack --watch --config webpack.config.js",
-    "dev-server": "webpack-dev-server --config webpack.config.js"
+    "dev-server": "webpack-dev-server --config webpack.config.js",
+    "clean": "rm -r dist/*",
+    "test": "npm run tslint",
+    "tslint": "./node_modules/.bin/tslint -p ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wasdk/WasmFiddle.git"
+    "url": "git+https://github.com/mbebenita/WebAssemblyStudio.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/wasdk/WasmFiddle/issues"
+    "url": "https://github.com/mbebenita/WebAssemblyStudio/issues"
   },
-  "homepage": "https://github.com/wasdk/WasmFiddle#readme",
+  "homepage": "https://github.com/mbebenita/WebAssemblyStudio",
   "dependencies": {
     "@types/minimatch": "^3.0.2",
     "@types/mousetrap": "^1.5.34",
     "@types/react-icons": "^2.2.4",
     "@types/react-modal": "^3.1.1",
-    "@types/react-split-pane": "^0.1.10",
     "@types/xterm": "^2.0.3",
     "cassowary": "0.0.2",
     "minimatch": "^3.0.4",
@@ -33,7 +35,6 @@
     "react-dom": "^16.2.0",
     "react-icons": "^2.2.7",
     "react-modal": "^3.1.10",
-    "react-split-pane": "^0.1.71",
     "wasmparser": "^0.5.3"
   },
   "devDependencies": {
@@ -41,7 +42,8 @@
     "@types/react-dom": "^16.0.3",
     "awesome-typescript-loader": "^3.4.1",
     "source-map-loader": "^0.2.3",
-    "typescript": "^2.6.2",
+    "tslint": "^5.9.1",
+    "typescript": "^2.7.1",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.0"
   }

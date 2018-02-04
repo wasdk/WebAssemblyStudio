@@ -14,7 +14,7 @@ export class Sandbox extends React.Component<{
 }, {}> {
   container: HTMLDivElement;
   private setContainer(container: HTMLDivElement) {
-    if (container == null) return;
+    if (container == null) { return; }
     if (this.container !== container) {
       // ...
     }
@@ -35,34 +35,34 @@ export class Sandbox extends React.Component<{
     Split.onResizeEnd.unregister(this.onResizeEnd);
   }
   run(project: Project, src: string) {
-    var iframe = document.createElement('iframe');
+    const iframe = document.createElement("iframe");
     iframe.className = "sandbox";
-    iframe.src = URL.createObjectURL(new Blob([src], { type: 'text/html' }));
+    iframe.src = URL.createObjectURL(new Blob([src], { type: "text/html" }));
     if (this.container.firstChild) {
       this.container.removeChild(this.container.firstChild);
     }
     this.container.appendChild(iframe);
-    let contentWindow = iframe.contentWindow as SandboxWindow;
-    let logger = this.props.logger;
+    const contentWindow = iframe.contentWindow as SandboxWindow;
+    const logger = this.props.logger;
     // Hijack Console
-    let log = contentWindow.console.log;
+    const log = contentWindow.console.log;
     contentWindow.console.log = function(message: any) {
       logger.logLn(message);
       log.apply(contentWindow.console, arguments);
-    }
+    };
     contentWindow.getFileURL = (path: string) => {
-      let file = project.getFile(path);
+      const file = project.getFile(path);
       if (!file) {
         this.props.logger.logLn(`Cannot find file ${path}`, "error");
         return;
       }
-      let blob = new Blob([file.getData()], { type: mimeTypeForFileType(file.type) });
+      const blob = new Blob([file.getData()], { type: mimeTypeForFileType(file.type) });
       return window.URL.createObjectURL(blob);
     };
-    let ready = new Promise((resolve: (window: Window) => any) => {
+    const ready = new Promise((resolve: (window: Window) => any) => {
       (iframe as any).onready = () => {
         resolve(contentWindow);
-      }
+      };
     });
   }
   render() {

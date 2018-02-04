@@ -10,8 +10,8 @@ declare var window: any;
 // https://cdn-images-1.medium.com/max/1600/0*VoYsN6eq7I_wjVV5.png
 
 export interface MonacoProps {
-  view: View,
-  options?: monaco.editor.IEditorConstructionOptions
+  view: View;
+  options?: monaco.editor.IEditorConstructionOptions;
 }
 
 export class Monaco extends React.Component<MonacoProps, {}> {
@@ -23,7 +23,7 @@ export class Monaco extends React.Component<MonacoProps, {}> {
   }
 
   componentDidMount() {
-    let { view } = this.props;
+    const { view } = this.props;
     if (view) {
       this.ensureEditor();
       this.editor.setModel(view.file.buffer);
@@ -52,7 +52,7 @@ export class Monaco extends React.Component<MonacoProps, {}> {
   }
 
   componentDidUpdate() {
-    let { view } = this.props;
+    const { view } = this.props;
     if (view) {
       this.ensureEditor();
       this.editor.setModel(view.file.buffer);
@@ -79,17 +79,17 @@ export class Monaco extends React.Component<MonacoProps, {}> {
   }
 
   registerActions() {
-    let self = this;
+    const self = this;
     this.editor.addAction({
-      id: 'save',
-      label: 'Save',
+      id: "save",
+      label: "Save",
       keybindings: [
         monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S
       ],
       precondition: null,
       keybindingContext: null,
-      run: function () {
-        let view = self.props.view;
+      run: function() {
+        const view = self.props.view;
         if (view && !view.file.isBufferReadOnly) {
           view.file.save();
         }
@@ -107,8 +107,8 @@ export class Monaco extends React.Component<MonacoProps, {}> {
 
   }
   private ensureEditor() {
-    if (this.editor) return;
-    let options = Object.assign({
+    if (this.editor) { return; }
+    const options = Object.assign({
       value: "",
       theme: "fiddle-theme",
       minimap: {
@@ -125,7 +125,7 @@ export class Monaco extends React.Component<MonacoProps, {}> {
     console.info("Created a new Monaco editor.");
   }
   private setContainer(container: HTMLDivElement) {
-    if (container == null) return;
+    if (container == null) { return; }
     if (this.container !== container) {
       // ...
     }
@@ -137,8 +137,8 @@ export class Monaco extends React.Component<MonacoProps, {}> {
 }
 
 export interface EditorProps {
-  view: View,
-  options?: monaco.editor.IEditorConstructionOptions
+  view: View;
+  options?: monaco.editor.IEditorConstructionOptions;
 }
 
 export class Editor extends React.Component<EditorProps, {}> {
@@ -150,7 +150,7 @@ export class Editor extends React.Component<EditorProps, {}> {
     this.monaco.revealLastLine();
   }
   render() {
-    let file = this.props.view.file;
+    const file = this.props.view.file;
     if (file.description) {
       return <div className="fill">
         <div className="editor-status-bar">
@@ -159,11 +159,11 @@ export class Editor extends React.Component<EditorProps, {}> {
         <div className="editor-container">
           <Monaco ref={(ref) => this.setMonaco(ref)} view={this.props.view} options={this.props.options} />
         </div>;
-      </div>
+      </div>;
     } else {
       return <div className="fill">
         <Monaco ref={(ref) => this.setMonaco(ref)} view={this.props.view} options={this.props.options} />
-      </div>
+      </div>;
     }
   }
 }

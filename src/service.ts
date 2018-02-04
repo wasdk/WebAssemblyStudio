@@ -15,7 +15,7 @@ declare interface BinaryenModule {
 declare var Binaryen: {
   readBinary(data: ArrayBuffer): BinaryenModule;
   parseText(data: string): BinaryenModule;
-}
+};
 
 declare var capstone: {
   ARCH_X86: any;
@@ -26,14 +26,14 @@ declare var capstone: {
 declare var base64js: {
   toByteArray(base64: string): ArrayBuffer;
   fromByteArray(base64: ArrayBuffer): string;
-}
+};
 
 declare var Module: ({ }) => any;
 declare var define: any;
 declare var showdown: {
   Converter: any;
   setFlavor: Function;
-}
+};
 
 declare var wabt: {
   ready: Promise<any>
@@ -83,18 +83,18 @@ export class Service {
 
   static getMarkers(response: string): monaco.editor.IMarkerData[] {
     // Parse and annotate errors if compilation fails.
-    var annotations: monaco.editor.IMarkerData[] = [];
+    const annotations: monaco.editor.IMarkerData[] = [];
     if (response.indexOf("(module") !== 0) {
-      var re1 = /^.*?:(\d+?):(\d+?):\s(.*)$/gm;
-      var m: any;
+      const re1 = /^.*?:(\d+?):(\d+?):\s(.*)$/gm;
+      let m: any;
       // Single position.
       while ((m = re1.exec(response)) !== null) {
         if (m.index === re1.lastIndex) {
           re1.lastIndex++;
         }
-        var startLineNumber = parseInt(m[1]);
-        var startColumn = parseInt(m[2]);
-        var message = m[3];
+        const startLineNumber = parseInt(m[1], 10);
+        const startColumn = parseInt(m[2], 10);
+        const message = m[3];
         let severity = monaco.Severity.Info;
         if (message.indexOf("error") >= 0) {
           severity = monaco.Severity.Error;
@@ -109,12 +109,12 @@ export class Service {
       }
       // Range. This is generated via the -diagnostics-print-source-range-info
       // clang flag.
-      var re2 = /^.*?:\d+?:\d+?:\{(\d+?):(\d+?)-(\d+?):(\d+?)\}:\s(.*)$/gm;
+      const re2 = /^.*?:\d+?:\d+?:\{(\d+?):(\d+?)-(\d+?):(\d+?)\}:\s(.*)$/gm;
       while ((m = re2.exec(response)) !== null) {
         if (m.index === re2.lastIndex) {
           re2.lastIndex++;
         }
-        var message = m[5];
+        const message = m[5];
         let severity = monaco.Severity.Info;
         if (message.indexOf("error") >= 0) {
           severity = monaco.Severity.Error;
@@ -123,8 +123,8 @@ export class Service {
         }
         annotations.push({
           severity, message,
-          startLineNumber: parseInt(m[1]), startColumn: parseInt(m[2]),
-          endLineNumber: parseInt(m[3]), endColumn: parseInt(m[4])
+          startLineNumber: parseInt(m[1], 10), startColumn: parseInt(m[2], 10),
+          endLineNumber: parseInt(m[3], 10), endColumn: parseInt(m[4], 10)
         });
       }
     }
@@ -133,7 +133,7 @@ export class Service {
 
   static async compileFile(file: File, from: Language, to: Language, options = ""): Promise<any> {
     const result = await Service.compile(file.getData(), from, to, options);
-    let markers = Service.getMarkers(result.tasks[0].console);
+    const markers = Service.getMarkers(result.tasks[0].console);
     if (markers.length) {
       monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
       file.setProblems(markers.map(marker => {
@@ -143,9 +143,9 @@ export class Service {
     if (!result.success) {
       throw new Error((result as any).message);
     }
-    var buffer = atob(result.output);
-    var data = new Uint8Array(buffer.length);
-    for (var i = 0; i < buffer.length; i++) {
+    const buffer = atob(result.output);
+    const data = new Uint8Array(buffer.length);
+    for (let i = 0; i < buffer.length; i++) {
       data[i] = buffer.charCodeAt(i);
     }
     return data;
@@ -153,7 +153,7 @@ export class Service {
 
   static async compile(src: string | ArrayBuffer, from: Language, to: Language, options = ""): Promise<IServiceRequest> {
     if (from === Language.C && to === Language.Wasm) {
-      let project = {
+      const project = {
         output: "wasm",
         files: [
           {
@@ -164,10 +164,10 @@ export class Service {
           }
         ]
       };
-      let input = encodeURIComponent(JSON.stringify(project)).replace('%20', '+');
+      const input = encodeURIComponent(JSON.stringify(project)).replace("%20", "+");
       return this.sendRequest("input=" + input + "&action=build");
     } else if (from === Language.Wasm && to === Language.x86) {
-      let input = encodeURIComponent(base64js.fromByteArray(src as ArrayBuffer));
+      const input = encodeURIComponent(base64js.fromByteArray(src as ArrayBuffer));
       return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options));
     }
     /*
@@ -217,7 +217,7 @@ export class Service {
     if (typeof wabt === "undefined") {
       await Service.lazyLoad("lib/libwabt.js");
     }
-    var module = wabt.readWasm(buffer, { readDebugNames: true });
+    const module = wabt.readWasm(buffer, { readDebugNames: true });
     if (true) {
       module.generateNames();
       module.applyNames();
@@ -227,7 +227,7 @@ export class Service {
 
   static async disassembleWasmWithWabt(file: File) {
     const result = await Service.disassembleWasm(file.getData() as ArrayBuffer);
-    let output = file.parent.newFile(file.name + ".wast", FileType.Wast);
+    const output = file.parent.newFile(file.name + ".wast", FileType.Wast);
     output.description = "Disassembled from " + file.name + " using Wabt.";
     output.setData(result);
   }
@@ -236,52 +236,52 @@ export class Service {
     if (typeof wabt === "undefined") {
       await Service.lazyLoad("lib/libwabt.js");
     }
-    var module = wabt.parseWat('test.wast', wast);
+    const module = wabt.parseWat("test.wast", wast);
     module.resolveNames();
     module.validate();
-    let binary = module.toBinary({ log: true, write_debug_names: true });
+    const binary = module.toBinary({ log: true, write_debug_names: true });
     return binary.buffer;
   }
 
   static async assembleWastWithWabt(file: File) {
     const result = await Service.assembleWast(file.getData() as string);
-    let output = file.parent.newFile(file.name + ".wasm", FileType.Wasm);
+    const output = file.parent.newFile(file.name + ".wasm", FileType.Wasm);
     output.description = "Assembled from " + file.name + " using Wabt.";
     output.setData(result);
   }
 
   static disassembleWasmWithWasmDisassembler(file: File) {
-    let buffer = file.getData() as ArrayBuffer
-    let reader = new BinaryReader();
+    const buffer = file.getData() as ArrayBuffer;
+    const reader = new BinaryReader();
     reader.setData(buffer, 0, buffer.byteLength);
-    let dis = new WasmDisassembler();
+    const dis = new WasmDisassembler();
     dis.addOffsets = true;
     dis.disassembleChunk(reader);
-    let result = dis.getResult().lines.join("\n");
-    let output = file.parent.newFile(file.name + ".wast", FileType.Wast);
+    const result = dis.getResult().lines.join("\n");
+    const output = file.parent.newFile(file.name + ".wast", FileType.Wast);
     output.description = "Disassembled from " + file.name + " using WasmDisassembler.";
     output.setData(result);
     return;
   }
-  
+
   static createGist(json: object): Promise<string> {
     return new Promise((resolve, reject) => {
-      var xhr = new XMLHttpRequest();
-      xhr.addEventListener("load", function () {
-        let jsonURI = JSON.parse(this.response).html_url;
+      const xhr = new XMLHttpRequest();
+      xhr.addEventListener("load", function() {
+        const jsonURI = JSON.parse(this.response).html_url;
         resolve(jsonURI);
       });
-      xhr.addEventListener("error", function () {
-        reject()
+      xhr.addEventListener("error", function() {
+        reject();
       });
       xhr.open("POST", "https://api.github.com/gists", true);
       xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
       xhr.send(JSON.stringify(json));
     });
   }
-  
+
   static async loadJSON(uri: string): Promise<{}> {
-    let url = "https://api.myjson.com/bins/" + uri;
+    const url = "https://api.myjson.com/bins/" + uri;
     const response = await fetch(url, {
       headers: new Headers({ "Content-type": "application/json; charset=utf-8" })
     });
@@ -289,10 +289,10 @@ export class Service {
   }
 
   static saveJSON(json: object, uri: string): Promise<string> {
-    let update = !!uri;
+    const update = !!uri;
     return new Promise((resolve, reject) => {
-      var xhr = new XMLHttpRequest();
-      xhr.addEventListener("load", function () {
+      const xhr = new XMLHttpRequest();
+      xhr.addEventListener("load", function() {
         if (update) {
           resolve(uri);
         } else {
@@ -301,8 +301,8 @@ export class Service {
           resolve(jsonURI);
         }
       });
-      xhr.addEventListener("error", function () {
-        reject()
+      xhr.addEventListener("error", function() {
+        reject();
       });
       if (update) {
         xhr.open("PUT", "//api.myjson.com/bins/" + uri, true);
@@ -317,7 +317,7 @@ export class Service {
   static parseFiddleURI(): string {
     let uri = window.location.search.substring(1);
     if (uri) {
-      let i = uri.indexOf("/");
+      const i = uri.indexOf("/");
       if (i > 0) {
         uri = uri.substring(0, i);
       }
@@ -325,38 +325,40 @@ export class Service {
     return uri;
   }
   static async exportProjectToGist(project: Project, uri?: string): Promise<string> {
-    let files: any = {};
+    const files: any = {};
     function serialize(file: File) {
       if (file instanceof Directory) {
-        if(file.name!=="out")
+        if (file.name !== "out") {
           file.mapEachFile((file: File) => serialize(file));
+        }
       } else {
         files[file.name] = {content: file.data};
       }
     }
     serialize(project);
-    let json: any = { description: "source: http://webassembly.studio", public: true, files};
-    if(!isUndefined(uri))
+    const json: any = { description: "source: http://webassembly.studio", public: true, files};
+    if (!isUndefined(uri)) {
       json["description"] = json["description"] + `/?f=${uri}`;
+    }
     return await this.createGist(json);
   }
-  
+
   static async saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {
     function serialize(file: File): any {
       if (file instanceof Directory) {
         return {
           name: file.name,
           children: file.mapEachFile((file: File) => serialize(file))
-        }
+        };
       } else {
         return {
           name: file.name,
           type: file.type,
           data: file.data
-        }
+        };
       }
     }
-    let json = serialize(project);
+    const json = serialize(project);
     json.openedFiles = openedFiles;
     return await this.saveJSON(json, uri);
   }
@@ -391,16 +393,16 @@ export class Service {
 
   static lazyLoad(uri: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      var self = this;
-      var d = window.document;
-      var b = d.body;
-      var e = d.createElement("script");
+      const self = this;
+      const d = window.document;
+      const b = d.body;
+      const e = d.createElement("script");
       e.async = true;
       e.src = uri;
       b.appendChild(e);
-      e.onload = function () {
+      e.onload = function() {
         resolve(this);
-      }
+      };
     });
   }
 
@@ -409,7 +411,7 @@ export class Service {
       await Service.lazyLoad("lib/binaryen.js");
     }
     let data = file.getData() as ArrayBuffer;
-    let module = Binaryen.readBinary(data);
+    const module = Binaryen.readBinary(data);
     module.optimize();
     data = module.emitBinary();
     file.setData(data);
@@ -420,8 +422,8 @@ export class Service {
     if (typeof Binaryen === "undefined") {
       await Service.lazyLoad("lib/binaryen.js");
     }
-    let data = file.getData() as ArrayBuffer;
-    let module = Binaryen.readBinary(data);
+    const data = file.getData() as ArrayBuffer;
+    const module = Binaryen.readBinary(data);
     alert(module.validate());
   }
 
@@ -429,8 +431,8 @@ export class Service {
     if (typeof Binaryen === "undefined") {
       await Service.lazyLoad("lib/binaryen.js");
     }
-    let data = file.getData() as string;
-    let module = Binaryen.parseText(data);
+    const data = file.getData() as string;
+    const module = Binaryen.parseText(data);
     alert(module.validate());
   }
 
@@ -438,9 +440,9 @@ export class Service {
     if (typeof Binaryen === "undefined") {
       await Service.lazyLoad("lib/binaryen.js");
     }
-    let data = file.getData() as ArrayBuffer;
-    let module = Binaryen.readBinary(data);
-    let output = file.parent.newFile(file.name + ".wast", FileType.Wast);
+    const data = file.getData() as ArrayBuffer;
+    const module = Binaryen.readBinary(data);
+    const output = file.parent.newFile(file.name + ".wast", FileType.Wast);
     output.description = "Disassembled from " + file.name + " using Binaryen.";
     output.setData(module.emitText());
   }
@@ -452,11 +454,11 @@ export class Service {
       Service.downloadLink.style.display = "none";
       document.body.appendChild(Service.downloadLink);
     }
-    assert(file.type == FileType.Wasm);
-    let url = URL.createObjectURL(new Blob([file.getData()], { type: 'application/wasm' }));
+    assert(file.type === FileType.Wasm);
+    const url = URL.createObjectURL(new Blob([file.getData()], { type: "application/wasm" }));
     Service.downloadLink.href = url;
     Service.downloadLink.download = file.name;
-    if (Service.downloadLink.href as any != document.location) {
+    if (Service.downloadLink.href as any !== document.location) {
       Service.downloadLink.click();
     }
   }
@@ -472,7 +474,7 @@ export class Service {
   // Kudos to https://github.com/tbfleming/cib
   static async clangFormat(file: File) {
     function format() {
-      let result = Service.clangFormatModule.ccall('formatCode', 'string', ['string'], [file.buffer.getValue()]);
+      const result = Service.clangFormatModule.ccall("formatCode", "string", ["string"], [file.buffer.getValue()]);
       file.buffer.setValue(result);
     }
 
@@ -480,9 +482,9 @@ export class Service {
       format();
     } else {
       await Service.lazyLoad("lib/clang-format.js");
-      const response = await fetch('lib/clang-format.wasm');
+      const response = await fetch("lib/clang-format.wasm");
       const wasmBinary = await response.arrayBuffer();
-      let module: any = {
+      const module: any = {
         postRun() {
           format();
         },
@@ -496,28 +498,28 @@ export class Service {
     if (typeof capstone === "undefined") {
       await Service.lazyLoad("lib/capstone.x86.min.js");
     }
-    let output = file.parent.newFile(file.name + ".x86", FileType.x86);
+    const output = file.parent.newFile(file.name + ".x86", FileType.x86);
 
     function toBytes(a: any) {
-      return a.map(function (x: any) { return padLeft(Number(x).toString(16), 2, "0"); }).join(" ");
+      return a.map(function(x: any) { return padLeft(Number(x).toString(16), 2, "0"); }).join(" ");
     }
 
-    let data = file.getData() as string;
+    const data = file.getData() as string;
     const json: any = await Service.compile(data, Language.Wasm, Language.x86, options);
     let s = "";
-    var cs = new capstone.Cs(capstone.ARCH_X86, capstone.MODE_64);
-    var annotations: any[] = [];
-    var assemblyInstructionsByAddress = Object.create(null);
-    for (var i = 0; i < json.regions.length; i++) {
-      var region = json.regions[i];
+    const cs = new capstone.Cs(capstone.ARCH_X86, capstone.MODE_64);
+    const annotations: any[] = [];
+    const assemblyInstructionsByAddress = Object.create(null);
+    for (let i = 0; i < json.regions.length; i++) {
+      const region = json.regions[i];
       s += region.name + ":\n";
-      var csBuffer = decodeRestrictedBase64ToBytes(region.bytes);
-      var instructions = cs.disasm(csBuffer, region.entry);
-      var basicBlocks: any = {};
-      instructions.forEach(function (instr: any, i: any) {
+      const csBuffer = decodeRestrictedBase64ToBytes(region.bytes);
+      const instructions = cs.disasm(csBuffer, region.entry);
+      const basicBlocks: any = {};
+      instructions.forEach(function(instr: any, i: any) {
         assemblyInstructionsByAddress[instr.address] = instr;
         if (isBranch(instr)) {
-          var targetAddress = parseInt(instr.op_str);
+          const targetAddress = parseInt(instr.op_str, 10);
           if (!basicBlocks[targetAddress]) {
             basicBlocks[targetAddress] = [];
           }
@@ -527,7 +529,7 @@ export class Service {
           }
         }
       });
-      instructions.forEach(function (instr: any) {
+      instructions.forEach(function(instr: any) {
         if (basicBlocks[instr.address]) {
           s += " " + padRight(toAddress(instr.address) + ":", 39, " ");
           if (basicBlocks[instr.address].length > 0) {
@@ -547,8 +549,8 @@ export class Service {
     if (typeof showdown === "undefined") {
       await Service.lazyLoad("lib/showdown.min.js");
     }
-    var converter = new showdown.Converter({ tables: true });
-    showdown.setFlavor('github');
+    const converter = new showdown.Converter({ tables: true });
+    showdown.setFlavor("github");
     return converter.makeHtml(src);
   }
 }

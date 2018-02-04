@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as SplitPane from "react-split-pane";
 import { Workspace } from "./Workspace";
 import { Console } from "./Console";
 import { Editor } from "./Editor";
@@ -46,8 +45,8 @@ export class Group {
     this.files = files;
   }
   open(file: File, shouldPreview: boolean = true) {
-    let files = this.files;
-    let index = files.indexOf(file);
+    const files = this.files;
+    const index = files.indexOf(file);
     if (index >= 0) {
       // Switch to file if it's aleady open.
       this.file = file;
@@ -59,7 +58,7 @@ export class Group {
     if (shouldPreview) {
       if (this.preview) {
         // Replace preview file if there is one.
-        let previewIndex = files.indexOf(this.preview);
+        const previewIndex = files.indexOf(this.preview);
         assert(previewIndex >= 0);
         this.file = this.preview = files[previewIndex] = file;
       } else {
@@ -73,9 +72,9 @@ export class Group {
     }
   }
   close(file: File) {
-    let i = this.files.indexOf(file);
+    const i = this.files.indexOf(file);
     assert(i >= 0);
-    if (file == this.preview) {
+    if (file === this.preview) {
       this.preview = null;
     }
     this.files.splice(i, 1);
@@ -144,7 +143,7 @@ export class App extends React.Component<AppProps, AppState> {
   project: Project;
   constructor(props: AppProps) {
     super(props);
-    let group0 = new Group(null, null, []);
+    const group0 = new Group(null, null, []);
     this.state = {
       fiddle: props.fiddle,
       file: null,
@@ -178,10 +177,10 @@ export class App extends React.Component<AppProps, AppState> {
     this.registerLanguages();
   }
   openProjectFiles(json: any) {
-    let groups = json.openedFiles.map((paths: string[]) => {
-      let files = paths.map(file => {
-        return this.project.getFile(file)
-      })
+    const groups = json.openedFiles.map((paths: string[]) => {
+      const files = paths.map(file => {
+        return this.project.getFile(file);
+      });
       return new Group(files[0], null, files);
     });
     this.setState({ group: groups[0], groups });
@@ -222,12 +221,12 @@ export class App extends React.Component<AppProps, AppState> {
 
   async registerLanguages() {
     monaco.editor.defineTheme("fiddle-theme", {
-      base: 'vs-dark',
+      base: "vs-dark",
       inherit: true,
       rules: [
-        { token: 'custom-info', foreground: 'd4d4d4' },
-        { token: 'custom-warn', foreground: 'ff9900' },
-        { token: 'custom-error', background: '00ff00', foreground: 'ff0000', fontStyle: 'bold' }
+        { token: "custom-info", foreground: "d4d4d4" },
+        { token: "custom-warn", foreground: "ff9900" },
+        { token: "custom-error", background: "00ff00", foreground: "ff0000", fontStyle: "bold" }
       ]
     } as any);
 
@@ -290,7 +289,7 @@ export class App extends React.Component<AppProps, AppState> {
   async loadReleaseNotes() {
     const response = await fetch("notes/notes.md");
     const src = await response.text();
-    let notes = new File("Release Notes", FileType.Markdown);
+    const notes = new File("Release Notes", FileType.Markdown);
     notes.setData(src);
     this.state.group.open(notes);
     this.forceUpdate();
@@ -303,10 +302,10 @@ export class App extends React.Component<AppProps, AppState> {
     Project.onRun.register(() => {
       this.run();
     });
-    Mousetrap.bind('command+b', () => {
+    Mousetrap.bind("command+b", () => {
       Project.build();
     });
-    Mousetrap.bind('command+enter', () => {
+    Mousetrap.bind("command+enter", () => {
       Project.run();
     });
     // Mousetrap.bind('command+1', (e) => {
@@ -359,36 +358,36 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   run() {
-    let root = this.project;
+    const root = this.project;
     let src = root.getFile("src/main.html").getData() as string;
 
     src = src.replace(/src\s*=\s*"(.+?)"/, (a: string, b: any) => {
-      let src = root.getFile(b).buffer.getValue();
-      let blob = new Blob([src], { type: "text/javascript" });
+      const src = root.getFile(b).buffer.getValue();
+      const blob = new Blob([src], { type: "text/javascript" });
       return `src="${window.URL.createObjectURL(blob)}"`;
     });
     this.controlCenter.sandbox.run(this.project, src);
   }
   splitGroup() {
-    let groups = this.state.groups;
-    let lastGroup = groups[groups.length - 1];
+    const groups = this.state.groups;
+    const lastGroup = groups[groups.length - 1];
     if (lastGroup.files.length === 0) {
       return;
     }
-    let group = new Group(lastGroup.file, null, [lastGroup.file]);
+    const group = new Group(lastGroup.file, null, [lastGroup.file]);
     this.state.groups.push(group);
     this.setState({ group });
   }
   async build() {
     const run = (src: string) => {
-      let fn = new Function("gulp", "project", "Service", "logLn", src);
-      let gulp = new Gulpy();
+      const fn = new Function("gulp", "project", "Service", "logLn", src);
+      const gulp = new Gulpy();
       fn(gulp, this.project, Service, this.logLn.bind(self));
       gulp.run("default");
     };
 
-    let buildTs = this.project.getFile("build.ts");
-    let buildJS = this.project.getFile("build.js");
+    const buildTs = this.project.getFile("build.ts");
+    const buildJS = this.project.getFile("build.js");
     if (buildTs) {
       const output = await buildTs.getEmitOutput();
       run(output.outputFiles[0].text);
@@ -401,7 +400,7 @@ export class App extends React.Component<AppProps, AppState> {
   }
   async update() {
     this.logLn("Saving Project ...");
-    let openedFiles = this.state.groups.map((group) => {
+    const openedFiles = this.state.groups.map((group) => {
       return group.files.map((file) => file.getPath());
     });
     await Service.saveProject(this.project, openedFiles, this.state.fiddle);
@@ -411,7 +410,7 @@ export class App extends React.Component<AppProps, AppState> {
     this.logLn("Forking Project ...");
     const fiddle = await Service.saveProject(this.project, []);
     this.logLn("Forked Project OK " + fiddle);
-    let search = window.location.search;
+    const search = window.location.search;
     if (this.state.fiddle) {
       assert(search.indexOf(this.state.fiddle) >= 0);
       history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
@@ -430,11 +429,11 @@ export class App extends React.Component<AppProps, AppState> {
         });
         console.log(`Gist created: ${gistURI}`);
     } else {
-        console.log('Failed!');
+        console.log("Failed!");
     }
   }
 
-  dismissToast(index: number){
+  dismissToast(index: number) {
       this.setState({
           toast:  null
       });
@@ -514,11 +513,11 @@ export class App extends React.Component<AppProps, AppState> {
   private workspaceSplit: SplitInfo = null;
 
   makeToolbarButtons() {
-    let toolbarButtons = [
+    const toolbarButtons = [
       <Button icon={<GoThreeBars />} title="View Workspace" onClick={() => {
-        let workspaceSplits = this.state.workspaceSplits;
-        let first = workspaceSplits[0];
-        let second = workspaceSplits[1];
+        const workspaceSplits = this.state.workspaceSplits;
+        const first = workspaceSplits[0];
+        const second = workspaceSplits[1];
         if (this.workspaceSplit) {
           Object.assign(first, this.workspaceSplit);
           this.workspaceSplit = null;
@@ -564,11 +563,11 @@ export class App extends React.Component<AppProps, AppState> {
     this.controlCenter = controlCenter;
   }
   render() {
-    let self = this;
+    const self = this;
 
     function makeEditorPanes(groups: Group[]): any {
       if (groups.length === 0) {
-        return <div>No Groups</div>
+        return <div>No Groups</div>;
       }
       return groups.map(group => {
         return <EditorPane files={group.files.slice(0)} file={group.file} preview={group.preview}
@@ -594,34 +593,34 @@ export class App extends React.Component<AppProps, AppState> {
             self.setState({ group });
           }}
           onClose={(file) => {
-            let groups = self.state.groups;
+            const groups = self.state.groups;
             group.close(file);
             if (group.files.length === 0 && groups.length > 1) {
-              let i = groups.indexOf(group);
+              const i = groups.indexOf(group);
               groups.splice(i, 1);
-              let g = groups.length ? groups[Math.min(groups.length - 1, i)] : null;
+              const g = groups.length ? groups[Math.min(groups.length - 1, i)] : null;
               self.setState({ groups, group: g });
               layout();
             } else {
               self.setState({ group });
             }
-          }} />
+          }} />;
       });
     }
 
-    let editorPanes = <Split name="Editors" orientation={SplitOrientation.Vertical} defaultSplit={{
+    const editorPanes = <Split name="Editors" orientation={SplitOrientation.Vertical} defaultSplit={{
       min: 128,
     }} splits={this.state.editorSplits} onChange={(splits) => {
       this.setState({ editorSplits: splits });
       layout();
     }}>
       {makeEditorPanes(this.state.groups)}
-    </Split>
+    </Split>;
 
     return <div className="fill">
       {this.state.toast &&
         <Toast onDismiss={this.dismissToast.bind(this)}
-               message={["Gist Created!", <a href={this.state.toast} target='_blank' className='gist-link'>Open in new tab.</a>]}
+               message={["Gist Created!", <a href={this.state.toast} target="_blank" className="gist-link">Open in new tab.</a>]}
         />
       }
       {this.state.newProjectDialog &&
@@ -652,7 +651,7 @@ export class App extends React.Component<AppProps, AppState> {
           this.setState({ editFileDialogFile: null });
         }}
           onChange={(name: string, description) => {
-            let file = this.state.editFileDialogFile;
+            const file = this.state.editFileDialogFile;
             file.name = name;
             file.description = description;
             this.setState({ editFileDialogFile: null });
@@ -719,6 +718,6 @@ export class App extends React.Component<AppProps, AppState> {
           Web Assembly Studio
         </div>
       </div>
-    </div>
+    </div>;
   }
 }

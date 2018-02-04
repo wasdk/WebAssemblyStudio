@@ -5,7 +5,7 @@ import { GoX } from "./Icons";
 
 export class Toast extends React.Component<{
   onDismiss: Function;
-  message: Array<any>;
+  message: any[];
 }, {
 }> {
   constructor(props: any) {
