@@ -429,11 +429,11 @@ export class App extends React.Component<AppProps, AppState> {
         });
         console.log(`Gist created: ${gistURI}`);
     } else {
-        console.log('Failed!');
+        console.log("Failed!");
     }
   }
 
-  dismissToast(index: number){
+  dismissToast(index: number) {
       this.setState({
           toast:  null
       });
@@ -620,7 +620,7 @@ export class App extends React.Component<AppProps, AppState> {
     return <div className="fill">
       {this.state.toast &&
         <Toast onDismiss={this.dismissToast.bind(this)}
-               message={["Gist Created!", <a href={this.state.toast} target='_blank' className='gist-link'>Open in new tab.</a>]}
+               message={["Gist Created!", <a href={this.state.toast} target="_blank" className="gist-link">Open in new tab.</a>]}
         />
       }
       {this.state.newProjectDialog &&
