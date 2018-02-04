@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export class Button extends React.Component<{
-  icon: JSX.Element;
+  icon?: JSX.Element;
   label?: string;
   title?: string;
   isDisabled?: boolean;

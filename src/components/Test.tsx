@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as SplitPane from "react-split-pane";
 import { Workspace } from "./Workspace";
 import { Console } from "./Console";
 import { Editor } from "./Editor";
@@ -230,4 +229,4 @@ export class Test extends React.Component<{
       {/* <TabSelectRandomTest /> */}
     </div>;
   }
-}                                                                                                                                                                                                                                                                                                 
+}

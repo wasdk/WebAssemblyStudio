@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as SplitPane from "react-split-pane";
 import { Workspace } from "./components/Workspace";
 import { Console } from "./components/Console";
 import { Editor } from "./components/Editor";
@@ -78,10 +77,9 @@ let fiddle = parameters["fiddle"] || parameters["f"];
   window.ContextViewService = require("vs/platform/contextview/browser/contextViewService").ContextViewService;
   window.TreeDefaults = require("vs/base/parts/tree/browser/treeDefaults");
   window.Action = require("vs/base/common/actions").Action;
-  
+
   ReactDOM.render(
     parameters["test"] ? <Test/> : <App embed={embed} fiddle={fiddle}/>,
     document.getElementById("app")
   );
 });
-
