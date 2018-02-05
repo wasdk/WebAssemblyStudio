@@ -121,12 +121,7 @@ export interface AppState {
    * Editor split state.
    */
   editorSplits: SplitInfo[];
-
-  /**
-   * Gists saved
-   */
-  toast: string;
-
+  toasts: string[];
   showProblems: boolean;
   showSandbox: boolean;
 }
@@ -168,7 +163,7 @@ export class App extends React.Component<AppProps, AppState> {
         { min: 40, value: 256 }
       ],
       editorSplits: [],
-      toast: null,
+      toasts: [],
       showProblems: true,
       showSandbox: true
     };
@@ -422,9 +417,9 @@ export class App extends React.Component<AppProps, AppState> {
     const gistURI = await Service.exportProjectToGist(this.project, this.state.fiddle);
     this.logLn("Project Gist CREATED ");
     if (gistURI) {
-      this.setState({
-        toast:  gistURI
-      });
+      this.setState((prevState: any) => ({
+        toasts:  [...prevState.toasts, gistURI]
+      }));
       console.log(`Gist created: ${gistURI}`);
     } else {
       console.log("Failed!");
@@ -432,9 +427,9 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   onToastDismiss(index: number) {
-      this.setState({
-          toast:  null
-      });
+    this.setState((prevState: any) => ({
+      toasts: prevState.toasts.filter((key: number, value: number) => value !== index )
+    }));
   }
 
   // makeMenuItems(file: File) {
@@ -666,13 +661,15 @@ export class App extends React.Component<AppProps, AppState> {
     </Split>;
 
     return <div className="fill">
-      {this.state.toast &&
+      <div className="toast-container">
+      {this.state.toasts && this.state.toasts.map((toast: string, key: number) =>
         <Toast
-          // tslint:disable-next-line:jsx-no-bind
-          onDismiss={this.onToastDismiss.bind(this)}
-          message={<span>"Gist Created!" <a href={this.state.toast} target="_blank" className="gist-link">Open in new tab.</a></span>}
+          onDismiss={this.onToastDismiss.bind(this, key)}
+          key={key}
+          message={<span>Gist created!<a target="_blank" href={toast}><span className="toast-span">Open in new tab</span></a></span>}
         />
-      }
+      )}
+      </div>
       {this.state.newProjectDialog &&
         <NewProjectDialog
           isOpen={true}

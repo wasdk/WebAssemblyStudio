@@ -1072,7 +1072,7 @@ exports.GoGist = GoGist;
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(15);
+var processNextTick = __webpack_require__(14);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -3391,26 +3391,6 @@ exports.Split = Split;
 
 "use strict";
 
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _Modal = __webpack_require__(80);
-
-var _Modal2 = _interopRequireDefault(_Modal);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _Modal2.default;
-module.exports = exports["default"];
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -3955,7 +3935,7 @@ exports.Service = Service;
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4006,7 +3986,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable node/no-deprecated-api */
@@ -4072,6 +4052,26 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Modal = __webpack_require__(80);
+
+var _Modal2 = _interopRequireDefault(_Modal);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _Modal2.default;
+module.exports = exports["default"];
 
 /***/ }),
 /* 17 */
@@ -6300,7 +6300,7 @@ exports.PassThrough = __webpack_require__(61);
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(15);
+var processNextTick = __webpack_require__(14);
 /*</replacement>*/
 
 module.exports = Writable;
@@ -6352,7 +6352,7 @@ var Stream = __webpack_require__(32);
 /*</replacement>*/
 
 /*<replacement>*/
-var Buffer = __webpack_require__(16).Buffer;
+var Buffer = __webpack_require__(15).Buffer;
 var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -7235,7 +7235,7 @@ module.exports = ReactDOM;
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 const model_1 = __webpack_require__(1);
-const service_1 = __webpack_require__(14);
+const service_1 = __webpack_require__(13);
 class FileTemplate {
     constructor(container) {
         this.monacoIconLabel = document.createElement("div");
@@ -8430,7 +8430,7 @@ module.exports = Array.isArray || function (arr) {
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(15);
+var processNextTick = __webpack_require__(14);
 /*</replacement>*/
 
 module.exports = Readable;
@@ -8460,7 +8460,7 @@ var Stream = __webpack_require__(32);
 // TODO(bmeurer): Change this back to const once hole checks are
 // properly optimized away early in Ignition+TurboFan.
 /*<replacement>*/
-var Buffer = __webpack_require__(16).Buffer;
+var Buffer = __webpack_require__(15).Buffer;
 var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -9430,7 +9430,7 @@ module.exports = __webpack_require__(19).EventEmitter;
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(15);
+var processNextTick = __webpack_require__(14);
 /*</replacement>*/
 
 // undocumented cb() API, needed for core, not for public API
@@ -9565,7 +9565,7 @@ exports.clearImmediate = clearImmediate;
 "use strict";
 
 
-var Buffer = __webpack_require__(16).Buffer;
+var Buffer = __webpack_require__(15).Buffer;
 
 var isEncoding = Buffer.isEncoding || function (encoding) {
   encoding = '' + encoding;
@@ -10535,7 +10535,7 @@ const Workspace_1 = __webpack_require__(45);
 const Toolbar_1 = __webpack_require__(73);
 const EditorPane_1 = __webpack_require__(22);
 const model_1 = __webpack_require__(1);
-const service_1 = __webpack_require__(14);
+const service_1 = __webpack_require__(13);
 const Split_1 = __webpack_require__(12);
 const index_1 = __webpack_require__(3);
 const wast_1 = __webpack_require__(75);
@@ -10700,7 +10700,7 @@ class App extends React.Component {
                 { min: 40, value: 256 }
             ],
             editorSplits: [],
-            toast: null,
+            toasts: [],
             showProblems: true,
             showSandbox: true
         };
@@ -10949,9 +10949,9 @@ class App extends React.Component {
             const gistURI = yield service_1.Service.exportProjectToGist(this.project, this.state.fiddle);
             this.logLn("Project Gist CREATED ");
             if (gistURI) {
-                this.setState({
-                    toast: gistURI
-                });
+                this.setState((prevState) => ({
+                    toasts: [...prevState.toasts, gistURI]
+                }));
                 console.log(`Gist created: ${gistURI}`);
             }
             else {
@@ -10960,9 +10960,9 @@ class App extends React.Component {
         });
     }
     onToastDismiss(index) {
-        this.setState({
-            toast: null
-        });
+        this.setState((prevState) => ({
+            toasts: prevState.toasts.filter((key, value) => value !== index)
+        }));
     }
     makeToolbarButtons() {
         const toolbarButtons = [
@@ -11055,14 +11055,10 @@ class App extends React.Component {
                 index_1.layout();
             } }, makeEditorPanes(this.state.groups));
         return React.createElement("div", { className: "fill" },
-            this.state.toast &&
-                React.createElement(Toast_1.Toast
-                // tslint:disable-next-line:jsx-no-bind
-                , { 
-                    // tslint:disable-next-line:jsx-no-bind
-                    onDismiss: this.onToastDismiss.bind(this), message: React.createElement("span", null,
-                        "\"Gist Created!\" ",
-                        React.createElement("a", { href: this.state.toast, target: "_blank", className: "gist-link" }, "Open in new tab.")) }),
+            React.createElement("div", { className: "toast-container" }, this.state.toasts && this.state.toasts.map((toast, key) => React.createElement(Toast_1.Toast, { onDismiss: this.onToastDismiss.bind(this, key), key: key, message: React.createElement("span", null,
+                    "Gist created!",
+                    React.createElement("a", { target: "_blank", href: toast },
+                        React.createElement("span", { className: "toast-span" }, "Open in new tab"))) }))),
             this.state.newProjectDialog &&
                 React.createElement(NewProjectDialog_1.NewProjectDialog, { isOpen: true, onCancel: () => {
                         this.setState({ newProjectDialog: null });
@@ -13028,7 +13024,7 @@ Stream.prototype.pipe = function(dest, options) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Buffer = __webpack_require__(16).Buffer;
+var Buffer = __webpack_require__(15).Buffer;
 /*</replacement>*/
 
 function copyBuffer(src, target, offset) {
@@ -15237,7 +15233,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const service_1 = __webpack_require__(14);
+const service_1 = __webpack_require__(13);
 class Markdown extends React.Component {
     constructor(props) {
         super(props);
@@ -16891,7 +16887,7 @@ exports.testGulpy = testGulpy;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const ReactModal = __webpack_require__(13);
+const ReactModal = __webpack_require__(16);
 const Button_1 = __webpack_require__(5);
 const Icons_1 = __webpack_require__(6);
 const model_1 = __webpack_require__(1);
@@ -18758,7 +18754,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const ReactModal = __webpack_require__(13);
+const ReactModal = __webpack_require__(16);
 const Button_1 = __webpack_require__(5);
 const Icons_1 = __webpack_require__(6);
 const model_1 = __webpack_require__(1);
@@ -18814,7 +18810,6 @@ exports.EditFileDialog = EditFileDialog;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const ReactModal = __webpack_require__(13);
 const Button_1 = __webpack_require__(5);
 const Icons_1 = __webpack_require__(6);
 class Toast extends React.Component {
@@ -18822,11 +18817,10 @@ class Toast extends React.Component {
         super(props);
     }
     render() {
-        return React.createElement(ReactModal, { isOpen: true, contentLabel: "Gist Created", className: "toast-container", ariaHideApp: false, overlayClassName: "toast-overlay" },
-            React.createElement("div", { className: "toast" },
-                React.createElement("div", { className: "modal-title-bar toast-title" }, this.props.message),
-                React.createElement("div", { className: "button-toast-container" },
-                    React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoX, null), customClassName: "button-toast", label: "Dismiss", title: "Dismiss", onClick: this.props.onDismiss }))));
+        return React.createElement("div", { className: "toast" },
+            React.createElement("div", { className: "toast-header" },
+                this.props.message,
+                React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoX, null), customClassName: "button-toast", label: "Dismiss", title: "Dismiss", onClick: this.props.onDismiss })));
     }
 }
 exports.Toast = Toast;
@@ -19149,7 +19143,7 @@ exports.X86 = {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const ReactModal = __webpack_require__(13);
+const ReactModal = __webpack_require__(16);
 const Button_1 = __webpack_require__(5);
 const Icons_1 = __webpack_require__(6);
 const Widgets_1 = __webpack_require__(17);
@@ -19192,8 +19186,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const service_1 = __webpack_require__(14);
-const ReactModal = __webpack_require__(13);
+const service_1 = __webpack_require__(13);
+const ReactModal = __webpack_require__(16);
 const Button_1 = __webpack_require__(5);
 const Icons_1 = __webpack_require__(6);
 const Widgets_1 = __webpack_require__(17);
