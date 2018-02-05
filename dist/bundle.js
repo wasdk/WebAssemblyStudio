@@ -7318,47 +7318,47 @@ class DirectoryTree extends React.Component {
                 const anchor = { x: event.posx, y: event.posy };
                 const actions = [];
                 if (file instanceof model_1.Directory) {
-                    actions.push(new window.Action("x", "New File", "", true, () => {
+                    actions.push(new window.Action("x", "New File", "octicon-file-add", true, () => {
                         return self.props.onNewFile && self.props.onNewFile(file);
                     }));
-                    actions.push(new window.Action("x", "New Directory", "", true, () => {
+                    actions.push(new window.Action("x", "New Directory", "octicon-file-add", true, () => {
                         return self.props.onNewDirectory && self.props.onNewDirectory(file);
                     }));
                 }
                 else if (file.type === model_1.FileType.Wasm) {
-                    actions.push(new window.Action("x", "Optimize w/ Binaryen", "", true, () => {
+                    actions.push(new window.Action("x", "Optimize w/ Binaryen", "octicon-gear", true, () => {
                         service_1.Service.optimizeWasmWithBinaryen(file);
                     }));
-                    actions.push(new window.Action("x", "Validate w/ Binaryen", "", true, () => {
+                    actions.push(new window.Action("x", "Validate w/ Binaryen", "octicon-check", true, () => {
                         service_1.Service.validateWasmWithBinaryen(file);
                     }));
-                    actions.push(new window.Action("x", "Download", "", true, () => {
+                    actions.push(new window.Action("x", "Download", "octicon-cloud-download", true, () => {
                         service_1.Service.download(file);
                     }));
-                    actions.push(new window.Action("x", "Disassemble w/ Wabt", "", true, () => {
+                    actions.push(new window.Action("x", "Disassemble w/ Wabt", "octicon-file-code", true, () => {
                         service_1.Service.disassembleWasmWithWabt(file);
                     }));
-                    actions.push(new window.Action("x", "Firefox x86", "", true, () => {
+                    actions.push(new window.Action("x", "Firefox x86", "octicon-file-binary", true, () => {
                         service_1.Service.disassembleX86(file);
                     }));
-                    actions.push(new window.Action("x", "Firefox x86 Baseline", "", true, () => {
+                    actions.push(new window.Action("x", "Firefox x86 Baseline", "octicon-file-binary", true, () => {
                         service_1.Service.disassembleX86(file, "--wasm-always-baseline");
                     }));
                 }
                 else if (file.type === model_1.FileType.C || file.type === model_1.FileType.Cpp) {
-                    actions.push(new window.Action("x", "Format w/ Clang", "", true, () => {
+                    actions.push(new window.Action("x", "Format w/ Clang", "octicon-quote", true, () => {
                         service_1.Service.clangFormat(file);
                     }));
                 }
                 else if (file.type === model_1.FileType.Wast) {
-                    actions.push(new window.Action("x", "Assemble w/ Wabt", "", true, () => {
+                    actions.push(new window.Action("x", "Assemble w/ Wabt", "octicon-file-binary", true, () => {
                         service_1.Service.assembleWastWithWabt(file);
                     }));
                 }
-                actions.push(new window.Action("x", "Edit", "", true, () => {
+                actions.push(new window.Action("x", "Edit", "octicon-pencil", true, () => {
                     return self.props.onEditFile && self.props.onEditFile(file);
                 }));
-                actions.push(new window.Action("x", "Delete", "", true, () => {
+                actions.push(new window.Action("x", "Delete", "octicon-x", true, () => {
                     return self.props.onDeleteFile && self.props.onDeleteFile(file);
                 }));
                 self.contextMenuService.showContextMenu({
