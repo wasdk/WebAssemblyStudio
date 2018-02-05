@@ -439,6 +439,15 @@ a {
   padding-right: 4px;
 }
 
+.button-toast {
+  background-color: var(--grey-800);
+}
+
+.button-toast-container {
+  display:inline-block;
+  float:right;
+}
+
 .menu {
 
 }
@@ -488,6 +497,22 @@ a {
   box-shadow: 1px 1px 4px black;
 }
 
+.toast-container {
+  position: fixed;
+  top: 0;
+  left: calc(50% - 300px);
+  width: 600px;
+  height: 40px;
+  background-color: rgb(0, 122, 204);
+  outline: none;
+  box-shadow: 1px 1px 4px black;
+}
+
+.toast {
+    flexDirection: "column";
+    height: "100%";
+}
+
 .overlay {
   position: fixed;
   top: 0;
@@ -498,6 +523,11 @@ a {
   z-index: 2;
 }
 
+.toast-overlay {
+  background: "rgba(255, 255, 255, 0)";
+  position: "inherit";
+}
+
 .modal-title-bar {
   font-family: 'Zilla Slab', serif;
   line-height: 22px;
@@ -506,6 +536,15 @@ a {
   font-size: 16px;
   font-weight: bold;
   padding: 4px;
+}
+
+.toast-title {
+  line-height: 30px;
+  display: inline-block;
+}
+
+a.gist-link {
+    color: #fff;
 }
 
 .list-box {

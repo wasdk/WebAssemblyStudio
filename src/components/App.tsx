@@ -18,12 +18,13 @@ import { Log } from "../languages/log";
 import * as Mousetrap from "mousetrap";
 import { Sandbox } from "./Sandbox";
 import { Gulpy, testGulpy } from "../gulpy";
-import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload, GoBook, GoRepoForked, GoRocket, GoBeaker, GoThreeBars } from "./Icons";
+import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload, GoBook, GoRepoForked, GoRocket, GoBeaker, GoThreeBars, GoGist } from "./Icons";
 import { Button } from "./Button";
 
 import * as ReactModal from "react-modal";
 import { NewFileDialog } from "./NewFileDialog";
 import { EditFileDialog } from "./EditFileDialog";
+import { Toast } from "./Toast";
 import { Spacer, Divider } from "./Widgets";
 import { Cton } from "../languages/cton";
 import { X86 } from "../languages/x86";
@@ -121,6 +122,11 @@ export interface AppState {
    */
   editorSplits: SplitInfo[];
 
+  /**
+   * Gists saved
+   */
+  toast: string;
+
   showProblems: boolean;
   showSandbox: boolean;
 }
@@ -162,6 +168,7 @@ export class App extends React.Component<AppProps, AppState> {
         { min: 40, value: 256 }
       ],
       editorSplits: [],
+      toast: null,
       showProblems: true,
       showSandbox: true
     };
@@ -410,6 +417,26 @@ export class App extends React.Component<AppProps, AppState> {
     }
     this.setState({ fiddle });
   }
+  async gist() {
+    this.logLn("Exporting Project ...");
+    const gistURI = await Service.exportProjectToGist(this.project, this.state.fiddle);
+    this.logLn("Project Gist CREATED ");
+    if (gistURI) {
+      this.setState({
+        toast:  gistURI
+      });
+      console.log(`Gist created: ${gistURI}`);
+    } else {
+      console.log("Failed!");
+    }
+  }
+
+  onToastDismiss(index: number) {
+      this.setState({
+          toast:  null
+      });
+  }
+
   // makeMenuItems(file: File) {
   //   let items = [];
   //   let directory = file.type === FileType.Directory ? file : file.parent;
@@ -534,6 +561,14 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         />,
         <Button
+          icon={<GoGist />}
+          label="Gist"
+          title="Export to Gist"
+          onClick={() => {
+            this.gist();
+          }}
+        />,
+        <Button
           icon={<GoRocket />}
           label="Share"
           onClick={() => {
@@ -631,6 +666,13 @@ export class App extends React.Component<AppProps, AppState> {
     </Split>;
 
     return <div className="fill">
+      {this.state.toast &&
+        <Toast
+          // tslint:disable-next-line:jsx-no-bind
+          onDismiss={this.onToastDismiss.bind(this)}
+          message={<span>"Gist Created!" <a href={this.state.toast} target="_blank" className="gist-link">Open in new tab.</a></span>}
+        />
+      }
       {this.state.newProjectDialog &&
         <NewProjectDialog
           isOpen={true}
