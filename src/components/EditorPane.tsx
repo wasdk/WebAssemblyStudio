@@ -70,9 +70,7 @@ export class EditorPane extends React.Component<EditorPaneProps, {
       assert(view);
     }
     let viewer;
-    if (file && file.type === FileType.Markdown) {
-      viewer = <Markdown src={file.getData() as string} />;
-    } else if (file) {
+    if (file) {
       viewer = <Editor view={view} options={{ readOnly: file.isBufferReadOnly }} />;
     } else {
       return <div className="editor-pane-container empty">
