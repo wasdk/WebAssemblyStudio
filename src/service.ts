@@ -46,6 +46,7 @@ export enum Language {
   Cpp = "cpp",
   Wast = "wast",
   Wasm = "wasm",
+  Rust = "rust",
   Cretonne = "cton",
   x86 = "x86"
 }
@@ -133,12 +134,14 @@ export class Service {
 
   static async compileFile(file: File, from: Language, to: Language, options = ""): Promise<any> {
     const result = await Service.compile(file.getData(), from, to, options);
-    const markers = Service.getMarkers(result.tasks[0].console);
-    if (markers.length) {
-      monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
-      file.setProblems(markers.map(marker => {
-        return Problem.fromMarker(file, marker);
-      }));
+    if (result.tasks) {
+      const markers = Service.getMarkers(result.tasks[0].console);
+      if (markers.length) {
+        monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
+        file.setProblems(markers.map(marker => {
+          return Problem.fromMarker(file, marker);
+        }));
+      }
     }
     if (!result.success) {
       throw new Error((result as any).message);
@@ -169,6 +172,15 @@ export class Service {
     } else if (from === Language.Wasm && to === Language.x86) {
       const input = encodeURIComponent(base64js.fromByteArray(src as ArrayBuffer));
       return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options));
+    } else if (from === Language.Rust && to === Language.Wasm) {
+      // TODO: Temporary until we integrate rustc into the service.
+      return fetch("https://rust-heroku.herokuapp.com/rustc", {
+        method: "POST",
+        body: JSON.stringify({code: src}),
+        headers: new Headers({
+          "Content-Type": "application/json"
+        })
+      }).then(res => res.json());
     }
     /*
     src = encodeURIComponent(src).replace('%20', '+');
