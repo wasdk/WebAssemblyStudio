@@ -71,6 +71,532 @@ module.exports = React;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+__webpack_require__(4);
+const index_1 = __webpack_require__(3);
+__webpack_require__(29);
+const minimatch_1 = __webpack_require__(29);
+function shallowCompare(a, b) {
+    if (a === b) {
+        return true;
+    }
+    if (a.length !== b.length) {
+        return false;
+    }
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+exports.shallowCompare = shallowCompare;
+var FileType;
+(function (FileType) {
+    FileType["JavaScript"] = "javascript";
+    FileType["TypeScript"] = "typescript";
+    FileType["HTML"] = "html";
+    FileType["CSS"] = "css";
+    FileType["C"] = "c";
+    FileType["Cpp"] = "cpp";
+    FileType["Rust"] = "rust";
+    FileType["Wast"] = "wast";
+    FileType["Wasm"] = "wasm";
+    FileType["Directory"] = "directory";
+    FileType["Log"] = "log";
+    FileType["x86"] = "x86";
+    FileType["Markdown"] = "markdown";
+    FileType["Cretonne"] = "cretonne";
+})(FileType = exports.FileType || (exports.FileType = {}));
+function languageForFileType(type) {
+    if (type === FileType.HTML) {
+        return "html";
+    }
+    else if (type === FileType.CSS) {
+        return "css";
+    }
+    else if (type === FileType.JavaScript) {
+        return "javascript";
+    }
+    else if (type === FileType.TypeScript) {
+        return "typescript";
+    }
+    else if (type === FileType.C || type === FileType.Cpp) {
+        return "cpp";
+    }
+    else if (type === FileType.Wast || type === FileType.Wasm) {
+        return "wast";
+    }
+    else if (type === FileType.Log) {
+        return "log";
+    }
+    else if (type === FileType.x86) {
+        return "x86";
+    }
+    else if (type === FileType.Markdown) {
+        return "markdown";
+    }
+    else if (type === FileType.Cretonne) {
+        return "cton";
+    }
+    return "";
+}
+exports.languageForFileType = languageForFileType;
+function nameForFileType(type) {
+    if (type === FileType.HTML) {
+        return "HTML";
+    }
+    else if (type === FileType.CSS) {
+        return "CSS";
+    }
+    else if (type === FileType.JavaScript) {
+        return "JavaScript";
+    }
+    else if (type === FileType.TypeScript) {
+        return "TypeScript";
+    }
+    else if (type === FileType.C) {
+        return "C";
+    }
+    else if (type === FileType.Cpp) {
+        return "C++";
+    }
+    else if (type === FileType.Wast) {
+        return "Wast";
+    }
+    else if (type === FileType.Wasm) {
+        return "Wasm";
+    }
+    else if (type === FileType.Markdown) {
+        return "Markdown";
+    }
+    else if (type === FileType.Rust) {
+        return "Rust";
+    }
+    else if (type === FileType.Cretonne) {
+        return "Cretonne";
+    }
+    return "";
+}
+exports.nameForFileType = nameForFileType;
+function extensionForFileType(type) {
+    if (type === FileType.HTML) {
+        return "html";
+    }
+    else if (type === FileType.CSS) {
+        return "css";
+    }
+    else if (type === FileType.JavaScript) {
+        return "js";
+    }
+    else if (type === FileType.TypeScript) {
+        return "ts";
+    }
+    else if (type === FileType.C) {
+        return "c";
+    }
+    else if (type === FileType.Cpp) {
+        return "cpp";
+    }
+    else if (type === FileType.Wast) {
+        return "wast";
+    }
+    else if (type === FileType.Wasm) {
+        return "wasm";
+    }
+    else if (type === FileType.Markdown) {
+        return "md";
+    }
+    else if (type === FileType.Rust) {
+        return "rs";
+    }
+    else if (type === FileType.Cretonne) {
+        return "cton";
+    }
+    return "";
+}
+exports.extensionForFileType = extensionForFileType;
+function mimeTypeForFileType(type) {
+    if (type === FileType.HTML) {
+        return "text/html";
+    }
+    else if (type === FileType.JavaScript) {
+        return "application/javascript";
+    }
+    else if (type === FileType.Wasm) {
+        return "application/wasm";
+    }
+    return "";
+}
+exports.mimeTypeForFileType = mimeTypeForFileType;
+function getIconForFileType(fileType) {
+    if (fileType === FileType.JavaScript) {
+        return "file_type_js";
+    }
+    else if (fileType === FileType.TypeScript) {
+        return "file_type_typescript";
+    }
+    else if (fileType === FileType.C) {
+        return "file_type_c";
+    }
+    else if (fileType === FileType.Cpp) {
+        return "file_type_cpp";
+    }
+    else if (fileType === FileType.Directory) {
+        return "default_folder";
+    }
+    return "default_file";
+}
+exports.getIconForFileType = getIconForFileType;
+class EventDispatcher {
+    constructor(name) {
+        this.callbacks = [];
+        this.name = name;
+    }
+    register(callback) {
+        if (this.callbacks.indexOf(callback) >= 0) {
+            return;
+        }
+        this.callbacks.push(callback);
+    }
+    unregister(callback) {
+        const i = this.callbacks.indexOf(callback);
+        if (i < 0) {
+            throw new Error("Unknown callback.");
+        }
+        this.callbacks.splice(i, 1);
+    }
+    dispatch(target) {
+        // console.log("Dispatching " + this.name);
+        this.callbacks.forEach(callback => {
+            callback(target);
+        });
+    }
+}
+exports.EventDispatcher = EventDispatcher;
+function monacoSeverityToString(severity) {
+    switch (severity) {
+        case monaco.Severity.Info: return "info";
+        case monaco.Severity.Warning: return "warning";
+        case monaco.Severity.Error: return "error";
+        case monaco.Severity.Ignore: return "ignore";
+    }
+}
+let nextKey = 0;
+function getNextKey() {
+    return nextKey++;
+}
+class Problem {
+    constructor(file, description, severity, marker) {
+        this.file = file;
+        this.description = description;
+        this.severity = severity;
+        this.marker = marker;
+        this.key = String(getNextKey());
+    }
+    static fromMarker(file, marker) {
+        return new Problem(file, `${marker.message} (${marker.startLineNumber}, ${marker.startColumn})`, monacoSeverityToString(marker.severity), marker);
+    }
+}
+exports.Problem = Problem;
+class File {
+    constructor(name, type) {
+        this.isDirty = false;
+        this.isBufferReadOnly = false;
+        this.onDidChangeData = new EventDispatcher("File Data Change");
+        this.onDidChangeBuffer = new EventDispatcher("File Buffer Change");
+        this.onDidChangeProblems = new EventDispatcher("File Problems Change");
+        this.key = String(getNextKey());
+        this.problems = [];
+        this.name = name;
+        this.type = type;
+        this.data = null; // localStorage.getItem(this.name);
+        this.buffer = monaco.editor.createModel(this.data, languageForFileType(type));
+        this.buffer.updateOptions({ tabSize: 2, insertSpaces: true });
+        this.buffer.onDidChangeContent((e) => {
+            const dispatch = !this.isDirty;
+            this.isDirty = true;
+            if (dispatch) {
+                let file = this;
+                while (file) {
+                    file.onDidChangeBuffer.dispatch();
+                    file = file.parent;
+                }
+            }
+            monaco.editor.setModelMarkers(this.buffer, "compiler", []);
+        });
+        this.isBufferReadOnly = type === FileType.Wasm;
+        if (this.isBufferReadOnly) {
+            this.description = "Read Only";
+        }
+        this.parent = null;
+    }
+    setProblems(problems) {
+        this.problems = problems;
+        let file = this;
+        while (file) {
+            file.onDidChangeProblems.dispatch();
+            file = file.parent;
+        }
+    }
+    getEmitOutput() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const model = this.buffer;
+            if (this.type !== FileType.TypeScript) {
+                return Promise.resolve("");
+            }
+            const worker = yield monaco.languages.typescript.getTypeScriptWorker();
+            const client = yield worker(model.uri);
+            return client.getEmitOutput(model.uri.toString());
+        });
+    }
+    setData(data, setBuffer = true) {
+        this.data = data;
+        let file = this;
+        if (typeof data === "string") {
+            if (setBuffer) {
+                this.buffer.setValue(data);
+            }
+            this.isDirty = false;
+        }
+        while (file) {
+            file.onDidChangeData.dispatch();
+            file = file.parent;
+        }
+    }
+    getData() {
+        if (this.isDirty && !this.isBufferReadOnly) {
+            const project = this.getProject();
+            if (project) {
+                project.onDirtyFileUsed.dispatch(this);
+            }
+        }
+        return this.data;
+    }
+    getProject() {
+        let parent = this.parent;
+        if (parent) {
+            while (parent.parent) {
+                parent = parent.parent;
+            }
+            if (parent instanceof Project) {
+                return parent;
+            }
+        }
+        return null;
+    }
+    getDepth() {
+        let depth = 0;
+        let parent = this.parent;
+        while (parent) {
+            parent = parent.parent;
+            depth++;
+        }
+        return depth;
+    }
+    getPath() {
+        const path = [];
+        let parent = this.parent;
+        if (!parent) {
+            return "";
+        }
+        while (parent.parent) {
+            path.unshift(parent.name);
+            parent = parent.parent;
+        }
+        path.push(this.name);
+        return path.join("/");
+    }
+    save() {
+        if (!this.isDirty) {
+            return;
+        }
+        this.isDirty = false;
+        this.setData(this.buffer.getValue(), false);
+    }
+    toString() {
+        return "File [" + this.name + "]";
+    }
+}
+exports.File = File;
+class Directory extends File {
+    constructor(name) {
+        super(name, FileType.Directory);
+        this.children = [];
+        this.isOpen = true;
+        this.onDidChangeChildren = new EventDispatcher("Directory Changed ");
+    }
+    notifyDidChangeChildren() {
+        let directory = this;
+        while (directory) {
+            directory.onDidChangeChildren.dispatch();
+            directory = directory.parent;
+        }
+    }
+    forEachFile(fn, recurse = false) {
+        if (recurse) {
+            this.children.forEach((file) => {
+                if (file instanceof Directory) {
+                    file.forEachFile(fn, recurse);
+                }
+                fn(file);
+            });
+        }
+        else {
+            this.children.forEach(fn);
+        }
+    }
+    //     function go(directory: Directory) {
+    //       directory.forEachFile((file) => {
+    //         if (file instanceof Directory) {
+    //           go(file);
+    //         } else {
+    //           // let depth = file.getDepth();
+    //           if (file.problems.length) {
+    //             treeViewItems.push(<TreeViewItem depth={0} icon={getIconForFileType(file.type)} label={file.name}></TreeViewItem>);
+    //             file.problems.forEach((problem) => {
+    //               treeViewItems.push(<TreeViewProblemItem depth={1} problem={problem} />);
+    //             });
+    //           }
+    //         }
+    //       });
+    //     }
+    //     go(this.props.project);
+    mapEachFile(fn) {
+        return this.children.map(fn);
+    }
+    addFile(file) {
+        index_1.assert(file.parent === null);
+        this.children.push(file);
+        file.parent = this;
+        this.notifyDidChangeChildren();
+    }
+    removeFile(file) {
+        index_1.assert(file.parent === this);
+        const i = this.children.indexOf(file);
+        index_1.assert(i >= 0);
+        this.children.splice(i, 1);
+        this.notifyDidChangeChildren();
+    }
+    newDirectory(path) {
+        if (typeof path === "string") {
+            path = path.split("/");
+        }
+        let directory = this;
+        while (path.length) {
+            const name = path.shift();
+            let file = directory.getImmediateChild(name);
+            if (file) {
+                directory = file;
+            }
+            else {
+                file = new Directory(name);
+                directory.addFile(file);
+                directory = file;
+            }
+        }
+        index_1.assert(directory instanceof Directory);
+        return directory;
+    }
+    newFile(path, type) {
+        if (typeof path === "string") {
+            path = path.split("/");
+        }
+        let directory = this;
+        if (path.length > 1) {
+            directory = this.newDirectory(path.slice(0, path.length - 1));
+        }
+        const name = path[path.length - 1];
+        let file = directory.getFile(name);
+        if (file) {
+            index_1.assert(file.type === type);
+        }
+        else {
+            file = new File(path[path.length - 1], type);
+            directory.addFile(file);
+        }
+        return file;
+    }
+    getImmediateChild(name) {
+        return this.children.find((file) => {
+            return file.name === name;
+        });
+    }
+    getFile(path) {
+        if (typeof path === "string") {
+            path = path.split("/");
+        }
+        const file = this.getImmediateChild(path[0]);
+        if (path.length > 1) {
+            if (file && file.type === FileType.Directory) {
+                return file.getFile(path.slice(1));
+            }
+            else {
+                return null;
+            }
+        }
+        return file;
+    }
+    list() {
+        const list = [];
+        function recurse(prefix, x) {
+            if (prefix) {
+                prefix += "/";
+            }
+            x.forEachFile(file => {
+                const path = prefix + file.name;
+                if (file instanceof Directory) {
+                    recurse(path, file);
+                }
+                else {
+                    list.push(path);
+                }
+            });
+        }
+        recurse("", this);
+        return list;
+    }
+    glob(pattern) {
+        const mm = new minimatch_1.Minimatch(pattern);
+        return this.list().filter(path => mm.match(path));
+    }
+    globFiles(pattern) {
+        return this.glob(pattern).map(path => this.getFile(path));
+    }
+}
+exports.Directory = Directory;
+class Project extends Directory {
+    constructor() {
+        super("Project");
+        this.onChange = new EventDispatcher("Project Change");
+        this.onDirtyFileUsed = new EventDispatcher("Dirty File Used");
+    }
+    static run() {
+        Project.onRun.dispatch();
+    }
+    static build() {
+        Project.onBuild.dispatch();
+    }
+}
+Project.onRun = new EventDispatcher("Project Run");
+Project.onBuild = new EventDispatcher("Project Build");
+exports.Project = Project;
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -260,529 +786,6 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(5);
-const index_1 = __webpack_require__(3);
-__webpack_require__(27);
-const minimatch_1 = __webpack_require__(27);
-function shallowCompare(a, b) {
-    if (a === b)
-        return true;
-    if (a.length != b.length)
-        return false;
-    for (let i = 0; i < a.length; i++) {
-        if (a[i] != b[i])
-            return false;
-    }
-    return true;
-}
-exports.shallowCompare = shallowCompare;
-var FileType;
-(function (FileType) {
-    FileType["JavaScript"] = "javascript";
-    FileType["TypeScript"] = "typescript";
-    FileType["HTML"] = "html";
-    FileType["CSS"] = "css";
-    FileType["C"] = "c";
-    FileType["Cpp"] = "cpp";
-    FileType["Rust"] = "rust";
-    FileType["Wast"] = "wast";
-    FileType["Wasm"] = "wasm";
-    FileType["Directory"] = "directory";
-    FileType["Log"] = "log";
-    FileType["x86"] = "x86";
-    FileType["Markdown"] = "markdown";
-    FileType["Cretonne"] = "cretonne";
-})(FileType = exports.FileType || (exports.FileType = {}));
-function languageForFileType(type) {
-    if (type == FileType.HTML) {
-        return "html";
-    }
-    else if (type == FileType.CSS) {
-        return "css";
-    }
-    else if (type == FileType.JavaScript) {
-        return "javascript";
-    }
-    else if (type == FileType.TypeScript) {
-        return "typescript";
-    }
-    else if (type == FileType.C || type == FileType.Cpp) {
-        return "cpp";
-    }
-    else if (type == FileType.Wast || type == FileType.Wasm) {
-        return "wast";
-    }
-    else if (type === FileType.Log) {
-        return "log";
-    }
-    else if (type === FileType.x86) {
-        return "x86";
-    }
-    else if (type === FileType.Markdown) {
-        return "markdown";
-    }
-    else if (type === FileType.Cretonne) {
-        return "cton";
-    }
-    return "";
-}
-exports.languageForFileType = languageForFileType;
-function nameForFileType(type) {
-    if (type == FileType.HTML) {
-        return "HTML";
-    }
-    else if (type == FileType.CSS) {
-        return "CSS";
-    }
-    else if (type == FileType.JavaScript) {
-        return "JavaScript";
-    }
-    else if (type == FileType.TypeScript) {
-        return "TypeScript";
-    }
-    else if (type == FileType.C) {
-        return "C";
-    }
-    else if (type == FileType.Cpp) {
-        return "C++";
-    }
-    else if (type == FileType.Wast) {
-        return "Wast";
-    }
-    else if (type == FileType.Wasm) {
-        return "Wasm";
-    }
-    else if (type === FileType.Markdown) {
-        return "Markdown";
-    }
-    else if (type === FileType.Rust) {
-        return "Rust";
-    }
-    else if (type === FileType.Cretonne) {
-        return "Cretonne";
-    }
-    return "";
-}
-exports.nameForFileType = nameForFileType;
-function extensionForFileType(type) {
-    if (type == FileType.HTML) {
-        return "html";
-    }
-    else if (type == FileType.CSS) {
-        return "css";
-    }
-    else if (type == FileType.JavaScript) {
-        return "js";
-    }
-    else if (type == FileType.TypeScript) {
-        return "ts";
-    }
-    else if (type == FileType.C) {
-        return "c";
-    }
-    else if (type == FileType.Cpp) {
-        return "cpp";
-    }
-    else if (type == FileType.Wast) {
-        return "wast";
-    }
-    else if (type == FileType.Wasm) {
-        return "wasm";
-    }
-    else if (type === FileType.Markdown) {
-        return "md";
-    }
-    else if (type === FileType.Rust) {
-        return "rs";
-    }
-    else if (type === FileType.Cretonne) {
-        return "cton";
-    }
-    return "";
-}
-exports.extensionForFileType = extensionForFileType;
-function mimeTypeForFileType(type) {
-    if (type == FileType.HTML) {
-        return "text/html";
-    }
-    else if (type == FileType.JavaScript) {
-        return "application/javascript";
-    }
-    else if (type == FileType.Wasm) {
-        return "application/wasm";
-    }
-    return "";
-}
-exports.mimeTypeForFileType = mimeTypeForFileType;
-function getIconForFileType(fileType) {
-    if (fileType === FileType.JavaScript) {
-        return "file_type_js";
-    }
-    else if (fileType === FileType.TypeScript) {
-        return "file_type_typescript";
-    }
-    else if (fileType === FileType.C) {
-        return "file_type_c";
-    }
-    else if (fileType === FileType.Cpp) {
-        return "file_type_cpp";
-    }
-    else if (fileType === FileType.Directory) {
-        return "default_folder";
-    }
-    return "default_file";
-}
-exports.getIconForFileType = getIconForFileType;
-class EventDispatcher {
-    constructor(name) {
-        this.callbacks = [];
-        this.name = name;
-    }
-    register(callback) {
-        if (this.callbacks.indexOf(callback) >= 0) {
-            return;
-        }
-        this.callbacks.push(callback);
-    }
-    unregister(callback) {
-        let i = this.callbacks.indexOf(callback);
-        if (i < 0) {
-            throw new Error("Unknown callback.");
-        }
-        this.callbacks.splice(i, 1);
-    }
-    dispatch(target) {
-        // console.log("Dispatching " + this.name);
-        this.callbacks.forEach(callback => {
-            callback(target);
-        });
-    }
-}
-exports.EventDispatcher = EventDispatcher;
-function monacoSeverityToString(severity) {
-    switch (severity) {
-        case monaco.Severity.Info: return "info";
-        case monaco.Severity.Warning: return "warning";
-        case monaco.Severity.Error: return "error";
-        case monaco.Severity.Ignore: return "ignore";
-    }
-}
-let nextKey = 0;
-function getNextKey() {
-    return nextKey++;
-}
-class Problem {
-    constructor(file, description, severity, marker) {
-        this.file = file;
-        this.description = description;
-        this.severity = severity;
-        this.marker = marker;
-        this.key = String(getNextKey());
-    }
-    static fromMarker(file, marker) {
-        return new Problem(file, `${marker.message} (${marker.startLineNumber}, ${marker.startColumn})`, monacoSeverityToString(marker.severity), marker);
-    }
-}
-exports.Problem = Problem;
-class File {
-    constructor(name, type) {
-        this.isDirty = false;
-        this.isBufferReadOnly = false;
-        this.onDidChangeData = new EventDispatcher("File Data Change");
-        this.onDidChangeBuffer = new EventDispatcher("File Buffer Change");
-        this.onDidChangeProblems = new EventDispatcher("File Problems Change");
-        this.key = String(getNextKey());
-        this.problems = [];
-        this.name = name;
-        this.type = type;
-        this.data = null; // localStorage.getItem(this.name);
-        this.buffer = monaco.editor.createModel(this.data, languageForFileType(type));
-        this.buffer.updateOptions({ tabSize: 2, insertSpaces: true });
-        this.buffer.onDidChangeContent((e) => {
-            let dispatch = !this.isDirty;
-            this.isDirty = true;
-            if (dispatch) {
-                let file = this;
-                while (file) {
-                    file.onDidChangeBuffer.dispatch();
-                    file = file.parent;
-                }
-            }
-            monaco.editor.setModelMarkers(this.buffer, "compiler", []);
-        });
-        this.isBufferReadOnly = type === FileType.Wasm;
-        if (this.isBufferReadOnly) {
-            this.description = "Read Only";
-        }
-        this.parent = null;
-    }
-    setProblems(problems) {
-        this.problems = problems;
-        let file = this;
-        while (file) {
-            file.onDidChangeProblems.dispatch();
-            file = file.parent;
-        }
-    }
-    getEmitOutput() {
-        return __awaiter(this, void 0, void 0, function* () {
-            let model = this.buffer;
-            if (this.type !== FileType.TypeScript) {
-                return Promise.resolve("");
-            }
-            const worker = yield monaco.languages.typescript.getTypeScriptWorker();
-            const client = yield worker(model.uri);
-            return client.getEmitOutput(model.uri.toString());
-        });
-    }
-    setData(data, setBuffer = true) {
-        this.data = data;
-        let file = this;
-        if (typeof data === "string") {
-            if (setBuffer) {
-                this.buffer.setValue(data);
-            }
-            this.isDirty = false;
-        }
-        while (file) {
-            file.onDidChangeData.dispatch();
-            file = file.parent;
-        }
-    }
-    getData() {
-        if (this.isDirty && !this.isBufferReadOnly) {
-            let project = this.getProject();
-            if (project) {
-                project.onDirtyFileUsed.dispatch(this);
-            }
-        }
-        return this.data;
-    }
-    getProject() {
-        let parent = this.parent;
-        if (parent) {
-            while (parent.parent) {
-                parent = parent.parent;
-            }
-            if (parent instanceof Project) {
-                return parent;
-            }
-        }
-        return null;
-    }
-    getDepth() {
-        let depth = 0;
-        let parent = this.parent;
-        while (parent) {
-            parent = parent.parent;
-            depth++;
-        }
-        return depth;
-    }
-    getPath() {
-        let path = [];
-        let parent = this.parent;
-        if (!parent) {
-            return "";
-        }
-        while (parent.parent) {
-            path.unshift(parent.name);
-            parent = parent.parent;
-        }
-        path.push(this.name);
-        return path.join("/");
-    }
-    save() {
-        if (!this.isDirty) {
-            return;
-        }
-        this.isDirty = false;
-        this.setData(this.buffer.getValue(), false);
-    }
-    toString() {
-        return "File [" + this.name + "]";
-    }
-}
-exports.File = File;
-class Directory extends File {
-    constructor(name) {
-        super(name, FileType.Directory);
-        this.children = [];
-        this.isOpen = true;
-        this.onDidChangeChildren = new EventDispatcher("Directory Changed ");
-    }
-    notifyDidChangeChildren() {
-        let directory = this;
-        while (directory) {
-            directory.onDidChangeChildren.dispatch();
-            directory = directory.parent;
-        }
-    }
-    forEachFile(fn, recurse = false) {
-        if (recurse) {
-            this.children.forEach((file) => {
-                if (file instanceof Directory) {
-                    file.forEachFile(fn, recurse);
-                }
-                fn(file);
-            });
-        }
-        else {
-            this.children.forEach(fn);
-        }
-    }
-    //     function go(directory: Directory) {
-    //       directory.forEachFile((file) => {
-    //         if (file instanceof Directory) {
-    //           go(file);
-    //         } else {
-    //           // let depth = file.getDepth();
-    //           if (file.problems.length) {
-    //             treeViewItems.push(<TreeViewItem depth={0} icon={getIconForFileType(file.type)} label={file.name}></TreeViewItem>);
-    //             file.problems.forEach((problem) => {
-    //               treeViewItems.push(<TreeViewProblemItem depth={1} problem={problem} />);
-    //             });
-    //           }
-    //         }
-    //       });
-    //     }
-    //     go(this.props.project);
-    mapEachFile(fn) {
-        return this.children.map(fn);
-    }
-    addFile(file) {
-        index_1.assert(file.parent === null);
-        this.children.push(file);
-        file.parent = this;
-        this.notifyDidChangeChildren();
-    }
-    removeFile(file) {
-        index_1.assert(file.parent === this);
-        let i = this.children.indexOf(file);
-        index_1.assert(i >= 0);
-        this.children.splice(i, 1);
-        this.notifyDidChangeChildren();
-    }
-    newDirectory(path) {
-        if (typeof path === "string") {
-            path = path.split("/");
-        }
-        let directory = this;
-        while (path.length) {
-            let name = path.shift();
-            let file = directory.getImmediateChild(name);
-            if (file) {
-                directory = file;
-            }
-            else {
-                file = new Directory(name);
-                directory.addFile(file);
-                directory = file;
-            }
-        }
-        index_1.assert(directory instanceof Directory);
-        return directory;
-    }
-    newFile(path, type) {
-        if (typeof path === "string") {
-            path = path.split("/");
-        }
-        let directory = this;
-        if (path.length > 1) {
-            directory = this.newDirectory(path.slice(0, path.length - 1));
-        }
-        let name = path[path.length - 1];
-        let file = directory.getFile(name);
-        if (file) {
-            index_1.assert(file.type == type);
-        }
-        else {
-            file = new File(path[path.length - 1], type);
-            directory.addFile(file);
-        }
-        return file;
-    }
-    getImmediateChild(name) {
-        return this.children.find((file) => {
-            return file.name === name;
-        });
-    }
-    getFile(path) {
-        if (typeof path === "string") {
-            path = path.split("/");
-        }
-        let file = this.getImmediateChild(path[0]);
-        if (path.length > 1) {
-            if (file && file.type == FileType.Directory) {
-                return file.getFile(path.slice(1));
-            }
-            else {
-                return null;
-            }
-        }
-        return file;
-    }
-    list() {
-        let list = [];
-        function recurse(prefix, x) {
-            if (prefix) {
-                prefix += "/";
-            }
-            x.forEachFile(file => {
-                const path = prefix + file.name;
-                if (file instanceof Directory) {
-                    recurse(path, file);
-                }
-                else {
-                    list.push(path);
-                }
-            });
-        }
-        recurse("", this);
-        return list;
-    }
-    glob(pattern) {
-        let mm = new minimatch_1.Minimatch(pattern);
-        return this.list().filter(path => mm.match(path));
-    }
-    globFiles(pattern) {
-        return this.glob(pattern).map(path => this.getFile(path));
-    }
-}
-exports.Directory = Directory;
-class Project extends Directory {
-    constructor() {
-        super("Project");
-        this.onChange = new EventDispatcher("Project Change");
-        this.onDirtyFileUsed = new EventDispatcher("Dirty File Used");
-    }
-    static run() {
-        Project.onRun.dispatch();
-    }
-    static build() {
-        Project.onBuild.dispatch();
-    }
-}
-Project.onRun = new EventDispatcher("Project Run");
-Project.onBuild = new EventDispatcher("Project Build");
-exports.Project = Project;
-
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -790,11 +793,11 @@ exports.Project = Project;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const ReactDOM = __webpack_require__(26);
-const App_1 = __webpack_require__(65);
-const Test_1 = __webpack_require__(90);
+const ReactDOM = __webpack_require__(27);
+const App_1 = __webpack_require__(44);
+const Test_1 = __webpack_require__(101);
 function layout() {
-    var event = new Event("layout");
+    const event = new Event("layout");
     document.dispatchEvent(event);
 }
 exports.layout = layout;
@@ -806,11 +809,13 @@ function assert(c, message) {
 exports.assert = assert;
 let nextObjectId = 0;
 function objectId(o) {
-    if (!o)
+    if (!o) {
         return o;
+    }
     assert(typeof o === "object");
-    if ("__id__" in o)
+    if ("__id__" in o) {
         return o.__id__;
+    }
     return o.__id__ = nextObjectId++;
 }
 exports.objectId = objectId;
@@ -825,10 +830,10 @@ window.addEventListener("resize", () => {
 function forEachUrlParameter(callback) {
     let url = window.location.search.substring(1);
     url = url.replace(/\/$/, ""); // Replace / at the end that gets inserted by browsers.
-    let params = {};
-    url.split('&').forEach(function (s) {
-        let t = s.split('=');
-        if (t.length == 2) {
+    const params = {};
+    url.split("&").forEach(function (s) {
+        const t = s.split("=");
+        if (t.length === 2) {
             callback(t[0], decodeURIComponent(t[1]));
         }
         else {
@@ -838,18 +843,17 @@ function forEachUrlParameter(callback) {
 }
 exports.forEachUrlParameter = forEachUrlParameter;
 function getUrlParameters() {
-    let params = {};
+    const params = {};
     forEachUrlParameter((key, value) => {
         params[key] = value;
     });
     return params;
 }
 exports.getUrlParameters = getUrlParameters;
-;
-let parameters = getUrlParameters();
-let embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed"]);
-let fiddle = parameters["fiddle"] || parameters["f"];
-(window['require'])(['vs/editor/editor.main', 'require'], (_, require) => {
+const parameters = getUrlParameters();
+const embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed"], 10);
+const fiddle = parameters["fiddle"] || parameters["f"];
+(window["require"])(["vs/editor/editor.main", "require"], (_, require) => {
     window.Tree = require("vs/base/parts/tree/browser/treeImpl").Tree;
     window.ContextMenuService = require("vs/platform/contextview/browser/contextMenuService").ContextMenuService;
     window.ContextViewService = require("vs/platform/contextview/browser/contextViewService").ContextViewService;
@@ -861,6 +865,180 @@ let fiddle = parameters["fiddle"] || parameters["f"];
 
 /***/ }),
 /* 4 */
+/***/ (function(module, exports) {
+
+module.exports = undefined;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+class Button extends React.Component {
+    render() {
+        let className = "button ";
+        if (this.props.customClassName) {
+            className += this.props.customClassName;
+        }
+        if (this.props.isDisabled) {
+            className += " disabled";
+        }
+        return React.createElement("div", { className: className, onClick: () => {
+                if (this.props.onClick && !this.props.isDisabled) {
+                    this.props.onClick();
+                }
+            }, title: this.props.title },
+            this.props.icon,
+            " ",
+            this.props.label);
+    }
+}
+exports.Button = Button;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+class Icon extends React.Component {
+    render() {
+        return React.createElement("div", { style: {
+                width: 16, height: 16,
+                backgroundImage: `url("${this.props.src}")`
+            } });
+    }
+}
+exports.Icon = Icon;
+class GoRepoForked extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-repo-forked", viewBox: "0 0 10 16", version: "1.1", width: "10", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" }));
+    }
+}
+exports.GoRepoForked = GoRepoForked;
+class GoBeaker extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-beaker", viewBox: "0 0 16 16", version: "1.1", width: "16", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M14.38 14.59L11 7V3h1V2H3v1h1v4L.63 14.59A1 1 0 0 0 1.54 16h11.94c.72 0 1.2-.75.91-1.41h-.01zM3.75 10L5 7V3h5v4l1.25 3h-7.5zM8 8h1v1H8V8zM7 7H6V6h1v1zm0-3h1v1H7V4zm0-3H6V0h1v1z" }));
+    }
+}
+exports.GoBeaker = GoBeaker;
+class GoGear extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-gear", viewBox: "0 0 14 16", version: "1.1", width: "14", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M14 8.77v-1.6l-1.94-.64-.45-1.09.88-1.84-1.13-1.13-1.81.91-1.09-.45-.69-1.92h-1.6l-.63 1.94-1.11.45-1.84-.88-1.13 1.13.91 1.81-.45 1.09L0 7.23v1.59l1.94.64.45 1.09-.88 1.84 1.13 1.13 1.81-.91 1.09.45.69 1.92h1.59l.63-1.94 1.11-.45 1.84.88 1.13-1.13-.92-1.81.47-1.09L14 8.75v.02zM7 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" }));
+    }
+}
+exports.GoGear = GoGear;
+class GoBook extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-book", viewBox: "0 0 16 16", version: "1.1", width: "16", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M3 5h4v1H3V5zm0 3h4V7H3v1zm0 2h4V9H3v1zm11-5h-4v1h4V5zm0 2h-4v1h4V7zm0 2h-4v1h4V9zm2-6v9c0 .55-.45 1-1 1H9.5l-1 1-1-1H2c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1h5.5l1 1 1-1H15c.55 0 1 .45 1 1zm-8 .5L7.5 3H2v9h6V3.5zm7-.5H9.5l-.5.5V12h6V3z" }));
+    }
+}
+exports.GoBook = GoBook;
+class GoRocket extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-rocket", viewBox: "0 0 16 16", version: "1.1", width: "16", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M12.17 3.83c-.27-.27-.47-.55-.63-.88-.16-.31-.27-.66-.34-1.02-.58.33-1.16.7-1.73 1.13-.58.44-1.14.94-1.69 1.48-.7.7-1.33 1.81-1.78 2.45H3L0 10h3l2-2c-.34.77-1.02 2.98-1 3l1 1c.02.02 2.23-.64 3-1l-2 2v3l3-3v-3c.64-.45 1.75-1.09 2.45-1.78.55-.55 1.05-1.13 1.47-1.7.44-.58.81-1.16 1.14-1.72-.36-.08-.7-.19-1.03-.34a3.39 3.39 0 0 1-.86-.63M16 0s-.09.38-.3 1.06c-.2.7-.55 1.58-1.06 2.66-.7-.08-1.27-.33-1.66-.72-.39-.39-.63-.94-.7-1.64C13.36.84 14.23.48 14.92.28 15.62.08 16 0 16 0" }));
+    }
+}
+exports.GoRocket = GoRocket;
+class GoPencil extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-pencil", viewBox: "0 0 14 16", version: "1.1", width: "14", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M0 12v3h3l8-8-3-3-8 8zm3 2H1v-2h1v1h1v1zm10.3-9.3L12 6 9 3l1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41z" }));
+    }
+}
+exports.GoPencil = GoPencil;
+class GoDelete extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-x", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z" }));
+    }
+}
+exports.GoDelete = GoDelete;
+class GoVerified extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-verified", viewBox: "0 0 16 16", version: "1.1", width: "16", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M15.67 7.06l-1.08-1.34c-.17-.22-.28-.48-.31-.77l-.19-1.7a1.51 1.51 0 0 0-1.33-1.33l-1.7-.19c-.3-.03-.56-.16-.78-.33L8.94.32c-.55-.44-1.33-.44-1.88 0L5.72 1.4c-.22.17-.48.28-.77.31l-1.7.19c-.7.08-1.25.63-1.33 1.33l-.19 1.7c-.03.3-.16.56-.33.78L.32 7.05c-.44.55-.44 1.33 0 1.88l1.08 1.34c.17.22.28.48.31.77l.19 1.7c.08.7.63 1.25 1.33 1.33l1.7.19c.3.03.56.16.78.33l1.34 1.08c.55.44 1.33.44 1.88 0l1.34-1.08c.22-.17.48-.28.77-.31l1.7-.19c.7-.08 1.25-.63 1.33-1.33l.19-1.7c.03-.3.16-.56.33-.78l1.08-1.34c.44-.55.44-1.33 0-1.88zM6.5 12L3 8.5 4.5 7l2 2 5-5L13 5.55 6.5 12z" }));
+    }
+}
+exports.GoVerified = GoVerified;
+class GoFile extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-file", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M6 5H2V4h4v1zM2 8h7V7H2v1zm0 2h7V9H2v1zm0 2h7v-1H2v1zm10-7.5V14c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h7.5L12 4.5zM11 5L8 2H1v12h10V5z" }));
+    }
+}
+exports.GoFile = GoFile;
+class GoFileBinary extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-file-binary", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M4 12h1v1H2v-1h1v-2H2V9h2v3zm8-7.5V14c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h7.5L12 4.5zM11 5L8 2H1v12h10V5zM8 4H6v1h1v2H6v1h3V7H8V4zM2 4h3v4H2V4zm1 3h1V5H3v2zm3 2h3v4H6V9zm1 3h1v-2H7v2z" }));
+    }
+}
+exports.GoFileBinary = GoFileBinary;
+class GoFileCode extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-file-code", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M8.5 1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h10c.55 0 1-.45 1-1V4.5L8.5 1zM11 14H1V2h7l3 3v9zM5 6.98L3.5 8.5 5 10l-.5 1L2 8.5 4.5 6l.5.98zM7.5 6L10 8.5 7.5 11l-.5-.98L8.5 8.5 7 7l.5-1z" }));
+    }
+}
+exports.GoFileCode = GoFileCode;
+class GoQuote extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-quote", viewBox: "0 0 14 16", version: "1.1", width: "14", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M6.16 3.5C3.73 5.06 2.55 6.67 2.55 9.36c.16-.05.3-.05.44-.05 1.27 0 2.5.86 2.5 2.41 0 1.61-1.03 2.61-2.5 2.61-1.9 0-2.99-1.52-2.99-4.25 0-3.8 1.75-6.53 5.02-8.42L6.16 3.5zm7 0c-2.43 1.56-3.61 3.17-3.61 5.86.16-.05.3-.05.44-.05 1.27 0 2.5.86 2.5 2.41 0 1.61-1.03 2.61-2.5 2.61-1.89 0-2.98-1.52-2.98-4.25 0-3.8 1.75-6.53 5.02-8.42l1.14 1.84h-.01z" }));
+    }
+}
+exports.GoQuote = GoQuote;
+class GoDesktopDownload extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-desktop-download", viewBox: "0 0 16 16", version: "1.1", width: "16", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M4 6h3V0h2v6h3l-4 4-4-4zm11-4h-4v1h4v8H1V3h4V2H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h5.34c-.25.61-.86 1.39-2.34 2h8c-1.48-.61-2.09-1.39-2.34-2H15c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z" }));
+    }
+}
+exports.GoDesktopDownload = GoDesktopDownload;
+class GoX extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-x", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z" }));
+    }
+}
+exports.GoX = GoX;
+class GoKebabHorizontal extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-kebab-horizontal", viewBox: "0 0 13 16", version: "1.1", width: "13", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M1.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" }));
+    }
+}
+exports.GoKebabHorizontal = GoKebabHorizontal;
+class GoThreeBars extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-three-bars", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { fillRule: "evenodd", d: "M11.41 9H.59C0 9 0 8.59 0 8c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zm0-4H.59C0 5 0 4.59 0 4c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zM.59 11H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1H.59C0 13 0 12.59 0 12c0-.59 0-1 .59-1z" }));
+    }
+}
+exports.GoThreeBars = GoThreeBars;
+class GoGist extends React.PureComponent {
+    render() {
+        return React.createElement("svg", { className: "octicon octicon-gist", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
+            React.createElement("path", { "fill-rule": "evenodd", d: "M7.5 5L10 7.5 7.5 10l-.75-.75L8.5 7.5 6.75 5.75 7.5 5zm-3 0L2 7.5 4.5 10l.75-.75L3.5 7.5l1.75-1.75L4.5 5zM0 13V2c0-.55.45-1 1-1h10c.55 0 1 .45 1 1v11c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1zm1 0h10V2H1v11z" }));
+    }
+}
+exports.GoGist = GoGist;
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -894,7 +1072,7 @@ let fiddle = parameters["fiddle"] || parameters["f"];
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(11);
+var processNextTick = __webpack_require__(15);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -909,12 +1087,12 @@ var objectKeys = Object.keys || function (obj) {
 module.exports = Duplex;
 
 /*<replacement>*/
-var util = __webpack_require__(9);
-util.inherits = __webpack_require__(6);
+var util = __webpack_require__(11);
+util.inherits = __webpack_require__(9);
 /*</replacement>*/
 
-var Readable = __webpack_require__(29);
-var Writable = __webpack_require__(17);
+var Readable = __webpack_require__(31);
+var Writable = __webpack_require__(21);
 
 util.inherits(Duplex, Readable);
 
@@ -990,13 +1168,34 @@ function forEach(xs, f) {
 }
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, exports) {
 
-module.exports = undefined;
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
 
 /***/ }),
-/* 6 */
+/* 9 */
 /***/ (function(module, exports) {
 
 if (typeof Object.create === 'function') {
@@ -1025,7 +1224,7 @@ if (typeof Object.create === 'function') {
 
 
 /***/ }),
-/* 7 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1412,7 +1611,7 @@ var BinaryReaderState;
     BinaryReaderState[BinaryReaderState["RELOC_SECTION_ENTRY"] = 42] = "RELOC_SECTION_ENTRY";
     BinaryReaderState[BinaryReaderState["SOURCE_MAPPING_URL"] = 43] = "SOURCE_MAPPING_URL";
 })(BinaryReaderState = exports.BinaryReaderState || (exports.BinaryReaderState = {}));
-var DataRange = (function () {
+var DataRange = /** @class */ (function () {
     function DataRange(start, end) {
         this.start = start;
         this.end = end;
@@ -1423,7 +1622,7 @@ var DataRange = (function () {
     };
     return DataRange;
 }());
-var Int64 = (function () {
+var Int64 = /** @class */ (function () {
     function Int64(data) {
         this._data = data || new Uint8Array(8);
     }
@@ -1455,7 +1654,7 @@ var Int64 = (function () {
     return Int64;
 }());
 exports.Int64 = Int64;
-var BinaryReader = (function () {
+var BinaryReader = /** @class */ (function () {
     function BinaryReader() {
         this._data = null;
         this._pos = 0;
@@ -2169,7 +2368,7 @@ var BinaryReader = (function () {
         if (!this._eof && pos + MAX_CODE_OPERATOR_SIZE > this._length) {
             return false;
         }
-        var code = this._data[this._pos++] | 0;
+        var code = this._data[this._pos++];
         var blockType, brDepth, brTable, funcIndex, typeIndex, localIndex, globalIndex, memoryAddress, literal, reserved;
         switch (code) {
             case 2 /* block */:
@@ -2786,34 +2985,7 @@ if (!exports.bytesToString) {
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// Copyright Joyent, Inc. and other Node contributors.
@@ -2924,19 +3096,19 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18).Buffer))
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const model_1 = __webpack_require__(2);
+const model_1 = __webpack_require__(1);
 const index_1 = __webpack_require__(3);
-var Cassowary = __webpack_require__(93);
+const Cassowary = __webpack_require__(71);
 function arrayEqual(a, b) {
     if (a === b) {
         return true;
@@ -2945,7 +3117,7 @@ function arrayEqual(a, b) {
         return false;
     }
     for (let i = 0; i < a.length; i++) {
-        if (a[i] != b[i]) {
+        if (a[i] !== b[i]) {
             return false;
         }
     }
@@ -2977,7 +3149,7 @@ function sum(array, n) {
     return x;
 }
 function assignObject(to, from) {
-    for (var x in from) {
+    for (const x in from) {
         if (!(x in to)) {
             to[x] = from[x];
         }
@@ -3019,20 +3191,20 @@ class Split extends React.Component {
             this.solver.endEdit();
             window.document.documentElement.style.pointerEvents = "auto";
             this.querySolver(this.state.splits);
-            this.props.onChange && this.props.onChange(this.state.splits);
+            return this.props.onChange && this.props.onChange(this.state.splits);
         };
         this.onResizerMouseMove = (e) => {
             if (this.index < 0) {
                 return;
             }
-            let vars = this.vars;
-            let isVertical = this.props.orientation === SplitOrientation.Vertical;
-            let container = this.refs.container;
-            let rect = container.getBoundingClientRect();
-            let mouseOffset = isVertical ? e.clientX - rect.left : e.clientY - rect.top;
+            const vars = this.vars;
+            const isVertical = this.props.orientation === SplitOrientation.Vertical;
+            const container = this.container;
+            const rect = container.getBoundingClientRect();
+            const mouseOffset = isVertical ? e.clientX - rect.left : e.clientY - rect.top;
             this.solver.suggestValue(vars[this.index + 1], mouseOffset);
             this.solver.resolve();
-            let splits = this.state.splits;
+            const splits = this.state.splits;
             this.querySolver(splits);
             this.setState({ splits });
             e.preventDefault();
@@ -3048,7 +3220,7 @@ class Split extends React.Component {
         window.document.documentElement.style.pointerEvents = "none";
     }
     querySolver(splits) {
-        let vars = this.vars;
+        const vars = this.vars;
         for (let i = 0; i < splits.length; i++) {
             splits[i].value = vars[i + 1].value - vars[i].value;
         }
@@ -3060,20 +3232,20 @@ class Split extends React.Component {
         // }
         // console.info(this.props.name + ": " + this.getContainerSize(nextProps.orientation));
         // console.log("componentWillReceiveProps");
-        let splits = this.canonicalizeSplits(nextProps);
+        const splits = this.canonicalizeSplits(nextProps);
         this.setupSolver(splits, this.getContainerSize(nextProps.orientation));
         this.querySolver(splits);
         this.setState({ splits });
     }
     getContainerSize(orientation) {
-        return orientation === SplitOrientation.Horizontal ? this.refs.container.clientHeight : this.refs.container.clientWidth;
+        return orientation === SplitOrientation.Horizontal ? this.container.clientHeight : this.container.clientWidth;
     }
     canonicalizeSplits(props) {
-        let count = React.Children.count(props.children);
-        let containerSize = this.getContainerSize(props.orientation);
-        let splits = [];
+        const count = React.Children.count(props.children);
+        const containerSize = this.getContainerSize(props.orientation);
+        const splits = [];
         for (let i = 0; i < count; i++) {
-            let info = {};
+            const info = {};
             if (props.splits && i < props.splits.length) {
                 assignObject(info, props.splits[i]);
             }
@@ -3099,19 +3271,16 @@ class Split extends React.Component {
         function eq(a1, a2, strength, weight) {
             return new Cassowary.Equation(a1, a2, strength || weak, weight || 0);
         }
-        ;
         function geq(a1, a2, strength, weight) {
             return new Cassowary.Inequality(a1, Cassowary.GEQ, a2, strength, weight);
         }
-        ;
         function leq(a1, a2, strength, weight) {
             return new Cassowary.Inequality(a1, Cassowary.LEQ, a2, strength, weight);
         }
-        ;
         // f     1               2           3   ...    l
         // |-----|---------------|-----------|----------|
-        let vars = this.vars = [new Cassowary.Variable()];
-        var solver = this.solver = new Cassowary.SimplexSolver();
+        const vars = this.vars = [new Cassowary.Variable()];
+        const solver = this.solver = new Cassowary.SimplexSolver();
         // Create Cassowary variables, these the dragged position as an offset from the origin.
         for (let i = 0; i < splits.length; i++) {
             vars.push(new Cassowary.Variable());
@@ -3120,9 +3289,9 @@ class Split extends React.Component {
         vars[vars.length - 1].value = containerSize;
         solver.addStay(vars[0], required);
         solver.addStay(vars[vars.length - 1], required);
-        let offset = 0;
+        const offset = 0;
         for (let i = 0; i < vars.length - 1; i++) {
-            let { min, max } = splits[i];
+            const { min, max } = splits[i];
             const l = vars[i];
             const r = vars[i + 1];
             solver.addConstraint(geq(Cassowary.minus(r, l), min, strong)); // (y - x) >= min
@@ -3138,8 +3307,8 @@ class Split extends React.Component {
     suggestVarValues(splits) {
         const vars = this.vars;
         for (let i = 0; i < vars.length - 1; i++) {
-            let x = vars[i];
-            let y = vars[i + 1];
+            const x = vars[i];
+            const y = vars[i + 1];
             if (splits[i].value) {
                 if (i < vars.length - 2) {
                     this.solver.addEditVar(y, Cassowary.Strength.strong).beginEdit();
@@ -3166,7 +3335,7 @@ class Split extends React.Component {
         // Split.onGlobalResize.register(this.onGlobalResize);
         document.addEventListener("mousemove", this.onResizerMouseMove);
         document.addEventListener("mouseup", this.onResizerMouseUp);
-        let splits = this.canonicalizeSplits(this.props);
+        const splits = this.canonicalizeSplits(this.props);
         this.setupSolver(splits, this.getContainerSize(this.props.orientation));
         this.querySolver(splits);
         this.setState({ splits });
@@ -3177,14 +3346,14 @@ class Split extends React.Component {
         document.removeEventListener("mouseup", this.onResizerMouseUp);
     }
     render() {
-        let { splits } = this.state;
+        const { splits } = this.state;
         // let layout = [];
         // let layout = [splits[0].value];
         // for (let i = 1; i < this.vars.length; i++) {
         //   layout.push(vars[i].value - vars[i - 1].value);
         // }
         let resizerClassName = "resizer";
-        let isHorizontal = this.props.orientation === SplitOrientation.Horizontal;
+        const isHorizontal = this.props.orientation === SplitOrientation.Horizontal;
         if (isHorizontal) {
             resizerClassName += " horizontal";
         }
@@ -3192,10 +3361,10 @@ class Split extends React.Component {
             resizerClassName += " vertical";
         }
         // console.log("Splits", splits, sum(splits), this.state.size);
-        let count = React.Children.count(this.props.children);
-        let children = [];
+        const count = React.Children.count(this.props.children);
+        const children = [];
         React.Children.forEach(this.props.children, (child, i) => {
-            let style = {};
+            const style = {};
             if (i < count - 1 && i < splits.length) {
                 style.flexBasis = toCSSPx(Math.round(splits[i].value));
             }
@@ -3207,7 +3376,7 @@ class Split extends React.Component {
                 children.push(React.createElement("div", { key: "split:" + i, className: resizerClassName, onMouseDown: this.onResizerMouseDown.bind(this, i) }));
             }
         });
-        return React.createElement("div", { className: "split", ref: "container", style: { flexDirection: isHorizontal ? "column" : "row" } }, children);
+        return React.createElement("div", { className: "split", ref: (ref) => { this.container = ref; }, style: { flexDirection: isHorizontal ? "column" : "row" } }, children);
     }
 }
 Split.onGlobalResize = new model_1.EventDispatcher("Split Resize");
@@ -3217,7 +3386,576 @@ exports.Split = Split;
 
 
 /***/ }),
-/* 11 */
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Modal = __webpack_require__(80);
+
+var _Modal2 = _interopRequireDefault(_Modal);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _Modal2.default;
+module.exports = exports["default"];
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const wasmparser_1 = __webpack_require__(51);
+const model_1 = __webpack_require__(1);
+const util_1 = __webpack_require__(67);
+__webpack_require__(4);
+const util_2 = __webpack_require__(70);
+const index_1 = __webpack_require__(3);
+var Language;
+(function (Language) {
+    Language["C"] = "c";
+    Language["Cpp"] = "cpp";
+    Language["Wast"] = "wast";
+    Language["Wasm"] = "wasm";
+    Language["Rust"] = "rust";
+    Language["Cretonne"] = "cton";
+    Language["x86"] = "x86";
+})(Language = exports.Language || (exports.Language = {}));
+class Service {
+    static sendRequest(command) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch("//wasmexplorer-service.herokuapp.com/service.php", {
+                method: "POST",
+                body: command,
+                headers: new Headers({ "Content-type": "application/x-www-form-urlencoded" })
+            });
+            return JSON.parse(yield response.text());
+        });
+    }
+    static getMarkers(response) {
+        // Parse and annotate errors if compilation fails.
+        const annotations = [];
+        if (response.indexOf("(module") !== 0) {
+            const re1 = /^.*?:(\d+?):(\d+?):\s(.*)$/gm;
+            let m;
+            // Single position.
+            while ((m = re1.exec(response)) !== null) {
+                if (m.index === re1.lastIndex) {
+                    re1.lastIndex++;
+                }
+                const startLineNumber = parseInt(m[1], 10);
+                const startColumn = parseInt(m[2], 10);
+                const message = m[3];
+                let severity = monaco.Severity.Info;
+                if (message.indexOf("error") >= 0) {
+                    severity = monaco.Severity.Error;
+                }
+                else if (message.indexOf("warning") >= 0) {
+                    severity = monaco.Severity.Warning;
+                }
+                annotations.push({
+                    severity, message,
+                    startLineNumber: startLineNumber, startColumn: startColumn,
+                    endLineNumber: startLineNumber, endColumn: startColumn
+                });
+            }
+            // Range. This is generated via the -diagnostics-print-source-range-info
+            // clang flag.
+            const re2 = /^.*?:\d+?:\d+?:\{(\d+?):(\d+?)-(\d+?):(\d+?)\}:\s(.*)$/gm;
+            while ((m = re2.exec(response)) !== null) {
+                if (m.index === re2.lastIndex) {
+                    re2.lastIndex++;
+                }
+                const message = m[5];
+                let severity = monaco.Severity.Info;
+                if (message.indexOf("error") >= 0) {
+                    severity = monaco.Severity.Error;
+                }
+                else if (message.indexOf("warning") >= 0) {
+                    severity = monaco.Severity.Warning;
+                }
+                annotations.push({
+                    severity, message,
+                    startLineNumber: parseInt(m[1], 10), startColumn: parseInt(m[2], 10),
+                    endLineNumber: parseInt(m[3], 10), endColumn: parseInt(m[4], 10)
+                });
+            }
+        }
+        return annotations;
+    }
+    static compileFile(file, from, to, options = "") {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield Service.compile(file.getData(), from, to, options);
+            if (result.tasks) {
+                const markers = Service.getMarkers(result.tasks[0].console);
+                if (markers.length) {
+                    monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
+                    file.setProblems(markers.map(marker => {
+                        return model_1.Problem.fromMarker(file, marker);
+                    }));
+                }
+            }
+            if (!result.success) {
+                throw new Error(result.message);
+            }
+            const buffer = atob(result.output);
+            const data = new Uint8Array(buffer.length);
+            for (let i = 0; i < buffer.length; i++) {
+                data[i] = buffer.charCodeAt(i);
+            }
+            return data;
+        });
+    }
+    static compile(src, from, to, options = "") {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (from === Language.C && to === Language.Wasm) {
+                const project = {
+                    output: "wasm",
+                    files: [
+                        {
+                            type: from,
+                            name: "file." + from,
+                            options,
+                            src
+                        }
+                    ]
+                };
+                const input = encodeURIComponent(JSON.stringify(project)).replace("%20", "+");
+                return this.sendRequest("input=" + input + "&action=build");
+            }
+            else if (from === Language.Wasm && to === Language.x86) {
+                const input = encodeURIComponent(base64js.fromByteArray(src));
+                return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options));
+            }
+            else if (from === Language.Rust && to === Language.Wasm) {
+                // TODO: Temporary until we integrate rustc into the service.
+                return fetch("https://rust-heroku.herokuapp.com/rustc", {
+                    method: "POST",
+                    body: JSON.stringify({ code: src }),
+                    headers: new Headers({
+                        "Content-Type": "application/json"
+                    })
+                }).then(res => res.json());
+            }
+            /*
+            src = encodeURIComponent(src).replace('%20', '+');
+            if (from === Language.C && to === Language.Wast) {
+              let action = "c2wast";
+              let version = "2";
+              options = "-O3 -fdiagnostics-print-source-range-info " + options;
+              let command = [
+                `input=${src}`,
+                `action=${action}`,
+                `version=${version}`,
+                `options=${encodeURIComponent(options)}`
+              ]
+              return this.sendRequest(command.join("&"));
+            } else if (from === Language.Wast && to === Language.Wasm) {
+              let action = "wast2wasm";
+              let version = "";
+              let command = [
+                `input=${src}`,
+                `action=${action}`,
+                `version=${version}`,
+                `options=${encodeURIComponent(options)}`
+              ]
+              const x = await this.sendRequest(command.join("&"));
+              var buffer = atob(x.split('\n', 2)[1]);
+              var data = new Uint8Array(buffer.length);
+              for (var i = 0; i < buffer.length; i++) {
+                data[i] = buffer.charCodeAt(i);
+              }
+              return data;
+            } else if (from === Language.Wast && to === Language.x86) {
+              let action = "wast2assembly";
+              let version = "";
+              let command = [
+                `input=${src}`,
+                `action=${action}`,
+                `version=${version}`,
+                `options=${encodeURIComponent(options)}`
+              ]
+              return this.sendRequest(command.join("&"));
+            }
+            */
+        });
+    }
+    static disassembleWasm(buffer) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof wabt === "undefined") {
+                yield Service.lazyLoad("lib/libwabt.js");
+            }
+            const module = wabt.readWasm(buffer, { readDebugNames: true });
+            if (true) {
+                module.generateNames();
+                module.applyNames();
+            }
+            return module.toText({ foldExprs: false, inlineExport: true });
+        });
+    }
+    static disassembleWasmWithWabt(file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield Service.disassembleWasm(file.getData());
+            const output = file.parent.newFile(file.name + ".wast", model_1.FileType.Wast);
+            output.description = "Disassembled from " + file.name + " using Wabt.";
+            output.setData(result);
+        });
+    }
+    static assembleWast(wast) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof wabt === "undefined") {
+                yield Service.lazyLoad("lib/libwabt.js");
+            }
+            const module = wabt.parseWat("test.wast", wast);
+            module.resolveNames();
+            module.validate();
+            const binary = module.toBinary({ log: true, write_debug_names: true });
+            return binary.buffer;
+        });
+    }
+    static assembleWastWithWabt(file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield Service.assembleWast(file.getData());
+            const output = file.parent.newFile(file.name + ".wasm", model_1.FileType.Wasm);
+            output.description = "Assembled from " + file.name + " using Wabt.";
+            output.setData(result);
+        });
+    }
+    static disassembleWasmWithWasmDisassembler(file) {
+        const buffer = file.getData();
+        const reader = new wasmparser_1.BinaryReader();
+        reader.setData(buffer, 0, buffer.byteLength);
+        const dis = new wasmparser_1.WasmDisassembler();
+        dis.addOffsets = true;
+        dis.disassembleChunk(reader);
+        const result = dis.getResult().lines.join("\n");
+        const output = file.parent.newFile(file.name + ".wast", model_1.FileType.Wast);
+        output.description = "Disassembled from " + file.name + " using WasmDisassembler.";
+        output.setData(result);
+        return;
+    }
+    static createGist(json) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.addEventListener("load", function () {
+                const jsonURI = JSON.parse(this.response).html_url;
+                resolve(jsonURI);
+            });
+            xhr.addEventListener("error", function () {
+                reject();
+            });
+            xhr.open("POST", "https://api.github.com/gists", true);
+            xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
+            xhr.send(JSON.stringify(json));
+        });
+    }
+    static loadJSON(uri) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const url = "https://api.myjson.com/bins/" + uri;
+            const response = yield fetch(url, {
+                headers: new Headers({ "Content-type": "application/json; charset=utf-8" })
+            });
+            return JSON.parse(yield response.text());
+        });
+    }
+    static saveJSON(json, uri) {
+        const update = !!uri;
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.addEventListener("load", function () {
+                if (update) {
+                    resolve(uri);
+                }
+                else {
+                    let jsonURI = JSON.parse(this.response).uri;
+                    jsonURI = jsonURI.substring(jsonURI.lastIndexOf("/") + 1);
+                    resolve(jsonURI);
+                }
+            });
+            xhr.addEventListener("error", function () {
+                reject();
+            });
+            if (update) {
+                xhr.open("PUT", "//api.myjson.com/bins/" + uri, true);
+            }
+            else {
+                xhr.open("POST", "//api.myjson.com/bins", true);
+            }
+            xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
+            xhr.send(JSON.stringify(json));
+        });
+    }
+    static parseFiddleURI() {
+        let uri = window.location.search.substring(1);
+        if (uri) {
+            const i = uri.indexOf("/");
+            if (i > 0) {
+                uri = uri.substring(0, i);
+            }
+        }
+        return uri;
+    }
+    static exportProjectToGist(project, uri) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const files = {};
+            function serialize(file) {
+                if (file instanceof model_1.Directory) {
+                    if (file.name !== "out") {
+                        file.mapEachFile((file) => serialize(file));
+                    }
+                }
+                else {
+                    files[file.name] = { content: file.data };
+                }
+            }
+            serialize(project);
+            const json = { description: "source: http://webassembly.studio", public: true, files };
+            if (!util_1.isUndefined(uri)) {
+                json["description"] = json["description"] + `/?f=${uri}`;
+            }
+            return yield this.createGist(json);
+        });
+    }
+    static saveProject(project, openedFiles, uri) {
+        return __awaiter(this, void 0, void 0, function* () {
+            function serialize(file) {
+                if (file instanceof model_1.Directory) {
+                    return {
+                        name: file.name,
+                        children: file.mapEachFile((file) => serialize(file))
+                    };
+                }
+                else {
+                    return {
+                        name: file.name,
+                        type: file.type,
+                        data: file.data
+                    };
+                }
+            }
+            const json = serialize(project);
+            json.openedFiles = openedFiles;
+            return yield this.saveJSON(json, uri);
+        });
+    }
+    static loadProject(json, project) {
+        return __awaiter(this, void 0, void 0, function* () {
+            function deserialize(json, basePath) {
+                return __awaiter(this, void 0, void 0, function* () {
+                    if (Array.isArray(json)) {
+                        return Promise.all(json.map((x) => deserialize(x, basePath)));
+                    }
+                    if (json.children) {
+                        const directory = new model_1.Directory(json.name);
+                        (yield deserialize(json.children, basePath + "/" + json.name)).forEach((file) => {
+                            directory.addFile(file);
+                        });
+                        return directory;
+                    }
+                    const file = new model_1.File(json.name, json.type);
+                    if (json.data) {
+                        file.setData(json.data);
+                    }
+                    else {
+                        const request = yield fetch(basePath + "/" + json.name);
+                        file.setData(yield request.text());
+                    }
+                    return file;
+                });
+            }
+            project.name = json.name;
+            (yield deserialize(json.children, "templates/" + json.directory)).forEach((file) => {
+                project.addFile(file);
+            });
+            return json;
+        });
+    }
+    static lazyLoad(uri) {
+        return new Promise((resolve, reject) => {
+            const self = this;
+            const d = window.document;
+            const b = d.body;
+            const e = d.createElement("script");
+            e.async = true;
+            e.src = uri;
+            b.appendChild(e);
+            e.onload = function () {
+                resolve(this);
+            };
+        });
+    }
+    static optimizeWasmWithBinaryen(file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof Binaryen === "undefined") {
+                yield Service.lazyLoad("lib/binaryen.js");
+            }
+            let data = file.getData();
+            const module = Binaryen.readBinary(data);
+            module.optimize();
+            data = module.emitBinary();
+            file.setData(data);
+            file.buffer.setValue(yield Service.disassembleWasm(data));
+        });
+    }
+    static validateWasmWithBinaryen(file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof Binaryen === "undefined") {
+                yield Service.lazyLoad("lib/binaryen.js");
+            }
+            const data = file.getData();
+            const module = Binaryen.readBinary(data);
+            alert(module.validate());
+        });
+    }
+    static validateWastWithBinaryen(file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof Binaryen === "undefined") {
+                yield Service.lazyLoad("lib/binaryen.js");
+            }
+            const data = file.getData();
+            const module = Binaryen.parseText(data);
+            alert(module.validate());
+        });
+    }
+    static disassembleWasmWithBinaryen(file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof Binaryen === "undefined") {
+                yield Service.lazyLoad("lib/binaryen.js");
+            }
+            const data = file.getData();
+            const module = Binaryen.readBinary(data);
+            const output = file.parent.newFile(file.name + ".wast", model_1.FileType.Wast);
+            output.description = "Disassembled from " + file.name + " using Binaryen.";
+            output.setData(module.emitText());
+        });
+    }
+    static download(file) {
+        if (!Service.downloadLink) {
+            Service.downloadLink = document.createElement("a");
+            Service.downloadLink.style.display = "none";
+            document.body.appendChild(Service.downloadLink);
+        }
+        index_1.assert(file.type === model_1.FileType.Wasm);
+        const url = URL.createObjectURL(new Blob([file.getData()], { type: "application/wasm" }));
+        Service.downloadLink.href = url;
+        Service.downloadLink.download = file.name;
+        if (Service.downloadLink.href !== document.location) {
+            Service.downloadLink.click();
+        }
+    }
+    // Kudos to https://github.com/tbfleming/cib
+    static clangFormat(file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            function format() {
+                const result = Service.clangFormatModule.ccall("formatCode", "string", ["string"], [file.buffer.getValue()]);
+                file.buffer.setValue(result);
+            }
+            if (Service.clangFormatModule) {
+                format();
+            }
+            else {
+                yield Service.lazyLoad("lib/clang-format.js");
+                const response = yield fetch("lib/clang-format.wasm");
+                const wasmBinary = yield response.arrayBuffer();
+                const module = {
+                    postRun() {
+                        format();
+                    },
+                    wasmBinary
+                };
+                Service.clangFormatModule = Module(module);
+            }
+        });
+    }
+    static disassembleX86(file, options = "") {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof capstone === "undefined") {
+                yield Service.lazyLoad("lib/capstone.x86.min.js");
+            }
+            const output = file.parent.newFile(file.name + ".x86", model_1.FileType.x86);
+            function toBytes(a) {
+                return a.map(function (x) { return util_2.padLeft(Number(x).toString(16), 2, "0"); }).join(" ");
+            }
+            const data = file.getData();
+            const json = yield Service.compile(data, Language.Wasm, Language.x86, options);
+            let s = "";
+            const cs = new capstone.Cs(capstone.ARCH_X86, capstone.MODE_64);
+            const annotations = [];
+            const assemblyInstructionsByAddress = Object.create(null);
+            for (let i = 0; i < json.regions.length; i++) {
+                const region = json.regions[i];
+                s += region.name + ":\n";
+                const csBuffer = util_2.decodeRestrictedBase64ToBytes(region.bytes);
+                const instructions = cs.disasm(csBuffer, region.entry);
+                const basicBlocks = {};
+                instructions.forEach(function (instr, i) {
+                    assemblyInstructionsByAddress[instr.address] = instr;
+                    if (util_2.isBranch(instr)) {
+                        const targetAddress = parseInt(instr.op_str, 10);
+                        if (!basicBlocks[targetAddress]) {
+                            basicBlocks[targetAddress] = [];
+                        }
+                        basicBlocks[targetAddress].push(instr.address);
+                        if (i + 1 < instructions.length) {
+                            basicBlocks[instructions[i + 1].address] = [];
+                        }
+                    }
+                });
+                instructions.forEach(function (instr) {
+                    if (basicBlocks[instr.address]) {
+                        s += " " + util_2.padRight(util_2.toAddress(instr.address) + ":", 39, " ");
+                        if (basicBlocks[instr.address].length > 0) {
+                            s += "; " + util_2.toAddress(instr.address) + " from: [" + basicBlocks[instr.address].map(util_2.toAddress).join(", ") + "]";
+                        }
+                        s += "\n";
+                    }
+                    s += "  " + util_2.padRight(instr.mnemonic + " " + instr.op_str, 38, " ");
+                    s += "; " + util_2.toAddress(instr.address) + " " + toBytes(instr.bytes) + "\n";
+                });
+                s += "\n";
+            }
+            output.setData(s);
+        });
+    }
+    static compileMarkdownToHtml(src) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (typeof showdown === "undefined") {
+                yield Service.lazyLoad("lib/showdown.min.js");
+            }
+            const converter = new showdown.Converter({ tables: true });
+            showdown.setFlavor("github");
+            return converter.makeHtml(src);
+        });
+    }
+}
+Service.downloadLink = null;
+// static disassembleWasmWithWasmDisassembler(file: File) {
+//   let data = file.getData() as ArrayBuffer;
+//   let output = file.parent.newFile(file.name + ".wast", FileType.Wast);
+//   output.description = "Disassembled from " + file.name + " using WasmDisassembler.";
+//   output.setData(Service.disassembleWasm(data));
+// }
+Service.clangFormatModule = null;
+exports.Service = Service;
+
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3265,14 +4003,14 @@ function nextTick(fn, arg1, arg2, arg3) {
   }
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable node/no-deprecated-api */
-var buffer = __webpack_require__(14)
+var buffer = __webpack_require__(18)
 var Buffer = buffer.Buffer
 
 // alternative to using Object.keys for old browsers
@@ -3336,506 +4074,82 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const wasmparser_1 = __webpack_require__(48);
-const model_1 = __webpack_require__(2);
-__webpack_require__(5);
-const util_1 = __webpack_require__(64);
-const index_1 = __webpack_require__(3);
-var Language;
-(function (Language) {
-    Language["C"] = "c";
-    Language["Cpp"] = "cpp";
-    Language["Wast"] = "wast";
-    Language["Wasm"] = "wasm";
-    Language["Cretonne"] = "cton";
-    Language["x86"] = "x86";
-})(Language = exports.Language || (exports.Language = {}));
-class Service {
-    static sendRequest(command) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch("//wasmexplorer-service.herokuapp.com/service.php", {
-                method: "POST",
-                body: command,
-                headers: new Headers({ "Content-type": "application/x-www-form-urlencoded" })
-            });
-            return JSON.parse(yield response.text());
-        });
-    }
-    static getMarkers(response) {
-        // Parse and annotate errors if compilation fails.
-        var annotations = [];
-        if (response.indexOf("(module") !== 0) {
-            var re1 = /^.*?:(\d+?):(\d+?):\s(.*)$/gm;
-            var m;
-            // Single position.
-            while ((m = re1.exec(response)) !== null) {
-                if (m.index === re1.lastIndex) {
-                    re1.lastIndex++;
-                }
-                var startLineNumber = parseInt(m[1]);
-                var startColumn = parseInt(m[2]);
-                var message = m[3];
-                let severity = monaco.Severity.Info;
-                if (message.indexOf("error") >= 0) {
-                    severity = monaco.Severity.Error;
-                }
-                else if (message.indexOf("warning") >= 0) {
-                    severity = monaco.Severity.Warning;
-                }
-                annotations.push({
-                    severity, message,
-                    startLineNumber: startLineNumber, startColumn: startColumn,
-                    endLineNumber: startLineNumber, endColumn: startColumn
-                });
-            }
-            // Range. This is generated via the -diagnostics-print-source-range-info
-            // clang flag.
-            var re2 = /^.*?:\d+?:\d+?:\{(\d+?):(\d+?)-(\d+?):(\d+?)\}:\s(.*)$/gm;
-            while ((m = re2.exec(response)) !== null) {
-                if (m.index === re2.lastIndex) {
-                    re2.lastIndex++;
-                }
-                var message = m[5];
-                let severity = monaco.Severity.Info;
-                if (message.indexOf("error") >= 0) {
-                    severity = monaco.Severity.Error;
-                }
-                else if (message.indexOf("warning") >= 0) {
-                    severity = monaco.Severity.Warning;
-                }
-                annotations.push({
-                    severity, message,
-                    startLineNumber: parseInt(m[1]), startColumn: parseInt(m[2]),
-                    endLineNumber: parseInt(m[3]), endColumn: parseInt(m[4])
-                });
-            }
-        }
-        return annotations;
-    }
-    static compileFile(file, from, to, options = "") {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield Service.compile(file.getData(), from, to, options);
-            let markers = Service.getMarkers(result.tasks[0].console);
-            if (markers.length) {
-                monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
-                file.setProblems(markers.map(marker => {
-                    return model_1.Problem.fromMarker(file, marker);
-                }));
-            }
-            if (!result.success) {
-                throw new Error(result.message);
-            }
-            var buffer = atob(result.output);
-            var data = new Uint8Array(buffer.length);
-            for (var i = 0; i < buffer.length; i++) {
-                data[i] = buffer.charCodeAt(i);
-            }
-            return data;
-        });
-    }
-    static compile(src, from, to, options = "") {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (from === Language.C && to === Language.Wasm) {
-                let project = {
-                    output: "wasm",
-                    files: [
-                        {
-                            type: from,
-                            name: "file." + from,
-                            options,
-                            src
-                        }
-                    ]
-                };
-                let input = encodeURIComponent(JSON.stringify(project)).replace('%20', '+');
-                return this.sendRequest("input=" + input + "&action=build");
-            }
-            else if (from === Language.Wasm && to === Language.x86) {
-                let input = encodeURIComponent(base64js.fromByteArray(src));
-                return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options));
-            }
-            /*
-            src = encodeURIComponent(src).replace('%20', '+');
-            if (from === Language.C && to === Language.Wast) {
-              let action = "c2wast";
-              let version = "2";
-              options = "-O3 -fdiagnostics-print-source-range-info " + options;
-              let command = [
-                `input=${src}`,
-                `action=${action}`,
-                `version=${version}`,
-                `options=${encodeURIComponent(options)}`
-              ]
-              return this.sendRequest(command.join("&"));
-            } else if (from === Language.Wast && to === Language.Wasm) {
-              let action = "wast2wasm";
-              let version = "";
-              let command = [
-                `input=${src}`,
-                `action=${action}`,
-                `version=${version}`,
-                `options=${encodeURIComponent(options)}`
-              ]
-              const x = await this.sendRequest(command.join("&"));
-              var buffer = atob(x.split('\n', 2)[1]);
-              var data = new Uint8Array(buffer.length);
-              for (var i = 0; i < buffer.length; i++) {
-                data[i] = buffer.charCodeAt(i);
-              }
-              return data;
-            } else if (from === Language.Wast && to === Language.x86) {
-              let action = "wast2assembly";
-              let version = "";
-              let command = [
-                `input=${src}`,
-                `action=${action}`,
-                `version=${version}`,
-                `options=${encodeURIComponent(options)}`
-              ]
-              return this.sendRequest(command.join("&"));
-            }
-            */
-        });
-    }
-    static disassembleWasm(buffer) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (typeof wabt === "undefined") {
-                yield Service.lazyLoad("lib/libwabt.js");
-            }
-            var module = wabt.readWasm(buffer, { readDebugNames: true });
-            if (true) {
-                module.generateNames();
-                module.applyNames();
-            }
-            return module.toText({ foldExprs: false, inlineExport: true });
-        });
-    }
-    static disassembleWasmWithWabt(file) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield Service.disassembleWasm(file.getData());
-            let output = file.parent.newFile(file.name + ".wast", model_1.FileType.Wast);
-            output.description = "Disassembled from " + file.name + " using Wabt.";
-            output.setData(result);
-        });
-    }
-    static assembleWast(wast) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (typeof wabt === "undefined") {
-                yield Service.lazyLoad("lib/libwabt.js");
-            }
-            var module = wabt.parseWat('test.wast', wast);
-            module.resolveNames();
-            module.validate();
-            let binary = module.toBinary({ log: true, write_debug_names: true });
-            return binary.buffer;
-        });
-    }
-    static assembleWastWithWabt(file) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield Service.assembleWast(file.getData());
-            let output = file.parent.newFile(file.name + ".wasm", model_1.FileType.Wasm);
-            output.description = "Assembled from " + file.name + " using Wabt.";
-            output.setData(result);
-        });
-    }
-    static disassembleWasmWithWasmDisassembler(file) {
-        let buffer = file.getData();
-        let reader = new wasmparser_1.BinaryReader();
-        reader.setData(buffer, 0, buffer.byteLength);
-        let dis = new wasmparser_1.WasmDisassembler();
-        dis.addOffsets = true;
-        dis.disassembleChunk(reader);
-        let result = dis.getResult().lines.join("\n");
-        let output = file.parent.newFile(file.name + ".wast", model_1.FileType.Wast);
-        output.description = "Disassembled from " + file.name + " using WasmDisassembler.";
-        output.setData(result);
-        return;
-    }
-    static loadJSON(uri) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let url = "https://api.myjson.com/bins/" + uri;
-            const response = yield fetch(url, {
-                headers: new Headers({ "Content-type": "application/json; charset=utf-8" })
-            });
-            return JSON.parse(yield response.text());
-        });
-    }
-    static saveJSON(json, uri) {
-        let update = !!uri;
-        return new Promise((resolve, reject) => {
-            var xhr = new XMLHttpRequest();
-            xhr.addEventListener("load", function () {
-                if (update) {
-                    resolve(uri);
-                }
-                else {
-                    let jsonURI = JSON.parse(this.response).uri;
-                    jsonURI = jsonURI.substring(jsonURI.lastIndexOf("/") + 1);
-                    resolve(jsonURI);
-                }
-            });
-            xhr.addEventListener("error", function () {
-                reject();
-            });
-            if (update) {
-                xhr.open("PUT", "//api.myjson.com/bins/" + uri, true);
-            }
-            else {
-                xhr.open("POST", "//api.myjson.com/bins", true);
-            }
-            xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-            xhr.send(JSON.stringify(json));
-        });
-    }
-    static parseFiddleURI() {
-        let uri = window.location.search.substring(1);
-        if (uri) {
-            let i = uri.indexOf("/");
-            if (i > 0) {
-                uri = uri.substring(0, i);
-            }
-        }
-        return uri;
-    }
-    static saveProject(project, openedFiles, uri) {
-        return __awaiter(this, void 0, void 0, function* () {
-            function serialize(file) {
-                if (file instanceof model_1.Directory) {
-                    return {
-                        name: file.name,
-                        children: file.mapEachFile((file) => serialize(file))
-                    };
-                }
-                else {
-                    return {
-                        name: file.name,
-                        type: file.type,
-                        data: file.data
-                    };
-                }
-            }
-            let json = serialize(project);
-            json.openedFiles = openedFiles;
-            return yield this.saveJSON(json, uri);
-        });
-    }
-    static loadProject(json, project) {
-        return __awaiter(this, void 0, void 0, function* () {
-            function deserialize(json, basePath) {
-                return __awaiter(this, void 0, void 0, function* () {
-                    if (Array.isArray(json)) {
-                        return Promise.all(json.map((x) => deserialize(x, basePath)));
-                    }
-                    if (json.children) {
-                        const directory = new model_1.Directory(json.name);
-                        (yield deserialize(json.children, basePath + "/" + json.name)).forEach((file) => {
-                            directory.addFile(file);
-                        });
-                        return directory;
-                    }
-                    const file = new model_1.File(json.name, json.type);
-                    if (json.data) {
-                        file.setData(json.data);
-                    }
-                    else {
-                        const request = yield fetch(basePath + "/" + json.name);
-                        file.setData(yield request.text());
-                    }
-                    return file;
-                });
-            }
-            project.name = json.name;
-            (yield deserialize(json.children, "templates/" + json.directory)).forEach((file) => {
-                project.addFile(file);
-            });
-            return json;
-        });
-    }
-    static lazyLoad(uri) {
-        return new Promise((resolve, reject) => {
-            var self = this;
-            var d = window.document;
-            var b = d.body;
-            var e = d.createElement("script");
-            e.async = true;
-            e.src = uri;
-            b.appendChild(e);
-            e.onload = function () {
-                resolve(this);
-            };
-        });
-    }
-    static optimizeWasmWithBinaryen(file) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (typeof Binaryen === "undefined") {
-                yield Service.lazyLoad("lib/binaryen.js");
-            }
-            let data = file.getData();
-            let module = Binaryen.readBinary(data);
-            module.optimize();
-            data = module.emitBinary();
-            file.setData(data);
-            file.buffer.setValue(yield Service.disassembleWasm(data));
-        });
-    }
-    static validateWasmWithBinaryen(file) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (typeof Binaryen === "undefined") {
-                yield Service.lazyLoad("lib/binaryen.js");
-            }
-            let data = file.getData();
-            let module = Binaryen.readBinary(data);
-            alert(module.validate());
-        });
-    }
-    static validateWastWithBinaryen(file) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (typeof Binaryen === "undefined") {
-                yield Service.lazyLoad("lib/binaryen.js");
-            }
-            let data = file.getData();
-            let module = Binaryen.parseText(data);
-            alert(module.validate());
-        });
-    }
-    static disassembleWasmWithBinaryen(file) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (typeof Binaryen === "undefined") {
-                yield Service.lazyLoad("lib/binaryen.js");
-            }
-            let data = file.getData();
-            let module = Binaryen.readBinary(data);
-            let output = file.parent.newFile(file.name + ".wast", model_1.FileType.Wast);
-            output.description = "Disassembled from " + file.name + " using Binaryen.";
-            output.setData(module.emitText());
-        });
-    }
-    static download(file) {
-        if (!Service.downloadLink) {
-            Service.downloadLink = document.createElement("a");
-            Service.downloadLink.style.display = "none";
-            document.body.appendChild(Service.downloadLink);
-        }
-        index_1.assert(file.type == model_1.FileType.Wasm);
-        let url = URL.createObjectURL(new Blob([file.getData()], { type: 'application/wasm' }));
-        Service.downloadLink.href = url;
-        Service.downloadLink.download = file.name;
-        if (Service.downloadLink.href != document.location) {
-            Service.downloadLink.click();
-        }
-    }
-    // Kudos to https://github.com/tbfleming/cib
-    static clangFormat(file) {
-        return __awaiter(this, void 0, void 0, function* () {
-            function format() {
-                let result = Service.clangFormatModule.ccall('formatCode', 'string', ['string'], [file.buffer.getValue()]);
-                file.buffer.setValue(result);
-            }
-            if (Service.clangFormatModule) {
-                format();
-            }
-            else {
-                yield Service.lazyLoad("lib/clang-format.js");
-                const response = yield fetch('lib/clang-format.wasm');
-                const wasmBinary = yield response.arrayBuffer();
-                let module = {
-                    postRun() {
-                        format();
-                    },
-                    wasmBinary
-                };
-                Service.clangFormatModule = Module(module);
-            }
-        });
-    }
-    static disassembleX86(file, options = "") {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (typeof capstone === "undefined") {
-                yield Service.lazyLoad("lib/capstone.x86.min.js");
-            }
-            let output = file.parent.newFile(file.name + ".x86", model_1.FileType.x86);
-            function toBytes(a) {
-                return a.map(function (x) { return util_1.padLeft(Number(x).toString(16), 2, "0"); }).join(" ");
-            }
-            let data = file.getData();
-            const json = yield Service.compile(data, Language.Wasm, Language.x86, options);
-            let s = "";
-            var cs = new capstone.Cs(capstone.ARCH_X86, capstone.MODE_64);
-            var annotations = [];
-            var assemblyInstructionsByAddress = Object.create(null);
-            for (var i = 0; i < json.regions.length; i++) {
-                var region = json.regions[i];
-                s += region.name + ":\n";
-                var csBuffer = util_1.decodeRestrictedBase64ToBytes(region.bytes);
-                var instructions = cs.disasm(csBuffer, region.entry);
-                var basicBlocks = {};
-                instructions.forEach(function (instr, i) {
-                    assemblyInstructionsByAddress[instr.address] = instr;
-                    if (util_1.isBranch(instr)) {
-                        var targetAddress = parseInt(instr.op_str);
-                        if (!basicBlocks[targetAddress]) {
-                            basicBlocks[targetAddress] = [];
-                        }
-                        basicBlocks[targetAddress].push(instr.address);
-                        if (i + 1 < instructions.length) {
-                            basicBlocks[instructions[i + 1].address] = [];
-                        }
-                    }
-                });
-                instructions.forEach(function (instr) {
-                    if (basicBlocks[instr.address]) {
-                        s += " " + util_1.padRight(util_1.toAddress(instr.address) + ":", 39, " ");
-                        if (basicBlocks[instr.address].length > 0) {
-                            s += "; " + util_1.toAddress(instr.address) + " from: [" + basicBlocks[instr.address].map(util_1.toAddress).join(", ") + "]";
-                        }
-                        s += "\n";
-                    }
-                    s += "  " + util_1.padRight(instr.mnemonic + " " + instr.op_str, 38, " ");
-                    s += "; " + util_1.toAddress(instr.address) + " " + toBytes(instr.bytes) + "\n";
-                });
-                s += "\n";
-            }
-            output.setData(s);
-        });
-    }
-    static compileMarkdownToHtml(src) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (typeof showdown === "undefined") {
-                yield Service.lazyLoad("lib/showdown.min.js");
-            }
-            var converter = new showdown.Converter({ tables: true });
-            showdown.setFlavor('github');
-            return converter.makeHtml(src);
-        });
+const React = __webpack_require__(0);
+class Spacer extends React.Component {
+    render() {
+        return React.createElement("div", { style: { height: this.props.height } });
     }
 }
-Service.downloadLink = null;
-// static disassembleWasmWithWasmDisassembler(file: File) {
-//   let data = file.getData() as ArrayBuffer;
-//   let output = file.parent.newFile(file.name + ".wast", FileType.Wast);
-//   output.description = "Disassembled from " + file.name + " using WasmDisassembler.";
-//   output.setData(Service.disassembleWasm(data));
-// }
-Service.clangFormatModule = null;
-exports.Service = Service;
+exports.Spacer = Spacer;
+class Divider extends React.Component {
+    render() {
+        return React.createElement("div", { className: "divider", style: {
+                marginTop: this.props.height / 2,
+                marginBottom: this.props.height / 2
+            } });
+    }
+}
+exports.Divider = Divider;
+class TextInputBox extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        const input = React.createElement("input", { className: "text-input-box", type: "text", value: this.props.value, onChange: this.props.onChange });
+        if (this.props.label) {
+            return React.createElement("div", { style: { display: "flex", flexDirection: "row" } },
+                React.createElement("div", { className: "text-input-box-label" }, this.props.label),
+                React.createElement("div", { style: { flex: 1 } }, input),
+                this.props.error && React.createElement("div", { className: "text-input-box-error" }, this.props.error));
+        }
+        else {
+            return input;
+        }
+    }
+}
+exports.TextInputBox = TextInputBox;
+class ListItem extends React.Component {
+    render() {
+        let className = "list-item";
+        if (this.props.selected) {
+            className += " selected";
+        }
+        return React.createElement("div", { className: className, onClick: this.props.onClick },
+            React.createElement("div", { className: "icon" }, this.props.icon),
+            React.createElement("div", { className: "label" }, this.props.label));
+    }
+}
+exports.ListItem = ListItem;
+class ListBox extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        const { children, onSelect } = this.props;
+        const newChildren = React.Children.map(children, (child, index) => {
+            return React.cloneElement(child, {
+                onClick: () => {
+                    return onSelect && onSelect(child.props.value);
+                },
+                selected: this.props.value === child.props.value
+            });
+        });
+        return React.createElement("div", { className: "list-box", style: {
+                height: this.props.height
+            } }, newChildren);
+    }
+}
+exports.ListBox = ListBox;
 
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3849,9 +4163,9 @@ exports.Service = Service;
 
 
 
-var base64 = __webpack_require__(51)
-var ieee754 = __webpack_require__(52)
-var isArray = __webpack_require__(28)
+var base64 = __webpack_require__(54)
+var ieee754 = __webpack_require__(55)
+var isArray = __webpack_require__(30)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -5632,7 +5946,7 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -5940,20 +6254,20 @@ function isUndefined(arg) {
 
 
 /***/ }),
-/* 16 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(29);
+exports = module.exports = __webpack_require__(31);
 exports.Stream = exports;
 exports.Readable = exports;
-exports.Writable = __webpack_require__(17);
-exports.Duplex = __webpack_require__(4);
-exports.Transform = __webpack_require__(34);
-exports.PassThrough = __webpack_require__(58);
+exports.Writable = __webpack_require__(21);
+exports.Duplex = __webpack_require__(7);
+exports.Transform = __webpack_require__(36);
+exports.PassThrough = __webpack_require__(61);
 
 
 /***/ }),
-/* 17 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5986,7 +6300,7 @@ exports.PassThrough = __webpack_require__(58);
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(11);
+var processNextTick = __webpack_require__(15);
 /*</replacement>*/
 
 module.exports = Writable;
@@ -6023,22 +6337,22 @@ var Duplex;
 Writable.WritableState = WritableState;
 
 /*<replacement>*/
-var util = __webpack_require__(9);
-util.inherits = __webpack_require__(6);
+var util = __webpack_require__(11);
+util.inherits = __webpack_require__(9);
 /*</replacement>*/
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: __webpack_require__(57)
+  deprecate: __webpack_require__(60)
 };
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(30);
+var Stream = __webpack_require__(32);
 /*</replacement>*/
 
 /*<replacement>*/
-var Buffer = __webpack_require__(12).Buffer;
+var Buffer = __webpack_require__(16).Buffer;
 var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -6048,14 +6362,14 @@ function _isUint8Array(obj) {
 }
 /*</replacement>*/
 
-var destroyImpl = __webpack_require__(31);
+var destroyImpl = __webpack_require__(33);
 
 util.inherits(Writable, Stream);
 
 function nop() {}
 
 function WritableState(options, stream) {
-  Duplex = Duplex || __webpack_require__(4);
+  Duplex = Duplex || __webpack_require__(7);
 
   options = options || {};
 
@@ -6195,7 +6509,7 @@ if (typeof Symbol === 'function' && Symbol.hasInstance && typeof Function.protot
 }
 
 function Writable(options) {
-  Duplex = Duplex || __webpack_require__(4);
+  Duplex = Duplex || __webpack_require__(7);
 
   // Writable ctor is applied to Duplexes, too.
   // `realHasInstance` is necessary because using plain `instanceof`
@@ -6621,158 +6935,101 @@ Writable.prototype._destroy = function (err, cb) {
   this.end();
   cb(err);
 };
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(32).setImmediate, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(34).setImmediate, __webpack_require__(8)))
 
 /***/ }),
-/* 18 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const model_1 = __webpack_require__(2);
-__webpack_require__(5);
-class Monaco extends React.Component {
-    constructor() {
-        super(...arguments);
-        this.timeout = 0;
-        this.layout = () => {
-            if (this.timeout) {
-                window.clearTimeout(this.timeout);
-            }
-            this.timeout = window.setTimeout(() => {
-                this.timeout = 0;
-                this.editor.layout();
-            }, 10);
+const index_1 = __webpack_require__(3);
+const Tabs_1 = __webpack_require__(23);
+const Editor_1 = __webpack_require__(37);
+const model_1 = __webpack_require__(1);
+__webpack_require__(4);
+const Markdown_1 = __webpack_require__(74);
+const Button_1 = __webpack_require__(5);
+const Icons_1 = __webpack_require__(6);
+class View {
+    constructor(file, state) {
+        this.file = file;
+        this.state = state;
+        // ...
+    }
+}
+exports.View = View;
+class EditorPaneProps {
+}
+exports.EditorPaneProps = EditorPaneProps;
+function diff(a, b) {
+    return {
+        ab: a.filter(x => b.indexOf(x) < 0),
+        ba: b.filter(x => a.indexOf(x) < 0)
+    };
+}
+class EditorPane extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onUpdate = () => {
+            this.forceUpdate();
         };
-    }
-    revealLastLine() {
-        this.editor.revealLine(this.editor.getModel().getLineCount());
-    }
-    componentDidMount() {
-        let { view } = this.props;
-        if (view) {
-            this.ensureEditor();
-            this.editor.setModel(view.file.buffer);
-            // TODO: Weird that we need this to make monaco really think it needs to update the language.
-            monaco.editor.setModelLanguage(this.editor.getModel(), model_1.languageForFileType(view.file.type));
-            this.editor.restoreViewState(view.state);
-            this.editor.updateOptions({ readOnly: view.file.isBufferReadOnly });
-        }
-        document.addEventListener("layout", this.layout);
+        const views = new Map();
+        props.files.forEach((file) => {
+            views.set(file, new View(file, null));
+        });
+        this.state = { views };
     }
     componentWillReceiveProps(nextProps) {
-        if (this.props.view !== nextProps.view) {
-            // We're about to switch to a new file, save the view state.
-            this.props.view.state = this.editor.saveViewState();
-        }
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.view === nextProps.view) {
-            return false;
-        }
-        return true;
-    }
-    componentDidUpdate() {
-        let { view } = this.props;
-        if (view) {
-            this.ensureEditor();
-            this.editor.setModel(view.file.buffer);
-            this.editor.restoreViewState(view.state);
-            this.editor.updateOptions({ readOnly: view.file.isBufferReadOnly });
-        }
-    }
-    componentWillUnmount() {
-        document.removeEventListener("layout", this.layout);
-        // We're about to close the editor, save the view state.
-        this.props.view.state = this.editor.saveViewState();
-    }
-    registerActions() {
-        let self = this;
-        this.editor.addAction({
-            id: 'save',
-            label: 'Save',
-            keybindings: [
-                monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S
-            ],
-            precondition: null,
-            keybindingContext: null,
-            run: function () {
-                let view = self.props.view;
-                if (view && !view.file.isBufferReadOnly) {
-                    view.file.save();
-                }
-                return null;
+        const views = this.state.views;
+        nextProps.files.forEach((file) => {
+            if (!views.has(file)) {
+                views.set(file, new View(file, null));
             }
         });
-        this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_B, function () {
-            model_1.Project.build();
-        }, null);
-        this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function () {
-            model_1.Project.run();
-        }, null);
-    }
-    ensureEditor() {
-        if (this.editor)
-            return;
-        let options = Object.assign({
-            value: "",
-            theme: "fiddle-theme",
-            minimap: {
-                enabled: false
-            },
-            fontWeight: "bold",
-            renderLineHighlight: "none",
-        }, this.props.options);
-        if (this.container.lastChild) {
-            this.container.removeChild(this.container.lastChild);
-        }
-        this.editor = monaco.editor.create(this.container, options);
-        this.registerActions();
-        console.info("Created a new Monaco editor.");
-    }
-    setContainer(container) {
-        if (container == null)
-            return;
-        if (this.container !== container) {
-            // ...
-        }
-        this.container = container;
     }
     render() {
-        return React.createElement("div", { className: "fill", ref: (ref) => this.setContainer(ref) });
-    }
-}
-exports.Monaco = Monaco;
-class Editor extends React.Component {
-    setMonaco(monaco) {
-        this.monaco = monaco;
-    }
-    revealLastLine() {
-        this.monaco.revealLastLine();
-    }
-    render() {
-        let file = this.props.view.file;
-        if (file.description) {
-            return React.createElement("div", { className: "fill" },
-                React.createElement("div", { className: "editor-status-bar" },
-                    React.createElement("div", { className: "status-bar-item" }, file.description)),
-                React.createElement("div", { className: "editor-container" },
-                    React.createElement(Monaco, { ref: (ref) => this.setMonaco(ref), view: this.props.view, options: this.props.options })),
-                ";");
+        const { onClickFile, onDoubleClickFile, onClose, file, preview, hasFocus } = this.props;
+        const { views } = this.state;
+        let view;
+        if (file) {
+            view = views.get(file);
+            index_1.assert(view);
+        }
+        let viewer;
+        if (file && file.type === model_1.FileType.Markdown) {
+            viewer = React.createElement(Markdown_1.Markdown, { src: file.getData() });
+        }
+        else if (file) {
+            viewer = React.createElement(Editor_1.Editor, { view: view, options: { readOnly: file.isBufferReadOnly } });
         }
         else {
-            return React.createElement("div", { className: "fill" },
-                React.createElement(Monaco, { ref: (ref) => this.setMonaco(ref), view: this.props.view, options: this.props.options }));
+            return React.createElement("div", { className: "editor-pane-container empty" });
         }
+        let className = "editor-pane-container";
+        if (!hasFocus) {
+            className += " blurred";
+        }
+        return React.createElement("div", { className: className, onClick: this.props.onFocus },
+            React.createElement(Tabs_1.Tabs, { onDoubleClick: () => {
+                    return this.props.onNewFile && this.props.onNewFile();
+                }, commands: [
+                    React.createElement(Button_1.Button, { key: "split", icon: React.createElement(Icons_1.GoBook, null), title: "Split Editor", onClick: () => {
+                            return this.props.onSplitEditor && this.props.onSplitEditor();
+                        } })
+                ] }, this.props.files.map(x => {
+                return React.createElement(Tabs_1.Tab, { key: x.key, label: x.name, value: x, icon: model_1.getIconForFileType(x.type), isMarked: x.isDirty, isActive: x === file, isItalic: x === preview, onClick: onClickFile, onDoubleClick: onDoubleClickFile, onClose: onClose });
+            })),
+            React.createElement("div", { style: { height: "calc(100% - 40px)" } }, viewer));
     }
 }
-exports.Editor = Editor;
+exports.EditorPane = EditorPane;
 
 
 /***/ }),
-/* 19 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6784,16 +7041,16 @@ class Tabs extends React.Component {
     constructor(props) {
         super(props);
         this.onWheel = (e) => {
-            let delta = index_1.clamp(e.deltaY, -16, 16);
+            const delta = index_1.clamp(e.deltaY, -16, 16);
             let { scrollLeft } = this.state;
             scrollLeft += delta;
             // TODO: Work out the details of scrolling.
-            scrollLeft = index_1.clamp(scrollLeft, 0, this.refs.container.clientWidth);
+            scrollLeft = index_1.clamp(scrollLeft, 0, this.container.clientWidth);
             this.setState({ scrollLeft });
             e.preventDefault();
         };
         this.onDoubleClick = (e) => {
-            this.props.onDoubleClick && this.props.onDoubleClick();
+            return this.props.onDoubleClick && this.props.onDoubleClick();
         };
         this.state = {
             scrollLeft: 0
@@ -6801,30 +7058,33 @@ class Tabs extends React.Component {
     }
     render() {
         return React.createElement("div", { className: "tabs-container" },
-            React.createElement("div", { ref: "container", className: "tabs-tab-container", onWheel: this.onWheel, onDoubleClick: this.onDoubleClick }, this.props.children),
+            React.createElement("div", { ref: (ref) => { this.container = ref; }, className: "tabs-tab-container", onWheel: this.onWheel, onDoubleClick: this.onDoubleClick }, this.props.children),
             React.createElement("div", { className: "tabs-command-container" }, this.props.commands));
     }
     componentDidUpdate() {
-        this.refs.container.scrollLeft = this.state.scrollLeft;
+        this.container.scrollLeft = this.state.scrollLeft;
     }
 }
 exports.Tabs = Tabs;
 class Tab extends React.Component {
     render() {
-        let { onClick, onDoubleClick, onClose } = this.props;
+        const { onClick, onDoubleClick, onClose } = this.props;
         let className = "tab";
-        if (this.props.isActive)
+        if (this.props.isActive) {
             className += " active";
-        if (this.props.isMarked)
+        }
+        if (this.props.isMarked) {
             className += " marked";
-        if (this.props.isItalic)
+        }
+        if (this.props.isItalic) {
             className += " italic";
+        }
         return React.createElement("div", { className: className, onClick: (e) => {
                 e.stopPropagation();
-                onClick && onClick(this.props.value);
+                return onClick && onClick(this.props.value);
             }, onDoubleClick: (e) => {
                 e.stopPropagation();
-                onDoubleClick && onDoubleClick(this.props.value);
+                return onDoubleClick && onDoubleClick(this.props.value);
             } },
             this.props.icon && React.createElement("div", { className: "icon", style: {
                     backgroundImage: `url(svg/${this.props.icon}.svg)`
@@ -6832,7 +7092,7 @@ class Tab extends React.Component {
             React.createElement("div", { className: "label" }, this.props.label),
             React.createElement("div", { className: "close", onClick: (e) => {
                     e.stopPropagation();
-                    onClose && onClose(this.props.value);
+                    return onClose && onClose(this.props.value);
                 } }));
     }
 }
@@ -6840,165 +7100,7 @@ exports.Tab = Tab;
 
 
 /***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(0);
-class Icon extends React.Component {
-    render() {
-        return React.createElement("div", { style: {
-                width: 16, height: 16,
-                backgroundImage: `url("${this.props.src}")`
-            } });
-    }
-}
-exports.Icon = Icon;
-class GoRepoForked extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-repo-forked", viewBox: "0 0 10 16", version: "1.1", width: "10", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z" }));
-    }
-}
-exports.GoRepoForked = GoRepoForked;
-class GoBeaker extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-beaker", viewBox: "0 0 16 16", version: "1.1", width: "16", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M14.38 14.59L11 7V3h1V2H3v1h1v4L.63 14.59A1 1 0 0 0 1.54 16h11.94c.72 0 1.2-.75.91-1.41h-.01zM3.75 10L5 7V3h5v4l1.25 3h-7.5zM8 8h1v1H8V8zM7 7H6V6h1v1zm0-3h1v1H7V4zm0-3H6V0h1v1z" }));
-    }
-}
-exports.GoBeaker = GoBeaker;
-class GoGear extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-gear", viewBox: "0 0 14 16", version: "1.1", width: "14", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M14 8.77v-1.6l-1.94-.64-.45-1.09.88-1.84-1.13-1.13-1.81.91-1.09-.45-.69-1.92h-1.6l-.63 1.94-1.11.45-1.84-.88-1.13 1.13.91 1.81-.45 1.09L0 7.23v1.59l1.94.64.45 1.09-.88 1.84 1.13 1.13 1.81-.91 1.09.45.69 1.92h1.59l.63-1.94 1.11-.45 1.84.88 1.13-1.13-.92-1.81.47-1.09L14 8.75v.02zM7 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" }));
-    }
-}
-exports.GoGear = GoGear;
-class GoBook extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-book", viewBox: "0 0 16 16", version: "1.1", width: "16", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M3 5h4v1H3V5zm0 3h4V7H3v1zm0 2h4V9H3v1zm11-5h-4v1h4V5zm0 2h-4v1h4V7zm0 2h-4v1h4V9zm2-6v9c0 .55-.45 1-1 1H9.5l-1 1-1-1H2c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1h5.5l1 1 1-1H15c.55 0 1 .45 1 1zm-8 .5L7.5 3H2v9h6V3.5zm7-.5H9.5l-.5.5V12h6V3z" }));
-    }
-}
-exports.GoBook = GoBook;
-class GoRocket extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-rocket", viewBox: "0 0 16 16", version: "1.1", width: "16", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M12.17 3.83c-.27-.27-.47-.55-.63-.88-.16-.31-.27-.66-.34-1.02-.58.33-1.16.7-1.73 1.13-.58.44-1.14.94-1.69 1.48-.7.7-1.33 1.81-1.78 2.45H3L0 10h3l2-2c-.34.77-1.02 2.98-1 3l1 1c.02.02 2.23-.64 3-1l-2 2v3l3-3v-3c.64-.45 1.75-1.09 2.45-1.78.55-.55 1.05-1.13 1.47-1.7.44-.58.81-1.16 1.14-1.72-.36-.08-.7-.19-1.03-.34a3.39 3.39 0 0 1-.86-.63M16 0s-.09.38-.3 1.06c-.2.7-.55 1.58-1.06 2.66-.7-.08-1.27-.33-1.66-.72-.39-.39-.63-.94-.7-1.64C13.36.84 14.23.48 14.92.28 15.62.08 16 0 16 0" }));
-    }
-}
-exports.GoRocket = GoRocket;
-class GoPencil extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-pencil", viewBox: "0 0 14 16", version: "1.1", width: "14", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M0 12v3h3l8-8-3-3-8 8zm3 2H1v-2h1v1h1v1zm10.3-9.3L12 6 9 3l1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41z" }));
-    }
-}
-exports.GoPencil = GoPencil;
-class GoDelete extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-x", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z" }));
-    }
-}
-exports.GoDelete = GoDelete;
-class GoVerified extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-verified", viewBox: "0 0 16 16", version: "1.1", width: "16", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M15.67 7.06l-1.08-1.34c-.17-.22-.28-.48-.31-.77l-.19-1.7a1.51 1.51 0 0 0-1.33-1.33l-1.7-.19c-.3-.03-.56-.16-.78-.33L8.94.32c-.55-.44-1.33-.44-1.88 0L5.72 1.4c-.22.17-.48.28-.77.31l-1.7.19c-.7.08-1.25.63-1.33 1.33l-.19 1.7c-.03.3-.16.56-.33.78L.32 7.05c-.44.55-.44 1.33 0 1.88l1.08 1.34c.17.22.28.48.31.77l.19 1.7c.08.7.63 1.25 1.33 1.33l1.7.19c.3.03.56.16.78.33l1.34 1.08c.55.44 1.33.44 1.88 0l1.34-1.08c.22-.17.48-.28.77-.31l1.7-.19c.7-.08 1.25-.63 1.33-1.33l.19-1.7c.03-.3.16-.56.33-.78l1.08-1.34c.44-.55.44-1.33 0-1.88zM6.5 12L3 8.5 4.5 7l2 2 5-5L13 5.55 6.5 12z" }));
-    }
-}
-exports.GoVerified = GoVerified;
-class GoFile extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-file", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M6 5H2V4h4v1zM2 8h7V7H2v1zm0 2h7V9H2v1zm0 2h7v-1H2v1zm10-7.5V14c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h7.5L12 4.5zM11 5L8 2H1v12h10V5z" }));
-    }
-}
-exports.GoFile = GoFile;
-class GoFileBinary extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-file-binary", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M4 12h1v1H2v-1h1v-2H2V9h2v3zm8-7.5V14c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h7.5L12 4.5zM11 5L8 2H1v12h10V5zM8 4H6v1h1v2H6v1h3V7H8V4zM2 4h3v4H2V4zm1 3h1V5H3v2zm3 2h3v4H6V9zm1 3h1v-2H7v2z" }));
-    }
-}
-exports.GoFileBinary = GoFileBinary;
-class GoFileCode extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-file-code", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M8.5 1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h10c.55 0 1-.45 1-1V4.5L8.5 1zM11 14H1V2h7l3 3v9zM5 6.98L3.5 8.5 5 10l-.5 1L2 8.5 4.5 6l.5.98zM7.5 6L10 8.5 7.5 11l-.5-.98L8.5 8.5 7 7l.5-1z" }));
-    }
-}
-exports.GoFileCode = GoFileCode;
-class GoQuote extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-quote", viewBox: "0 0 14 16", version: "1.1", width: "14", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M6.16 3.5C3.73 5.06 2.55 6.67 2.55 9.36c.16-.05.3-.05.44-.05 1.27 0 2.5.86 2.5 2.41 0 1.61-1.03 2.61-2.5 2.61-1.9 0-2.99-1.52-2.99-4.25 0-3.8 1.75-6.53 5.02-8.42L6.16 3.5zm7 0c-2.43 1.56-3.61 3.17-3.61 5.86.16-.05.3-.05.44-.05 1.27 0 2.5.86 2.5 2.41 0 1.61-1.03 2.61-2.5 2.61-1.89 0-2.98-1.52-2.98-4.25 0-3.8 1.75-6.53 5.02-8.42l1.14 1.84h-.01z" }));
-    }
-}
-exports.GoQuote = GoQuote;
-class GoDesktopDownload extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-desktop-download", viewBox: "0 0 16 16", version: "1.1", width: "16", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M4 6h3V0h2v6h3l-4 4-4-4zm11-4h-4v1h4v8H1V3h4V2H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h5.34c-.25.61-.86 1.39-2.34 2h8c-1.48-.61-2.09-1.39-2.34-2H15c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z" }));
-    }
-}
-exports.GoDesktopDownload = GoDesktopDownload;
-class GoX extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-x", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z" }));
-    }
-}
-exports.GoX = GoX;
-class GoKebabHorizontal extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-kebab-horizontal", viewBox: "0 0 13 16", version: "1.1", width: "13", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M1.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" }));
-    }
-}
-exports.GoKebabHorizontal = GoKebabHorizontal;
-class GoThreeBars extends React.PureComponent {
-    render() {
-        return React.createElement("svg", { className: "octicon octicon-three-bars", viewBox: "0 0 12 16", version: "1.1", width: "12", height: "16", "aria-hidden": "true" },
-            React.createElement("path", { fillRule: "evenodd", d: "M11.41 9H.59C0 9 0 8.59 0 8c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zm0-4H.59C0 5 0 4.59 0 4c0-.59 0-1 .59-1H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zM.59 11H11.4c.59 0 .59.41.59 1 0 .59 0 1-.59 1H.59C0 13 0 12.59 0 12c0-.59 0-1 .59-1z" }));
-    }
-}
-exports.GoThreeBars = GoThreeBars;
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(0);
-class Button extends React.Component {
-    render() {
-        let className = "button";
-        if (this.props.isDisabled) {
-            className += " disabled";
-        }
-        return React.createElement("div", { className: className, onClick: () => {
-                if (this.props.onClick && !this.props.isDisabled) {
-                    this.props.onClick();
-                }
-            }, title: this.props.title },
-            this.props.icon,
-            " ",
-            this.props.label);
-    }
-}
-exports.Button = Button;
-
-
-/***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7040,7 +7142,7 @@ emptyFunction.thatReturnsArgument = function (arg) {
 module.exports = emptyFunction;
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7097,10 +7199,10 @@ function invariant(condition, format, a, b, c, d, e, f) {
 }
 
 module.exports = invariant;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7119,88 +7221,247 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 25 */
+/* 27 */
+/***/ (function(module, exports) {
+
+module.exports = ReactDOM;
+
+/***/ }),
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-class Spacer extends React.Component {
-    render() {
-        return React.createElement("div", { style: { height: this.props.height } });
+const model_1 = __webpack_require__(1);
+const service_1 = __webpack_require__(14);
+class FileTemplate {
+    constructor(container) {
+        this.monacoIconLabel = document.createElement("div");
+        this.monacoIconLabel.className = "monaco-icon-label";
+        this.monacoIconLabel.style.display = "flex";
+        container.appendChild(this.monacoIconLabel);
+        const labelDescriptionContainer = document.createElement("div");
+        labelDescriptionContainer.className = "monaco-icon-label-description-container";
+        this.monacoIconLabel.appendChild(labelDescriptionContainer);
+        this.label = document.createElement("a");
+        this.label.className = "label-name";
+        labelDescriptionContainer.appendChild(this.label);
+        this.description = document.createElement("span");
+        this.description.className = "label-description";
+        labelDescriptionContainer.appendChild(this.description);
     }
-}
-exports.Spacer = Spacer;
-class Divider extends React.Component {
-    render() {
-        return React.createElement("div", { className: "divider", style: {
-                marginTop: this.props.height / 2,
-                marginBottom: this.props.height / 2
-            } });
+    dispose() {
+        // TODO
     }
-}
-exports.Divider = Divider;
-class TextInputBox extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        const input = React.createElement("input", { className: "text-input-box", type: "text", value: this.props.value, onChange: this.props.onChange });
-        if (this.props.label) {
-            return React.createElement("div", { style: { display: "flex", flexDirection: "row" } },
-                React.createElement("div", { className: "text-input-box-label" }, this.props.label),
-                React.createElement("div", { style: { flex: 1 } }, input),
-                this.props.error && React.createElement("div", { className: "text-input-box-error" }, this.props.error));
+    set(file) {
+        let icon = "";
+        switch (file.type) {
+            case model_1.FileType.C:
+                icon = "c-lang-file-icon";
+                break;
+            case model_1.FileType.Cpp:
+                icon = "cpp-lang-file-icon";
+                break;
+            case model_1.FileType.JavaScript:
+                icon = "javascript-lang-file-icon";
+                break;
+            case model_1.FileType.HTML:
+                icon = "html-lang-file-icon";
+                break;
+            case model_1.FileType.TypeScript:
+                icon = "typescript-lang-file-icon";
+                break;
+            case model_1.FileType.Markdown:
+                icon = "markdown-lang-file-icon";
+                break;
+        }
+        if (file instanceof model_1.Directory) {
+            this.monacoIconLabel.classList.add("folder-icon");
         }
         else {
-            return input;
+            this.monacoIconLabel.classList.add("file-icon");
         }
+        if (icon) {
+            this.monacoIconLabel.classList.add(icon);
+        }
+        this.label.innerHTML = file.name;
+        this.monacoIconLabel.classList.toggle("dirty", file.isDirty);
     }
 }
-exports.TextInputBox = TextInputBox;
-class ListItem extends React.Component {
-    render() {
-        let className = "list-item";
-        if (this.props.selected) {
-            className += " selected";
-        }
-        return React.createElement("div", { className: className, onClick: this.props.onClick },
-            React.createElement("div", { className: "icon" }, this.props.icon),
-            React.createElement("div", { className: "label" }, this.props.label));
-    }
-}
-exports.ListItem = ListItem;
-class ListBox extends React.Component {
+exports.FileTemplate = FileTemplate;
+class DirectoryTree extends React.Component {
     constructor(props) {
         super(props);
+        this.lastClickedTime = Date.now();
+        this.contextViewService = new window.ContextViewService(document.documentElement);
+        this.contextMenuService = new window.ContextMenuService(document.documentElement, null, null, this.contextViewService);
+    }
+    setContainer(container) {
+        if (container == null) {
+            return;
+        }
+        if (this.container !== container) {
+            // ...
+        }
+        this.container = container;
+    }
+    ensureTree() {
+        if (this.container.lastChild) {
+            this.container.removeChild(this.container.lastChild);
+        }
+        const self = this;
+        class Controller extends window.TreeDefaults.DefaultController {
+            onContextMenu(tree, file, event) {
+                tree.setFocus(file);
+                const anchor = { x: event.posx, y: event.posy };
+                const actions = [];
+                if (file instanceof model_1.Directory) {
+                    actions.push(new window.Action("x", "New File", "", true, () => {
+                        return self.props.onNewFile && self.props.onNewFile(file);
+                    }));
+                    actions.push(new window.Action("x", "New Directory", "", true, () => {
+                        return self.props.onNewDirectory && self.props.onNewDirectory(file);
+                    }));
+                }
+                else if (file.type === model_1.FileType.Wasm) {
+                    actions.push(new window.Action("x", "Optimize w/ Binaryen", "", true, () => {
+                        service_1.Service.optimizeWasmWithBinaryen(file);
+                    }));
+                    actions.push(new window.Action("x", "Validate w/ Binaryen", "", true, () => {
+                        service_1.Service.validateWasmWithBinaryen(file);
+                    }));
+                    actions.push(new window.Action("x", "Download", "", true, () => {
+                        service_1.Service.download(file);
+                    }));
+                    actions.push(new window.Action("x", "Disassemble w/ Wabt", "", true, () => {
+                        service_1.Service.disassembleWasmWithWabt(file);
+                    }));
+                    actions.push(new window.Action("x", "Firefox x86", "", true, () => {
+                        service_1.Service.disassembleX86(file);
+                    }));
+                    actions.push(new window.Action("x", "Firefox x86 Baseline", "", true, () => {
+                        service_1.Service.disassembleX86(file, "--wasm-always-baseline");
+                    }));
+                }
+                else if (file.type === model_1.FileType.C || file.type === model_1.FileType.Cpp) {
+                    actions.push(new window.Action("x", "Format w/ Clang", "", true, () => {
+                        service_1.Service.clangFormat(file);
+                    }));
+                }
+                else if (file.type === model_1.FileType.Wast) {
+                    actions.push(new window.Action("x", "Assemble w/ Wabt", "", true, () => {
+                        service_1.Service.assembleWastWithWabt(file);
+                    }));
+                }
+                actions.push(new window.Action("x", "Edit", "", true, () => {
+                    return self.props.onEditFile && self.props.onEditFile(file);
+                }));
+                actions.push(new window.Action("x", "Delete", "", true, () => {
+                    return self.props.onDeleteFile && self.props.onDeleteFile(file);
+                }));
+                self.contextMenuService.showContextMenu({
+                    getAnchor: () => anchor,
+                    getActions: () => {
+                        return monaco.Promise.as(actions);
+                    },
+                    getActionItem: (action) => {
+                        // const keybinding = this._keybindingService.lookupKeybinding(action.id);
+                        // if (keybinding) {
+                        //   return new ActionItem(action, action, { label: true, keybinding: keybinding.getLabel() });
+                        // }
+                        return null;
+                    },
+                    onHide: (wasCancelled) => {
+                        if (wasCancelled) {
+                            tree.DOMFocus();
+                        }
+                    }
+                });
+                super.onContextMenu(tree, file, event);
+                return true;
+            }
+        }
+        this.tree = new window.Tree(this.container, {
+            dataSource: {
+                /**
+                 * Returns the unique identifier of the given element.
+                 * No more than one element may use a given identifier.
+                 */
+                getId: function (tree, element) {
+                    return element.key;
+                },
+                /**
+                 * Returns a boolean value indicating whether the element has children.
+                 */
+                hasChildren: function (tree, element) {
+                    return element instanceof model_1.Directory;
+                },
+                /**
+                 * Returns the element's children as an array in a promise.
+                 */
+                getChildren: function (tree, element) {
+                    return monaco.Promise.as(element.children);
+                },
+                /**
+                 * Returns the element's parent in a promise.
+                 */
+                getParent: function (tree, element) {
+                    return monaco.Promise.as(element.parent);
+                }
+            },
+            renderer: {
+                getHeight: function (tree, element) {
+                    return 24;
+                },
+                renderTemplate: function (tree, templateId, container) {
+                    return new FileTemplate(container);
+                },
+                renderElement: function (tree, element, templateId, templateData) {
+                    templateData.set(element);
+                },
+                disposeTemplate: function (tree, templateId, templateData) {
+                    templateData.dispose();
+                }
+            },
+            controller: new Controller()
+        });
+    }
+    onClickFile(file) {
+        if (file instanceof model_1.Directory) {
+            return;
+        }
+        if (Date.now() - this.lastClickedTime < 1000 && this.props.onDoubleClickFile) {
+            this.props.onDoubleClickFile(file);
+        }
+        else if (this.props.onClickFile) {
+            this.props.onClickFile(file);
+        }
+        this.lastClickedTime = Date.now();
+    }
+    componentDidMount() {
+        this.ensureTree();
+        this.tree.model.setInput(this.props.directory);
+        this.tree.model.onDidSelect((e) => {
+            if (e.selection.length) {
+                this.onClickFile(e.selection[0]);
+            }
+        });
+    }
+    componentWillReceiveProps(props) {
+        this.tree.refresh();
+        this.tree.expandAll();
     }
     render() {
-        const { children, onSelect } = this.props;
-        var newChildren = React.Children.map(children, (child, index) => {
-            return React.cloneElement(child, {
-                onClick: () => {
-                    onSelect && onSelect(child.props.value);
-                },
-                selected: this.props.value === child.props.value
-            });
-        });
-        return React.createElement("div", { className: "list-box", style: {
-                height: this.props.height
-            } }, newChildren);
+        return React.createElement("div", { className: "fill", ref: (ref) => this.setContainer(ref) });
     }
 }
-exports.ListBox = ListBox;
+exports.DirectoryTree = DirectoryTree;
 
 
 /***/ }),
-/* 26 */
-/***/ (function(module, exports) {
-
-module.exports = ReactDOM;
-
-/***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = minimatch
@@ -7208,11 +7469,11 @@ minimatch.Minimatch = Minimatch
 
 var path = { sep: '/' }
 try {
-  path = __webpack_require__(44)
+  path = __webpack_require__(47)
 } catch (er) {}
 
 var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {}
-var expand = __webpack_require__(45)
+var expand = __webpack_require__(48)
 
 var plTypes = {
   '!': { open: '(?:(?!(?:', close: '))[^/]*?)'},
@@ -8129,7 +8390,7 @@ function regExpEscape (s) {
 
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -8140,7 +8401,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8169,13 +8430,13 @@ module.exports = Array.isArray || function (arr) {
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(11);
+var processNextTick = __webpack_require__(15);
 /*</replacement>*/
 
 module.exports = Readable;
 
 /*<replacement>*/
-var isArray = __webpack_require__(28);
+var isArray = __webpack_require__(30);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -8185,7 +8446,7 @@ var Duplex;
 Readable.ReadableState = ReadableState;
 
 /*<replacement>*/
-var EE = __webpack_require__(15).EventEmitter;
+var EE = __webpack_require__(19).EventEmitter;
 
 var EElistenerCount = function (emitter, type) {
   return emitter.listeners(type).length;
@@ -8193,13 +8454,13 @@ var EElistenerCount = function (emitter, type) {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(30);
+var Stream = __webpack_require__(32);
 /*</replacement>*/
 
 // TODO(bmeurer): Change this back to const once hole checks are
 // properly optimized away early in Ignition+TurboFan.
 /*<replacement>*/
-var Buffer = __webpack_require__(12).Buffer;
+var Buffer = __webpack_require__(16).Buffer;
 var OurUint8Array = global.Uint8Array || function () {};
 function _uint8ArrayToBuffer(chunk) {
   return Buffer.from(chunk);
@@ -8210,12 +8471,12 @@ function _isUint8Array(obj) {
 /*</replacement>*/
 
 /*<replacement>*/
-var util = __webpack_require__(9);
-util.inherits = __webpack_require__(6);
+var util = __webpack_require__(11);
+util.inherits = __webpack_require__(9);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(54);
+var debugUtil = __webpack_require__(57);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -8224,8 +8485,8 @@ if (debugUtil && debugUtil.debuglog) {
 }
 /*</replacement>*/
 
-var BufferList = __webpack_require__(55);
-var destroyImpl = __webpack_require__(31);
+var BufferList = __webpack_require__(58);
+var destroyImpl = __webpack_require__(33);
 var StringDecoder;
 
 util.inherits(Readable, Stream);
@@ -8247,7 +8508,7 @@ function prependListener(emitter, event, fn) {
 }
 
 function ReadableState(options, stream) {
-  Duplex = Duplex || __webpack_require__(4);
+  Duplex = Duplex || __webpack_require__(7);
 
   options = options || {};
 
@@ -8308,14 +8569,14 @@ function ReadableState(options, stream) {
   this.decoder = null;
   this.encoding = null;
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = __webpack_require__(33).StringDecoder;
+    if (!StringDecoder) StringDecoder = __webpack_require__(35).StringDecoder;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
 }
 
 function Readable(options) {
-  Duplex = Duplex || __webpack_require__(4);
+  Duplex = Duplex || __webpack_require__(7);
 
   if (!(this instanceof Readable)) return new Readable(options);
 
@@ -8464,7 +8725,7 @@ Readable.prototype.isPaused = function () {
 
 // backwards compatibility.
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = __webpack_require__(33).StringDecoder;
+  if (!StringDecoder) StringDecoder = __webpack_require__(35).StringDecoder;
   this._readableState.decoder = new StringDecoder(enc);
   this._readableState.encoding = enc;
   return this;
@@ -9151,17 +9412,17 @@ function indexOf(xs, x) {
   }
   return -1;
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(2)))
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(15).EventEmitter;
+module.exports = __webpack_require__(19).EventEmitter;
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9169,7 +9430,7 @@ module.exports = __webpack_require__(15).EventEmitter;
 
 /*<replacement>*/
 
-var processNextTick = __webpack_require__(11);
+var processNextTick = __webpack_require__(15);
 /*</replacement>*/
 
 // undocumented cb() API, needed for core, not for public API
@@ -9239,7 +9500,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -9292,19 +9553,19 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(56);
+__webpack_require__(59);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Buffer = __webpack_require__(12).Buffer;
+var Buffer = __webpack_require__(16).Buffer;
 
 var isEncoding = Buffer.isEncoding || function (encoding) {
   encoding = '' + encoding;
@@ -9576,7 +9837,7 @@ function simpleEnd(buf) {
 }
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9647,11 +9908,11 @@ function simpleEnd(buf) {
 
 module.exports = Transform;
 
-var Duplex = __webpack_require__(4);
+var Duplex = __webpack_require__(7);
 
 /*<replacement>*/
-var util = __webpack_require__(9);
-util.inherits = __webpack_require__(6);
+var util = __webpack_require__(11);
+util.inherits = __webpack_require__(9);
 /*</replacement>*/
 
 util.inherits(Transform, Duplex);
@@ -9796,203 +10057,154 @@ function done(stream, er, data) {
 }
 
 /***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(0);
-class MenuItem extends React.Component {
-    render() {
-        return React.createElement("div", { className: "menu-entry", onClick: this.props.onClick },
-            React.createElement("div", { className: "icon" }, this.props.icon),
-            React.createElement("div", { className: "label" }, this.props.label));
-    }
-}
-exports.MenuItem = MenuItem;
-function inFirefox() {
-    return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-}
-class Menu extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { x: 0, y: 0, visible: false };
-    }
-    static closeActive() {
-        if (Menu.active) {
-            Menu.active.hide();
-            Menu.active = null;
-        }
-    }
-    hide() {
-        this.setState({ visible: false });
-    }
-    onClick(e) {
-        if (this.props.activateOnLeftClick && Menu.active === this) {
-            return;
-        }
-        if (this.props.activateOnLeftClick) {
-            this.onContextMenu(e);
-            Menu.ignoreNextWindowClickEvent = true;
-        }
-    }
-    onContextMenu(e) {
-        Menu.closeActive();
-        Menu.active = this;
-        let offset = 4;
-        let popupMenuWidth = 256;
-        let onRight = e.clientX + offset + popupMenuWidth < window.innerWidth;
-        let x = 0, y = 0;
-        if (onRight) {
-            x = e.clientX + offset;
-        }
-        else {
-            x = e.clientX - offset - popupMenuWidth;
-        }
-        y = e.clientY + offset;
-        this.setState({ x, y, visible: true });
-        e.preventDefault();
-        if (inFirefox()) {
-            Menu.ignoreNextWindowClickEvent = true;
-        }
-    }
-    // menu: HTMLDivElement;
-    // setMenu(menu: HTMLDivElement) {
-    //   this.menu = menu;
-    // }
-    render() {
-        return React.createElement("div", { className: "menu", onClick: this.onClick.bind(this), onContextMenu: this.onContextMenu.bind(this) },
-            this.state.visible && React.createElement("div", { style: { left: this.state.x, top: this.state.y }, className: "menu popup" }, this.props.items),
-            this.props.children);
-    }
-}
-Menu.active = null;
-Menu.ignoreNextWindowClickEvent = false;
-exports.Menu = Menu;
-window.addEventListener("click", (e) => {
-    if (Menu.ignoreNextWindowClickEvent) {
-        Menu.ignoreNextWindowClickEvent = false;
-        return;
-    }
-    // console.log("window click");
-    Menu.closeActive();
-});
-
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(0);
-const index_1 = __webpack_require__(3);
-const Tabs_1 = __webpack_require__(19);
-const Editor_1 = __webpack_require__(18);
-const model_1 = __webpack_require__(2);
-__webpack_require__(5);
-const Markdown_1 = __webpack_require__(71);
-const Button_1 = __webpack_require__(21);
-const Icons_1 = __webpack_require__(20);
-const Menu_1 = __webpack_require__(35);
-class View {
-    constructor(file, state) {
-        this.file = file;
-        this.state = state;
-        // ...
-    }
-}
-exports.View = View;
-class EditorPaneProps {
-}
-exports.EditorPaneProps = EditorPaneProps;
-function diff(a, b) {
-    return {
-        ab: a.filter(x => b.indexOf(x) < 0),
-        ba: b.filter(x => a.indexOf(x) < 0)
-    };
-}
-class EditorPane extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onUpdate = () => {
-            this.forceUpdate();
-        };
-        let views = new Map();
-        props.files.forEach((file) => {
-            views.set(file, new View(file, null));
-        });
-        this.state = { views };
-    }
-    componentWillReceiveProps(nextProps) {
-        let views = this.state.views;
-        nextProps.files.forEach((file) => {
-            if (!views.has(file)) {
-                views.set(file, new View(file, null));
-            }
-        });
-    }
-    render() {
-        let { onClickFile, onDoubleClickFile, onClose, file, preview, hasFocus } = this.props;
-        let { views } = this.state;
-        let view;
-        if (file) {
-            view = views.get(file);
-            index_1.assert(view);
-        }
-        let viewer;
-        if (file && file.type === model_1.FileType.Markdown) {
-            viewer = React.createElement(Markdown_1.Markdown, { src: file.getData() });
-        }
-        else if (file) {
-            viewer = React.createElement(Editor_1.Editor, { view: view, options: { readOnly: file.isBufferReadOnly } });
-        }
-        else {
-            return React.createElement("div", { className: "editor-pane-container empty" });
-        }
-        let className = "editor-pane-container";
-        if (!hasFocus)
-            className += " blurred";
-        return React.createElement("div", { className: className, onClick: this.props.onFocus },
-            React.createElement(Tabs_1.Tabs, { onDoubleClick: () => {
-                    this.props.onNewFile && this.props.onNewFile();
-                }, commands: [
-                    React.createElement(Button_1.Button, { key: "split", icon: React.createElement(Icons_1.GoBook, null), title: "Split Editor", onClick: () => {
-                            this.props.onSplitEditor && this.props.onSplitEditor();
-                        } }),
-                    React.createElement(Menu_1.Menu, { key: file.key, activateOnLeftClick: true, items: [React.createElement(Menu_1.MenuItem, { key: "new file", label: "New File", icon: React.createElement(Icons_1.GoFile, null), onClick: () => {
-                                } })] },
-                        React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoKebabHorizontal, null), title: "Split Editor" }))
-                ] }, this.props.files.map(x => {
-                return React.createElement(Tabs_1.Tab, { key: x.key, label: x.name, value: x, icon: model_1.getIconForFileType(x.type), isMarked: x.isDirty, isActive: x === file, isItalic: x === preview, onClick: onClickFile, onDoubleClick: onDoubleClickFile, onClose: onClose });
-            })),
-            React.createElement("div", { style: { height: "calc(100% - 40px)" } }, viewer));
-    }
-}
-exports.EditorPane = EditorPane;
-
-
-/***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+const model_1 = __webpack_require__(1);
+__webpack_require__(4);
+class Monaco extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.timeout = 0;
+        this.layout = () => {
+            if (this.timeout) {
+                window.clearTimeout(this.timeout);
+            }
+            this.timeout = window.setTimeout(() => {
+                this.timeout = 0;
+                this.editor.layout();
+            }, 10);
+        };
+    }
+    revealLastLine() {
+        this.editor.revealLine(this.editor.getModel().getLineCount());
+    }
+    componentDidMount() {
+        const { view } = this.props;
+        if (view) {
+            this.ensureEditor();
+            this.editor.setModel(view.file.buffer);
+            // TODO: Weird that we need this to make monaco really think it needs to update the language.
+            monaco.editor.setModelLanguage(this.editor.getModel(), model_1.languageForFileType(view.file.type));
+            this.editor.restoreViewState(view.state);
+            this.editor.updateOptions({ readOnly: view.file.isBufferReadOnly });
+        }
+        document.addEventListener("layout", this.layout);
+    }
+    componentWillReceiveProps(nextProps) {
+        if (this.props.view !== nextProps.view) {
+            // We're about to switch to a new file, save the view state.
+            this.props.view.state = this.editor.saveViewState();
+        }
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.view === nextProps.view) {
+            return false;
+        }
+        return true;
+    }
+    componentDidUpdate() {
+        const { view } = this.props;
+        if (view) {
+            this.ensureEditor();
+            this.editor.setModel(view.file.buffer);
+            this.editor.restoreViewState(view.state);
+            this.editor.updateOptions({ readOnly: view.file.isBufferReadOnly });
+        }
+    }
+    componentWillUnmount() {
+        document.removeEventListener("layout", this.layout);
+        // We're about to close the editor, save the view state.
+        this.props.view.state = this.editor.saveViewState();
+    }
+    registerActions() {
+        const self = this;
+        this.editor.addAction({
+            id: "save",
+            label: "Save",
+            keybindings: [
+                monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S
+            ],
+            precondition: null,
+            keybindingContext: null,
+            run: function () {
+                const view = self.props.view;
+                if (view && !view.file.isBufferReadOnly) {
+                    view.file.save();
+                }
+                return null;
+            }
+        });
+        this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_B, function () {
+            model_1.Project.build();
+        }, null);
+        this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function () {
+            model_1.Project.run();
+        }, null);
+    }
+    ensureEditor() {
+        if (this.editor) {
+            return;
+        }
+        const options = Object.assign({
+            value: "",
+            theme: "fiddle-theme",
+            minimap: {
+                enabled: false
+            },
+            fontWeight: "bold",
+            renderLineHighlight: "none",
+        }, this.props.options);
+        if (this.container.lastChild) {
+            this.container.removeChild(this.container.lastChild);
+        }
+        this.editor = monaco.editor.create(this.container, options);
+        this.registerActions();
+        console.info("Created a new Monaco editor.");
+    }
+    setContainer(container) {
+        if (container == null) {
+            return;
+        }
+        if (this.container !== container) {
+            // ...
+        }
+        this.container = container;
+    }
+    render() {
+        return React.createElement("div", { className: "fill", ref: (ref) => this.setContainer(ref) });
+    }
+}
+exports.Monaco = Monaco;
+class Editor extends React.Component {
+    setMonaco(monaco) {
+        this.monaco = monaco;
+    }
+    revealLastLine() {
+        this.monaco.revealLastLine();
+    }
+    render() {
+        const file = this.props.view.file;
+        if (file.description) {
+            return React.createElement("div", { className: "fill" },
+                React.createElement("div", { className: "editor-status-bar" },
+                    React.createElement("div", { className: "status-bar-item" }, file.description)),
+                React.createElement("div", { className: "editor-container" },
+                    React.createElement(Monaco, { ref: (ref) => this.setMonaco(ref), view: this.props.view, options: this.props.options })),
+                ";");
+        }
+        else {
+            return React.createElement("div", { className: "fill" },
+                React.createElement(Monaco, { ref: (ref) => this.setMonaco(ref), view: this.props.view, options: this.props.options }));
+        }
+    }
+}
+exports.Editor = Editor;
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _Modal = __webpack_require__(78);
-
-var _Modal2 = _interopRequireDefault(_Modal);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _Modal2.default;
-module.exports = exports["default"];
 
 /***/ }),
 /* 38 */
@@ -10020,14 +10232,14 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(79)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(81)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(82)();
+  module.exports = __webpack_require__(84)();
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 39 */
@@ -10044,7 +10256,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 
 
-var emptyFunction = __webpack_require__(22);
+var emptyFunction = __webpack_require__(24);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -10096,7 +10308,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = warning;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
 /* 40 */
@@ -10180,7 +10392,7 @@ exports.show = show;
 exports.documentNotReadyOrSSRTesting = documentNotReadyOrSSRTesting;
 exports.resetForTesting = resetForTesting;
 
-var _warning = __webpack_require__(86);
+var _warning = __webpack_require__(88);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -10289,7 +10501,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.canUseDOM = undefined;
 
-var _exenv = __webpack_require__(88);
+var _exenv = __webpack_require__(90);
 
 var _exenv2 = _interopRequireDefault(_exenv);
 
@@ -10305,6 +10517,690 @@ exports.default = SafeHTMLElement;
 
 /***/ }),
 /* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+const Workspace_1 = __webpack_require__(45);
+const Toolbar_1 = __webpack_require__(73);
+const EditorPane_1 = __webpack_require__(22);
+const model_1 = __webpack_require__(1);
+const service_1 = __webpack_require__(14);
+const Split_1 = __webpack_require__(12);
+const index_1 = __webpack_require__(3);
+const wast_1 = __webpack_require__(75);
+const log_1 = __webpack_require__(76);
+const Mousetrap = __webpack_require__(77);
+const gulpy_1 = __webpack_require__(78);
+const Icons_1 = __webpack_require__(6);
+const Button_1 = __webpack_require__(5);
+const NewFileDialog_1 = __webpack_require__(79);
+const EditFileDialog_1 = __webpack_require__(91);
+const Toast_1 = __webpack_require__(92);
+const cton_1 = __webpack_require__(93);
+const x86_1 = __webpack_require__(94);
+const ShareDialog_1 = __webpack_require__(95);
+const NewProjectDialog_1 = __webpack_require__(96);
+const errors_1 = __webpack_require__(97);
+const ControlCenter_1 = __webpack_require__(98);
+class Group {
+    constructor(file, preview, files) {
+        this.file = file;
+        this.preview = preview;
+        this.files = files;
+    }
+    open(file, shouldPreview = true) {
+        const files = this.files;
+        const index = files.indexOf(file);
+        if (index >= 0) {
+            // Switch to file if it's already open.
+            this.file = file;
+            if (!shouldPreview) {
+                this.preview = null;
+            }
+            return;
+        }
+        if (shouldPreview) {
+            if (this.preview) {
+                // Replace preview file if there is one.
+                const previewIndex = files.indexOf(this.preview);
+                index_1.assert(previewIndex >= 0);
+                this.file = this.preview = files[previewIndex] = file;
+            }
+            else {
+                files.push(file);
+                this.file = this.preview = file;
+            }
+        }
+        else {
+            files.push(file);
+            this.file = file;
+            this.preview = null;
+        }
+    }
+    close(file) {
+        const i = this.files.indexOf(file);
+        index_1.assert(i >= 0);
+        if (file === this.preview) {
+            this.preview = null;
+        }
+        this.files.splice(i, 1);
+        this.file = this.files.length ? this.files[Math.min(this.files.length - 1, i)] : null;
+    }
+}
+exports.Group = Group;
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        // makeMenuItems(file: File) {
+        //   let items = [];
+        //   let directory = file.type === FileType.Directory ? file : file.parent;
+        //   items.push(
+        //     <MenuItem key="new file" label="New File" icon={<GoFile />} onClick={() => {
+        //       this.setState({ newFileDialogDirectory: directory as Directory });
+        //     }} />
+        //   );
+        //   if (file.type === FileType.Wasm) {
+        //     items.push(
+        //       <MenuItem key="opt bin" label="Optimize w/ Binaryen" icon={<GoGear />} onClick={() => {
+        //         Service.optimizeWasmWithBinaryen(file);
+        //       }} />
+        //     );
+        //     items.push(
+        //       <MenuItem key="val bin" label="Validate w/ Binaryen" icon={<GoVerified />} onClick={() => {
+        //         Service.validateWasmWithBinaryen(file);
+        //       }} />
+        //     );
+        //     items.push(
+        //       <MenuItem key="dld bin" label="Download" icon={<GoDesktopDownload />} onClick={() => {
+        //         Service.download(file);
+        //       }} />
+        //     );
+        //     items.push(
+        //       <MenuItem key="dis bin" label="Disassemble w/ Wabt" icon={<GoFileCode />} onClick={() => {
+        //         Service.disassembleWasmWithWabt(file);
+        //       }} />
+        //     );
+        //     items.push(
+        //       <MenuItem key="dis x86" label="Firefox x86" icon={<GoFileBinary />} onClick={() => {
+        //         Service.disassembleX86(file);
+        //       }} />,
+        //       <MenuItem key="dis x86 base" label="Firefox x86 Baseline" icon={<GoFileBinary />} onClick={() => {
+        //         Service.disassembleX86(file, "--wasm-always-baseline");
+        //       }} />
+        //     );
+        //   } else if (file.type === FileType.C || file.type === FileType.Cpp) {
+        //     items.push(
+        //       <MenuItem key="format" label="Format w/ Clang" icon={<GoQuote />} onClick={() => {
+        //         Service.clangFormat(file);
+        //       }} />
+        //     );
+        //   } else if (file.type === FileType.Wast) {
+        //     items.push(
+        //       <MenuItem key="asm bin" label="Assemble w/ Wabt" icon={<GoFileBinary />} onClick={() => {
+        //         Service.assembleWastWithWabt(file);
+        //       }} />
+        //     );
+        //   }
+        //   items.push(<Divider key="divider" height={8} />);
+        //   items.push(<MenuItem key="edit" label="Edit" icon={<GoPencil />} onClick={() => {
+        //     this.setState({ editFileDialogFile: file });
+        //   }} />);
+        //   items.push(<MenuItem key="delete" label="Delete" icon={<GoDelete />} onClick={() => {
+        //     let message = "";
+        //     if (file instanceof Directory) {
+        //       message = `Are you sure you want to delete '${file.name}' and its contents?`;
+        //     } else {
+        //       message = `Are you sure you want to delete '${file.name}'?`;
+        //     }
+        //     if (confirm(message)) {
+        //       file.parent.removeFile(file);
+        //     }
+        //   }} />);
+        //   return items;
+        // }
+        /**
+         * Remember workspace split.
+         */
+        this.workspaceSplit = null;
+        const group0 = new Group(null, null, []);
+        this.state = {
+            fiddle: props.fiddle,
+            file: null,
+            groups: [
+                group0,
+            ],
+            group: group0,
+            newFileDialogDirectory: null,
+            editFileDialogFile: null,
+            newProjectDialog: !props.fiddle,
+            shareDialog: false,
+            workspaceSplits: [
+                {
+                    min: 200,
+                    max: 400,
+                    value: 200,
+                },
+                {
+                    min: 256
+                }
+            ],
+            consoleSplits: [
+                { min: 100 },
+                { min: 40, value: 256 }
+            ],
+            editorSplits: [],
+            toast: null,
+            showProblems: true,
+            showSandbox: true
+        };
+        this.registerLanguages();
+    }
+    openProjectFiles(json) {
+        const groups = json.openedFiles.map((paths) => {
+            const files = paths.map(file => {
+                return this.project.getFile(file);
+            });
+            return new Group(files[0], null, files);
+        });
+        this.setState({ group: groups[0], groups });
+    }
+    initializeProject() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.project = new model_1.Project();
+            if (this.state.fiddle) {
+                let json = yield service_1.Service.loadJSON(this.state.fiddle);
+                json = yield service_1.Service.loadProject(json, this.project);
+                if (false) {
+                    // this.loadProject(json);
+                }
+                this.logLn("Project Loaded ...");
+                this.forceUpdate();
+            }
+            this.project.onDidChangeBuffer.register(() => {
+                this.forceUpdate();
+            });
+            this.project.onDidChangeData.register(() => {
+                this.forceUpdate();
+            });
+            this.project.onDidChangeChildren.register(() => {
+                this.forceUpdate();
+            });
+            this.project.onDirtyFileUsed.register((file) => {
+                this.logLn(`Changes in ${file.getPath()} were ignored, save your changes.`, "warn");
+            });
+        });
+    }
+    // TODO: Optimize
+    // shouldComponentUpdate(nextProps: any, nextState: AppState) {
+    //   let state = this.state;
+    //   if (state.file !== nextState.file) return true;
+    //   if (state.group !== nextState.group) return true;
+    //   if (!shallowCompare(state.groups, nextState.groups)) return true;
+    //   return false;
+    // }
+    registerLanguages() {
+        return __awaiter(this, void 0, void 0, function* () {
+            monaco.editor.defineTheme("fiddle-theme", {
+                base: "vs-dark",
+                inherit: true,
+                rules: [
+                    { token: "custom-info", foreground: "d4d4d4" },
+                    { token: "custom-warn", foreground: "ff9900" },
+                    { token: "custom-error", background: "00ff00", foreground: "ff0000", fontStyle: "bold" }
+                ]
+            });
+            // Wast
+            monaco.languages.register({
+                id: "wast"
+            });
+            monaco.languages.onLanguage("wast", () => {
+                monaco.languages.setMonarchTokensProvider("wast", wast_1.Wast.MonarchDefinitions);
+                monaco.languages.setLanguageConfiguration("wast", wast_1.Wast.LanguageConfiguration);
+                monaco.languages.registerCompletionItemProvider("wast", wast_1.Wast.CompletionItemProvider);
+                monaco.languages.registerHoverProvider("wast", wast_1.Wast.HoverProvider);
+            });
+            // Log
+            monaco.languages.register({
+                id: "log"
+            });
+            monaco.languages.onLanguage("log", () => {
+                monaco.languages.setMonarchTokensProvider("log", log_1.Log.MonarchTokensProvider);
+            });
+            // Cretonne
+            monaco.languages.register({
+                id: "cton"
+            });
+            monaco.languages.onLanguage("cton", () => {
+                monaco.languages.setMonarchTokensProvider("cton", cton_1.Cton.MonarchDefinitions);
+                // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
+                // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
+                // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
+            });
+            // X86
+            monaco.languages.register({
+                id: "x86"
+            });
+            monaco.languages.onLanguage("x86", () => {
+                monaco.languages.setMonarchTokensProvider("x86", x86_1.X86.MonarchDefinitions);
+                // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
+                // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
+                // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
+            });
+            let response = yield fetch("lib/lib.es6.d.ts");
+            monaco.languages.typescript.typescriptDefaults.addExtraLib(yield response.text());
+            response = yield fetch("lib/fiddle.d.ts");
+            monaco.languages.typescript.typescriptDefaults.addExtraLib(yield response.text());
+            monaco.languages.typescript.typescriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
+            monaco.languages.typescript.javascriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
+        });
+    }
+    loadReleaseNotes() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield fetch("notes/notes.md");
+            const src = yield response.text();
+            const notes = new model_1.File("Release Notes", model_1.FileType.Markdown);
+            notes.setData(src);
+            this.state.group.open(notes);
+            this.forceUpdate();
+        });
+    }
+    registerShortcuts() {
+        model_1.Project.onBuild.register(() => {
+            this.build();
+        });
+        model_1.Project.onRun.register(() => {
+            this.run();
+        });
+        Mousetrap.bind("command+b", () => {
+            model_1.Project.build();
+        });
+        Mousetrap.bind("command+enter", () => {
+            model_1.Project.run();
+        });
+        // Mousetrap.bind('command+1', (e) => {
+        //   let groups = this.state.groups;
+        //   groups.length > 0 && this.setState({group: groups[0]});
+        //   e.preventDefault();
+        // });
+        // Mousetrap.bind('command+2', (e) => {
+        //   let groups = this.state.groups;
+        //   groups.length > 1 && this.setState({group: groups[1]});
+        //   e.preventDefault();
+        // });
+        // Mousetrap.bind('command+3', (e) => {
+        //   let groups = this.state.groups;
+        //   groups.length > 2 && this.setState({group: groups[2]});
+        //   e.preventDefault();
+        // });
+        // Mousetrap.bind('command+shift+left', (e) => {
+        //   console.log("left");
+        //   e.preventDefault();
+        // });
+        // Mousetrap.bind('command+shift+right', (e) => {
+        //   console.log("right");
+        //   e.preventDefault();
+        // });
+    }
+    logLn(message, kind = "") {
+        if (this.controlCenter) {
+            this.controlCenter.logLn(message, kind);
+        }
+    }
+    componentWillMount() {
+        this.initializeProject();
+    }
+    componentDidMount() {
+        index_1.layout();
+        this.registerShortcuts();
+        if (!this.props.embed) {
+            this.loadReleaseNotes();
+        }
+        window.addEventListener("resize", () => {
+            console.log("App.forceUpdate because of window resize.");
+            this.forceUpdate();
+        }, false);
+    }
+    share() {
+        this.setState({ shareDialog: true });
+    }
+    run() {
+        const root = this.project;
+        let src = root.getFile("src/main.html").getData();
+        src = src.replace(/src\s*=\s*"(.+?)"/, (a, b) => {
+            const src = root.getFile(b).buffer.getValue();
+            const blob = new Blob([src], { type: "text/javascript" });
+            return `src="${window.URL.createObjectURL(blob)}"`;
+        });
+        this.controlCenter.sandbox.run(this.project, src);
+    }
+    splitGroup() {
+        const groups = this.state.groups;
+        const lastGroup = groups[groups.length - 1];
+        if (lastGroup.files.length === 0) {
+            return;
+        }
+        const group = new Group(lastGroup.file, null, [lastGroup.file]);
+        this.state.groups.push(group);
+        this.setState({ group });
+    }
+    build() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const run = (src) => {
+                const fn = new Function("gulp", "project", "Service", "logLn", src);
+                const gulp = new gulpy_1.Gulpy();
+                fn(gulp, this.project, service_1.Service, this.logLn.bind(self));
+                gulp.run("default");
+            };
+            const buildTs = this.project.getFile("build.ts");
+            const buildJS = this.project.getFile("build.js");
+            if (buildTs) {
+                const output = yield buildTs.getEmitOutput();
+                run(output.outputFiles[0].text);
+            }
+            else if (buildJS) {
+                run(buildJS.getData());
+            }
+            else {
+                this.logLn(errors_1.Errors.BuildFileMissing, "error");
+                return;
+            }
+        });
+    }
+    update() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logLn("Saving Project ...");
+            const openedFiles = this.state.groups.map((group) => {
+                return group.files.map((file) => file.getPath());
+            });
+            yield service_1.Service.saveProject(this.project, openedFiles, this.state.fiddle);
+            this.logLn("Saved Project OK");
+        });
+    }
+    fork() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logLn("Forking Project ...");
+            const fiddle = yield service_1.Service.saveProject(this.project, []);
+            this.logLn("Forked Project OK " + fiddle);
+            const search = window.location.search;
+            if (this.state.fiddle) {
+                index_1.assert(search.indexOf(this.state.fiddle) >= 0);
+                history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
+            }
+            else {
+                history.pushState({}, fiddle, `?f=${fiddle}`);
+            }
+            this.setState({ fiddle });
+        });
+    }
+    gist() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logLn("Exporting Project ...");
+            const gistURI = yield service_1.Service.exportProjectToGist(this.project, this.state.fiddle);
+            this.logLn("Project Gist CREATED ");
+            if (gistURI) {
+                this.setState({
+                    toast: gistURI
+                });
+                console.log(`Gist created: ${gistURI}`);
+            }
+            else {
+                console.log("Failed!");
+            }
+        });
+    }
+    onToastDismiss(index) {
+        this.setState({
+            toast: null
+        });
+    }
+    makeToolbarButtons() {
+        const toolbarButtons = [
+            React.createElement(Button_1.Button, { key: "View Workspace", icon: React.createElement(Icons_1.GoThreeBars, null), title: "View Workspace", onClick: () => {
+                    const workspaceSplits = this.state.workspaceSplits;
+                    const first = workspaceSplits[0];
+                    const second = workspaceSplits[1];
+                    if (this.workspaceSplit) {
+                        Object.assign(first, this.workspaceSplit);
+                        this.workspaceSplit = null;
+                        delete second.value;
+                    }
+                    else {
+                        this.workspaceSplit = Object.assign({}, first);
+                        first.max = first.min = 0;
+                    }
+                    this.setState({ workspaceSplits });
+                } })
+        ];
+        if (this.props.embed) {
+            toolbarButtons.push(React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoPencil, null), label: "Edit in Web Assembly Studio", title: "Edit in WebAssembly Fiddle", onClick: () => {
+                    // this.update();
+                } }));
+        }
+        else {
+            toolbarButtons.push(React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoPencil, null), label: "Update", title: "Update Fiddle", onClick: () => {
+                    this.update();
+                } }), React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoRepoForked, null), label: "Fork", title: "Fork Fiddle", onClick: () => {
+                    this.fork();
+                } }), React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoGist, null), label: "Gist", title: "Export to Gist", onClick: () => {
+                    this.gist();
+                } }), React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoRocket, null), label: "Share", onClick: () => {
+                    this.share();
+                } }));
+        }
+        toolbarButtons.push(React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoBeaker, null), label: "Build", title: "Build: CtrlCmd + B", onClick: () => {
+                this.build();
+            } }), React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoGear, null), label: "Run", title: "Run: CtrlCmd + Enter", onClick: () => {
+                this.run();
+            } }));
+        return toolbarButtons;
+    }
+    setControlCenter(controlCenter) {
+        this.controlCenter = controlCenter;
+    }
+    render() {
+        const self = this;
+        function makeEditorPanes(groups) {
+            if (groups.length === 0) {
+                return React.createElement("div", null, "No Groups");
+            }
+            return groups.map(group => {
+                // tslint:disable-next-line:jsx-key
+                return React.createElement(EditorPane_1.EditorPane, { files: group.files.slice(0), file: group.file, preview: group.preview, onSplitEditor: () => {
+                        self.splitGroup();
+                    }, hasFocus: self.state.group === group, onFocus: () => {
+                        // TODO: Should be taken care of in shouldComponentUpdate instead.
+                        if (self.state.group !== group) {
+                            self.setState({ group });
+                        }
+                    }, onClickFile: (file) => {
+                        group.open(file);
+                        self.setState({ group });
+                    }, onDoubleClickFile: (file) => {
+                        if (file instanceof model_1.Directory) {
+                            return;
+                        }
+                        group.open(file, false);
+                        self.setState({ group });
+                    }, onClose: (file) => {
+                        const groups = self.state.groups;
+                        group.close(file);
+                        if (group.files.length === 0 && groups.length > 1) {
+                            const i = groups.indexOf(group);
+                            groups.splice(i, 1);
+                            const g = groups.length ? groups[Math.min(groups.length - 1, i)] : null;
+                            self.setState({ groups, group: g });
+                            index_1.layout();
+                        }
+                        else {
+                            self.setState({ group });
+                        }
+                    } });
+            });
+        }
+        const editorPanes = React.createElement(Split_1.Split, { name: "Editors", orientation: Split_1.SplitOrientation.Vertical, defaultSplit: {
+                min: 128,
+            }, splits: this.state.editorSplits, onChange: (splits) => {
+                this.setState({ editorSplits: splits });
+                index_1.layout();
+            } }, makeEditorPanes(this.state.groups));
+        return React.createElement("div", { className: "fill" },
+            this.state.toast &&
+                React.createElement(Toast_1.Toast
+                // tslint:disable-next-line:jsx-no-bind
+                , { 
+                    // tslint:disable-next-line:jsx-no-bind
+                    onDismiss: this.onToastDismiss.bind(this), message: React.createElement("span", null,
+                        "\"Gist Created!\" ",
+                        React.createElement("a", { href: this.state.toast, target: "_blank", className: "gist-link" }, "Open in new tab.")) }),
+            this.state.newProjectDialog &&
+                React.createElement(NewProjectDialog_1.NewProjectDialog, { isOpen: true, onCancel: () => {
+                        this.setState({ newProjectDialog: null });
+                    }, onCreate: (template) => __awaiter(this, void 0, void 0, function* () {
+                        if (!template.project) {
+                            this.logLn("Template doesn't contain a project definition.", "error");
+                        }
+                        else {
+                            const json = yield service_1.Service.loadProject(template.project, this.project);
+                            this.openProjectFiles(json);
+                        }
+                        this.setState({ newProjectDialog: false });
+                    }) }),
+            this.state.newFileDialogDirectory &&
+                React.createElement(NewFileDialog_1.NewFileDialog, { isOpen: true, directory: this.state.newFileDialogDirectory, onCancel: () => {
+                        this.setState({ newFileDialogDirectory: null });
+                    }, onCreate: (file) => {
+                        this.project.addFile(file);
+                        this.setState({ newFileDialogDirectory: null });
+                    } }),
+            this.state.editFileDialogFile &&
+                React.createElement(EditFileDialog_1.EditFileDialog, { isOpen: true, file: this.state.editFileDialogFile, onCancel: () => {
+                        this.setState({ editFileDialogFile: null });
+                    }, onChange: (name, description) => {
+                        const file = this.state.editFileDialogFile;
+                        file.name = name;
+                        file.description = description;
+                        this.setState({ editFileDialogFile: null });
+                    } }),
+            this.state.shareDialog &&
+                React.createElement(ShareDialog_1.ShareDialog, { isOpen: true, fiddle: this.state.fiddle, onCancel: () => {
+                        this.setState({ shareDialog: false });
+                    } }),
+            React.createElement("div", { style: { height: "calc(100% - 22px)" } },
+                React.createElement(Split_1.Split, { name: "Workspace", orientation: Split_1.SplitOrientation.Vertical, splits: this.state.workspaceSplits, onChange: (splits) => {
+                        this.setState({ workspaceSplits: splits });
+                        index_1.layout();
+                    } },
+                    React.createElement(Workspace_1.Workspace, { project: this.project, file: this.state.file, onNewFile: (directory) => {
+                            this.setState({ newFileDialogDirectory: directory });
+                        }, onEditFile: (file) => {
+                            this.setState({ editFileDialogFile: file });
+                        }, onDeleteFile: (file) => {
+                            let message = "";
+                            if (file instanceof model_1.Directory) {
+                                message = `Are you sure you want to delete '${file.name}' and its contents?`;
+                            }
+                            else {
+                                message = `Are you sure you want to delete '${file.name}'?`;
+                            }
+                            if (confirm(message)) {
+                                file.parent.removeFile(file);
+                            }
+                        }, onClickFile: (file) => {
+                            this.state.group.open(file);
+                            this.forceUpdate();
+                        }, onDoubleClickFile: (file) => {
+                            if (file instanceof model_1.Directory) {
+                                return;
+                            }
+                            this.state.group.open(file, false);
+                            this.forceUpdate();
+                        } }),
+                    React.createElement("div", { className: "fill" },
+                        React.createElement("div", { style: { height: "40px" } },
+                            React.createElement(Toolbar_1.Toolbar, null, this.makeToolbarButtons())),
+                        React.createElement("div", { style: { height: "calc(100% - 40px)" } },
+                            React.createElement(Split_1.Split, { name: "Console", orientation: Split_1.SplitOrientation.Horizontal, splits: this.state.consoleSplits, onChange: (splits) => {
+                                    this.setState({ consoleSplits: splits });
+                                    index_1.layout();
+                                } },
+                                editorPanes,
+                                React.createElement(ControlCenter_1.ControlCenter, { project: this.project, ref: (ref) => this.setControlCenter(ref) })))))),
+            React.createElement("div", { className: "status-bar" },
+                React.createElement("div", { className: "status-bar-item" }, "Web Assembly Studio")));
+    }
+}
+exports.App = App;
+
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+const Header_1 = __webpack_require__(46);
+const DirectoryTree_1 = __webpack_require__(28);
+const Split_1 = __webpack_require__(12);
+class Workspace extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showProject: false,
+            showFiles: true,
+            splits: []
+        };
+    }
+    render() {
+        const project = this.props.project;
+        return React.createElement("div", { className: "workspaceContainer" },
+            React.createElement(Header_1.Header, null),
+            React.createElement("div", { style: { height: "calc(100% - 41px)" } },
+                React.createElement(Split_1.Split, { name: "Workspace", orientation: Split_1.SplitOrientation.Horizontal, splits: this.state.splits, onChange: (splits) => {
+                        this.setState({ splits: splits });
+                    } },
+                    React.createElement("div", null),
+                    React.createElement(DirectoryTree_1.DirectoryTree, { directory: project, value: this.props.file, onNewFile: this.props.onNewFile, onNewDirectory: this.props.onNewDirectory, onEditFile: this.props.onEditFile, onDeleteFile: this.props.onDeleteFile, onClickFile: (file) => {
+                            this.props.onClickFile(file);
+                        }, onDoubleClickFile: (file) => {
+                            this.props.onDoubleClickFile(file);
+                        } }))));
+    }
+}
+exports.Workspace = Workspace;
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+class Header extends React.Component {
+    render() {
+        return React.createElement("div", { className: "wasmStudioHeader" },
+            React.createElement("span", { className: "waHeaderText" }, "Web Assembly Studio"));
+    }
+}
+exports.Header = Header;
+
+
+/***/ }),
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -10532,14 +11428,14 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 45 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var concatMap = __webpack_require__(46);
-var balanced = __webpack_require__(47);
+var concatMap = __webpack_require__(49);
+var balanced = __webpack_require__(50);
 
 module.exports = expandTop;
 
@@ -10742,7 +11638,7 @@ function expand(str, isTop) {
 
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = function (xs, fn) {
@@ -10761,7 +11657,7 @@ var isArray = Array.isArray || function (xs) {
 
 
 /***/ }),
-/* 47 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10827,14 +11723,14 @@ function range(a, b, str) {
 
 
 /***/ }),
-/* 48 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 // Just re-exporting everything.
-var WasmParser_1 = __webpack_require__(7);
+var WasmParser_1 = __webpack_require__(10);
 exports.SectionCode = WasmParser_1.SectionCode;
 exports.OperatorCode = WasmParser_1.OperatorCode;
 exports.OperatorCodeNames = WasmParser_1.OperatorCodeNames;
@@ -10847,11 +11743,11 @@ exports.BinaryReaderState = WasmParser_1.BinaryReaderState;
 exports.Int64 = WasmParser_1.Int64;
 exports.BinaryReader = WasmParser_1.BinaryReader;
 exports.bytesToString = WasmParser_1.bytesToString;
-var WasmEmitter_1 = __webpack_require__(49);
+var WasmEmitter_1 = __webpack_require__(52);
 exports.Emitter = WasmEmitter_1.Emitter;
-var WasmParserTransform_1 = __webpack_require__(50);
+var WasmParserTransform_1 = __webpack_require__(53);
 exports.BinaryReaderTransform = WasmParserTransform_1.BinaryReaderTransform;
-var WasmDis_1 = __webpack_require__(63);
+var WasmDis_1 = __webpack_require__(66);
 exports.DefaultNameResolver = WasmDis_1.DefaultNameResolver;
 exports.NumericNameResolver = WasmDis_1.NumericNameResolver;
 exports.WasmDisassembler = WasmDis_1.WasmDisassembler;
@@ -10859,7 +11755,7 @@ exports.LabelMode = WasmDis_1.LabelMode;
 
 
 /***/ }),
-/* 49 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10879,7 +11775,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var WasmParser_1 = __webpack_require__(7);
+var WasmParser_1 = __webpack_require__(10);
 var EmitterState;
 (function (EmitterState) {
     EmitterState[EmitterState["Initial"] = 0] = "Initial";
@@ -10915,7 +11811,7 @@ var EmitterState;
     EmitterState[EmitterState["SourceMappingURL"] = 30] = "SourceMappingURL";
     EmitterState[EmitterState["SourceMappingURLEnd"] = 31] = "SourceMappingURLEnd";
 })(EmitterState || (EmitterState = {}));
-var Emitter = (function () {
+var Emitter = /** @class */ (function () {
     function Emitter() {
         this._buffer = [];
         this._state = EmitterState.Initial;
@@ -11418,7 +12314,7 @@ var Emitter = (function () {
             this.writeByte(opInfo.code & 255);
         }
         this._endWritten = opInfo.code == 11 /* end */;
-        switch (opInfo.code | 0) {
+        switch (opInfo.code) {
             case 2 /* block */:
             case 3 /* loop */:
             case 4 /* if */:
@@ -11678,11 +12574,12 @@ exports.Emitter = Emitter;
 
 
 /***/ }),
-/* 50 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(Buffer) {/* Copyright 2016 Mozilla Foundation
+/* WEBPACK VAR INJECTION */(function(Buffer) {
+/* Copyright 2016 Mozilla Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11696,7 +12593,6 @@ exports.Emitter = Emitter;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -11708,12 +12604,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var stream_1 = __webpack_require__(53);
-var WasmParser_1 = __webpack_require__(7);
-var WasmParser_2 = __webpack_require__(7);
+var stream_1 = __webpack_require__(56);
+var WasmParser_1 = __webpack_require__(10);
+var WasmParser_2 = __webpack_require__(10);
 exports.BinaryReaderState = WasmParser_2.BinaryReaderState;
 exports.SectionCode = WasmParser_2.SectionCode;
-var BinaryReaderTransform = (function (_super) {
+var BinaryReaderTransform = /** @class */ (function (_super) {
     __extends(BinaryReaderTransform, _super);
     function BinaryReaderTransform() {
         var _this = _super.call(this, {
@@ -11769,10 +12665,10 @@ var BinaryReaderTransform = (function (_super) {
 }(stream_1.Transform));
 exports.BinaryReaderTransform = BinaryReaderTransform;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18).Buffer))
 
 /***/ }),
-/* 51 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11893,7 +12789,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 52 */
+/* 55 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -11983,7 +12879,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 53 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -12009,15 +12905,15 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 module.exports = Stream;
 
-var EE = __webpack_require__(15).EventEmitter;
-var inherits = __webpack_require__(6);
+var EE = __webpack_require__(19).EventEmitter;
+var inherits = __webpack_require__(9);
 
 inherits(Stream, EE);
-Stream.Readable = __webpack_require__(16);
-Stream.Writable = __webpack_require__(59);
-Stream.Duplex = __webpack_require__(60);
-Stream.Transform = __webpack_require__(61);
-Stream.PassThrough = __webpack_require__(62);
+Stream.Readable = __webpack_require__(20);
+Stream.Writable = __webpack_require__(62);
+Stream.Duplex = __webpack_require__(63);
+Stream.Transform = __webpack_require__(64);
+Stream.PassThrough = __webpack_require__(65);
 
 // Backwards-compat with node 0.4.x
 Stream.Stream = Stream;
@@ -12116,13 +13012,13 @@ Stream.prototype.pipe = function(dest, options) {
 
 
 /***/ }),
-/* 54 */
+/* 57 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 55 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12132,7 +13028,7 @@ Stream.prototype.pipe = function(dest, options) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Buffer = __webpack_require__(12).Buffer;
+var Buffer = __webpack_require__(16).Buffer;
 /*</replacement>*/
 
 function copyBuffer(src, target, offset) {
@@ -12202,7 +13098,7 @@ module.exports = function () {
 }();
 
 /***/ }),
-/* 56 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -12392,10 +13288,10 @@ module.exports = function () {
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(2)))
 
 /***/ }),
-/* 57 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -12469,7 +13365,7 @@ function config (name) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }),
-/* 58 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12502,11 +13398,11 @@ function config (name) {
 
 module.exports = PassThrough;
 
-var Transform = __webpack_require__(34);
+var Transform = __webpack_require__(36);
 
 /*<replacement>*/
-var util = __webpack_require__(9);
-util.inherits = __webpack_require__(6);
+var util = __webpack_require__(11);
+util.inherits = __webpack_require__(9);
 /*</replacement>*/
 
 util.inherits(PassThrough, Transform);
@@ -12522,35 +13418,35 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 };
 
 /***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(17);
-
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(4);
-
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(16).Transform
-
-
-/***/ }),
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(16).PassThrough
+module.exports = __webpack_require__(21);
 
 
 /***/ }),
 /* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(7);
+
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(20).Transform
+
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(20).PassThrough
+
+
+/***/ }),
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12570,7 +13466,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var WasmParser_1 = __webpack_require__(7);
+var WasmParser_1 = __webpack_require__(10);
 function typeToString(type) {
     switch (type) {
         case -1 /* i32 */: return 'i32';
@@ -12757,7 +13653,7 @@ function getOperatorName(code) {
     }
     return operatorCodeNamesCache[code];
 }
-var DefaultNameResolver = (function () {
+var DefaultNameResolver = /** @class */ (function () {
     function DefaultNameResolver() {
     }
     DefaultNameResolver.prototype.getTypeName = function (index, isRef) {
@@ -12785,7 +13681,7 @@ var DefaultNameResolver = (function () {
     return DefaultNameResolver;
 }());
 exports.DefaultNameResolver = DefaultNameResolver;
-var NumericNameResolver = (function () {
+var NumericNameResolver = /** @class */ (function () {
     function NumericNameResolver() {
     }
     NumericNameResolver.prototype.getTypeName = function (index, isRef) {
@@ -12812,7 +13708,7 @@ var NumericNameResolver = (function () {
     return NumericNameResolver;
 }());
 exports.NumericNameResolver = NumericNameResolver;
-var LineBuffer = (function () {
+var LineBuffer = /** @class */ (function () {
     function LineBuffer() {
         this._firstPart = '';
         this._secondPart = '';
@@ -12881,7 +13777,7 @@ var LabelMode;
     LabelMode[LabelMode["WhenUsed"] = 1] = "WhenUsed";
     LabelMode[LabelMode["Always"] = 2] = "Always";
 })(LabelMode = exports.LabelMode || (exports.LabelMode = {}));
-var WasmDisassembler = (function () {
+var WasmDisassembler = /** @class */ (function () {
     function WasmDisassembler() {
         this._lines = [];
         this._offsets = [];
@@ -12977,7 +13873,7 @@ var WasmDisassembler = (function () {
         for (var i = 0; i < b.length; i++) {
             var byte = b[i];
             if (byte < 0x20 || byte >= 0x7F ||
-                byte == 0x22 || byte == 0x5c) {
+                byte == /* " */ 0x22 || byte == /* \ */ 0x5c) {
                 this.appendBuffer('\\' + (byte >> 4).toString(16) + (byte & 15).toString(16));
             }
             else {
@@ -13006,7 +13902,7 @@ var WasmDisassembler = (function () {
         return backrefLabel.label || '' + depth;
     };
     WasmDisassembler.prototype.printOperator = function (operator) {
-        var code = operator.code | 0;
+        var code = operator.code;
         this.appendBuffer(getOperatorName(code));
         switch (code) {
             case 2 /* block */:
@@ -13540,14 +14436,647 @@ exports.WasmDisassembler = WasmDisassembler;
 
 
 /***/ }),
-/* 64 */
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = __webpack_require__(68);
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = __webpack_require__(69);
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(2)))
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports) {
+
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports) {
+
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+
+/***/ }),
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 function toAddress(n) {
-    var s = n.toString(16);
+    let s = n.toString(16);
     while (s.length < 6) {
         s = "0" + s;
     }
@@ -13570,7 +15099,7 @@ function padLeft(s, n, c) {
     return s;
 }
 exports.padLeft = padLeft;
-var x86JumpInstructions = [
+const x86JumpInstructions = [
     "jmp", "ja", "jae", "jb", "jbe", "jc", "je", "jg", "jge", "jl", "jle", "jna", "jnae",
     "jnb", "jnbe", "jnc", "jne", "jng", "jnge", "jnl", "jnle", "jno", "jnp", "jns", "jnz",
     "jo", "jp", "jpe", "jpo", "js", "jz"
@@ -13579,7 +15108,7 @@ function isBranch(instr) {
     return x86JumpInstructions.indexOf(instr.mnemonic) >= 0;
 }
 exports.isBranch = isBranch;
-var base64DecodeMap = [
+const base64DecodeMap = [
     62, 0, 0, 0, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61,
     0, 0, 0, 0, 0, 0, 0,
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
@@ -13587,29 +15116,29 @@ var base64DecodeMap = [
     26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
     44, 45, 46, 47, 48, 49, 50, 51
 ];
-var base64DecodeMapOffset = 0x2B;
-var base64EOF = 0x3D;
+const base64DecodeMapOffset = 0x2B;
+const base64EOF = 0x3D;
 function decodeRestrictedBase64ToBytes(encoded) {
-    var ch;
-    var code;
-    var code2;
-    var len = encoded.length;
-    var padding = encoded.charAt(len - 2) === '=' ? 2 : encoded.charAt(len - 1) === '=' ? 1 : 0;
-    var decoded = new Uint8Array((encoded.length >> 2) * 3 - padding);
-    for (var i = 0, j = 0; i < encoded.length;) {
+    let ch;
+    let code;
+    let code2;
+    const len = encoded.length;
+    const padding = encoded.charAt(len - 2) === "=" ? 2 : encoded.charAt(len - 1) === "=" ? 1 : 0;
+    const decoded = new Uint8Array((encoded.length >> 2) * 3 - padding);
+    for (let i = 0, j = 0; i < encoded.length;) {
         ch = encoded.charCodeAt(i++);
         code = base64DecodeMap[ch - base64DecodeMapOffset];
         ch = encoded.charCodeAt(i++);
         code2 = base64DecodeMap[ch - base64DecodeMapOffset];
         decoded[j++] = (code << 2) | ((code2 & 0x30) >> 4);
         ch = encoded.charCodeAt(i++);
-        if (ch == base64EOF) {
+        if (ch === base64EOF) {
             return decoded;
         }
         code = base64DecodeMap[ch - base64DecodeMapOffset];
         decoded[j++] = ((code2 & 0x0f) << 4) | ((code & 0x3c) >> 2);
         ch = encoded.charCodeAt(i++);
-        if (ch == base64EOF) {
+        if (ch === base64EOF) {
             return decoded;
         }
         code2 = base64DecodeMap[ch - base64DecodeMapOffset];
@@ -13618,667 +15147,66 @@ function decodeRestrictedBase64ToBytes(encoded) {
     return decoded;
 }
 exports.decodeRestrictedBase64ToBytes = decodeRestrictedBase64ToBytes;
-function base64Encode(buffer) {
-    var bytes = new TextEncoder('utf-8').encode(buffer);
-    return;
-}
-exports.base64Encode = base64Encode;
 
 
 /***/ }),
-/* 65 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {/**
+ * Parts Copyright (C) 2011-2012, Alex Russell (slightlyoff@chromium.org)
+ * Parts Copyright (C) Copyright (C) 1998-2000 Greg J. Badros
+ *
+ * Use of this source code is governed by the LGPL, which can be found in the
+ * COPYING.LGPL file.
+ *
+ * This is a compiled version of Cassowary/JS. For source versions or to
+ * contribute, see the github project:
+ *
+ *  https://github.com/slightlyoff/cassowary-js-refactor
+ *
+ */
 
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+(function() {
+(function(a){"use strict";try{(function(){}).bind(a)}catch(b){Object.defineProperty(Function.prototype,"bind",{value:function(a){var b=this;return function(){return b.apply(a,arguments)}},enumerable:!1,configurable:!0,writable:!0})}var c=a.HTMLElement!==void 0,d=function(a){for(var b=null;a&&a!=Object.prototype;){if(a.tagName){b=a.tagName;break}a=a.prototype}return b||"div"},e=1e-8,f={},g=function(a,b){if(a&&b){if("function"==typeof a[b])return a[b];var c=a.prototype;if(c&&"function"==typeof c[b])return c[b];if(c!==Object.prototype&&c!==Function.prototype)return"function"==typeof a.__super__?g(a.__super__,b):void 0}},h=a.c={debug:!1,trace:!1,verbose:!1,traceAdded:!1,GC:!1,GEQ:1,LEQ:2,inherit:function(b){var e=null,g=null;b["extends"]&&(g=b["extends"],delete b["extends"]),b.initialize&&(e=b.initialize,delete b.initialize);var h=e||function(){};Object.defineProperty(h,"__super__",{value:g?g:Object,enumerable:!1,configurable:!0,writable:!1}),b._t&&(f[b._t]=h);var i=h.prototype=Object.create(g?g.prototype:Object.prototype);if(this.extend(i,b),c&&g&&g.prototype instanceof a.HTMLElement){var j=h,k=d(i),l=function(a){return a.__proto__=i,j.apply(a,arguments),i.created&&a.created(),i.decorate&&a.decorate(),a};this.extend(i,{upgrade:l}),h=function(){return l(a.document.createElement(k))},h.prototype=i,this.extend(h,{ctor:j})}return h},extend:function(a,b){return this.own(b,function(c){var d=Object.getOwnPropertyDescriptor(b,c);try{"function"==typeof d.get||"function"==typeof d.set?Object.defineProperty(a,c,d):"function"==typeof d.value||"_"===c.charAt(0)?(d.writable=!0,d.configurable=!0,d.enumerable=!1,Object.defineProperty(a,c,d)):a[c]=b[c]}catch(e){}}),a},own:function(b,c,d){return Object.getOwnPropertyNames(b).forEach(c,d||a),b},traceprint:function(a){h.verbose&&console.log(a)},fnenterprint:function(a){console.log("* "+a)},fnexitprint:function(a){console.log("- "+a)},assert:function(a,b){if(!a)throw new h.InternalError("Assertion failed: "+b)},plus:function(a,b){return a instanceof h.Expression||(a=new h.Expression(a)),b instanceof h.Expression||(b=new h.Expression(b)),a.plus(b)},minus:function(a,b){return a instanceof h.Expression||(a=new h.Expression(a)),b instanceof h.Expression||(b=new h.Expression(b)),a.minus(b)},times:function(a,b){return("number"==typeof a||a instanceof h.Variable)&&(a=new h.Expression(a)),("number"==typeof b||b instanceof h.Variable)&&(b=new h.Expression(b)),a.times(b)},divide:function(a,b){return("number"==typeof a||a instanceof h.Variable)&&(a=new h.Expression(a)),("number"==typeof b||b instanceof h.Variable)&&(b=new h.Expression(b)),a.divide(b)},approx:function(a,b){if(a===b)return!0;var c,d;return c=a instanceof h.Variable?a.value:a,d=b instanceof h.Variable?b.value:b,0==c?e>Math.abs(d):0==d?e>Math.abs(c):Math.abs(c-d)<Math.abs(c)*e},_inc:function(a){return function(){return a++}}(0),parseJSON:function(a){return JSON.parse(a,function(a,b){if("object"!=typeof b||"string"!=typeof b._t)return b;var c=b._t,d=f[c];if(c&&d){var e=g(d,"fromJSON");if(e)return e(b,d)}return b})}};"function"=="function"&&"undefined"!=typeof module&&"undefined"==typeof load&&(a.exports=h)})(this),function(a){"use strict";var b=function(a){var b=a.hashCode?a.hashCode:""+a;return b},c=function(a,b){Object.keys(a).forEach(function(c){b[c]=a[c]})},d={};a.HashTable=a.inherit({initialize:function(){this.size=0,this._store={},this._keyStrMap={},this._deleted=0},set:function(a,c){var d=b(a);this._store.hasOwnProperty(d)||this.size++,this._store[d]=c,this._keyStrMap[d]=a},get:function(a){if(!this.size)return null;a=b(a);var c=this._store[a];return c!==void 0?this._store[a]:null},clear:function(){this.size=0,this._store={},this._keyStrMap={}},_compact:function(){var a={};c(this._store,a),this._store=a},_compactThreshold:100,_perhapsCompact:function(){this._size>64||this._deleted>this._compactThreshold&&(this._compact(),this._deleted=0)},"delete":function(a){a=b(a),this._store.hasOwnProperty(a)&&(this._deleted++,delete this._store[a],this.size>0&&this.size--)},each:function(a,b){if(this.size){this._perhapsCompact();var c=this._store,d=this._keyStrMap;Object.keys(this._store).forEach(function(e){a.call(b||null,d[e],c[e])},this)}},escapingEach:function(a,b){if(this.size){this._perhapsCompact();for(var c=this,e=this._store,f=this._keyStrMap,g=d,h=Object.keys(e),i=0;h.length>i;i++)if(function(d){c._store.hasOwnProperty(d)&&(g=a.call(b||null,f[d],e[d]))}(h[i]),g){if(void 0!==g.retval)return g;if(g.brk)break}}},clone:function(){var b=new a.HashTable;return this.size&&(b.size=this.size,c(this._store,b._store),c(this._keyStrMap,b._keyStrMap)),b},equals:function(b){if(b===this)return!0;if(!(b instanceof a.HashTable)||b._size!==this._size)return!1;for(var c=Object.keys(this._store),d=0;c.length>d;d++){var e=c[d];if(this._keyStrMap[e]!==b._keyStrMap[e]||this._store[e]!==b._store[e])return!1}return!0},toString:function(){var b="";return this.each(function(a,c){b+=a+" => "+c+"\n"}),b}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.HashSet=a.inherit({_t:"c.HashSet",initialize:function(){this.storage=[],this.size=0},add:function(a){var b=this.storage;b.indexOf(a),-1==b.indexOf(a)&&b.push(a),this.size=this.storage.length},values:function(){return this.storage},has:function(a){var b=this.storage;return-1!=b.indexOf(a)},"delete":function(a){var b=this.storage.indexOf(a);return-1==b?null:(this.storage.splice(b,1)[0],this.size=this.storage.length,void 0)},clear:function(){this.storage.length=0},each:function(a,b){this.size&&this.storage.forEach(a,b)},escapingEach:function(a,b){this.size&&this.storage.forEach(a,b)},toString:function(){var a=this.size+" {",b=!0;return this.each(function(c){b?b=!1:a+=", ",a+=c}),a+="}\n"},toJSON:function(){var a=[];return this.each(function(b){a.push(b.toJSON())}),{_t:"c.HashSet",data:a}},fromJSON:function(b){var c=new a.HashSet;return b.data&&(c.size=b.data.length,c.storage=b.data),c}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.Error=a.inherit({initialize:function(a){a&&(this._description=a)},_name:"c.Error",_description:"An error has occured in Cassowary",set description(a){this._description=a},get description(){return"("+this._name+") "+this._description},get message(){return this.description},toString:function(){return this.description}});var b=function(b,c){return a.inherit({"extends":a.Error,initialize:function(){a.Error.apply(this,arguments)},_name:b||"",_description:c||""})};a.ConstraintNotFound=b("c.ConstraintNotFound","Tried to remove a constraint never added to the tableu"),a.InternalError=b("c.InternalError"),a.NonExpression=b("c.NonExpression","The resulting expression would be non"),a.NotEnoughStays=b("c.NotEnoughStays","There are not enough stays to give specific values to every variable"),a.RequiredFailure=b("c.RequiredFailure","A required constraint cannot be satisfied"),a.TooDifficult=b("c.TooDifficult","The constraints are too difficult to solve")}(this.c||module.parent.exports||{}),function(a){"use strict";var b=1e3;a.SymbolicWeight=a.inherit({_t:"c.SymbolicWeight",initialize:function(){this.value=0;for(var a=1,c=arguments.length-1;c>=0;--c)this.value+=arguments[c]*a,a*=b},toJSON:function(){return{_t:this._t,value:this.value}}})}(this.c||module.parent.exports||{}),function(a){a.Strength=a.inherit({initialize:function(b,c,d,e){this.name=b,this.symbolicWeight=c instanceof a.SymbolicWeight?c:new a.SymbolicWeight(c,d,e)},get required(){return this===a.Strength.required},toString:function(){return this.name+(this.isRequired?"":":"+this.symbolicWeight)}}),a.Strength.required=new a.Strength("<Required>",1e3,1e3,1e3),a.Strength.strong=new a.Strength("strong",1,0,0),a.Strength.medium=new a.Strength("medium",0,1,0),a.Strength.weak=new a.Strength("weak",0,0,1)}(this.c||( true?module.parent.exports.c:{})),function(a){"use strict";a.AbstractVariable=a.inherit({isDummy:!1,isExternal:!1,isPivotable:!1,isRestricted:!1,_init:function(b,c){this.hashCode=a._inc(),this.name=(c||"")+this.hashCode,b&&(b.name!==void 0&&(this.name=b.name),b.value!==void 0&&(this.value=b.value),b.prefix!==void 0&&(this._prefix=b.prefix))},_prefix:"",name:"",value:0,toJSON:function(){var a={};return this._t&&(a._t=this._t),this.name&&(a.name=this.name),this.value!==void 0&&(a.value=this.value),this._prefix&&(a._prefix=this._prefix),this._t&&(a._t=this._t),a},fromJSON:function(b,c){var d=new c;return a.extend(d,b),d},toString:function(){return this._prefix+"["+this.name+":"+this.value+"]"}}),a.Variable=a.inherit({_t:"c.Variable","extends":a.AbstractVariable,initialize:function(b){this._init(b,"v");var c=a.Variable._map;c&&(c[this.name]=this)},isExternal:!0}),a.DummyVariable=a.inherit({_t:"c.DummyVariable","extends":a.AbstractVariable,initialize:function(a){this._init(a,"d")},isDummy:!0,isRestricted:!0,value:"dummy"}),a.ObjectiveVariable=a.inherit({_t:"c.ObjectiveVariable","extends":a.AbstractVariable,initialize:function(a){this._init(a,"o")},value:"obj"}),a.SlackVariable=a.inherit({_t:"c.SlackVariable","extends":a.AbstractVariable,initialize:function(a){this._init(a,"s")},isPivotable:!0,isRestricted:!0,value:"slack"})}(this.c||module.parent.exports||{}),function(a){"use strict";a.Point=a.inherit({initialize:function(b,c,d){if(b instanceof a.Variable)this._x=b;else{var e={value:b};d&&(e.name="x"+d),this._x=new a.Variable(e)}if(c instanceof a.Variable)this._y=c;else{var f={value:c};d&&(f.name="y"+d),this._y=new a.Variable(f)}},get x(){return this._x},set x(b){b instanceof a.Variable?this._x=b:this._x.value=b},get y(){return this._y},set y(b){b instanceof a.Variable?this._y=b:this._y.value=b},toString:function(){return"("+this.x+", "+this.y+")"}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.Expression=a.inherit({initialize:function(b,c,d){a.GC&&console.log("new c.Expression"),this.constant="number"!=typeof d||isNaN(d)?0:d,this.terms=new a.HashTable,b instanceof a.AbstractVariable?this.setVariable(b,"number"==typeof c?c:1):"number"==typeof b&&(isNaN(b)?console.trace():this.constant=b)},initializeFromHash:function(b,c){return a.verbose&&(console.log("*******************************"),console.log("clone c.initializeFromHash"),console.log("*******************************")),a.GC&&console.log("clone c.Expression"),this.constant=b,this.terms=c.clone(),this},multiplyMe:function(a){this.constant*=a;var b=this.terms;return b.each(function(c,d){b.set(c,d*a)}),this},clone:function(){a.verbose&&(console.log("*******************************"),console.log("clone c.Expression"),console.log("*******************************"));var b=new a.Expression;return b.initializeFromHash(this.constant,this.terms),b},times:function(b){if("number"==typeof b)return this.clone().multiplyMe(b);if(this.isConstant)return b.times(this.constant);if(b.isConstant)return this.times(b.constant);throw new a.NonExpression},plus:function(b){return b instanceof a.Expression?this.clone().addExpression(b,1):b instanceof a.Variable?this.clone().addVariable(b,1):void 0},minus:function(b){return b instanceof a.Expression?this.clone().addExpression(b,-1):b instanceof a.Variable?this.clone().addVariable(b,-1):void 0},divide:function(b){if("number"==typeof b){if(a.approx(b,0))throw new a.NonExpression;return this.times(1/b)}if(b instanceof a.Expression){if(!b.isConstant)throw new a.NonExpression;return this.times(1/b.constant)}},addExpression:function(b,c,d,e){return b instanceof a.AbstractVariable&&(b=new a.Expression(b),a.trace&&console.log("addExpression: Had to cast a var to an expression")),c=c||1,this.constant+=c*b.constant,b.terms.each(function(a,b){this.addVariable(a,b*c,d,e)},this),this},addVariable:function(b,c,d,e){null==c&&(c=1),a.trace&&console.log("c.Expression::addVariable():",b,c);var f=this.terms.get(b);if(f){var g=f+c;0==g||a.approx(g,0)?(e&&e.noteRemovedVariable(b,d),this.terms.delete(b)):this.setVariable(b,g)}else a.approx(c,0)||(this.setVariable(b,c),e&&e.noteAddedVariable(b,d));return this},setVariable:function(a,b){return this.terms.set(a,b),this},anyPivotableVariable:function(){if(this.isConstant)throw new a.InternalError("anyPivotableVariable called on a constant");var b=this.terms.escapingEach(function(a){return a.isPivotable?{retval:a}:void 0});return b&&void 0!==b.retval?b.retval:null},substituteOut:function(b,c,d,e){a.trace&&(a.fnenterprint("CLE:substituteOut: "+b+", "+c+", "+d+", ..."),a.traceprint("this = "+this));var f=this.setVariable.bind(this),g=this.terms,h=g.get(b);g.delete(b),this.constant+=h*c.constant,c.terms.each(function(b,c){var i=g.get(b);if(i){var j=i+h*c;a.approx(j,0)?(e.noteRemovedVariable(b,d),g.delete(b)):f(b,j)}else f(b,h*c),e&&e.noteAddedVariable(b,d)}),a.trace&&a.traceprint("Now this is "+this)},changeSubject:function(a,b){this.setVariable(a,this.newSubject(b))},newSubject:function(b){a.trace&&a.fnenterprint("newSubject:"+b);var c=1/this.terms.get(b);return this.terms.delete(b),this.multiplyMe(-c),c},coefficientFor:function(a){return this.terms.get(a)||0},get isConstant(){return 0==this.terms.size},toString:function(){var b="",c=!1;if(!a.approx(this.constant,0)||this.isConstant){if(b+=this.constant,this.isConstant)return b;c=!0}return this.terms.each(function(a,d){c&&(b+=" + "),b+=d+"*"+a,c=!0}),b},equals:function(b){return b===this?!0:b instanceof a.Expression&&b.constant===this.constant&&b.terms.equals(this.terms)},Plus:function(a,b){return a.plus(b)},Minus:function(a,b){return a.minus(b)},Times:function(a,b){return a.times(b)},Divide:function(a,b){return a.divide(b)}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.AbstractConstraint=a.inherit({initialize:function(b,c){this.hashCode=a._inc(),this.strength=b||a.Strength.required,this.weight=c||1},isEditConstraint:!1,isInequality:!1,isStayConstraint:!1,get required(){return this.strength===a.Strength.required},toString:function(){return this.strength+" {"+this.weight+"} ("+this.expression+")"}});var b=a.AbstractConstraint.prototype.toString,c=function(b,c,d){a.AbstractConstraint.call(this,c||a.Strength.strong,d),this.variable=b,this.expression=new a.Expression(b,-1,b.value)};a.EditConstraint=a.inherit({"extends":a.AbstractConstraint,initialize:function(){c.apply(this,arguments)},isEditConstraint:!0,toString:function(){return"edit:"+b.call(this)}}),a.StayConstraint=a.inherit({"extends":a.AbstractConstraint,initialize:function(){c.apply(this,arguments)},isStayConstraint:!0,toString:function(){return"stay:"+b.call(this)}});var d=a.Constraint=a.inherit({"extends":a.AbstractConstraint,initialize:function(b,c,d){a.AbstractConstraint.call(this,c,d),this.expression=b}});a.Inequality=a.inherit({"extends":a.Constraint,_cloneOrNewCle:function(b){return b.clone?b.clone():new a.Expression(b)},initialize:function(b,c,e,f,g){var h=b instanceof a.Expression,i=e instanceof a.Expression,j=b instanceof a.AbstractVariable,k=e instanceof a.AbstractVariable,l="number"==typeof b,m="number"==typeof e;if((h||l)&&k){var n=b,o=c,p=e,q=f,r=g;if(d.call(this,this._cloneOrNewCle(n),q,r),o==a.LEQ)this.expression.multiplyMe(-1),this.expression.addVariable(p);else{if(o!=a.GEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");this.expression.addVariable(p,-1)}}else if(j&&(i||m)){var n=e,o=c,p=b,q=f,r=g;if(d.call(this,this._cloneOrNewCle(n),q,r),o==a.GEQ)this.expression.multiplyMe(-1),this.expression.addVariable(p);else{if(o!=a.LEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");this.expression.addVariable(p,-1)}}else{if(h&&m){var s=b,o=c,t=e,q=f,r=g;if(d.call(this,this._cloneOrNewCle(s),q,r),o==a.LEQ)this.expression.multiplyMe(-1),this.expression.addExpression(this._cloneOrNewCle(t));else{if(o!=a.GEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");this.expression.addExpression(this._cloneOrNewCle(t),-1)}return this}if(l&&i){var s=e,o=c,t=b,q=f,r=g;if(d.call(this,this._cloneOrNewCle(s),q,r),o==a.GEQ)this.expression.multiplyMe(-1),this.expression.addExpression(this._cloneOrNewCle(t));else{if(o!=a.LEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");this.expression.addExpression(this._cloneOrNewCle(t),-1)}return this}if(h&&i){var s=b,o=c,t=e,q=f,r=g;if(d.call(this,this._cloneOrNewCle(t),q,r),o==a.GEQ)this.expression.multiplyMe(-1),this.expression.addExpression(this._cloneOrNewCle(s));else{if(o!=a.LEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");this.expression.addExpression(this._cloneOrNewCle(s),-1)}}else{if(h)return d.call(this,b,c,e);if(c==a.GEQ)d.call(this,new a.Expression(e),f,g),this.expression.multiplyMe(-1),this.expression.addVariable(b);else{if(c!=a.LEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");d.call(this,new a.Expression(e),f,g),this.expression.addVariable(b,-1)}}}},isInequality:!0,toString:function(){return d.prototype.toString.call(this)+" >= 0) id: "+this.hashCode}}),a.Equation=a.inherit({"extends":a.Constraint,initialize:function(b,c,e,f){if(b instanceof a.Expression&&!c||c instanceof a.Strength)d.call(this,b,c,e);else if(b instanceof a.AbstractVariable&&c instanceof a.Expression){var g=b,h=c,i=e,j=f;d.call(this,h.clone(),i,j),this.expression.addVariable(g,-1)}else if(b instanceof a.AbstractVariable&&"number"==typeof c){var g=b,k=c,i=e,j=f;d.call(this,new a.Expression(k),i,j),this.expression.addVariable(g,-1)}else if(b instanceof a.Expression&&c instanceof a.AbstractVariable){var h=b,g=c,i=e,j=f;d.call(this,h.clone(),i,j),this.expression.addVariable(g,-1)}else{if(!(b instanceof a.Expression||b instanceof a.AbstractVariable||"number"==typeof b)||!(c instanceof a.Expression||c instanceof a.AbstractVariable||"number"==typeof c))throw"Bad initializer to c.Equation";b=b instanceof a.Expression?b.clone():new a.Expression(b),c=c instanceof a.Expression?c.clone():new a.Expression(c),d.call(this,b,e,f),this.expression.addExpression(c,-1)}a.assert(this.strength instanceof a.Strength,"_strength not set")},toString:function(){return d.prototype.toString.call(this)+" = 0)"}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.EditInfo=a.inherit({initialize:function(a,b,c,d,e){this.constraint=a,this.editPlus=b,this.editMinus=c,this.prevEditConstant=d,this.index=e},toString:function(){return"<cn="+this.constraint+", ep="+this.editPlus+", em="+this.editMinus+", pec="+this.prevEditConstant+", index="+this.index+">"}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.Tableau=a.inherit({initialize:function(){this.columns=new a.HashTable,this.rows=new a.HashTable,this._infeasibleRows=new a.HashSet,this._externalRows=new a.HashSet,this._externalParametricVars=new a.HashSet},noteRemovedVariable:function(b,c){a.trace&&console.log("c.Tableau::noteRemovedVariable: ",b,c);var d=this.columns.get(b);c&&d&&d.delete(c)},noteAddedVariable:function(a,b){b&&this.insertColVar(a,b)},getInternalInfo:function(){var a="Tableau Information:\n";return a+="Rows: "+this.rows.size,a+=" (= "+(this.rows.size-1)+" constraints)",a+="\nColumns: "+this.columns.size,a+="\nInfeasible Rows: "+this._infeasibleRows.size,a+="\nExternal basic variables: "+this._externalRows.size,a+="\nExternal parametric variables: ",a+=this._externalParametricVars.size,a+="\n"},toString:function(){var a="Tableau:\n";return this.rows.each(function(b,c){a+=b,a+=" <==> ",a+=c,a+="\n"}),a+="\nColumns:\n",a+=this.columns,a+="\nInfeasible rows: ",a+=this._infeasibleRows,a+="External basic variables: ",a+=this._externalRows,a+="External parametric variables: ",a+=this._externalParametricVars},insertColVar:function(b,c){var d=this.columns.get(b);d||(d=new a.HashSet,this.columns.set(b,d)),d.add(c)},addRow:function(b,c){a.trace&&a.fnenterprint("addRow: "+b+", "+c),this.rows.set(b,c),c.terms.each(function(a){this.insertColVar(a,b),a.isExternal&&this._externalParametricVars.add(a)},this),b.isExternal&&this._externalRows.add(b),a.trace&&a.traceprint(""+this)},removeColumn:function(b){a.trace&&a.fnenterprint("removeColumn:"+b);var c=this.columns.get(b);c?(this.columns.delete(b),c.each(function(a){var c=this.rows.get(a);c.terms.delete(b)},this)):a.trace&&console.log("Could not find var",b,"in columns"),b.isExternal&&(this._externalRows.delete(b),this._externalParametricVars.delete(b))},removeRow:function(b){a.trace&&a.fnenterprint("removeRow:"+b);var c=this.rows.get(b);return a.assert(null!=c),c.terms.each(function(c){var e=this.columns.get(c);null!=e&&(a.trace&&console.log("removing from varset:",b),e.delete(b))},this),this._infeasibleRows.delete(b),b.isExternal&&this._externalRows.delete(b),this.rows.delete(b),a.trace&&a.fnexitprint("returning "+c),c},substituteOut:function(b,c){a.trace&&a.fnenterprint("substituteOut:"+b+", "+c),a.trace&&a.traceprint(""+this);var d=this.columns.get(b);d.each(function(a){var d=this.rows.get(a);d.substituteOut(b,c,a,this),a.isRestricted&&0>d.constant&&this._infeasibleRows.add(a)},this),b.isExternal&&(this._externalRows.add(b),this._externalParametricVars.delete(b)),this.columns.delete(b)},columnsHasKey:function(a){return!!this.columns.get(a)}})}(this.c||module.parent.exports||{}),function(a){var b=a.Tableau,c=b.prototype,d=1e-8,e=a.Strength.weak;a.SimplexSolver=a.inherit({"extends":a.Tableau,initialize:function(){a.Tableau.call(this),this._stayMinusErrorVars=[],this._stayPlusErrorVars=[],this._errorVars=new a.HashTable,this._markerVars=new a.HashTable,this._objective=new a.ObjectiveVariable({name:"Z"}),this._editVarMap=new a.HashTable,this._editVarList=[],this._slackCounter=0,this._artificialCounter=0,this._dummyCounter=0,this.autoSolve=!0,this._fNeedsSolving=!1,this._optimizeCount=0,this.rows.set(this._objective,new a.Expression),this._stkCedcns=[0],a.trace&&a.traceprint("objective expr == "+this.rows.get(this._objective))},addLowerBound:function(b,c){var d=new a.Inequality(b,a.GEQ,new a.Expression(c));return this.addConstraint(d)},addUpperBound:function(b,c){var d=new a.Inequality(b,a.LEQ,new a.Expression(c));return this.addConstraint(d)},addBounds:function(a,b,c){return this.addLowerBound(a,b),this.addUpperBound(a,c),this},add:function(){for(var a=0;arguments.length>a;a++)this.addConstraint(arguments[a]);return this},addConstraint:function(b){a.trace&&a.fnenterprint("addConstraint: "+b);var c=Array(2),d=Array(1),e=this.newExpression(b,c,d);if(d=d[0],this.tryAddingDirectly(e)||this.addWithArtificialVariable(e),this._fNeedsSolving=!0,b.isEditConstraint){var f=this._editVarMap.size,g=c[0],h=c[1];!g instanceof a.SlackVariable&&console.warn("cvEplus not a slack variable =",g),!h instanceof a.SlackVariable&&console.warn("cvEminus not a slack variable =",h),a.debug&&console.log("new c.EditInfo("+b+", "+g+", "+h+", "+d+", "+f+")");var i=new a.EditInfo(b,g,h,d,f);this._editVarMap.set(b.variable,i),this._editVarList[f]={v:b.variable,info:i}}return this.autoSolve&&(this.optimize(this._objective),this._setExternalVariables()),this},addConstraintNoException:function(b){a.trace&&a.fnenterprint("addConstraintNoException: "+b);try{return this.addConstraint(b),!0}catch(c){return!1}},addEditVar:function(b,c){return a.trace&&a.fnenterprint("addEditVar: "+b+" @ "+c),this.addConstraint(new a.EditConstraint(b,c||a.Strength.strong))},beginEdit:function(){return a.assert(this._editVarMap.size>0,"_editVarMap.size > 0"),this._infeasibleRows.clear(),this._resetStayConstants(),this._stkCedcns.push(this._editVarMap.size),this},endEdit:function(){return a.assert(this._editVarMap.size>0,"_editVarMap.size > 0"),this.resolve(),this._stkCedcns.pop(),this.removeEditVarsTo(this._stkCedcns[this._stkCedcns.length-1]),this},removeAllEditVars:function(){return this.removeEditVarsTo(0)},removeEditVarsTo:function(b){try{for(var c=this._editVarList.length,d=b;c>d;d++)this._editVarList[d]&&this.removeConstraint(this._editVarMap.get(this._editVarList[d].v).constraint);return this._editVarList.length=b,a.assert(this._editVarMap.size==b,"_editVarMap.size == n"),this}catch(e){throw new a.InternalError("Constraint not found in removeEditVarsTo")}},addPointStays:function(b){return a.trace&&console.log("addPointStays",b),b.forEach(function(a,b){this.addStay(a.x,e,Math.pow(2,b)),this.addStay(a.y,e,Math.pow(2,b))},this),this},addStay:function(b,c,d){var f=new a.StayConstraint(b,c||e,d||1);return this.addConstraint(f)},removeConstraint:function(a){return this.removeConstraintInternal(a),this},removeConstraintInternal:function(b){a.trace&&a.fnenterprint("removeConstraintInternal: "+b),a.trace&&a.traceprint(""+this),this._fNeedsSolving=!0,this._resetStayConstants();var c=this.rows.get(this._objective),d=this._errorVars.get(b);a.trace&&a.traceprint("eVars == "+d),null!=d&&d.each(function(e){var f=this.rows.get(e);null==f?c.addVariable(e,-b.weight*b.strength.symbolicWeight.value,this._objective,this):c.addExpression(f,-b.weight*b.strength.symbolicWeight.value,this._objective,this),a.trace&&a.traceprint("now eVars == "+d)},this);var e=this._markerVars.get(b);if(this._markerVars.delete(b),null==e)throw new a.InternalError("Constraint not found in removeConstraintInternal");if(a.trace&&a.traceprint("Looking to remove var "+e),null==this.rows.get(e)){var f=this.columns.get(e);a.trace&&a.traceprint("Must pivot -- columns are "+f);var g=null,h=0;f.each(function(b){if(b.isRestricted){var c=this.rows.get(b),d=c.coefficientFor(e);if(a.trace&&a.traceprint("Marker "+e+"'s coefficient in "+c+" is "+d),0>d){var f=-c.constant/d;(null==g||h>f||a.approx(f,h)&&b.hashCode<g.hashCode)&&(h=f,g=b)}}},this),null==g&&(a.trace&&a.traceprint("exitVar is still null"),f.each(function(a){if(a.isRestricted){var b=this.rows.get(a),c=b.coefficientFor(e),d=b.constant/c;(null==g||h>d)&&(h=d,g=a)}},this)),null==g&&(0==f.size?this.removeColumn(e):f.escapingEach(function(a){return a!=this._objective?(g=a,{brk:!0}):void 0},this)),null!=g&&this.pivot(e,g)}if(null!=this.rows.get(e)&&this.removeRow(e),null!=d&&d.each(function(a){a!=e&&this.removeColumn(a)},this),b.isStayConstraint){if(null!=d)for(var j=0;this._stayPlusErrorVars.length>j;j++)d.delete(this._stayPlusErrorVars[j]),d.delete(this._stayMinusErrorVars[j])}else if(b.isEditConstraint){a.assert(null!=d,"eVars != null");var k=this._editVarMap.get(b.variable);this.removeColumn(k.editMinus),this._editVarMap.delete(b.variable)}return null!=d&&this._errorVars.delete(d),this.autoSolve&&(this.optimize(this._objective),this._setExternalVariables()),this},reset:function(){throw a.trace&&a.fnenterprint("reset"),new a.InternalError("reset not implemented")},resolveArray:function(b){a.trace&&a.fnenterprint("resolveArray"+b);var c=b.length;this._editVarMap.each(function(a,d){var e=d.index;c>e&&this.suggestValue(a,b[e])},this),this.resolve()},resolvePair:function(a,b){this.suggestValue(this._editVarList[0].v,a),this.suggestValue(this._editVarList[1].v,b),this.resolve()},resolve:function(){a.trace&&a.fnenterprint("resolve()"),this.dualOptimize(),this._setExternalVariables(),this._infeasibleRows.clear(),this._resetStayConstants()},suggestValue:function(b,c){a.trace&&console.log("suggestValue("+b+", "+c+")");var d=this._editVarMap.get(b);if(!d)throw new a.Error("suggestValue for variable "+b+", but var is not an edit variable");var e=c-d.prevEditConstant;return d.prevEditConstant=c,this.deltaEditConstant(e,d.editPlus,d.editMinus),this},solve:function(){return this._fNeedsSolving&&(this.optimize(this._objective),this._setExternalVariables()),this},setEditedValue:function(b,c){if(!this.columnsHasKey(b)&&null==this.rows.get(b))return b.value=c,this;if(!a.approx(c,b.value)){this.addEditVar(b),this.beginEdit();try{this.suggestValue(b,c)}catch(d){throw new a.InternalError("Error in setEditedValue")}this.endEdit()}return this},addVar:function(b){if(!this.columnsHasKey(b)&&null==this.rows.get(b)){try{this.addStay(b)}catch(c){throw new a.InternalError("Error in addVar -- required failure is impossible")}a.trace&&a.traceprint("added initial stay on "+b)}return this},getInternalInfo:function(){var a=c.getInternalInfo.call(this);return a+="\nSolver info:\n",a+="Stay Error Variables: ",a+=this._stayPlusErrorVars.length+this._stayMinusErrorVars.length,a+=" ("+this._stayPlusErrorVars.length+" +, ",a+=this._stayMinusErrorVars.length+" -)\n",a+="Edit Variables: "+this._editVarMap.size,a+="\n"},getDebugInfo:function(){return""+this+this.getInternalInfo()+"\n"},toString:function(){var a=c.getInternalInfo.call(this);return a+="\n_stayPlusErrorVars: ",a+="["+this._stayPlusErrorVars+"]",a+="\n_stayMinusErrorVars: ",a+="["+this._stayMinusErrorVars+"]",a+="\n",a+="_editVarMap:\n"+this._editVarMap,a+="\n"},getConstraintMap:function(){return this._markerVars},addWithArtificialVariable:function(b){a.trace&&a.fnenterprint("addWithArtificialVariable: "+b);var c=new a.SlackVariable({value:++this._artificialCounter,prefix:"a"}),d=new a.ObjectiveVariable({name:"az"}),e=b.clone();a.trace&&a.traceprint("before addRows:\n"+this),this.addRow(d,e),this.addRow(c,b),a.trace&&a.traceprint("after addRows:\n"+this),this.optimize(d);var f=this.rows.get(d);if(a.trace&&a.traceprint("azTableauRow.constant == "+f.constant),!a.approx(f.constant,0))throw this.removeRow(d),this.removeColumn(c),new a.RequiredFailure;var g=this.rows.get(c);if(null!=g){if(g.isConstant)return this.removeRow(c),this.removeRow(d),void 0;var h=g.anyPivotableVariable();this.pivot(h,c)}a.assert(null==this.rows.get(c),"rowExpression(av) == null"),this.removeColumn(c),this.removeRow(d)},tryAddingDirectly:function(b){a.trace&&a.fnenterprint("tryAddingDirectly: "+b);var c=this.chooseSubject(b);return null==c?(a.trace&&a.fnexitprint("returning false"),!1):(b.newSubject(c),this.columnsHasKey(c)&&this.substituteOut(c,b),this.addRow(c,b),a.trace&&a.fnexitprint("returning true"),!0)},chooseSubject:function(b){a.trace&&a.fnenterprint("chooseSubject: "+b);var c=null,d=!1,e=!1,f=b.terms,g=f.escapingEach(function(a,b){if(d){if(!a.isRestricted&&!this.columnsHasKey(a))return{retval:a}}else if(a.isRestricted){if(!e&&!a.isDummy&&0>b){var f=this.columns.get(a);(null==f||1==f.size&&this.columnsHasKey(this._objective))&&(c=a,e=!0)}}else c=a,d=!0},this);if(g&&void 0!==g.retval)return g.retval;if(null!=c)return c;var h=0,g=f.escapingEach(function(a,b){return a.isDummy?(this.columnsHasKey(a)||(c=a,h=b),void 0):{retval:null}},this);if(g&&void 0!==g.retval)return g.retval;if(!a.approx(b.constant,0))throw new a.RequiredFailure;return h>0&&b.multiplyMe(-1),c},deltaEditConstant:function(b,c,d){a.trace&&a.fnenterprint("deltaEditConstant :"+b+", "+c+", "+d);var e=this.rows.get(c);if(null!=e)return e.constant+=b,0>e.constant&&this._infeasibleRows.add(c),void 0;var f=this.rows.get(d);if(null!=f)return f.constant+=-b,0>f.constant&&this._infeasibleRows.add(d),void 0;var g=this.columns.get(d);g||console.log("columnVars is null -- tableau is:\n"+this),g.each(function(a){var c=this.rows.get(a),e=c.coefficientFor(d);c.constant+=e*b,a.isRestricted&&0>c.constant&&this._infeasibleRows.add(a)},this)},dualOptimize:function(){a.trace&&a.fnenterprint("dualOptimize:");for(var b=this.rows.get(this._objective);this._infeasibleRows.size;){var c=this._infeasibleRows.values()[0];this._infeasibleRows.delete(c);var d=null,e=this.rows.get(c);if(e&&0>e.constant){var g,f=Number.MAX_VALUE,h=e.terms;if(h.each(function(c,e){if(e>0&&c.isPivotable){var h=b.coefficientFor(c);g=h/e,(f>g||a.approx(g,f)&&c.hashCode<d.hashCode)&&(d=c,f=g)}}),f==Number.MAX_VALUE)throw new a.InternalError("ratio == nil (MAX_VALUE) in dualOptimize");this.pivot(d,c)}}},newExpression:function(b,c,d){a.trace&&(a.fnenterprint("newExpression: "+b),a.traceprint("cn.isInequality == "+b.isInequality),a.traceprint("cn.required == "+b.required));var e=b.expression,f=new a.Expression(e.constant),g=new a.SlackVariable,h=new a.DummyVariable,i=new a.SlackVariable,j=new a.SlackVariable,k=e.terms;if(k.each(function(a,b){var c=this.rows.get(a);c?f.addExpression(c,b):f.addVariable(a,b)},this),b.isInequality){if(a.trace&&a.traceprint("Inequality, adding slack"),++this._slackCounter,g=new a.SlackVariable({value:this._slackCounter,prefix:"s"}),f.setVariable(g,-1),this._markerVars.set(b,g),!b.required){++this._slackCounter,i=new a.SlackVariable({value:this._slackCounter,prefix:"em"}),f.setVariable(i,1);
+var l=this.rows.get(this._objective);l.setVariable(i,b.strength.symbolicWeight.value*b.weight),this.insertErrorVar(b,i),this.noteAddedVariable(i,this._objective)}}else if(b.required)a.trace&&a.traceprint("Equality, required"),++this._dummyCounter,h=new a.DummyVariable({value:this._dummyCounter,prefix:"d"}),f.setVariable(h,1),this._markerVars.set(b,h),a.trace&&a.traceprint("Adding dummyVar == d"+this._dummyCounter);else{a.trace&&a.traceprint("Equality, not required"),++this._slackCounter,j=new a.SlackVariable({value:this._slackCounter,prefix:"ep"}),i=new a.SlackVariable({value:this._slackCounter,prefix:"em"}),f.setVariable(j,-1),f.setVariable(i,1),this._markerVars.set(b,j);var l=this.rows.get(this._objective);a.trace&&console.log(l);var m=b.strength.symbolicWeight.value*b.weight;0==m&&(a.trace&&a.traceprint("cn == "+b),a.trace&&a.traceprint("adding "+j+" and "+i+" with swCoeff == "+m)),l.setVariable(j,m),this.noteAddedVariable(j,this._objective),l.setVariable(i,m),this.noteAddedVariable(i,this._objective),this.insertErrorVar(b,i),this.insertErrorVar(b,j),b.isStayConstraint?(this._stayPlusErrorVars.push(j),this._stayMinusErrorVars.push(i)):b.isEditConstraint&&(c[0]=j,c[1]=i,d[0]=e.constant)}return 0>f.constant&&f.multiplyMe(-1),a.trace&&a.fnexitprint("returning "+f),f},optimize:function(b){a.trace&&a.fnenterprint("optimize: "+b),a.trace&&a.traceprint(""+this),this._optimizeCount++;var c=this.rows.get(b);a.assert(null!=c,"zRow != null");for(var g,h,e=null,f=null;;){if(g=0,h=c.terms,h.escapingEach(function(a,b){return a.isPivotable&&g>b?(g=b,e=a,{brk:1}):void 0},this),g>=-d)return;a.trace&&console.log("entryVar:",e,"objectiveCoeff:",g);var i=Number.MAX_VALUE,j=this.columns.get(e),k=0;if(j.each(function(b){if(a.trace&&a.traceprint("Checking "+b),b.isPivotable){var c=this.rows.get(b),d=c.coefficientFor(e);a.trace&&a.traceprint("pivotable, coeff = "+d),0>d&&(k=-c.constant/d,(i>k||a.approx(k,i)&&b.hashCode<f.hashCode)&&(i=k,f=b))}},this),i==Number.MAX_VALUE)throw new a.InternalError("Objective function is unbounded in optimize");this.pivot(e,f),a.trace&&a.traceprint(""+this)}},pivot:function(b,c){a.trace&&console.log("pivot: ",b,c);var d=!1;d&&console.time(" SimplexSolver::pivot"),null==b&&console.warn("pivot: entryVar == null"),null==c&&console.warn("pivot: exitVar == null"),d&&console.time("  removeRow");var e=this.removeRow(c);d&&console.timeEnd("  removeRow"),d&&console.time("  changeSubject"),e.changeSubject(c,b),d&&console.timeEnd("  changeSubject"),d&&console.time("  substituteOut"),this.substituteOut(b,e),d&&console.timeEnd("  substituteOut"),d&&console.time("  addRow"),this.addRow(b,e),d&&console.timeEnd("  addRow"),d&&console.timeEnd(" SimplexSolver::pivot")},_resetStayConstants:function(){a.trace&&console.log("_resetStayConstants");for(var b=0;this._stayPlusErrorVars.length>b;b++){var c=this.rows.get(this._stayPlusErrorVars[b]);null==c&&(c=this.rows.get(this._stayMinusErrorVars[b])),null!=c&&(c.constant=0)}},_setExternalVariables:function(){a.trace&&a.fnenterprint("_setExternalVariables:"),a.trace&&a.traceprint(""+this),this._externalParametricVars.each(function(b){null!=this.rows.get(b)?a.trace&&console.log("Error: variable"+b+" in _externalParametricVars is basic"):b.value=0},this),this._externalRows.each(function(a){var b=this.rows.get(a);a.value!=b.constant&&(a.value=b.constant)},this),this._fNeedsSolving=!1,this.onsolved()},onsolved:function(){},insertErrorVar:function(b,c){a.trace&&a.fnenterprint("insertErrorVar:"+b+", "+c);var d=this._errorVars.get(c);d||(d=new a.HashSet,this._errorVars.set(b,d)),d.add(c)}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.Timer=a.inherit({initialize:function(){this.isRunning=!1,this._elapsedMs=0},start:function(){return this.isRunning=!0,this._startReading=new Date,this},stop:function(){return this.isRunning=!1,this._elapsedMs+=new Date-this._startReading,this},reset:function(){return this.isRunning=!1,this._elapsedMs=0,this},elapsedTime:function(){return this.isRunning?(this._elapsedMs+(new Date-this._startReading))/1e3:this._elapsedMs/1e3}})}(this.c||module.parent.exports||{}),__cassowary_parser=function(){function a(a){return'"'+a.replace(/\\/g,"\\\\").replace(/"/g,'\\"').replace(/\x08/g,"\\b").replace(/\t/g,"\\t").replace(/\n/g,"\\n").replace(/\f/g,"\\f").replace(/\r/g,"\\r").replace(/[\x00-\x07\x0B\x0E-\x1F\x80-\uFFFF]/g,escape)+'"'}var b={parse:function(b,c){function k(a){g>e||(e>g&&(g=e,h=[]),h.push(a))}function l(){var a,b,c,d,f;if(d=e,f=e,a=z(),null!==a){if(c=m(),null!==c)for(b=[];null!==c;)b.push(c),c=m();else b=null;null!==b?(c=z(),null!==c?a=[a,b,c]:(a=null,e=f)):(a=null,e=f)}else a=null,e=f;return null!==a&&(a=function(a,b){return b}(d,a[1])),null===a&&(e=d),a}function m(){var a,b,c,d;return c=e,d=e,a=P(),null!==a?(b=s(),null!==b?a=[a,b]:(a=null,e=d)):(a=null,e=d),null!==a&&(a=function(a,b){return b}(c,a[0])),null===a&&(e=c),a}function n(){var a;return b.length>e?(a=b.charAt(e),e++):(a=null,0===f&&k("any character")),a}function o(){var a;return/^[a-zA-Z]/.test(b.charAt(e))?(a=b.charAt(e),e++):(a=null,0===f&&k("[a-zA-Z]")),null===a&&(36===b.charCodeAt(e)?(a="$",e++):(a=null,0===f&&k('"$"')),null===a&&(95===b.charCodeAt(e)?(a="_",e++):(a=null,0===f&&k('"_"')))),a}function p(){var a;return f++,/^[\t\x0B\f \xA0\uFEFF]/.test(b.charAt(e))?(a=b.charAt(e),e++):(a=null,0===f&&k("[\\t\\x0B\\f \\xA0\\uFEFF]")),f--,0===f&&null===a&&k("whitespace"),a}function q(){var a;return/^[\n\r\u2028\u2029]/.test(b.charAt(e))?(a=b.charAt(e),e++):(a=null,0===f&&k("[\\n\\r\\u2028\\u2029]")),a}function r(){var a;return f++,10===b.charCodeAt(e)?(a="\n",e++):(a=null,0===f&&k('"\\n"')),null===a&&("\r\n"===b.substr(e,2)?(a="\r\n",e+=2):(a=null,0===f&&k('"\\r\\n"')),null===a&&(13===b.charCodeAt(e)?(a="\r",e++):(a=null,0===f&&k('"\\r"')),null===a&&(8232===b.charCodeAt(e)?(a="\u2028",e++):(a=null,0===f&&k('"\\u2028"')),null===a&&(8233===b.charCodeAt(e)?(a="\u2029",e++):(a=null,0===f&&k('"\\u2029"')))))),f--,0===f&&null===a&&k("end of line"),a}function s(){var a,c,d;return d=e,a=z(),null!==a?(59===b.charCodeAt(e)?(c=";",e++):(c=null,0===f&&k('";"')),null!==c?a=[a,c]:(a=null,e=d)):(a=null,e=d),null===a&&(d=e,a=y(),null!==a?(c=r(),null!==c?a=[a,c]:(a=null,e=d)):(a=null,e=d),null===a&&(d=e,a=z(),null!==a?(c=t(),null!==c?a=[a,c]:(a=null,e=d)):(a=null,e=d))),a}function t(){var a,c;return c=e,f++,b.length>e?(a=b.charAt(e),e++):(a=null,0===f&&k("any character")),f--,null===a?a="":(a=null,e=c),a}function u(){var a;return f++,a=v(),null===a&&(a=x()),f--,0===f&&null===a&&k("comment"),a}function v(){var a,c,d,g,h,i,j;if(h=e,"/*"===b.substr(e,2)?(a="/*",e+=2):(a=null,0===f&&k('"/*"')),null!==a){for(c=[],i=e,j=e,f++,"*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==d;)c.push(d),i=e,j=e,f++,"*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==c?("*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),null!==d?a=[a,c,d]:(a=null,e=h)):(a=null,e=h)}else a=null,e=h;return a}function w(){var a,c,d,g,h,i,j;if(h=e,"/*"===b.substr(e,2)?(a="/*",e+=2):(a=null,0===f&&k('"/*"')),null!==a){for(c=[],i=e,j=e,f++,"*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),null===d&&(d=q()),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==d;)c.push(d),i=e,j=e,f++,"*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),null===d&&(d=q()),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==c?("*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),null!==d?a=[a,c,d]:(a=null,e=h)):(a=null,e=h)}else a=null,e=h;return a}function x(){var a,c,d,g,h,i,j;if(h=e,"//"===b.substr(e,2)?(a="//",e+=2):(a=null,0===f&&k('"//"')),null!==a){for(c=[],i=e,j=e,f++,d=q(),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==d;)c.push(d),i=e,j=e,f++,d=q(),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==c?a=[a,c]:(a=null,e=h)}else a=null,e=h;return a}function y(){var a,b;for(a=[],b=p(),null===b&&(b=w(),null===b&&(b=x()));null!==b;)a.push(b),b=p(),null===b&&(b=w(),null===b&&(b=x()));return a}function z(){var a,b;for(a=[],b=p(),null===b&&(b=r(),null===b&&(b=u()));null!==b;)a.push(b),b=p(),null===b&&(b=r(),null===b&&(b=u()));return a}function A(){var a,b;return b=e,a=C(),null===a&&(a=B()),null!==a&&(a=function(a,b){return{type:"NumericLiteral",value:b}}(b,a)),null===a&&(e=b),a}function B(){var a,c,d;if(d=e,/^[0-9]/.test(b.charAt(e))?(c=b.charAt(e),e++):(c=null,0===f&&k("[0-9]")),null!==c)for(a=[];null!==c;)a.push(c),/^[0-9]/.test(b.charAt(e))?(c=b.charAt(e),e++):(c=null,0===f&&k("[0-9]"));else a=null;return null!==a&&(a=function(a,b){return parseInt(b.join(""))}(d,a)),null===a&&(e=d),a}function C(){var a,c,d,g,h;return g=e,h=e,a=B(),null!==a?(46===b.charCodeAt(e)?(c=".",e++):(c=null,0===f&&k('"."')),null!==c?(d=B(),null!==d?a=[a,c,d]:(a=null,e=h)):(a=null,e=h)):(a=null,e=h),null!==a&&(a=function(a,b){return parseFloat(b.join(""))}(g,a)),null===a&&(e=g),a}function D(){var a,c,d,g;if(g=e,/^[\-+]/.test(b.charAt(e))?(a=b.charAt(e),e++):(a=null,0===f&&k("[\\-+]")),a=null!==a?a:"",null!==a){if(/^[0-9]/.test(b.charAt(e))?(d=b.charAt(e),e++):(d=null,0===f&&k("[0-9]")),null!==d)for(c=[];null!==d;)c.push(d),/^[0-9]/.test(b.charAt(e))?(d=b.charAt(e),e++):(d=null,0===f&&k("[0-9]"));else c=null;null!==c?a=[a,c]:(a=null,e=g)}else a=null,e=g;return a}function E(){var a,b;return f++,b=e,a=F(),null!==a&&(a=function(a,b){return b}(b,a)),null===a&&(e=b),f--,0===f&&null===a&&k("identifier"),a}function F(){var a,b,c,d,g;if(f++,d=e,g=e,a=o(),null!==a){for(b=[],c=o();null!==c;)b.push(c),c=o();null!==b?a=[a,b]:(a=null,e=g)}else a=null,e=g;return null!==a&&(a=function(a,b,c){return b+c.join("")}(d,a[0],a[1])),null===a&&(e=d),f--,0===f&&null===a&&k("identifier"),a}function G(){var a,c,d,g,h,i,j;return i=e,a=E(),null!==a&&(a=function(a,b){return{type:"Variable",name:b}}(i,a)),null===a&&(e=i),null===a&&(a=A(),null===a&&(i=e,j=e,40===b.charCodeAt(e)?(a="(",e++):(a=null,0===f&&k('"("')),null!==a?(c=z(),null!==c?(d=P(),null!==d?(g=z(),null!==g?(41===b.charCodeAt(e)?(h=")",e++):(h=null,0===f&&k('")"')),null!==h?a=[a,c,d,g,h]:(a=null,e=j)):(a=null,e=j)):(a=null,e=j)):(a=null,e=j)):(a=null,e=j),null!==a&&(a=function(a,b){return b}(i,a[2])),null===a&&(e=i))),a}function H(){var a,b,c,d,f;return a=G(),null===a&&(d=e,f=e,a=I(),null!==a?(b=z(),null!==b?(c=H(),null!==c?a=[a,b,c]:(a=null,e=f)):(a=null,e=f)):(a=null,e=f),null!==a&&(a=function(a,b,c){return{type:"UnaryExpression",operator:b,expression:c}}(d,a[0],a[2])),null===a&&(e=d)),a}function I(){var a;return 43===b.charCodeAt(e)?(a="+",e++):(a=null,0===f&&k('"+"')),null===a&&(45===b.charCodeAt(e)?(a="-",e++):(a=null,0===f&&k('"-"')),null===a&&(33===b.charCodeAt(e)?(a="!",e++):(a=null,0===f&&k('"!"')))),a}function J(){var a,b,c,d,f,g,h,i,j;if(h=e,i=e,a=H(),null!==a){for(b=[],j=e,c=z(),null!==c?(d=K(),null!==d?(f=z(),null!==f?(g=H(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==c;)b.push(c),j=e,c=z(),null!==c?(d=K(),null!==d?(f=z(),null!==f?(g=H(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==b?a=[a,b]:(a=null,e=i)}else a=null,e=i;return null!==a&&(a=function(a,b,c){for(var d=b,e=0;c.length>e;e++)d={type:"MultiplicativeExpression",operator:c[e][1],left:d,right:c[e][3]};return d}(h,a[0],a[1])),null===a&&(e=h),a}function K(){var a;return 42===b.charCodeAt(e)?(a="*",e++):(a=null,0===f&&k('"*"')),null===a&&(47===b.charCodeAt(e)?(a="/",e++):(a=null,0===f&&k('"/"'))),a}function L(){var a,b,c,d,f,g,h,i,j;if(h=e,i=e,a=J(),null!==a){for(b=[],j=e,c=z(),null!==c?(d=M(),null!==d?(f=z(),null!==f?(g=J(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==c;)b.push(c),j=e,c=z(),null!==c?(d=M(),null!==d?(f=z(),null!==f?(g=J(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==b?a=[a,b]:(a=null,e=i)}else a=null,e=i;return null!==a&&(a=function(a,b,c){for(var d=b,e=0;c.length>e;e++)d={type:"AdditiveExpression",operator:c[e][1],left:d,right:c[e][3]};return d}(h,a[0],a[1])),null===a&&(e=h),a}function M(){var a;return 43===b.charCodeAt(e)?(a="+",e++):(a=null,0===f&&k('"+"')),null===a&&(45===b.charCodeAt(e)?(a="-",e++):(a=null,0===f&&k('"-"'))),a}function N(){var a,b,c,d,f,g,h,i,j;if(h=e,i=e,a=L(),null!==a){for(b=[],j=e,c=z(),null!==c?(d=O(),null!==d?(f=z(),null!==f?(g=L(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==c;)b.push(c),j=e,c=z(),null!==c?(d=O(),null!==d?(f=z(),null!==f?(g=L(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==b?a=[a,b]:(a=null,e=i)}else a=null,e=i;return null!==a&&(a=function(a,b,c){for(var d=b,e=0;c.length>e;e++)d={type:"Inequality",operator:c[e][1],left:d,right:c[e][3]};return d}(h,a[0],a[1])),null===a&&(e=h),a}function O(){var a;return"<="===b.substr(e,2)?(a="<=",e+=2):(a=null,0===f&&k('"<="')),null===a&&(">="===b.substr(e,2)?(a=">=",e+=2):(a=null,0===f&&k('">="')),null===a&&(60===b.charCodeAt(e)?(a="<",e++):(a=null,0===f&&k('"<"')),null===a&&(62===b.charCodeAt(e)?(a=">",e++):(a=null,0===f&&k('">"'))))),a}function P(){var a,c,d,g,h,i,j,l,m;if(j=e,l=e,a=N(),null!==a){for(c=[],m=e,d=z(),null!==d?("=="===b.substr(e,2)?(g="==",e+=2):(g=null,0===f&&k('"=="')),null!==g?(h=z(),null!==h?(i=N(),null!==i?d=[d,g,h,i]:(d=null,e=m)):(d=null,e=m)):(d=null,e=m)):(d=null,e=m);null!==d;)c.push(d),m=e,d=z(),null!==d?("=="===b.substr(e,2)?(g="==",e+=2):(g=null,0===f&&k('"=="')),null!==g?(h=z(),null!==h?(i=N(),null!==i?d=[d,g,h,i]:(d=null,e=m)):(d=null,e=m)):(d=null,e=m)):(d=null,e=m);null!==c?a=[a,c]:(a=null,e=l)}else a=null,e=l;return null!==a&&(a=function(a,b,c){for(var d=b,e=0;c.length>e;e++)d={type:"Equality",operator:c[e][1],left:d,right:c[e][3]};return d}(j,a[0],a[1])),null===a&&(e=j),a}function Q(a){a.sort();for(var b=null,c=[],d=0;a.length>d;d++)a[d]!==b&&(c.push(a[d]),b=a[d]);return c}function R(){for(var a=1,c=1,d=!1,f=0;Math.max(e,g)>f;f++){var h=b.charAt(f);"\n"===h?(d||a++,c=1,d=!1):"\r"===h||"\u2028"===h||"\u2029"===h?(a++,c=1,d=!0):(c++,d=!1)}return{line:a,column:c}}var d={start:l,Statement:m,SourceCharacter:n,IdentifierStart:o,WhiteSpace:p,LineTerminator:q,LineTerminatorSequence:r,EOS:s,EOF:t,Comment:u,MultiLineComment:v,MultiLineCommentNoLineTerminator:w,SingleLineComment:x,_:y,__:z,Literal:A,Integer:B,Real:C,SignedInteger:D,Identifier:E,IdentifierName:F,PrimaryExpression:G,UnaryExpression:H,UnaryOperator:I,MultiplicativeExpression:J,MultiplicativeOperator:K,AdditiveExpression:L,AdditiveOperator:M,InequalityExpression:N,InequalityOperator:O,LinearExpression:P};if(void 0!==c){if(void 0===d[c])throw Error("Invalid rule name: "+a(c)+".")}else c="start";var e=0,f=0,g=0,h=[],S=d[c]();if(null===S||e!==b.length){var T=Math.max(e,g),U=b.length>T?b.charAt(T):null,V=R();throw new this.SyntaxError(Q(h),U,T,V.line,V.column)}return S},toSource:function(){return this._source}};return b.SyntaxError=function(b,c,d,e,f){function g(b,c){var d,e;switch(b.length){case 0:d="end of input";break;case 1:d=b[0];break;default:d=b.slice(0,b.length-1).join(", ")+" or "+b[b.length-1]}return e=c?a(c):"end of input","Expected "+d+" but "+e+" found."}this.name="SyntaxError",this.expected=b,this.found=c,this.message=g(b,c),this.offset=d,this.line=e,this.column=f},b.SyntaxError.prototype=Error.prototype,b}();
+}).call(
+  ( true) ?
+      (module.compiled = true && module) : this
+);
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(72)(module)))
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(0);
-const Workspace_1 = __webpack_require__(66);
-const Toolbar_1 = __webpack_require__(70);
-const EditorPane_1 = __webpack_require__(36);
-const model_1 = __webpack_require__(2);
-const service_1 = __webpack_require__(13);
-const Split_1 = __webpack_require__(10);
-const index_1 = __webpack_require__(3);
-const wast_1 = __webpack_require__(72);
-const log_1 = __webpack_require__(73);
-const Mousetrap = __webpack_require__(74);
-const gulpy_1 = __webpack_require__(76);
-const Icons_1 = __webpack_require__(20);
-const Button_1 = __webpack_require__(21);
-const NewFileDialog_1 = __webpack_require__(77);
-const EditFileDialog_1 = __webpack_require__(89);
-const cton_1 = __webpack_require__(91);
-const x86_1 = __webpack_require__(92);
-const ShareDialog_1 = __webpack_require__(95);
-const NewProjectDialog_1 = __webpack_require__(96);
-const errors_1 = __webpack_require__(97);
-const ControlCenter_1 = __webpack_require__(98);
-class Group {
-    constructor(file, preview, files) {
-        this.file = file;
-        this.preview = preview;
-        this.files = files;
-    }
-    open(file, shouldPreview = true) {
-        let files = this.files;
-        let index = files.indexOf(file);
-        if (index >= 0) {
-            // Switch to file if it's aleady open.
-            this.file = file;
-            if (!shouldPreview) {
-                this.preview = null;
-            }
-            return;
-        }
-        if (shouldPreview) {
-            if (this.preview) {
-                // Replace preview file if there is one.
-                let previewIndex = files.indexOf(this.preview);
-                index_1.assert(previewIndex >= 0);
-                this.file = this.preview = files[previewIndex] = file;
-            }
-            else {
-                files.push(file);
-                this.file = this.preview = file;
-            }
-        }
-        else {
-            files.push(file);
-            this.file = file;
-            this.preview = null;
-        }
-    }
-    close(file) {
-        let i = this.files.indexOf(file);
-        index_1.assert(i >= 0);
-        if (file == this.preview) {
-            this.preview = null;
-        }
-        this.files.splice(i, 1);
-        this.file = this.files.length ? this.files[Math.min(this.files.length - 1, i)] : null;
-    }
-}
-exports.Group = Group;
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-        // makeMenuItems(file: File) {
-        //   let items = [];
-        //   let directory = file.type === FileType.Directory ? file : file.parent;
-        //   items.push(
-        //     <MenuItem key="new file" label="New File" icon={<GoFile />} onClick={() => {
-        //       this.setState({ newFileDialogDirectory: directory as Directory });
-        //     }} />
-        //   );
-        //   if (file.type === FileType.Wasm) {
-        //     items.push(
-        //       <MenuItem key="opt bin" label="Optimize w/ Binaryen" icon={<GoGear />} onClick={() => {
-        //         Service.optimizeWasmWithBinaryen(file);
-        //       }} />
-        //     );
-        //     items.push(
-        //       <MenuItem key="val bin" label="Validate w/ Binaryen" icon={<GoVerified />} onClick={() => {
-        //         Service.validateWasmWithBinaryen(file);
-        //       }} />
-        //     );
-        //     items.push(
-        //       <MenuItem key="dld bin" label="Download" icon={<GoDesktopDownload />} onClick={() => {
-        //         Service.download(file);
-        //       }} />
-        //     );
-        //     items.push(
-        //       <MenuItem key="dis bin" label="Disassemble w/ Wabt" icon={<GoFileCode />} onClick={() => {
-        //         Service.disassembleWasmWithWabt(file);
-        //       }} />
-        //     );
-        //     items.push(
-        //       <MenuItem key="dis x86" label="Firefox x86" icon={<GoFileBinary />} onClick={() => {
-        //         Service.disassembleX86(file);
-        //       }} />,
-        //       <MenuItem key="dis x86 base" label="Firefox x86 Baseline" icon={<GoFileBinary />} onClick={() => {
-        //         Service.disassembleX86(file, "--wasm-always-baseline");
-        //       }} />
-        //     );
-        //   } else if (file.type === FileType.C || file.type === FileType.Cpp) {
-        //     items.push(
-        //       <MenuItem key="format" label="Format w/ Clang" icon={<GoQuote />} onClick={() => {
-        //         Service.clangFormat(file);
-        //       }} />
-        //     );
-        //   } else if (file.type === FileType.Wast) {
-        //     items.push(
-        //       <MenuItem key="asm bin" label="Assemble w/ Wabt" icon={<GoFileBinary />} onClick={() => {
-        //         Service.assembleWastWithWabt(file);
-        //       }} />
-        //     );
-        //   }
-        //   items.push(<Divider key="divider" height={8} />);
-        //   items.push(<MenuItem key="edit" label="Edit" icon={<GoPencil />} onClick={() => {
-        //     this.setState({ editFileDialogFile: file });
-        //   }} />);
-        //   items.push(<MenuItem key="delete" label="Delete" icon={<GoDelete />} onClick={() => {
-        //     let message = "";
-        //     if (file instanceof Directory) {
-        //       message = `Are you sure you want to delete '${file.name}' and its contents?`;
-        //     } else {
-        //       message = `Are you sure you want to delete '${file.name}'?`;
-        //     }
-        //     if (confirm(message)) {
-        //       file.parent.removeFile(file);
-        //     }
-        //   }} />);
-        //   return items;
-        // }
-        /**
-         * Remember workspace split.
-         */
-        this.workspaceSplit = null;
-        let group0 = new Group(null, null, []);
-        this.state = {
-            fiddle: props.fiddle,
-            file: null,
-            groups: [
-                group0,
-            ],
-            group: group0,
-            newFileDialogDirectory: null,
-            editFileDialogFile: null,
-            newProjectDialog: !props.fiddle,
-            shareDialog: false,
-            workspaceSplits: [
-                {
-                    min: 200,
-                    max: 400,
-                    value: 200,
-                },
-                {
-                    min: 256
-                }
-            ],
-            consoleSplits: [
-                { min: 100 },
-                { min: 40, value: 256 }
-            ],
-            editorSplits: [],
-            showProblems: true,
-            showSandbox: true
-        };
-        this.registerLanguages();
-    }
-    openProjectFiles(json) {
-        let groups = json.openedFiles.map((paths) => {
-            let files = paths.map(file => {
-                return this.project.getFile(file);
-            });
-            return new Group(files[0], null, files);
-        });
-        this.setState({ group: groups[0], groups });
-    }
-    initializeProject() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.project = new model_1.Project();
-            if (this.state.fiddle) {
-                let json = yield service_1.Service.loadJSON(this.state.fiddle);
-                json = yield service_1.Service.loadProject(json, this.project);
-                if (false) {
-                    // this.loadProject(json);
-                }
-                this.logLn("Project Loaded ...");
-                this.forceUpdate();
-            }
-            this.project.onDidChangeBuffer.register(() => {
-                this.forceUpdate();
-            });
-            this.project.onDidChangeData.register(() => {
-                this.forceUpdate();
-            });
-            this.project.onDidChangeChildren.register(() => {
-                this.forceUpdate();
-            });
-            this.project.onDirtyFileUsed.register((file) => {
-                this.logLn(`Changes in ${file.getPath()} were ignored, save your changes.`, "warn");
-            });
-        });
-    }
-    // TODO: Optimize
-    // shouldComponentUpdate(nextProps: any, nextState: AppState) {
-    //   let state = this.state;
-    //   if (state.file !== nextState.file) return true;
-    //   if (state.group !== nextState.group) return true;
-    //   if (!shallowCompare(state.groups, nextState.groups)) return true;
-    //   return false;
-    // }
-    registerLanguages() {
-        return __awaiter(this, void 0, void 0, function* () {
-            monaco.editor.defineTheme("fiddle-theme", {
-                base: 'vs-dark',
-                inherit: true,
-                rules: [
-                    { token: 'custom-info', foreground: 'd4d4d4' },
-                    { token: 'custom-warn', foreground: 'ff9900' },
-                    { token: 'custom-error', background: '00ff00', foreground: 'ff0000', fontStyle: 'bold' }
-                ]
-            });
-            // Wast
-            monaco.languages.register({
-                id: "wast"
-            });
-            monaco.languages.onLanguage("wast", () => {
-                monaco.languages.setMonarchTokensProvider("wast", wast_1.Wast.MonarchDefinitions);
-                monaco.languages.setLanguageConfiguration("wast", wast_1.Wast.LanguageConfiguration);
-                monaco.languages.registerCompletionItemProvider("wast", wast_1.Wast.CompletionItemProvider);
-                monaco.languages.registerHoverProvider("wast", wast_1.Wast.HoverProvider);
-            });
-            // Log
-            monaco.languages.register({
-                id: "log"
-            });
-            monaco.languages.onLanguage("log", () => {
-                monaco.languages.setMonarchTokensProvider("log", log_1.Log.MonarchTokensProvider);
-            });
-            // Cretonne
-            monaco.languages.register({
-                id: "cton"
-            });
-            monaco.languages.onLanguage("cton", () => {
-                monaco.languages.setMonarchTokensProvider("cton", cton_1.Cton.MonarchDefinitions);
-                // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
-                // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
-                // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
-            });
-            // X86
-            monaco.languages.register({
-                id: "x86"
-            });
-            monaco.languages.onLanguage("x86", () => {
-                monaco.languages.setMonarchTokensProvider("x86", x86_1.X86.MonarchDefinitions);
-                // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
-                // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
-                // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
-            });
-            let response = yield fetch("lib/lib.es6.d.ts");
-            monaco.languages.typescript.typescriptDefaults.addExtraLib(yield response.text());
-            response = yield fetch("lib/fiddle.d.ts");
-            monaco.languages.typescript.typescriptDefaults.addExtraLib(yield response.text());
-            monaco.languages.typescript.typescriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
-            monaco.languages.typescript.javascriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
-        });
-    }
-    loadReleaseNotes() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const response = yield fetch("notes/notes.md");
-            const src = yield response.text();
-            let notes = new model_1.File("Release Notes", model_1.FileType.Markdown);
-            notes.setData(src);
-            this.state.group.open(notes);
-            this.forceUpdate();
-        });
-    }
-    registerShortcuts() {
-        model_1.Project.onBuild.register(() => {
-            this.build();
-        });
-        model_1.Project.onRun.register(() => {
-            this.run();
-        });
-        Mousetrap.bind('command+b', () => {
-            model_1.Project.build();
-        });
-        Mousetrap.bind('command+enter', () => {
-            model_1.Project.run();
-        });
-        // Mousetrap.bind('command+1', (e) => {
-        //   let groups = this.state.groups;
-        //   groups.length > 0 && this.setState({group: groups[0]});
-        //   e.preventDefault();
-        // });
-        // Mousetrap.bind('command+2', (e) => {
-        //   let groups = this.state.groups;
-        //   groups.length > 1 && this.setState({group: groups[1]});
-        //   e.preventDefault();
-        // });
-        // Mousetrap.bind('command+3', (e) => {
-        //   let groups = this.state.groups;
-        //   groups.length > 2 && this.setState({group: groups[2]});
-        //   e.preventDefault();
-        // });
-        // Mousetrap.bind('command+shift+left', (e) => {
-        //   console.log("left");
-        //   e.preventDefault();
-        // });
-        // Mousetrap.bind('command+shift+right', (e) => {
-        //   console.log("right");
-        //   e.preventDefault();
-        // });
-    }
-    logLn(message, kind = "") {
-        if (this.controlCenter) {
-            this.controlCenter.logLn(message, kind);
-        }
-    }
-    componentWillMount() {
-        this.initializeProject();
-    }
-    componentDidMount() {
-        index_1.layout();
-        this.registerShortcuts();
-        if (!this.props.embed) {
-            this.loadReleaseNotes();
-        }
-        window.addEventListener("resize", () => {
-            console.log("App.forceUpdate because of window resize.");
-            this.forceUpdate();
-        }, false);
-    }
-    share() {
-        this.setState({ shareDialog: true });
-    }
-    run() {
-        let root = this.project;
-        let src = root.getFile("src/main.html").getData();
-        src = src.replace(/src\s*=\s*"(.+?)"/, (a, b) => {
-            let src = root.getFile(b).buffer.getValue();
-            let blob = new Blob([src], { type: "text/javascript" });
-            return `src="${window.URL.createObjectURL(blob)}"`;
-        });
-        this.controlCenter.sandbox.run(this.project, src);
-    }
-    splitGroup() {
-        let groups = this.state.groups;
-        let lastGroup = groups[groups.length - 1];
-        if (lastGroup.files.length === 0) {
-            return;
-        }
-        let group = new Group(lastGroup.file, null, [lastGroup.file]);
-        this.state.groups.push(group);
-        this.setState({ group });
-    }
-    build() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const run = (src) => {
-                let fn = new Function("gulp", "project", "Service", "logLn", src);
-                let gulp = new gulpy_1.Gulpy();
-                fn(gulp, this.project, service_1.Service, this.logLn.bind(self));
-                gulp.run("default");
-            };
-            let buildTs = this.project.getFile("build.ts");
-            let buildJS = this.project.getFile("build.js");
-            if (buildTs) {
-                const output = yield buildTs.getEmitOutput();
-                run(output.outputFiles[0].text);
-            }
-            else if (buildJS) {
-                run(buildJS.getData());
-            }
-            else {
-                this.logLn(errors_1.Errors.BuildFileMissing, "error");
-                return;
-            }
-        });
-    }
-    update() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.logLn("Saving Project ...");
-            let openedFiles = this.state.groups.map((group) => {
-                return group.files.map((file) => file.getPath());
-            });
-            yield service_1.Service.saveProject(this.project, openedFiles, this.state.fiddle);
-            this.logLn("Saved Project OK");
-        });
-    }
-    fork() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.logLn("Forking Project ...");
-            const fiddle = yield service_1.Service.saveProject(this.project, []);
-            this.logLn("Forked Project OK " + fiddle);
-            let search = window.location.search;
-            if (this.state.fiddle) {
-                index_1.assert(search.indexOf(this.state.fiddle) >= 0);
-                history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
-            }
-            else {
-                history.pushState({}, fiddle, `?f=${fiddle}`);
-            }
-            this.setState({ fiddle });
-        });
-    }
-    makeToolbarButtons() {
-        let toolbarButtons = [
-            React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoThreeBars, null), title: "View Workspace", onClick: () => {
-                    let workspaceSplits = this.state.workspaceSplits;
-                    let first = workspaceSplits[0];
-                    let second = workspaceSplits[1];
-                    if (this.workspaceSplit) {
-                        Object.assign(first, this.workspaceSplit);
-                        this.workspaceSplit = null;
-                        delete second.value;
-                    }
-                    else {
-                        this.workspaceSplit = Object.assign({}, first);
-                        first.max = first.min = 0;
-                    }
-                    this.setState({ workspaceSplits });
-                } })
-        ];
-        if (this.props.embed) {
-            toolbarButtons.push(React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoPencil, null), label: "Edit in Web Assembly Studio", title: "Edit in WebAssembly Fiddle", onClick: () => {
-                    // this.update();
-                } }));
-        }
-        else {
-            toolbarButtons.push(React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoPencil, null), label: "Update", title: "Update Fiddle", onClick: () => {
-                    this.update();
-                } }), React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoRepoForked, null), label: "Fork", title: "Fork Fiddle", onClick: () => {
-                    this.fork();
-                } }), React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoRocket, null), label: "Share", onClick: () => {
-                    this.share();
-                } }));
-        }
-        toolbarButtons.push(React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoBeaker, null), label: "Build", title: "Build: CtrlCmd + B", onClick: () => {
-                this.build();
-            } }), React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoGear, null), label: "Run", title: "Run: CtrlCmd + Enter", onClick: () => {
-                this.run();
-            } }));
-        return toolbarButtons;
-    }
-    setControlCenter(controlCenter) {
-        this.controlCenter = controlCenter;
-    }
-    render() {
-        let self = this;
-        function makeEditorPanes(groups) {
-            if (groups.length === 0) {
-                return React.createElement("div", null, "No Groups");
-            }
-            return groups.map(group => {
-                return React.createElement(EditorPane_1.EditorPane, { files: group.files.slice(0), file: group.file, preview: group.preview, onSplitEditor: () => {
-                        self.splitGroup();
-                    }, hasFocus: self.state.group === group, onFocus: () => {
-                        // TODO: Should be taken care of in shouldComponentUpdate instead.
-                        if (self.state.group !== group) {
-                            self.setState({ group });
-                        }
-                    }, onClickFile: (file) => {
-                        group.open(file);
-                        self.setState({ group });
-                    }, onDoubleClickFile: (file) => {
-                        if (file instanceof model_1.Directory) {
-                            return;
-                        }
-                        group.open(file, false);
-                        self.setState({ group });
-                    }, onClose: (file) => {
-                        let groups = self.state.groups;
-                        group.close(file);
-                        if (group.files.length === 0 && groups.length > 1) {
-                            let i = groups.indexOf(group);
-                            groups.splice(i, 1);
-                            let g = groups.length ? groups[Math.min(groups.length - 1, i)] : null;
-                            self.setState({ groups, group: g });
-                            index_1.layout();
-                        }
-                        else {
-                            self.setState({ group });
-                        }
-                    } });
-            });
-        }
-        let editorPanes = React.createElement(Split_1.Split, { name: "Editors", orientation: Split_1.SplitOrientation.Vertical, defaultSplit: {
-                min: 128,
-            }, splits: this.state.editorSplits, onChange: (splits) => {
-                this.setState({ editorSplits: splits });
-                index_1.layout();
-            } }, makeEditorPanes(this.state.groups));
-        return React.createElement("div", { className: "fill" },
-            this.state.newProjectDialog &&
-                React.createElement(NewProjectDialog_1.NewProjectDialog, { isOpen: true, onCancel: () => {
-                        this.setState({ newProjectDialog: null });
-                    }, onCreate: (template) => __awaiter(this, void 0, void 0, function* () {
-                        if (!template.project) {
-                            this.logLn("Template doesn't contain a project definition.", "error");
-                        }
-                        else {
-                            const json = yield service_1.Service.loadProject(template.project, this.project);
-                            this.openProjectFiles(json);
-                        }
-                        this.setState({ newProjectDialog: false });
-                    }) }),
-            this.state.newFileDialogDirectory &&
-                React.createElement(NewFileDialog_1.NewFileDialog, { isOpen: true, directory: this.state.newFileDialogDirectory, onCancel: () => {
-                        this.setState({ newFileDialogDirectory: null });
-                    }, onCreate: (file) => {
-                        this.project.addFile(file);
-                        this.setState({ newFileDialogDirectory: null });
-                    } }),
-            this.state.editFileDialogFile &&
-                React.createElement(EditFileDialog_1.EditFileDialog, { isOpen: true, file: this.state.editFileDialogFile, onCancel: () => {
-                        this.setState({ editFileDialogFile: null });
-                    }, onChange: (name, description) => {
-                        let file = this.state.editFileDialogFile;
-                        file.name = name;
-                        file.description = description;
-                        this.setState({ editFileDialogFile: null });
-                    } }),
-            this.state.shareDialog &&
-                React.createElement(ShareDialog_1.ShareDialog, { isOpen: true, fiddle: this.state.fiddle, onCancel: () => {
-                        this.setState({ shareDialog: false });
-                    } }),
-            React.createElement("div", { style: { height: "calc(100% - 22px)" } },
-                React.createElement(Split_1.Split, { name: "Workspace", orientation: Split_1.SplitOrientation.Vertical, splits: this.state.workspaceSplits, onChange: (splits) => {
-                        this.setState({ workspaceSplits: splits });
-                        index_1.layout();
-                    } },
-                    React.createElement(Workspace_1.Workspace, { project: this.project, file: this.state.file, onNewFile: (directory) => {
-                            this.setState({ newFileDialogDirectory: directory });
-                        }, onEditFile: (file) => {
-                            this.setState({ editFileDialogFile: file });
-                        }, onDeleteFile: (file) => {
-                            let message = "";
-                            if (file instanceof model_1.Directory) {
-                                message = `Are you sure you want to delete '${file.name}' and its contents?`;
-                            }
-                            else {
-                                message = `Are you sure you want to delete '${file.name}'?`;
-                            }
-                            if (confirm(message)) {
-                                file.parent.removeFile(file);
-                            }
-                        }, onClickFile: (file) => {
-                            this.state.group.open(file);
-                            this.forceUpdate();
-                        }, onDoubleClickFile: (file) => {
-                            if (file instanceof model_1.Directory) {
-                                return;
-                            }
-                            this.state.group.open(file, false);
-                            this.forceUpdate();
-                        } }),
-                    React.createElement("div", { className: "fill" },
-                        React.createElement("div", { style: { height: "40px" } },
-                            React.createElement(Toolbar_1.Toolbar, null, this.makeToolbarButtons())),
-                        React.createElement("div", { style: { height: "calc(100% - 40px)" } },
-                            React.createElement(Split_1.Split, { name: "Console", orientation: Split_1.SplitOrientation.Horizontal, splits: this.state.consoleSplits, onChange: (splits) => {
-                                    this.setState({ consoleSplits: splits });
-                                    index_1.layout();
-                                } },
-                                editorPanes,
-                                React.createElement(ControlCenter_1.ControlCenter, { project: this.project, ref: (ref) => this.setControlCenter(ref) })))))),
-            React.createElement("div", { className: "status-bar" },
-                React.createElement("div", { className: "status-bar-item" }, "Web Assembly Studio")));
-    }
-}
-exports.App = App;
 
 
 /***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(0);
-const Header_1 = __webpack_require__(67);
-const DirectoryTree_1 = __webpack_require__(100);
-const Split_1 = __webpack_require__(10);
-class Workspace extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showProject: false,
-            showFiles: true,
-            splits: []
-        };
-    }
-    render() {
-        let project = this.props.project;
-        return React.createElement("div", { className: "workspaceContainer" },
-            React.createElement(Header_1.Header, null),
-            React.createElement("div", { style: { height: "calc(100% - 41px)" } },
-                React.createElement(Split_1.Split, { name: "Workspace", orientation: Split_1.SplitOrientation.Horizontal, splits: this.state.splits, onChange: (splits) => {
-                        this.setState({ splits: splits });
-                    } },
-                    React.createElement("div", null),
-                    React.createElement(DirectoryTree_1.DirectoryTree, { directory: project, value: this.props.file, onNewFile: this.props.onNewFile, onNewDirectory: this.props.onNewDirectory, onEditFile: this.props.onEditFile, onDeleteFile: this.props.onDeleteFile, onClickFile: (file) => {
-                            this.props.onClickFile(file);
-                        }, onDoubleClickFile: (file) => {
-                            this.props.onDoubleClickFile(file);
-                        } }))));
-    }
-}
-exports.Workspace = Workspace;
-
-
-/***/ }),
-/* 67 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(0);
-class Header extends React.Component {
-    render() {
-        return React.createElement("div", { className: "wasmStudioHeader" },
-            React.createElement("span", { className: "waHeaderText" }, "Web Assembly Studio"));
-    }
-}
-exports.Header = Header;
-
-
-/***/ }),
-/* 68 */,
-/* 69 */,
-/* 70 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14294,7 +15222,7 @@ exports.Toolbar = Toolbar;
 
 
 /***/ }),
-/* 71 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14309,7 +15237,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const service_1 = __webpack_require__(13);
+const service_1 = __webpack_require__(14);
 class Markdown extends React.Component {
     constructor(props) {
         super(props);
@@ -14339,13 +15267,13 @@ exports.Markdown = Markdown;
 
 
 /***/ }),
-/* 72 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(5);
+__webpack_require__(4);
 let completionItems = null;
 function getCompletionItems() {
     const keyword = monaco.languages.CompletionItemKind.Keyword;
@@ -14353,9 +15281,9 @@ function getCompletionItems() {
         return completionItems;
     }
     return completionItems = [
-        { label: 'module', documentation: '', kind: keyword, insertText: 'module' },
-        { label: 'func', documentation: 'function declaration', kind: keyword, insertText: 'func' },
-        { label: 'param', documentation: 'parameter', kind: keyword, insertText: { value: 'param ${1:identifier} ${2:type}' } },
+        { label: "module", documentation: "", kind: keyword, insertText: "module" },
+        { label: "func", documentation: "function declaration", kind: keyword, insertText: "func" },
+        { label: "param", documentation: "parameter", kind: keyword, insertText: { value: "param ${1:identifier} ${2:type}" } },
         // 'table',
         // 'memory',
         // 'export',
@@ -14364,324 +15292,324 @@ function getCompletionItems() {
         // 'result',
         // 'offset',
         // 'anyfunc',
-        { label: 'i32', documentation: '32-bit integer', kind: keyword, insertText: 'i32' },
-        { label: 'i64', documentation: '64-bit integer', kind: keyword, insertText: 'i64' },
-        { label: 'f32', documentation: '32-bit floating point', kind: keyword, insertText: 'f32' },
-        { label: 'f64', documentation: '64-bit floating point', kind: keyword, insertText: 'f64' },
-        { label: 'i32.load8_s', documentation: 'load 1 byte and sign-extend i8 to i32', kind: keyword, insertText: 'i32.load8_s' },
-        { label: 'i32.load8_u', documentation: 'load 1 byte and zero-extend i8 to i32', kind: keyword, insertText: 'i32.load8_u' },
-        { label: 'i32.load16_s', documentation: 'load 2 bytes and sign-extend i16 to i32', kind: keyword, insertText: 'i32.load16_s' },
-        { label: 'i32.load16_u', documentation: 'load 2 bytes and zero-extend i16 to i32', kind: keyword, insertText: 'i32.load16_u' },
-        { label: 'i32.load', documentation: 'load 4 bytes as i32', kind: keyword, insertText: 'i32.load' },
-        { label: 'i64.load8_s', documentation: 'load 1 byte and sign-extend i8 to i64', kind: keyword, insertText: 'i64.load8_s' },
-        { label: 'i64.load8_u', documentation: 'load 1 byte and zero-extend i8 to i64', kind: keyword, insertText: 'i64.load8_u' },
-        { label: 'i64.load16_s', documentation: 'load 2 bytes and sign-extend i16 to i64', kind: keyword, insertText: 'i64.load16_s' },
-        { label: 'i64.load16_u', documentation: 'load 2 bytes and zero-extend i16 to i64', kind: keyword, insertText: 'i64.load16_u' },
-        { label: 'i64.load32_s', documentation: 'load 4 bytes and sign-extend i32 to i64', kind: keyword, insertText: 'i64.load32_s' },
-        { label: 'i64.load32_u', documentation: 'load 4 bytes and zero-extend i32 to i64', kind: keyword, insertText: 'i64.load32_u' },
-        { label: 'i64.load', documentation: 'load 8 bytes as i64', kind: keyword, insertText: 'i64.load' },
-        { label: 'f32.load', documentation: 'load 4 bytes as f32', kind: keyword, insertText: 'f32.load' },
-        { label: 'f64.load', documentation: 'load 8 bytes as f64', kind: keyword, insertText: 'f64.load' },
-        { label: 'i32.store8', documentation: 'wrap i32 to i8 and store 1 byte', kind: keyword, insertText: 'i32.store8' },
-        { label: 'i32.store16', documentation: 'wrap i32 to i16 and store 2 bytes', kind: keyword, insertText: 'i32.store16' },
-        { label: 'i32.store', documentation: '(no conversion) store 4 bytes', kind: keyword, insertText: 'i32.store' },
-        { label: 'i64.store8', documentation: 'wrap i64 to i8 and store 1 byte', kind: keyword, insertText: 'i64.store8' },
-        { label: 'i64.store16', documentation: 'wrap i64 to i16 and store 2 bytes', kind: keyword, insertText: 'i64.store16' },
-        { label: 'i64.store32', documentation: 'wrap i64 to i32 and store 4 bytes', kind: keyword, insertText: 'i64.store32' },
-        { label: 'i64.store', documentation: '(no conversion) store 8 bytes', kind: keyword, insertText: 'i64.store' },
-        { label: 'f32.store', documentation: '(no conversion) store 4 bytes', kind: keyword, insertText: 'f32.store' },
-        { label: 'f64.store', documentation: '(no conversion) store 8 bytes', kind: keyword, insertText: 'f64.store' },
-        { label: 'get_local', documentation: 'read the current value of a local variable', kind: keyword, insertText: 'get_local' },
-        { label: 'set_local', documentation: 'set the current value of a local variable', kind: keyword, insertText: 'set_local' },
-        { label: 'tee_local', documentation: 'like `set_local`, but also returns the set value', kind: keyword, insertText: 'tee_local' },
-        { label: 'get_global', documentation: 'get the current value of a global variable', kind: keyword, insertText: 'get_global' },
-        { label: 'set_global', documentation: 'set the current value of a global variable', kind: keyword, insertText: 'set_global' },
-        { label: 'nop', documentation: 'no operation, no effect', kind: keyword, insertText: 'nop' },
-        { label: 'block', documentation: 'the beginning of a block construct, a sequence of instructions with a label at the end', kind: keyword, insertText: 'block' },
-        { label: 'loop', documentation: 'a block with a label at the beginning which may be used to form loops', kind: keyword, insertText: 'loop' },
-        { label: 'if', documentation: 'the beginning of an if construct with an implicit *then* block', kind: keyword, insertText: 'if' },
-        { label: 'else', documentation: 'marks the else block of an if', kind: keyword, insertText: 'else' },
-        { label: 'br', documentation: 'branch to a given label in an enclosing construct', kind: keyword, insertText: 'br' },
-        { label: 'br_if', documentation: 'conditionally branch to a given label in an enclosing construct', kind: keyword, insertText: 'br_if' },
-        { label: 'br_table', documentation: 'a jump table which jumps to a label in an enclosing construct', kind: keyword, insertText: 'br_table' },
-        { label: 'return', documentation: 'return zero or more values from this function', kind: keyword, insertText: 'return' },
-        { label: 'end', documentation: 'an instruction that marks the end of a block, loop, if, or function', kind: keyword, insertText: 'end' },
-        { label: 'call', documentation: 'call function directly', kind: keyword, insertText: 'call' },
-        { label: 'call_indirect', documentation: 'call function indirectly', kind: keyword, insertText: 'call_indirect' },
-        { label: 'i64.const', documentation: 'produce the value of an i64 immediate', kind: keyword, insertText: { value: 'i64.const ${1:constant}' } },
-        { label: 'i32.const', documentation: 'produce the value of an i32 immediate', kind: keyword, insertText: { value: 'i32.const ${1:constant}' } },
-        { label: 'f32.const', documentation: 'produce the value of an f32 immediate', kind: keyword, insertText: { value: 'f32.const ${1:constant}' } },
-        { label: 'f64.const', documentation: 'produce the value of an f64 immediate', kind: keyword, insertText: { value: 'f64.const ${1:constant}' } },
-        { label: 'i32.add', documentation: 'sign-agnostic addition', kind: keyword, insertText: 'i32.add' },
-        { label: 'i32.sub', documentation: 'sign-agnostic subtraction', kind: keyword, insertText: 'i32.sub' },
-        { label: 'i32.mul', documentation: 'sign-agnostic multiplication (lower 32-bits)', kind: keyword, insertText: 'i32.mul' },
-        { label: 'i32.div_s', documentation: 'signed division (result is truncated toward zero)', kind: keyword, insertText: 'i32.div_s' },
-        { label: 'i32.div_u', documentation: 'unsigned division (result is [floored](https://en.wikipedia.org/wiki/Floor_and_ceiling_functions))', kind: keyword, insertText: 'i32.div_u' },
-        { label: 'i32.rem_s', documentation: 'signed remainder (result has the sign of the dividend)', kind: keyword, insertText: 'i32.rem_s' },
-        { label: 'i32.rem_u', documentation: 'unsigned remainder', kind: keyword, insertText: 'i32.rem_u' },
-        { label: 'i32.and', documentation: 'sign-agnostic bitwise and', kind: keyword, insertText: 'i32.and' },
-        { label: 'i32.or', documentation: 'sign-agnostic bitwise inclusive or', kind: keyword, insertText: 'i32.or' },
-        { label: 'i32.xor', documentation: 'sign-agnostic bitwise exclusive or', kind: keyword, insertText: 'i32.xor' },
-        { label: 'i32.shl', documentation: 'sign-agnostic shift left', kind: keyword, insertText: 'i32.shl' },
-        { label: 'i32.shr_u', documentation: 'zero-replicating (logical) shift right', kind: keyword, insertText: 'i32.shr_u' },
-        { label: 'i32.shr_s', documentation: 'sign-replicating (arithmetic) shift right', kind: keyword, insertText: 'i32.shr_s' },
-        { label: 'i32.rotl', documentation: 'sign-agnostic rotate left', kind: keyword, insertText: 'i32.rotl' },
-        { label: 'i32.rotr', documentation: 'sign-agnostic rotate right', kind: keyword, insertText: 'i32.rotr' },
-        { label: 'i32.eq', documentation: 'sign-agnostic compare equal', kind: keyword, insertText: 'i32.eq' },
-        { label: 'i32.ne', documentation: 'sign-agnostic compare unequal', kind: keyword, insertText: 'i32.ne' },
-        { label: 'i32.lt_s', documentation: 'signed less than', kind: keyword, insertText: 'i32.lt_s' },
-        { label: 'i32.le_s', documentation: 'signed less than or equal', kind: keyword, insertText: 'i32.le_s' },
-        { label: 'i32.lt_u', documentation: 'unsigned less than', kind: keyword, insertText: 'i32.lt_u' },
-        { label: 'i32.le_u', documentation: 'unsigned less than or equal', kind: keyword, insertText: 'i32.le_u' },
-        { label: 'i32.gt_s', documentation: 'signed greater than', kind: keyword, insertText: 'i32.gt_s' },
-        { label: 'i32.ge_s', documentation: 'signed greater than or equal', kind: keyword, insertText: 'i32.ge_s' },
-        { label: 'i32.gt_u', documentation: 'unsigned greater than', kind: keyword, insertText: 'i32.gt_u' },
-        { label: 'i32.ge_u', documentation: 'unsigned greater than or equal', kind: keyword, insertText: 'i32.ge_u' },
-        { label: 'i32.clz', documentation: 'sign-agnostic count leading zero bits (All zero bits are considered leading if the value is zero)', kind: keyword, insertText: 'i32.clz' },
-        { label: 'i32.ctz', documentation: 'sign-agnostic count trailing zero bits (All zero bits are considered trailing if the value is zero)', kind: keyword, insertText: 'i32.ctz' },
-        { label: 'i32.popcnt', documentation: 'sign-agnostic count number of one bits', kind: keyword, insertText: 'i32.popcnt' },
-        { label: 'i32.eqz', documentation: 'compare equal to zero (return 1 if operand is zero, 0 otherwise)', kind: keyword, insertText: 'i32.eqz' },
-        { label: 'f32.add', documentation: 'addition', kind: keyword, insertText: 'f32.add' },
-        { label: 'f32.sub', documentation: 'subtraction', kind: keyword, insertText: 'f32.sub' },
-        { label: 'f32.mul', documentation: 'multiplication', kind: keyword, insertText: 'f32.mul' },
-        { label: 'f32.div', documentation: 'division', kind: keyword, insertText: 'f32.div' },
-        { label: 'f32.abs', documentation: 'absolute value', kind: keyword, insertText: 'f32.abs' },
-        { label: 'f32.neg', documentation: 'negation', kind: keyword, insertText: 'f32.neg' },
-        { label: 'f32.copysign', documentation: 'copysign', kind: keyword, insertText: 'f32.copysign' },
-        { label: 'f32.ceil', documentation: 'ceiling operator', kind: keyword, insertText: 'f32.ceil' },
-        { label: 'f32.floor', documentation: 'floor operator', kind: keyword, insertText: 'f32.floor' },
-        { label: 'f32.trunc', documentation: 'round to nearest integer towards zero', kind: keyword, insertText: 'f32.trunc' },
-        { label: 'f32.nearest', documentation: 'round to nearest integer, ties to even', kind: keyword, insertText: 'f32.nearest' },
-        { label: 'f32.eq', documentation: 'compare ordered and equal', kind: keyword, insertText: 'f32.eq' },
-        { label: 'f32.ne', documentation: 'compare unordered or unequal', kind: keyword, insertText: 'f32.ne' },
-        { label: 'f32.lt', documentation: 'compare ordered and less than', kind: keyword, insertText: 'f32.lt' },
-        { label: 'f32.le', documentation: 'compare ordered and less than or equal', kind: keyword, insertText: 'f32.le' },
-        { label: 'f32.gt', documentation: 'compare ordered and greater than', kind: keyword, insertText: 'f32.gt' },
-        { label: 'f32.ge', documentation: 'compare ordered and greater than or equal', kind: keyword, insertText: 'f32.ge' },
-        { label: 'f32.sqrt', documentation: 'square root', kind: keyword, insertText: 'f32.sqrt' },
-        { label: 'f32.min', documentation: 'minimum (binary operator); if either operand is NaN, returns NaN', kind: keyword, insertText: 'f32.min' },
-        { label: 'f32.max', documentation: 'maximum (binary operator); if either operand is NaN, returns NaN', kind: keyword, insertText: 'f32.max' },
-        { label: 'f64.add', documentation: 'addition', kind: keyword, insertText: 'f64.add' },
-        { label: 'f64.sub', documentation: 'subtraction', kind: keyword, insertText: 'f64.sub' },
-        { label: 'f64.mul', documentation: 'multiplication', kind: keyword, insertText: 'f64.mul' },
-        { label: 'f64.div', documentation: 'division', kind: keyword, insertText: 'f64.div' },
-        { label: 'f64.abs', documentation: 'absolute value', kind: keyword, insertText: 'f64.abs' },
-        { label: 'f64.neg', documentation: 'negation', kind: keyword, insertText: 'f64.neg' },
-        { label: 'f64.copysign', documentation: 'copysign', kind: keyword, insertText: 'f64.copysign' },
-        { label: 'f64.ceil', documentation: 'ceiling operator', kind: keyword, insertText: 'f64.ceil' },
-        { label: 'f64.floor', documentation: 'floor operator', kind: keyword, insertText: 'f64.floor' },
-        { label: 'f64.trunc', documentation: 'round to nearest integer towards zero', kind: keyword, insertText: 'f64.trunc' },
-        { label: 'f64.nearest', documentation: 'round to nearest integer, ties to even', kind: keyword, insertText: 'f64.nearest' },
-        { label: 'f64.eq', documentation: 'compare ordered and equal', kind: keyword, insertText: 'f64.eq' },
-        { label: 'f64.ne', documentation: 'compare unordered or unequal', kind: keyword, insertText: 'f64.ne' },
-        { label: 'f64.lt', documentation: 'compare ordered and less than', kind: keyword, insertText: 'f64.lt' },
-        { label: 'f64.le', documentation: 'compare ordered and less than or equal', kind: keyword, insertText: 'f64.le' },
-        { label: 'f64.gt', documentation: 'compare ordered and greater than', kind: keyword, insertText: 'f64.gt' },
-        { label: 'f64.ge', documentation: 'compare ordered and greater than or equal', kind: keyword, insertText: 'f64.ge' },
-        { label: 'f64.sqrt', documentation: 'square root', kind: keyword, insertText: 'f64.sqrt' },
-        { label: 'f64.min', documentation: 'minimum (binary operator); if either operand is NaN, returns NaN', kind: keyword, insertText: 'f64.min' },
-        { label: 'f64.max', documentation: 'maximum (binary operator); if either operand is NaN, returns NaN', kind: keyword, insertText: 'f64.max' },
-        { label: 'i32.wrap/i64', documentation: 'wrap a 64-bit integer to a 32-bit integer', kind: keyword, insertText: 'i32.wrap/i64' },
-        { label: 'i32.trunc_s/f32', documentation: 'truncate a 32-bit float to a signed 32-bit integer', kind: keyword, insertText: 'i32.trunc_s/f32' },
-        { label: 'i32.trunc_s/f64', documentation: 'truncate a 64-bit float to a signed 32-bit integer', kind: keyword, insertText: 'i32.trunc_s/f64' },
-        { label: 'i32.trunc_u/f32', documentation: 'truncate a 32-bit float to an unsigned 32-bit integer', kind: keyword, insertText: 'i32.trunc_u/f32' },
-        { label: 'i32.trunc_u/f64', documentation: 'truncate a 64-bit float to an unsigned 32-bit integer', kind: keyword, insertText: 'i32.trunc_u/f64' },
-        { label: 'i32.reinterpret/f32', documentation: 'reinterpret the bits of a 32-bit float as a 32-bit integer', kind: keyword, insertText: 'i32.reinterpret/f32' },
-        { label: 'i64.extend_s/i32', documentation: 'extend a signed 32-bit integer to a 64-bit integer', kind: keyword, insertText: 'i64.extend_s/i32' },
-        { label: 'i64.extend_u/i32', documentation: 'extend an unsigned 32-bit integer to a 64-bit integer', kind: keyword, insertText: 'i64.extend_u/i32' },
-        { label: 'i64.trunc_s/f32', documentation: 'truncate a 32-bit float to a signed 64-bit integer', kind: keyword, insertText: 'i64.trunc_s/f32' },
-        { label: 'i64.trunc_s/f64', documentation: 'truncate a 64-bit float to a signed 64-bit integer', kind: keyword, insertText: 'i64.trunc_s/f64' },
-        { label: 'i64.trunc_u/f32', documentation: 'truncate a 32-bit float to an unsigned 64-bit integer', kind: keyword, insertText: 'i64.trunc_u/f32' },
-        { label: 'i64.trunc_u/f64', documentation: 'truncate a 64-bit float to an unsigned 64-bit integer', kind: keyword, insertText: 'i64.trunc_u/f64' },
-        { label: 'i64.reinterpret/f64', documentation: 'reinterpret the bits of a 64-bit float as a 64-bit integer', kind: keyword, insertText: 'i64.reinterpret/f64' },
-        { label: 'f32.demote/f64', documentation: 'demote a 64-bit float to a 32-bit float', kind: keyword, insertText: 'f32.demote/f64' },
-        { label: 'f32.convert_s/i32', documentation: 'convert a signed 32-bit integer to a 32-bit float', kind: keyword, insertText: 'f32.convert_s/i32' },
-        { label: 'f32.convert_s/i64', documentation: 'convert a signed 64-bit integer to a 32-bit float', kind: keyword, insertText: 'f32.convert_s/i64' },
-        { label: 'f32.convert_u/i32', documentation: 'convert an unsigned 32-bit integer to a 32-bit float', kind: keyword, insertText: 'f32.convert_u/i32' },
-        { label: 'f32.convert_u/i64', documentation: 'convert an unsigned 64-bit integer to a 32-bit float', kind: keyword, insertText: 'f32.convert_u/i64' },
-        { label: 'f32.reinterpret/i32', documentation: 'reinterpret the bits of a 32-bit integer as a 32-bit float', kind: keyword, insertText: 'f32.reinterpret/i32' },
-        { label: 'f64.promote/f32', documentation: 'promote a 32-bit float to a 64-bit float', kind: keyword, insertText: 'f64.promote/f32' },
-        { label: 'f64.convert_s/i32', documentation: 'convert a signed 32-bit integer to a 64-bit float', kind: keyword, insertText: 'f64.convert_s/i32' },
-        { label: 'f64.convert_s/i64', documentation: 'convert a signed 64-bit integer to a 64-bit float', kind: keyword, insertText: 'f64.convert_s/i64' },
-        { label: 'f64.convert_u/i32', documentation: 'convert an unsigned 32-bit integer to a 64-bit float', kind: keyword, insertText: 'f64.convert_u/i32' },
-        { label: 'f64.convert_u/i64', documentation: 'convert an unsigned 64-bit integer to a 64-bit float', kind: keyword, insertText: 'f64.convert_u/i64' },
-        { label: 'f64.reinterpret/i64', documentation: 'reinterpret the bits of a 64-bit integer as a 64-bit float', kind: keyword, insertText: 'f64.reinterpret/i64' }
+        { label: "i32", documentation: "32-bit integer", kind: keyword, insertText: "i32" },
+        { label: "i64", documentation: "64-bit integer", kind: keyword, insertText: "i64" },
+        { label: "f32", documentation: "32-bit floating point", kind: keyword, insertText: "f32" },
+        { label: "f64", documentation: "64-bit floating point", kind: keyword, insertText: "f64" },
+        { label: "i32.load8_s", documentation: "load 1 byte and sign-extend i8 to i32", kind: keyword, insertText: "i32.load8_s" },
+        { label: "i32.load8_u", documentation: "load 1 byte and zero-extend i8 to i32", kind: keyword, insertText: "i32.load8_u" },
+        { label: "i32.load16_s", documentation: "load 2 bytes and sign-extend i16 to i32", kind: keyword, insertText: "i32.load16_s" },
+        { label: "i32.load16_u", documentation: "load 2 bytes and zero-extend i16 to i32", kind: keyword, insertText: "i32.load16_u" },
+        { label: "i32.load", documentation: "load 4 bytes as i32", kind: keyword, insertText: "i32.load" },
+        { label: "i64.load8_s", documentation: "load 1 byte and sign-extend i8 to i64", kind: keyword, insertText: "i64.load8_s" },
+        { label: "i64.load8_u", documentation: "load 1 byte and zero-extend i8 to i64", kind: keyword, insertText: "i64.load8_u" },
+        { label: "i64.load16_s", documentation: "load 2 bytes and sign-extend i16 to i64", kind: keyword, insertText: "i64.load16_s" },
+        { label: "i64.load16_u", documentation: "load 2 bytes and zero-extend i16 to i64", kind: keyword, insertText: "i64.load16_u" },
+        { label: "i64.load32_s", documentation: "load 4 bytes and sign-extend i32 to i64", kind: keyword, insertText: "i64.load32_s" },
+        { label: "i64.load32_u", documentation: "load 4 bytes and zero-extend i32 to i64", kind: keyword, insertText: "i64.load32_u" },
+        { label: "i64.load", documentation: "load 8 bytes as i64", kind: keyword, insertText: "i64.load" },
+        { label: "f32.load", documentation: "load 4 bytes as f32", kind: keyword, insertText: "f32.load" },
+        { label: "f64.load", documentation: "load 8 bytes as f64", kind: keyword, insertText: "f64.load" },
+        { label: "i32.store8", documentation: "wrap i32 to i8 and store 1 byte", kind: keyword, insertText: "i32.store8" },
+        { label: "i32.store16", documentation: "wrap i32 to i16 and store 2 bytes", kind: keyword, insertText: "i32.store16" },
+        { label: "i32.store", documentation: "(no conversion) store 4 bytes", kind: keyword, insertText: "i32.store" },
+        { label: "i64.store8", documentation: "wrap i64 to i8 and store 1 byte", kind: keyword, insertText: "i64.store8" },
+        { label: "i64.store16", documentation: "wrap i64 to i16 and store 2 bytes", kind: keyword, insertText: "i64.store16" },
+        { label: "i64.store32", documentation: "wrap i64 to i32 and store 4 bytes", kind: keyword, insertText: "i64.store32" },
+        { label: "i64.store", documentation: "(no conversion) store 8 bytes", kind: keyword, insertText: "i64.store" },
+        { label: "f32.store", documentation: "(no conversion) store 4 bytes", kind: keyword, insertText: "f32.store" },
+        { label: "f64.store", documentation: "(no conversion) store 8 bytes", kind: keyword, insertText: "f64.store" },
+        { label: "get_local", documentation: "read the current value of a local variable", kind: keyword, insertText: "get_local" },
+        { label: "set_local", documentation: "set the current value of a local variable", kind: keyword, insertText: "set_local" },
+        { label: "tee_local", documentation: "like `set_local`, but also returns the set value", kind: keyword, insertText: "tee_local" },
+        { label: "get_global", documentation: "get the current value of a global variable", kind: keyword, insertText: "get_global" },
+        { label: "set_global", documentation: "set the current value of a global variable", kind: keyword, insertText: "set_global" },
+        { label: "nop", documentation: "no operation, no effect", kind: keyword, insertText: "nop" },
+        { label: "block", documentation: "the beginning of a block construct, a sequence of instructions with a label at the end", kind: keyword, insertText: "block" },
+        { label: "loop", documentation: "a block with a label at the beginning which may be used to form loops", kind: keyword, insertText: "loop" },
+        { label: "if", documentation: "the beginning of an if construct with an implicit *then* block", kind: keyword, insertText: "if" },
+        { label: "else", documentation: "marks the else block of an if", kind: keyword, insertText: "else" },
+        { label: "br", documentation: "branch to a given label in an enclosing construct", kind: keyword, insertText: "br" },
+        { label: "br_if", documentation: "conditionally branch to a given label in an enclosing construct", kind: keyword, insertText: "br_if" },
+        { label: "br_table", documentation: "a jump table which jumps to a label in an enclosing construct", kind: keyword, insertText: "br_table" },
+        { label: "return", documentation: "return zero or more values from this function", kind: keyword, insertText: "return" },
+        { label: "end", documentation: "an instruction that marks the end of a block, loop, if, or function", kind: keyword, insertText: "end" },
+        { label: "call", documentation: "call function directly", kind: keyword, insertText: "call" },
+        { label: "call_indirect", documentation: "call function indirectly", kind: keyword, insertText: "call_indirect" },
+        { label: "i64.const", documentation: "produce the value of an i64 immediate", kind: keyword, insertText: { value: "i64.const ${1:constant}" } },
+        { label: "i32.const", documentation: "produce the value of an i32 immediate", kind: keyword, insertText: { value: "i32.const ${1:constant}" } },
+        { label: "f32.const", documentation: "produce the value of an f32 immediate", kind: keyword, insertText: { value: "f32.const ${1:constant}" } },
+        { label: "f64.const", documentation: "produce the value of an f64 immediate", kind: keyword, insertText: { value: "f64.const ${1:constant}" } },
+        { label: "i32.add", documentation: "sign-agnostic addition", kind: keyword, insertText: "i32.add" },
+        { label: "i32.sub", documentation: "sign-agnostic subtraction", kind: keyword, insertText: "i32.sub" },
+        { label: "i32.mul", documentation: "sign-agnostic multiplication (lower 32-bits)", kind: keyword, insertText: "i32.mul" },
+        { label: "i32.div_s", documentation: "signed division (result is truncated toward zero)", kind: keyword, insertText: "i32.div_s" },
+        { label: "i32.div_u", documentation: "unsigned division (result is [floored](https://en.wikipedia.org/wiki/Floor_and_ceiling_functions))", kind: keyword, insertText: "i32.div_u" },
+        { label: "i32.rem_s", documentation: "signed remainder (result has the sign of the dividend)", kind: keyword, insertText: "i32.rem_s" },
+        { label: "i32.rem_u", documentation: "unsigned remainder", kind: keyword, insertText: "i32.rem_u" },
+        { label: "i32.and", documentation: "sign-agnostic bitwise and", kind: keyword, insertText: "i32.and" },
+        { label: "i32.or", documentation: "sign-agnostic bitwise inclusive or", kind: keyword, insertText: "i32.or" },
+        { label: "i32.xor", documentation: "sign-agnostic bitwise exclusive or", kind: keyword, insertText: "i32.xor" },
+        { label: "i32.shl", documentation: "sign-agnostic shift left", kind: keyword, insertText: "i32.shl" },
+        { label: "i32.shr_u", documentation: "zero-replicating (logical) shift right", kind: keyword, insertText: "i32.shr_u" },
+        { label: "i32.shr_s", documentation: "sign-replicating (arithmetic) shift right", kind: keyword, insertText: "i32.shr_s" },
+        { label: "i32.rotl", documentation: "sign-agnostic rotate left", kind: keyword, insertText: "i32.rotl" },
+        { label: "i32.rotr", documentation: "sign-agnostic rotate right", kind: keyword, insertText: "i32.rotr" },
+        { label: "i32.eq", documentation: "sign-agnostic compare equal", kind: keyword, insertText: "i32.eq" },
+        { label: "i32.ne", documentation: "sign-agnostic compare unequal", kind: keyword, insertText: "i32.ne" },
+        { label: "i32.lt_s", documentation: "signed less than", kind: keyword, insertText: "i32.lt_s" },
+        { label: "i32.le_s", documentation: "signed less than or equal", kind: keyword, insertText: "i32.le_s" },
+        { label: "i32.lt_u", documentation: "unsigned less than", kind: keyword, insertText: "i32.lt_u" },
+        { label: "i32.le_u", documentation: "unsigned less than or equal", kind: keyword, insertText: "i32.le_u" },
+        { label: "i32.gt_s", documentation: "signed greater than", kind: keyword, insertText: "i32.gt_s" },
+        { label: "i32.ge_s", documentation: "signed greater than or equal", kind: keyword, insertText: "i32.ge_s" },
+        { label: "i32.gt_u", documentation: "unsigned greater than", kind: keyword, insertText: "i32.gt_u" },
+        { label: "i32.ge_u", documentation: "unsigned greater than or equal", kind: keyword, insertText: "i32.ge_u" },
+        { label: "i32.clz", documentation: "sign-agnostic count leading zero bits (All zero bits are considered leading if the value is zero)", kind: keyword, insertText: "i32.clz" },
+        { label: "i32.ctz", documentation: "sign-agnostic count trailing zero bits (All zero bits are considered trailing if the value is zero)", kind: keyword, insertText: "i32.ctz" },
+        { label: "i32.popcnt", documentation: "sign-agnostic count number of one bits", kind: keyword, insertText: "i32.popcnt" },
+        { label: "i32.eqz", documentation: "compare equal to zero (return 1 if operand is zero, 0 otherwise)", kind: keyword, insertText: "i32.eqz" },
+        { label: "f32.add", documentation: "addition", kind: keyword, insertText: "f32.add" },
+        { label: "f32.sub", documentation: "subtraction", kind: keyword, insertText: "f32.sub" },
+        { label: "f32.mul", documentation: "multiplication", kind: keyword, insertText: "f32.mul" },
+        { label: "f32.div", documentation: "division", kind: keyword, insertText: "f32.div" },
+        { label: "f32.abs", documentation: "absolute value", kind: keyword, insertText: "f32.abs" },
+        { label: "f32.neg", documentation: "negation", kind: keyword, insertText: "f32.neg" },
+        { label: "f32.copysign", documentation: "copysign", kind: keyword, insertText: "f32.copysign" },
+        { label: "f32.ceil", documentation: "ceiling operator", kind: keyword, insertText: "f32.ceil" },
+        { label: "f32.floor", documentation: "floor operator", kind: keyword, insertText: "f32.floor" },
+        { label: "f32.trunc", documentation: "round to nearest integer towards zero", kind: keyword, insertText: "f32.trunc" },
+        { label: "f32.nearest", documentation: "round to nearest integer, ties to even", kind: keyword, insertText: "f32.nearest" },
+        { label: "f32.eq", documentation: "compare ordered and equal", kind: keyword, insertText: "f32.eq" },
+        { label: "f32.ne", documentation: "compare unordered or unequal", kind: keyword, insertText: "f32.ne" },
+        { label: "f32.lt", documentation: "compare ordered and less than", kind: keyword, insertText: "f32.lt" },
+        { label: "f32.le", documentation: "compare ordered and less than or equal", kind: keyword, insertText: "f32.le" },
+        { label: "f32.gt", documentation: "compare ordered and greater than", kind: keyword, insertText: "f32.gt" },
+        { label: "f32.ge", documentation: "compare ordered and greater than or equal", kind: keyword, insertText: "f32.ge" },
+        { label: "f32.sqrt", documentation: "square root", kind: keyword, insertText: "f32.sqrt" },
+        { label: "f32.min", documentation: "minimum (binary operator); if either operand is NaN, returns NaN", kind: keyword, insertText: "f32.min" },
+        { label: "f32.max", documentation: "maximum (binary operator); if either operand is NaN, returns NaN", kind: keyword, insertText: "f32.max" },
+        { label: "f64.add", documentation: "addition", kind: keyword, insertText: "f64.add" },
+        { label: "f64.sub", documentation: "subtraction", kind: keyword, insertText: "f64.sub" },
+        { label: "f64.mul", documentation: "multiplication", kind: keyword, insertText: "f64.mul" },
+        { label: "f64.div", documentation: "division", kind: keyword, insertText: "f64.div" },
+        { label: "f64.abs", documentation: "absolute value", kind: keyword, insertText: "f64.abs" },
+        { label: "f64.neg", documentation: "negation", kind: keyword, insertText: "f64.neg" },
+        { label: "f64.copysign", documentation: "copysign", kind: keyword, insertText: "f64.copysign" },
+        { label: "f64.ceil", documentation: "ceiling operator", kind: keyword, insertText: "f64.ceil" },
+        { label: "f64.floor", documentation: "floor operator", kind: keyword, insertText: "f64.floor" },
+        { label: "f64.trunc", documentation: "round to nearest integer towards zero", kind: keyword, insertText: "f64.trunc" },
+        { label: "f64.nearest", documentation: "round to nearest integer, ties to even", kind: keyword, insertText: "f64.nearest" },
+        { label: "f64.eq", documentation: "compare ordered and equal", kind: keyword, insertText: "f64.eq" },
+        { label: "f64.ne", documentation: "compare unordered or unequal", kind: keyword, insertText: "f64.ne" },
+        { label: "f64.lt", documentation: "compare ordered and less than", kind: keyword, insertText: "f64.lt" },
+        { label: "f64.le", documentation: "compare ordered and less than or equal", kind: keyword, insertText: "f64.le" },
+        { label: "f64.gt", documentation: "compare ordered and greater than", kind: keyword, insertText: "f64.gt" },
+        { label: "f64.ge", documentation: "compare ordered and greater than or equal", kind: keyword, insertText: "f64.ge" },
+        { label: "f64.sqrt", documentation: "square root", kind: keyword, insertText: "f64.sqrt" },
+        { label: "f64.min", documentation: "minimum (binary operator); if either operand is NaN, returns NaN", kind: keyword, insertText: "f64.min" },
+        { label: "f64.max", documentation: "maximum (binary operator); if either operand is NaN, returns NaN", kind: keyword, insertText: "f64.max" },
+        { label: "i32.wrap/i64", documentation: "wrap a 64-bit integer to a 32-bit integer", kind: keyword, insertText: "i32.wrap/i64" },
+        { label: "i32.trunc_s/f32", documentation: "truncate a 32-bit float to a signed 32-bit integer", kind: keyword, insertText: "i32.trunc_s/f32" },
+        { label: "i32.trunc_s/f64", documentation: "truncate a 64-bit float to a signed 32-bit integer", kind: keyword, insertText: "i32.trunc_s/f64" },
+        { label: "i32.trunc_u/f32", documentation: "truncate a 32-bit float to an unsigned 32-bit integer", kind: keyword, insertText: "i32.trunc_u/f32" },
+        { label: "i32.trunc_u/f64", documentation: "truncate a 64-bit float to an unsigned 32-bit integer", kind: keyword, insertText: "i32.trunc_u/f64" },
+        { label: "i32.reinterpret/f32", documentation: "reinterpret the bits of a 32-bit float as a 32-bit integer", kind: keyword, insertText: "i32.reinterpret/f32" },
+        { label: "i64.extend_s/i32", documentation: "extend a signed 32-bit integer to a 64-bit integer", kind: keyword, insertText: "i64.extend_s/i32" },
+        { label: "i64.extend_u/i32", documentation: "extend an unsigned 32-bit integer to a 64-bit integer", kind: keyword, insertText: "i64.extend_u/i32" },
+        { label: "i64.trunc_s/f32", documentation: "truncate a 32-bit float to a signed 64-bit integer", kind: keyword, insertText: "i64.trunc_s/f32" },
+        { label: "i64.trunc_s/f64", documentation: "truncate a 64-bit float to a signed 64-bit integer", kind: keyword, insertText: "i64.trunc_s/f64" },
+        { label: "i64.trunc_u/f32", documentation: "truncate a 32-bit float to an unsigned 64-bit integer", kind: keyword, insertText: "i64.trunc_u/f32" },
+        { label: "i64.trunc_u/f64", documentation: "truncate a 64-bit float to an unsigned 64-bit integer", kind: keyword, insertText: "i64.trunc_u/f64" },
+        { label: "i64.reinterpret/f64", documentation: "reinterpret the bits of a 64-bit float as a 64-bit integer", kind: keyword, insertText: "i64.reinterpret/f64" },
+        { label: "f32.demote/f64", documentation: "demote a 64-bit float to a 32-bit float", kind: keyword, insertText: "f32.demote/f64" },
+        { label: "f32.convert_s/i32", documentation: "convert a signed 32-bit integer to a 32-bit float", kind: keyword, insertText: "f32.convert_s/i32" },
+        { label: "f32.convert_s/i64", documentation: "convert a signed 64-bit integer to a 32-bit float", kind: keyword, insertText: "f32.convert_s/i64" },
+        { label: "f32.convert_u/i32", documentation: "convert an unsigned 32-bit integer to a 32-bit float", kind: keyword, insertText: "f32.convert_u/i32" },
+        { label: "f32.convert_u/i64", documentation: "convert an unsigned 64-bit integer to a 32-bit float", kind: keyword, insertText: "f32.convert_u/i64" },
+        { label: "f32.reinterpret/i32", documentation: "reinterpret the bits of a 32-bit integer as a 32-bit float", kind: keyword, insertText: "f32.reinterpret/i32" },
+        { label: "f64.promote/f32", documentation: "promote a 32-bit float to a 64-bit float", kind: keyword, insertText: "f64.promote/f32" },
+        { label: "f64.convert_s/i32", documentation: "convert a signed 32-bit integer to a 64-bit float", kind: keyword, insertText: "f64.convert_s/i32" },
+        { label: "f64.convert_s/i64", documentation: "convert a signed 64-bit integer to a 64-bit float", kind: keyword, insertText: "f64.convert_s/i64" },
+        { label: "f64.convert_u/i32", documentation: "convert an unsigned 32-bit integer to a 64-bit float", kind: keyword, insertText: "f64.convert_u/i32" },
+        { label: "f64.convert_u/i64", documentation: "convert an unsigned 64-bit integer to a 64-bit float", kind: keyword, insertText: "f64.convert_u/i64" },
+        { label: "f64.reinterpret/i64", documentation: "reinterpret the bits of a 64-bit integer as a 64-bit float", kind: keyword, insertText: "f64.reinterpret/i64" }
     ];
 }
 const LanguageConfiguration = {
     // the default separators except `@$`
     wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
     comments: {
-        lineComment: '//',
-        blockComment: ['/*', '*/'],
+        lineComment: "//",
+        blockComment: ["/*", "*/"],
     },
     brackets: [
-        ['{', '}'],
-        ['[', ']'],
-        ['(', ')'],
+        ["{", "}"],
+        ["[", "]"],
+        ["(", ")"],
     ],
     autoClosingPairs: [
-        { open: '{', close: '}' },
-        { open: '[', close: ']' },
-        { open: '(', close: ')' },
+        { open: "{", close: "}" },
+        { open: "[", close: "]" },
+        { open: "(", close: ")" },
         { open: '"', close: '"' },
-        { open: '\'', close: '\'' },
+        { open: "'", close: "'" },
     ],
     surroundingPairs: [
-        { open: '{', close: '}' },
-        { open: '[', close: ']' },
-        { open: '(', close: ')' },
+        { open: "{", close: "}" },
+        { open: "[", close: "]" },
+        { open: "(", close: ")" },
         { open: '"', close: '"' },
-        { open: '\'', close: '\'' },
-        { open: '<', close: '>' },
+        { open: "'", close: "'" },
+        { open: "<", close: ">" },
     ]
 };
 const MonarchDefinitions = {
     // Set defaultToken to invalid to see what you do not tokenize yet
     // defaultToken: 'invalid',
     keywords: [
-        'module',
-        'table',
-        'memory',
-        'export',
-        'import',
-        'func',
-        'result',
-        'offset',
-        'anyfunc',
-        'i32.load8_s',
-        'i32.load8_u',
-        'i32.load16_s',
-        'i32.load16_u',
-        'i32.load',
-        'i64.load8_s',
-        'i64.load8_u',
-        'i64.load16_s',
-        'i64.load16_u',
-        'i64.load32_s',
-        'i64.load32_u',
-        'i64.load',
-        'f32.load',
-        'f64.load',
-        'i32.store8',
-        'i32.store16',
-        'i32.store',
-        'i64.store8',
-        'i64.store16',
-        'i64.store32',
-        'i64.store',
-        'f32.store',
-        'f64.store',
-        'i32.const',
-        'i64.const',
-        'f32.const',
-        'f64.const',
-        'i32.add',
-        'i32.sub',
-        'i32.mul',
-        'i32.div_s',
-        'i32.div_u',
-        'i32.rem_s',
-        'i32.rem_u',
-        'i32.and',
-        'i32.or',
-        'i32.xor',
-        'i32.shl',
-        'i32.shr_u',
-        'i32.shr_s',
-        'i32.rotl',
-        'i32.rotr',
-        'i32.eq',
-        'i32.ne',
-        'i32.lt_s',
-        'i32.le_s',
-        'i32.lt_u',
-        'i32.le_u',
-        'i32.gt_s',
-        'i32.ge_s',
-        'i32.gt_u',
-        'i32.ge_u',
-        'i32.clz',
-        'i32.ctz',
-        'i32.popcnt',
-        'i32.eqz',
-        'f32.add',
-        'f32.sub',
-        'f32.mul',
-        'f32.div',
-        'f32.abs',
-        'f32.neg',
-        'f32.copysign',
-        'f32.ceil',
-        'f32.floor',
-        'f32.trunc',
-        'f32.nearest',
-        'f32.eq',
-        'f32.ne',
-        'f32.lt',
-        'f32.le',
-        'f32.gt',
-        'f32.ge',
-        'f32.sqrt',
-        'f32.min',
-        'f32.max',
-        'f64.add',
-        'f64.sub',
-        'f64.mul',
-        'f64.div',
-        'f64.abs',
-        'f64.neg',
-        'f64.copysign',
-        'f64.ceil',
-        'f64.floor',
-        'f64.trunc',
-        'f64.nearest',
-        'f64.eq',
-        'f64.ne',
-        'f64.lt',
-        'f64.le',
-        'f64.gt',
-        'f64.ge',
-        'f64.sqrt',
-        'f64.min',
-        'f64.max',
-        'i32.wrap/i64',
-        'i32.trunc_s/f32',
-        'i32.trunc_s/f64',
-        'i32.trunc_u/f32',
-        'i32.trunc_u/f64',
-        'i32.reinterpret/f32',
-        'i64.extend_s/i32',
-        'i64.extend_u/i32',
-        'i64.trunc_s/f32',
-        'i64.trunc_s/f64',
-        'i64.trunc_u/f32',
-        'i64.trunc_u/f64',
-        'i64.reinterpret/f64',
-        'f32.demote/f64',
-        'f32.convert_s/i32',
-        'f32.convert_s/i64',
-        'f32.convert_u/i32',
-        'f32.convert_u/i64',
-        'f32.reinterpret/i32',
-        'f64.promote/f32',
-        'f64.convert_s/i32',
-        'f64.convert_s/i64',
-        'f64.convert_u/i32',
-        'f64.convert_u/i64',
-        'f64.reinterpret/i64',
-        'get_local',
-        'set_local',
-        'tee_local'
+        "module",
+        "table",
+        "memory",
+        "export",
+        "import",
+        "func",
+        "result",
+        "offset",
+        "anyfunc",
+        "i32.load8_s",
+        "i32.load8_u",
+        "i32.load16_s",
+        "i32.load16_u",
+        "i32.load",
+        "i64.load8_s",
+        "i64.load8_u",
+        "i64.load16_s",
+        "i64.load16_u",
+        "i64.load32_s",
+        "i64.load32_u",
+        "i64.load",
+        "f32.load",
+        "f64.load",
+        "i32.store8",
+        "i32.store16",
+        "i32.store",
+        "i64.store8",
+        "i64.store16",
+        "i64.store32",
+        "i64.store",
+        "f32.store",
+        "f64.store",
+        "i32.const",
+        "i64.const",
+        "f32.const",
+        "f64.const",
+        "i32.add",
+        "i32.sub",
+        "i32.mul",
+        "i32.div_s",
+        "i32.div_u",
+        "i32.rem_s",
+        "i32.rem_u",
+        "i32.and",
+        "i32.or",
+        "i32.xor",
+        "i32.shl",
+        "i32.shr_u",
+        "i32.shr_s",
+        "i32.rotl",
+        "i32.rotr",
+        "i32.eq",
+        "i32.ne",
+        "i32.lt_s",
+        "i32.le_s",
+        "i32.lt_u",
+        "i32.le_u",
+        "i32.gt_s",
+        "i32.ge_s",
+        "i32.gt_u",
+        "i32.ge_u",
+        "i32.clz",
+        "i32.ctz",
+        "i32.popcnt",
+        "i32.eqz",
+        "f32.add",
+        "f32.sub",
+        "f32.mul",
+        "f32.div",
+        "f32.abs",
+        "f32.neg",
+        "f32.copysign",
+        "f32.ceil",
+        "f32.floor",
+        "f32.trunc",
+        "f32.nearest",
+        "f32.eq",
+        "f32.ne",
+        "f32.lt",
+        "f32.le",
+        "f32.gt",
+        "f32.ge",
+        "f32.sqrt",
+        "f32.min",
+        "f32.max",
+        "f64.add",
+        "f64.sub",
+        "f64.mul",
+        "f64.div",
+        "f64.abs",
+        "f64.neg",
+        "f64.copysign",
+        "f64.ceil",
+        "f64.floor",
+        "f64.trunc",
+        "f64.nearest",
+        "f64.eq",
+        "f64.ne",
+        "f64.lt",
+        "f64.le",
+        "f64.gt",
+        "f64.ge",
+        "f64.sqrt",
+        "f64.min",
+        "f64.max",
+        "i32.wrap/i64",
+        "i32.trunc_s/f32",
+        "i32.trunc_s/f64",
+        "i32.trunc_u/f32",
+        "i32.trunc_u/f64",
+        "i32.reinterpret/f32",
+        "i64.extend_s/i32",
+        "i64.extend_u/i32",
+        "i64.trunc_s/f32",
+        "i64.trunc_s/f64",
+        "i64.trunc_u/f32",
+        "i64.trunc_u/f64",
+        "i64.reinterpret/f64",
+        "f32.demote/f64",
+        "f32.convert_s/i32",
+        "f32.convert_s/i64",
+        "f32.convert_u/i32",
+        "f32.convert_u/i64",
+        "f32.reinterpret/i32",
+        "f64.promote/f32",
+        "f64.convert_s/i32",
+        "f64.convert_s/i64",
+        "f64.convert_u/i32",
+        "f64.convert_u/i64",
+        "f64.reinterpret/i64",
+        "get_local",
+        "set_local",
+        "tee_local"
     ],
     typeKeywords: [
-        'i32', 'i64', 'f32', 'f64'
+        "i32", "i64", "f32", "f64"
     ],
     operators: [],
     brackets: [
-        ['(', ')', 'bracket.parenthesis'],
-        ['{', '}', 'bracket.curly'],
-        ['[', ']', 'bracket.square']
+        ["(", ")", "bracket.parenthesis"],
+        ["{", "}", "bracket.curly"],
+        ["[", "]", "bracket.square"]
     ],
     // we include these common regular expressions
     symbols: /[=><!~?:&|+\-*\/\^%]+/,
@@ -14693,9 +15621,9 @@ const MonarchDefinitions = {
             // identifiers and keywords
             [/[a-z_$][\w$\.]*/, {
                     cases: {
-                        '@keywords': 'keyword',
-                        '@typeKeywords': 'type',
-                        '@default': 'type.identifier'
+                        "@keywords": "keyword",
+                        "@typeKeywords": "type",
+                        "@default": "type.identifier"
                     }
                 }],
             // [/[A-Z][\w\$]*/, 'type.identifier' ],  // to show class names nicely
@@ -14713,34 +15641,34 @@ const MonarchDefinitions = {
             // // numbers
             // [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
             // [/0[xX][0-9a-fA-F]+/, 'number.hex'],
-            [/\d+/, 'number'],
+            [/\d+/, "number"],
             // // delimiter: after number because of .\d floats
             // [/[;,.]/, 'delimiter'],
             // strings
             // [/"([^"\\]|\\.)*$/, 'string.invalid' ],  // non-teminated string
-            [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
+            [/"/, { token: "string.quote", bracket: "@open", next: "@string" }],
             // // characters
             // [/'[^\\']'/, 'string'],
             // [/(')(@escapes)(')/, ['string','string.escape','string']],
             // [/'/, 'string.invalid']
-            [/[{}()\[\]]/, '@brackets']
+            [/[{}()\[\]]/, "@brackets"]
         ],
         comment: [
-            [/[^\/*]+/, 'comment'],
-            [/\/\*/, 'comment', '@push'],
-            ["\\*/", 'comment', '@pop'],
-            [/[\/*]/, 'comment']
+            [/[^\/*]+/, "comment"],
+            [/\/\*/, "comment", "@push"],
+            ["\\*/", "comment", "@pop"],
+            [/[\/*]/, "comment"]
         ],
         string: [
-            [/[^\\"]+/, 'string'],
-            [/@escapes/, 'string.escape'],
-            [/\\./, 'string.escape.invalid'],
-            [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
+            [/[^\\"]+/, "string"],
+            [/@escapes/, "string.escape"],
+            [/\\./, "string.escape.invalid"],
+            [/"/, { token: "string.quote", bracket: "@close", next: "@pop" }]
         ],
         whitespace: [
-            [/[ \t\r\n]+/, 'white'],
-            [/\/\*/, 'comment', '@comment'],
-            [/\/\/.*$/, 'comment'],
+            [/[ \t\r\n]+/, "white"],
+            [/\/\*/, "comment", "@comment"],
+            [/\/\/.*$/, "comment"],
         ],
     },
 };
@@ -14757,8 +15685,8 @@ exports.Wast = {
             return {
                 range: new monaco.Range(1, 1, model.getLineCount(), model.getLineMaxColumn(model.getLineCount())),
                 contents: [
-                    '**DETAILS**',
-                    { language: 'html', value: "TODO" }
+                    "**DETAILS**",
+                    { language: "html", value: "TODO" }
                 ]
             };
         }
@@ -14767,13 +15695,13 @@ exports.Wast = {
 
 
 /***/ }),
-/* 73 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(5);
+__webpack_require__(4);
 exports.Log = {
     MonarchTokensProvider: {
         tokenizer: {
@@ -14788,7 +15716,7 @@ exports.Log = {
 
 
 /***/ }),
-/* 74 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*global define:false */
@@ -15839,81 +16767,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*global define:false */
 
 
 /***/ }),
-/* 75 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __webpack_require__(0);
-const Split_1 = __webpack_require__(10);
-const model_1 = __webpack_require__(2);
-class Sandbox extends React.Component {
-    constructor() {
-        super(...arguments);
-        this.onResizeBegin = () => {
-            this.container.style.pointerEvents = "none";
-        };
-        this.onResizeEnd = () => {
-            this.container.style.pointerEvents = "auto";
-        };
-    }
-    setContainer(container) {
-        if (container == null)
-            return;
-        if (this.container !== container) {
-            // ...
-        }
-        this.container = container;
-    }
-    componentDidMount() {
-        Split_1.Split.onResizeBegin.register(this.onResizeBegin);
-        Split_1.Split.onResizeEnd.register(this.onResizeEnd);
-    }
-    componentWillUnmount() {
-        Split_1.Split.onResizeBegin.unregister(this.onResizeBegin);
-        Split_1.Split.onResizeEnd.unregister(this.onResizeEnd);
-    }
-    run(project, src) {
-        var iframe = document.createElement('iframe');
-        iframe.className = "sandbox";
-        iframe.src = URL.createObjectURL(new Blob([src], { type: 'text/html' }));
-        if (this.container.firstChild) {
-            this.container.removeChild(this.container.firstChild);
-        }
-        this.container.appendChild(iframe);
-        let contentWindow = iframe.contentWindow;
-        let logger = this.props.logger;
-        // Hijack Console
-        let log = contentWindow.console.log;
-        contentWindow.console.log = function (message) {
-            logger.logLn(message);
-            log.apply(contentWindow.console, arguments);
-        };
-        contentWindow.getFileURL = (path) => {
-            let file = project.getFile(path);
-            if (!file) {
-                this.props.logger.logLn(`Cannot find file ${path}`, "error");
-                return;
-            }
-            let blob = new Blob([file.getData()], { type: model_1.mimeTypeForFileType(file.type) });
-            return window.URL.createObjectURL(blob);
-        };
-        let ready = new Promise((resolve) => {
-            iframe.onready = () => {
-                resolve(contentWindow);
-            };
-        });
-    }
-    render() {
-        return React.createElement("div", { className: "fill", ref: (ref) => this.setContainer(ref) });
-    }
-}
-exports.Sandbox = Sandbox;
-
-
-/***/ }),
-/* 76 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15961,7 +16815,7 @@ class GulpySession {
     }
     runInstance(instance) {
         return __awaiter(this, void 0, void 0, function* () {
-            let dependencies = instance.task.dependencies.map(x => this.ensureInstance(x));
+            const dependencies = instance.task.dependencies.map(x => this.ensureInstance(x));
             yield Promise.all(dependencies.map(x => this.runInstance(x)));
             return instance.makePromise();
         });
@@ -15977,11 +16831,11 @@ class Gulpy {
     task(name, a, b) {
         let dependencies = [];
         let fn = null;
-        if (arguments.length == 3) {
+        if (arguments.length === 3) {
             dependencies = a;
             fn = b;
         }
-        else if (arguments.length == 2) {
+        else if (arguments.length === 2) {
             fn = a;
         }
         this.tasks[name] = new Task(dependencies.map(x => this.tasks[x]), fn);
@@ -15993,13 +16847,13 @@ class Gulpy {
         return null;
     }
     run(name) {
-        let session = new GulpySession(this);
+        const session = new GulpySession(this);
         session.run(this.tasks[name]);
     }
 }
 exports.Gulpy = Gulpy;
 function testGulpy() {
-    let gulp = new Gulpy();
+    const gulp = new Gulpy();
     gulp.task("b", () => {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -16030,18 +16884,18 @@ exports.testGulpy = testGulpy;
 
 
 /***/ }),
-/* 77 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const ReactModal = __webpack_require__(37);
-const Button_1 = __webpack_require__(21);
-const Icons_1 = __webpack_require__(20);
-const model_1 = __webpack_require__(2);
-const Widgets_1 = __webpack_require__(25);
+const ReactModal = __webpack_require__(13);
+const Button_1 = __webpack_require__(5);
+const Icons_1 = __webpack_require__(6);
+const model_1 = __webpack_require__(1);
+const Widgets_1 = __webpack_require__(17);
 class NewFileDialog extends React.Component {
     constructor(props) {
         super(props);
@@ -16055,7 +16909,7 @@ class NewFileDialog extends React.Component {
         };
     }
     nameError() {
-        let directory = this.props.directory;
+        const directory = this.props.directory;
         if (this.state.name) {
             if (!/^[a-z0-9\.\-\_]+$/i.test(this.state.name)) {
                 return "Illegal characters in file name.";
@@ -16071,7 +16925,7 @@ class NewFileDialog extends React.Component {
     }
     fileName() {
         let name = this.state.name;
-        let extension = model_1.extensionForFileType(this.state.fileType);
+        const extension = model_1.extensionForFileType(this.state.fileType);
         if (!name.endsWith("." + extension)) {
             name += "." + extension;
         }
@@ -16123,8 +16977,8 @@ class NewFileDialog extends React.Component {
                             this.props.onCancel();
                         } }),
                     React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoFile, null), label: this.createButtonLabel(), title: "Create New File", isDisabled: !this.state.fileType || !this.state.name || !!this.nameError(), onClick: () => {
-                            let file = new model_1.File(this.fileName(), this.state.fileType);
-                            this.props.onCreate && this.props.onCreate(file);
+                            const file = new model_1.File(this.fileName(), this.state.fileType);
+                            return this.props.onCreate && this.props.onCreate(file);
                         } }))));
     }
 }
@@ -16132,7 +16986,7 @@ exports.NewFileDialog = NewFileDialog;
 
 
 /***/ }),
-/* 78 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16151,7 +17005,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(26);
+var _reactDom = __webpack_require__(27);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -16159,7 +17013,7 @@ var _propTypes = __webpack_require__(38);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _ModalPortal = __webpack_require__(83);
+var _ModalPortal = __webpack_require__(85);
 
 var _ModalPortal2 = _interopRequireDefault(_ModalPortal);
 
@@ -16382,7 +17236,7 @@ Modal.defaultStyles = {
 exports.default = Modal;
 
 /***/ }),
-/* 79 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16395,13 +17249,13 @@ exports.default = Modal;
 
 
 
-var emptyFunction = __webpack_require__(22);
-var invariant = __webpack_require__(23);
+var emptyFunction = __webpack_require__(24);
+var invariant = __webpack_require__(25);
 var warning = __webpack_require__(39);
-var assign = __webpack_require__(80);
+var assign = __webpack_require__(82);
 
-var ReactPropTypesSecret = __webpack_require__(24);
-var checkPropTypes = __webpack_require__(81);
+var ReactPropTypesSecret = __webpack_require__(26);
+var checkPropTypes = __webpack_require__(83);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -16929,10 +17783,10 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
   return ReactPropTypes;
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17029,7 +17883,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 81 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17043,9 +17897,9 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 if (process.env.NODE_ENV !== 'production') {
-  var invariant = __webpack_require__(23);
+  var invariant = __webpack_require__(25);
   var warning = __webpack_require__(39);
-  var ReactPropTypesSecret = __webpack_require__(24);
+  var ReactPropTypesSecret = __webpack_require__(26);
   var loggedTypeFailures = {};
 }
 
@@ -17093,10 +17947,10 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
 
 module.exports = checkPropTypes;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 82 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17109,9 +17963,9 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(22);
-var invariant = __webpack_require__(23);
-var ReactPropTypesSecret = __webpack_require__(24);
+var emptyFunction = __webpack_require__(24);
+var invariant = __webpack_require__(25);
+var ReactPropTypesSecret = __webpack_require__(26);
 
 module.exports = function() {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -17161,7 +18015,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 83 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17185,11 +18039,11 @@ var _propTypes = __webpack_require__(38);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _focusManager = __webpack_require__(84);
+var _focusManager = __webpack_require__(86);
 
 var focusManager = _interopRequireWildcard(_focusManager);
 
-var _scopeTab = __webpack_require__(85);
+var _scopeTab = __webpack_require__(87);
 
 var _scopeTab2 = _interopRequireDefault(_scopeTab);
 
@@ -17201,7 +18055,7 @@ var _refCount = __webpack_require__(42);
 
 var refCount = _interopRequireWildcard(_refCount);
 
-var _bodyClassList = __webpack_require__(87);
+var _bodyClassList = __webpack_require__(89);
 
 var bodyClassList = _interopRequireWildcard(_bodyClassList);
 
@@ -17561,10 +18415,10 @@ ModalPortal.propTypes = {
 };
 exports.default = ModalPortal;
 module.exports = exports["default"];
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 84 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17664,7 +18518,7 @@ function teardownScopedFocus() {
 }
 
 /***/ }),
-/* 85 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17745,7 +18599,7 @@ function scopeTab(node, event) {
 module.exports = exports["default"];
 
 /***/ }),
-/* 86 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17810,10 +18664,10 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = warning;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 87 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17850,7 +18704,7 @@ function remove(bodyClass) {
 }
 
 /***/ }),
-/* 88 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -17897,18 +18751,18 @@ var __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 
 /***/ }),
-/* 89 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const ReactModal = __webpack_require__(37);
-const Button_1 = __webpack_require__(21);
-const Icons_1 = __webpack_require__(20);
-const model_1 = __webpack_require__(2);
-const Widgets_1 = __webpack_require__(25);
+const ReactModal = __webpack_require__(13);
+const Button_1 = __webpack_require__(5);
+const Icons_1 = __webpack_require__(6);
+const model_1 = __webpack_require__(1);
+const Widgets_1 = __webpack_require__(17);
 class EditFileDialog extends React.Component {
     constructor(props) {
         super(props);
@@ -17924,15 +18778,15 @@ class EditFileDialog extends React.Component {
         };
     }
     error() {
-        let directory = this.props.file.parent;
-        let file = directory.getImmediateChild(this.state.name);
+        const directory = this.props.file.parent;
+        const file = directory.getImmediateChild(this.state.name);
         if (file && file !== this.props.file) {
             return `A file with the same name already exists.`;
         }
         return "";
     }
     render() {
-        let file = this.props.file;
+        const file = this.props.file;
         return React.createElement(ReactModal, { isOpen: this.props.isOpen, contentLabel: "Edit " + (file instanceof model_1.Directory ? "Directory" : "File"), className: "modal", overlayClassName: "overlay", ariaHideApp: false },
             React.createElement("div", { style: { display: "flex", flexDirection: "column", height: "100%" } },
                 React.createElement("div", { className: "modal-title-bar" }, `Edit ${file instanceof model_1.Directory ? "Directory" : "File"} ${file.name}`),
@@ -17945,7 +18799,7 @@ class EditFileDialog extends React.Component {
                             this.props.onCancel();
                         } }),
                     React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoPencil, null), label: "Edit", title: "Edit", isDisabled: !this.state.name || !!this.error(), onClick: () => {
-                            this.props.onChange && this.props.onChange(this.state.name, this.state.description);
+                            return this.props.onChange && this.props.onChange(this.state.name, this.state.description);
                         } }))));
     }
 }
@@ -17953,173 +18807,39 @@ exports.EditFileDialog = EditFileDialog;
 
 
 /***/ }),
-/* 90 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const Tabs_1 = __webpack_require__(19);
-const EditorPane_1 = __webpack_require__(36);
-const model_1 = __webpack_require__(2);
-const index_1 = __webpack_require__(3);
-const timers_1 = __webpack_require__(32);
-const Split_1 = __webpack_require__(10);
-const Button_1 = __webpack_require__(21);
-class TabBasicTest extends React.Component {
+const ReactModal = __webpack_require__(13);
+const Button_1 = __webpack_require__(5);
+const Icons_1 = __webpack_require__(6);
+class Toast extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
-        return React.createElement("div", null,
-            React.createElement(Tabs_1.Tabs, null,
-                React.createElement(Tabs_1.Tab, { label: "A" }),
-                React.createElement(Tabs_1.Tab, { label: "Really Long Name That I Can't Fit In This Tab" }),
-                React.createElement(Tabs_1.Tab, { label: "Ion", icon: "default_file" }),
-                React.createElement(Tabs_1.Tab, { label: "Active", isActive: true }),
-                React.createElement(Tabs_1.Tab, { label: "Marked", isMarked: true }),
-                React.createElement(Tabs_1.Tab, { label: "Active & Marked", isActive: true, isMarked: true })));
+        return React.createElement(ReactModal, { isOpen: true, contentLabel: "Gist Created", className: "toast-container", ariaHideApp: false, overlayClassName: "toast-overlay" },
+            React.createElement("div", { className: "toast" },
+                React.createElement("div", { className: "modal-title-bar toast-title" }, this.props.message),
+                React.createElement("div", { className: "button-toast-container" },
+                    React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoX, null), customClassName: "button-toast", label: "Dismiss", title: "Dismiss", onClick: this.props.onDismiss }))));
     }
 }
-class TabSelectTest extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedTab: 0,
-            tabs: ["Arabaalelealel", "Bannanananana", "Copaoappaoasasoas", "Dendododlaoadad"]
-        };
-    }
-    render() {
-        return React.createElement("div", null,
-            React.createElement(Tabs_1.Tabs, null, this.state.tabs.map((x, i) => {
-                return React.createElement(Tabs_1.Tab, { key: x, label: x, onClick: () => {
-                        this.setState({ selectedTab: i });
-                    }, isActive: i === this.state.selectedTab });
-            })));
-    }
-}
-class TabSelectRandomTest extends TabSelectTest {
-    constructor(props) {
-        super(props);
-        timers_1.setInterval(() => {
-            this.setState({
-                selectedTab: Math.random() * this.state.tabs.length | 0
-            });
-        }, 200);
-    }
-}
-class TabBasicScrollTest extends React.Component {
-    render() {
-        return React.createElement("div", { style: { width: 512 } },
-            React.createElement(TabBasicTest, null));
-    }
-}
-class EditorPaneTest extends React.Component {
-    constructor(props) {
-        super(props);
-        let a = new model_1.File("A", model_1.FileType.JavaScript);
-        let b = new model_1.File("B", model_1.FileType.JavaScript);
-        let c = new model_1.File("C", model_1.FileType.JavaScript);
-        a.onDidChangeData.register(() => this.forceUpdate());
-        b.onDidChangeData.register(() => this.forceUpdate());
-        c.onDidChangeData.register(() => this.forceUpdate());
-        this.state = {
-            file: a,
-            files: [a, b, c]
-        };
-    }
-    render() {
-        return React.createElement("div", { style: { height: 128 } },
-            React.createElement(EditorPane_1.EditorPane, { preview: this.state.file, file: this.state.file, files: this.state.files, onNewFile: () => {
-                    let { files } = this.state;
-                    let f = new model_1.File("X", model_1.FileType.JavaScript);
-                    files.push(f);
-                    // files.splice(i, 1);
-                    this.setState({ files, file: files[files.length - 1] });
-                }, onClickFile: (x) => { this.setState({ file: x }); }, onClose: (x) => {
-                    let { files } = this.state;
-                    let i = files.indexOf(x);
-                    files.splice(i, 1);
-                    this.setState({ files, file: files[0] });
-                } }));
-    }
-}
-class Test extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            splits: [
-                { min: 128, max: 192, value: 130 }, {}, {}, { value: 64 }
-            ],
-            width: 600
-        };
-    }
-    componentDidMount() {
-        index_1.layout();
-    }
-    render() {
-        let view = new EditorPane_1.View(new model_1.File("X", model_1.FileType.JavaScript), null);
-        view.file.buffer.setValue(`
-    render() {
-      let { splits } = this.state;
-      let resizerClassName = "resizer";
-      let isHorizontal = this.props.orientation === SplitOrientation.Horizontal;
-      if (isHorizontal) {
-        resizerClassName += " horizontal";
-      } else {
-        resizerClassName += " vertical";
-      }
-      // console.log("Splits", splits, sum(splits), this.state.size);
-      let count = React.Children.count(this.props.children);
-      let children: any[] = [];
-      React.Children.forEach(this.props.children, (child, i) => {
-        let style: any = {};
-        if (i < count - 1) {
-          style.flexBasis = toCSSPx(Math.round(splits[i]));
-        } else {
-          style.flex = 1;
-        }
-        children.push(<div key={i} className="split-pane" style={style}>{child}</div>);
-        if (i < count - 1) {
-          children.push(<div key={"split:" + i} className={resizerClassName} onMouseDown={this.onResizerMouseDown.bind(this, i)}>
-          </div>);
-        }
-      });
-      return <div className="split" ref="container" style={{ flexDirection: isHorizontal ? "column" : "row" }}>
-        {children}
-      </div>;
-    }
-    `);
-        return React.createElement("div", null,
-            React.createElement("div", { style: { width: this.state.width, height: 128, border: "solid 1px red" } },
-                React.createElement(Split_1.Split, { orientation: Split_1.SplitOrientation.Vertical, splits: this.state.splits, onChange: (splits) => {
-                        this.setState({ splits });
-                    } },
-                    React.createElement("div", null, "A"),
-                    React.createElement("div", null, "B"),
-                    React.createElement("div", null, "C"),
-                    React.createElement("div", null, "D"))),
-            React.createElement(Button_1.Button, { label: "Force Update", onClick: () => {
-                    // this.setState({splits});
-                    timers_1.setInterval(() => {
-                        let width = this.state.width - 10;
-                        this.setState({ width });
-                    }, 100);
-                } }));
-    }
-}
-exports.Test = Test;
+exports.Toast = Toast;
 
 
 /***/ }),
-/* 91 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(5);
+__webpack_require__(4);
 let completionItems = null;
 function getCompletionItems() {
     const keyword = monaco.languages.CompletionItemKind.Keyword;
@@ -18136,34 +18856,34 @@ const LanguageConfiguration = {
     //   blockComment: ['/*', '*/'],
     // },
     brackets: [
-        ['{', '}'],
-        ['[', ']'],
-        ['(', ')'],
+        ["{", "}"],
+        ["[", "]"],
+        ["(", ")"],
     ],
     autoClosingPairs: [
-        { open: '{', close: '}' },
-        { open: '[', close: ']' },
-        { open: '(', close: ')' },
+        { open: "{", close: "}" },
+        { open: "[", close: "]" },
+        { open: "(", close: ")" },
         { open: '"', close: '"' },
-        { open: '\'', close: '\'' },
+        { open: "'", close: "'" },
     ],
     surroundingPairs: [
-        { open: '{', close: '}' },
-        { open: '[', close: ']' },
-        { open: '(', close: ')' },
+        { open: "{", close: "}" },
+        { open: "[", close: "]" },
+        { open: "(", close: ")" },
         { open: '"', close: '"' },
-        { open: '\'', close: '\'' },
-        { open: '<', close: '>' },
+        { open: "'", close: "'" },
+        { open: "<", close: ">" },
     ]
 };
 const MonarchDefinitions = {
     // Set defaultToken to invalid to see what you do not tokenize yet
     // defaultToken: 'invalid',
     keywords: [
-        'function', 'jump'
+        "function", "jump"
     ],
     typeKeywords: [
-        'i32', 'i64', 'f32', 'f64'
+        "i32", "i64", "f32", "f64"
     ],
     operators: [],
     // brackets: [
@@ -18182,9 +18902,9 @@ const MonarchDefinitions = {
             // identifiers and keywords
             [/[a-z_$][\w$\.]*/, {
                     cases: {
-                        '@keywords': 'keyword',
-                        '@typeKeywords': 'type',
-                        '@default': 'type.identifier'
+                        "@keywords": "keyword",
+                        "@typeKeywords": "type",
+                        "@default": "type.identifier"
                     }
                 }],
             // [/[A-Z][\w\$]*/, 'type.identifier' ],  // to show class names nicely
@@ -18202,17 +18922,17 @@ const MonarchDefinitions = {
             // // numbers
             // [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
             // [/0[xX][0-9a-fA-F]+/, 'number.hex'],
-            [/\d+/, 'number'],
+            [/\d+/, "number"],
             // // delimiter: after number because of .\d floats
             // [/[;,.]/, 'delimiter'],
             // strings
             // [/"([^"\\]|\\.)*$/, 'string.invalid' ],  // non-teminated string
-            [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
+            [/"/, { token: "string.quote", bracket: "@open", next: "@string" }],
             // // characters
             // [/'[^\\']'/, 'string'],
             // [/(')(@escapes)(')/, ['string','string.escape','string']],
             // [/'/, 'string.invalid']
-            [/[{}()\[\]]/, '@brackets']
+            [/[{}()\[\]]/, "@brackets"]
         ],
         // comment: [
         //   [/[^\/*]+/, 'comment'],
@@ -18222,14 +18942,14 @@ const MonarchDefinitions = {
         //   // [/[\/*]/, 'comment']
         // ],
         string: [
-            [/[^\\"]+/, 'string'],
-            [/@escapes/, 'string.escape'],
-            [/\\./, 'string.escape.invalid'],
-            [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
+            [/[^\\"]+/, "string"],
+            [/@escapes/, "string.escape"],
+            [/\\./, "string.escape.invalid"],
+            [/"/, { token: "string.quote", bracket: "@close", next: "@pop" }]
         ],
         whitespace: [
-            [/[ \t\r\n]+/, 'white'],
-            [/;.*$/, 'comment']
+            [/[ \t\r\n]+/, "white"],
+            [/;.*$/, "comment"]
             // [/\/\*/, 'comment', '@comment'],
             // [/\/\/.*$/, 'comment'],
         ],
@@ -18248,8 +18968,8 @@ exports.Cton = {
             return {
                 range: new monaco.Range(1, 1, model.getLineCount(), model.getLineMaxColumn(model.getLineCount())),
                 contents: [
-                    '**DETAILS**',
-                    { language: 'html', value: "TODO" }
+                    "**DETAILS**",
+                    { language: "html", value: "TODO" }
                 ]
             };
         }
@@ -18258,13 +18978,13 @@ exports.Cton = {
 
 
 /***/ }),
-/* 92 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(5);
+__webpack_require__(4);
 let completionItems = null;
 function getCompletionItems() {
     const keyword = monaco.languages.CompletionItemKind.Keyword;
@@ -18281,50 +19001,50 @@ const LanguageConfiguration = {
     //   blockComment: ['/*', '*/'],
     // },
     brackets: [
-        ['{', '}'],
-        ['[', ']'],
-        ['(', ')'],
+        ["{", "}"],
+        ["[", "]"],
+        ["(", ")"],
     ],
     autoClosingPairs: [
-        { open: '{', close: '}' },
-        { open: '[', close: ']' },
-        { open: '(', close: ')' },
+        { open: "{", close: "}" },
+        { open: "[", close: "]" },
+        { open: "(", close: ")" },
         { open: '"', close: '"' },
-        { open: '\'', close: '\'' },
+        { open: "'", close: "'" },
     ],
     surroundingPairs: [
-        { open: '{', close: '}' },
-        { open: '[', close: ']' },
-        { open: '(', close: ')' },
+        { open: "{", close: "}" },
+        { open: "[", close: "]" },
+        { open: "(", close: ")" },
         { open: '"', close: '"' },
-        { open: '\'', close: '\'' },
-        { open: '<', close: '>' },
+        { open: "'", close: "'" },
+        { open: "<", close: ">" },
     ]
 };
 const MonarchDefinitions = {
     // Set defaultToken to invalid to see what you do not tokenize yet
-    defaultToken: 'invalid',
+    defaultToken: "invalid",
     ignoreCase: true,
     keywords: [
-        'qword', 'ptr'
+        "qword", "ptr"
     ],
     typeKeywords: [
-        'i32', 'i64', 'f32', 'f64'
+        "i32", "i64", "f32", "f64"
     ],
     ops: [
-        'add',
-        'sub',
-        'mov',
-        'jmp',
-        'ret',
-        'int3',
-        'nop',
-        'cmp'
+        "add",
+        "sub",
+        "mov",
+        "jmp",
+        "ret",
+        "int3",
+        "nop",
+        "cmp"
     ],
     registers: [
-        'R8', 'R9', 'R10', 'R11', 'R12', 'R13', 'R14', 'R15',
-        'CS', 'DS', 'ES', 'FS', 'GS', 'SS', 'RAX', 'EAX', 'RBX', 'EBX', 'RCX', 'ECX', 'RDX', 'EDX',
-        'RCX', 'RIP', 'EIP', 'IP', 'RSP', 'ESP', 'SP', 'RSI', 'ESI', 'SI', 'RDI', 'EDI', 'DI', 'RFLAGS', 'EFLAGS', 'FLAGS'
+        "R8", "R9", "R10", "R11", "R12", "R13", "R14", "R15",
+        "CS", "DS", "ES", "FS", "GS", "SS", "RAX", "EAX", "RBX", "EBX", "RCX", "ECX", "RDX", "EDX",
+        "RCX", "RIP", "EIP", "IP", "RSP", "ESP", "SP", "RSI", "ESI", "SI", "RDI", "EDI", "DI", "RFLAGS", "EFLAGS", "FLAGS"
     ],
     // operators: [
     //   // '=', '>', '<', '!', '~', '?', ':', '==', '<=', '>=', '!=',
@@ -18348,16 +19068,16 @@ const MonarchDefinitions = {
             // identifiers and keywords
             [/[a-z_$][\w$\.]*/, {
                     cases: {
-                        '@ops': 'keyword',
-                        '@registers': 'type',
-                        '@keywords': 'keyword',
-                        '@typeKeywords': 'keyword.type',
-                        '@default': 'identifier'
+                        "@ops": "keyword",
+                        "@registers": "type",
+                        "@keywords": "keyword",
+                        "@typeKeywords": "keyword.type",
+                        "@default": "identifier"
                     }
                 }],
             // [/[A-Z][\w\$]*/, 'type.identifier' ],  // to show class names nicely
             // // whitespace
-            { include: '@whitespace' },
+            { include: "@whitespace" },
             // // delimiters and operators
             // [/[{}()\[\]]/, '@brackets'],
             // [/[<>](?!@symbols)/, '@brackets'],
@@ -18369,31 +19089,31 @@ const MonarchDefinitions = {
             // [/@\s*[a-zA-Z_\$][\w\$]*/, { token: 'annotation', log: 'annotation token: $0' }],
             // // numbers
             // [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
-            [/0[xX][0-9a-fA-F]+/, 'number.hex'],
-            [/\d+/, 'number'],
+            [/0[xX][0-9a-fA-F]+/, "number.hex"],
+            [/\d+/, "number"],
             // // delimiter: after number because of .\d floats
-            [/[;,.]/, 'delimiter'],
+            [/[;,.]/, "delimiter"],
             // strings
             // [/"([^"\\]|\\.)*$/, 'string.invalid' ],  // non-teminated string
-            [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
+            [/"/, { token: "string.quote", bracket: "@open", next: "@string" }],
             // // characters
             // [/'[^\\']'/, 'string'],
             // [/(')(@escapes)(')/, ['string','string.escape','string']],
             // [/'/, 'string.invalid']
-            [/[{}()\[\]]/, '@brackets']
+            [/[{}()\[\]]/, "@brackets"]
         ],
         comment: [
-            [/;.*/, 'comment'],
+            [/;.*/, "comment"],
         ],
         string: [
-            [/[^\\"]+/, 'string'],
-            [/@escapes/, 'string.escape'],
-            [/\\./, 'string.escape.invalid'],
-            [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
+            [/[^\\"]+/, "string"],
+            [/@escapes/, "string.escape"],
+            [/\\./, "string.escape.invalid"],
+            [/"/, { token: "string.quote", bracket: "@close", next: "@pop" }]
         ],
         whitespace: [
-            [/[ \t\r\n]+/, 'white'],
-            [/;.*$/, 'comment']
+            [/[ \t\r\n]+/, "white"],
+            [/;.*$/, "comment"]
             // [/\/\*/, 'comment', '@comment'],
             // [/\/\/.*$/, 'comment'],
         ],
@@ -18412,68 +19132,12 @@ exports.X86 = {
             return {
                 range: new monaco.Range(1, 1, model.getLineCount(), model.getLineMaxColumn(model.getLineCount())),
                 contents: [
-                    '**DETAILS**',
-                    { language: 'html', value: "TODO" }
+                    "**DETAILS**",
+                    { language: "html", value: "TODO" }
                 ]
             };
         }
     }
-};
-
-
-/***/ }),
-/* 93 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(module) {/**
- * Parts Copyright (C) 2011-2012, Alex Russell (slightlyoff@chromium.org)
- * Parts Copyright (C) Copyright (C) 1998-2000 Greg J. Badros
- *
- * Use of this source code is governed by the LGPL, which can be found in the
- * COPYING.LGPL file.
- *
- * This is a compiled version of Cassowary/JS. For source versions or to
- * contribute, see the github project:
- *
- *  https://github.com/slightlyoff/cassowary-js-refactor
- *
- */
-
-(function() {
-(function(a){"use strict";try{(function(){}).bind(a)}catch(b){Object.defineProperty(Function.prototype,"bind",{value:function(a){var b=this;return function(){return b.apply(a,arguments)}},enumerable:!1,configurable:!0,writable:!0})}var c=a.HTMLElement!==void 0,d=function(a){for(var b=null;a&&a!=Object.prototype;){if(a.tagName){b=a.tagName;break}a=a.prototype}return b||"div"},e=1e-8,f={},g=function(a,b){if(a&&b){if("function"==typeof a[b])return a[b];var c=a.prototype;if(c&&"function"==typeof c[b])return c[b];if(c!==Object.prototype&&c!==Function.prototype)return"function"==typeof a.__super__?g(a.__super__,b):void 0}},h=a.c={debug:!1,trace:!1,verbose:!1,traceAdded:!1,GC:!1,GEQ:1,LEQ:2,inherit:function(b){var e=null,g=null;b["extends"]&&(g=b["extends"],delete b["extends"]),b.initialize&&(e=b.initialize,delete b.initialize);var h=e||function(){};Object.defineProperty(h,"__super__",{value:g?g:Object,enumerable:!1,configurable:!0,writable:!1}),b._t&&(f[b._t]=h);var i=h.prototype=Object.create(g?g.prototype:Object.prototype);if(this.extend(i,b),c&&g&&g.prototype instanceof a.HTMLElement){var j=h,k=d(i),l=function(a){return a.__proto__=i,j.apply(a,arguments),i.created&&a.created(),i.decorate&&a.decorate(),a};this.extend(i,{upgrade:l}),h=function(){return l(a.document.createElement(k))},h.prototype=i,this.extend(h,{ctor:j})}return h},extend:function(a,b){return this.own(b,function(c){var d=Object.getOwnPropertyDescriptor(b,c);try{"function"==typeof d.get||"function"==typeof d.set?Object.defineProperty(a,c,d):"function"==typeof d.value||"_"===c.charAt(0)?(d.writable=!0,d.configurable=!0,d.enumerable=!1,Object.defineProperty(a,c,d)):a[c]=b[c]}catch(e){}}),a},own:function(b,c,d){return Object.getOwnPropertyNames(b).forEach(c,d||a),b},traceprint:function(a){h.verbose&&console.log(a)},fnenterprint:function(a){console.log("* "+a)},fnexitprint:function(a){console.log("- "+a)},assert:function(a,b){if(!a)throw new h.InternalError("Assertion failed: "+b)},plus:function(a,b){return a instanceof h.Expression||(a=new h.Expression(a)),b instanceof h.Expression||(b=new h.Expression(b)),a.plus(b)},minus:function(a,b){return a instanceof h.Expression||(a=new h.Expression(a)),b instanceof h.Expression||(b=new h.Expression(b)),a.minus(b)},times:function(a,b){return("number"==typeof a||a instanceof h.Variable)&&(a=new h.Expression(a)),("number"==typeof b||b instanceof h.Variable)&&(b=new h.Expression(b)),a.times(b)},divide:function(a,b){return("number"==typeof a||a instanceof h.Variable)&&(a=new h.Expression(a)),("number"==typeof b||b instanceof h.Variable)&&(b=new h.Expression(b)),a.divide(b)},approx:function(a,b){if(a===b)return!0;var c,d;return c=a instanceof h.Variable?a.value:a,d=b instanceof h.Variable?b.value:b,0==c?e>Math.abs(d):0==d?e>Math.abs(c):Math.abs(c-d)<Math.abs(c)*e},_inc:function(a){return function(){return a++}}(0),parseJSON:function(a){return JSON.parse(a,function(a,b){if("object"!=typeof b||"string"!=typeof b._t)return b;var c=b._t,d=f[c];if(c&&d){var e=g(d,"fromJSON");if(e)return e(b,d)}return b})}};"function"=="function"&&"undefined"!=typeof module&&"undefined"==typeof load&&(a.exports=h)})(this),function(a){"use strict";var b=function(a){var b=a.hashCode?a.hashCode:""+a;return b},c=function(a,b){Object.keys(a).forEach(function(c){b[c]=a[c]})},d={};a.HashTable=a.inherit({initialize:function(){this.size=0,this._store={},this._keyStrMap={},this._deleted=0},set:function(a,c){var d=b(a);this._store.hasOwnProperty(d)||this.size++,this._store[d]=c,this._keyStrMap[d]=a},get:function(a){if(!this.size)return null;a=b(a);var c=this._store[a];return c!==void 0?this._store[a]:null},clear:function(){this.size=0,this._store={},this._keyStrMap={}},_compact:function(){var a={};c(this._store,a),this._store=a},_compactThreshold:100,_perhapsCompact:function(){this._size>64||this._deleted>this._compactThreshold&&(this._compact(),this._deleted=0)},"delete":function(a){a=b(a),this._store.hasOwnProperty(a)&&(this._deleted++,delete this._store[a],this.size>0&&this.size--)},each:function(a,b){if(this.size){this._perhapsCompact();var c=this._store,d=this._keyStrMap;Object.keys(this._store).forEach(function(e){a.call(b||null,d[e],c[e])},this)}},escapingEach:function(a,b){if(this.size){this._perhapsCompact();for(var c=this,e=this._store,f=this._keyStrMap,g=d,h=Object.keys(e),i=0;h.length>i;i++)if(function(d){c._store.hasOwnProperty(d)&&(g=a.call(b||null,f[d],e[d]))}(h[i]),g){if(void 0!==g.retval)return g;if(g.brk)break}}},clone:function(){var b=new a.HashTable;return this.size&&(b.size=this.size,c(this._store,b._store),c(this._keyStrMap,b._keyStrMap)),b},equals:function(b){if(b===this)return!0;if(!(b instanceof a.HashTable)||b._size!==this._size)return!1;for(var c=Object.keys(this._store),d=0;c.length>d;d++){var e=c[d];if(this._keyStrMap[e]!==b._keyStrMap[e]||this._store[e]!==b._store[e])return!1}return!0},toString:function(){var b="";return this.each(function(a,c){b+=a+" => "+c+"\n"}),b}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.HashSet=a.inherit({_t:"c.HashSet",initialize:function(){this.storage=[],this.size=0},add:function(a){var b=this.storage;b.indexOf(a),-1==b.indexOf(a)&&b.push(a),this.size=this.storage.length},values:function(){return this.storage},has:function(a){var b=this.storage;return-1!=b.indexOf(a)},"delete":function(a){var b=this.storage.indexOf(a);return-1==b?null:(this.storage.splice(b,1)[0],this.size=this.storage.length,void 0)},clear:function(){this.storage.length=0},each:function(a,b){this.size&&this.storage.forEach(a,b)},escapingEach:function(a,b){this.size&&this.storage.forEach(a,b)},toString:function(){var a=this.size+" {",b=!0;return this.each(function(c){b?b=!1:a+=", ",a+=c}),a+="}\n"},toJSON:function(){var a=[];return this.each(function(b){a.push(b.toJSON())}),{_t:"c.HashSet",data:a}},fromJSON:function(b){var c=new a.HashSet;return b.data&&(c.size=b.data.length,c.storage=b.data),c}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.Error=a.inherit({initialize:function(a){a&&(this._description=a)},_name:"c.Error",_description:"An error has occured in Cassowary",set description(a){this._description=a},get description(){return"("+this._name+") "+this._description},get message(){return this.description},toString:function(){return this.description}});var b=function(b,c){return a.inherit({"extends":a.Error,initialize:function(){a.Error.apply(this,arguments)},_name:b||"",_description:c||""})};a.ConstraintNotFound=b("c.ConstraintNotFound","Tried to remove a constraint never added to the tableu"),a.InternalError=b("c.InternalError"),a.NonExpression=b("c.NonExpression","The resulting expression would be non"),a.NotEnoughStays=b("c.NotEnoughStays","There are not enough stays to give specific values to every variable"),a.RequiredFailure=b("c.RequiredFailure","A required constraint cannot be satisfied"),a.TooDifficult=b("c.TooDifficult","The constraints are too difficult to solve")}(this.c||module.parent.exports||{}),function(a){"use strict";var b=1e3;a.SymbolicWeight=a.inherit({_t:"c.SymbolicWeight",initialize:function(){this.value=0;for(var a=1,c=arguments.length-1;c>=0;--c)this.value+=arguments[c]*a,a*=b},toJSON:function(){return{_t:this._t,value:this.value}}})}(this.c||module.parent.exports||{}),function(a){a.Strength=a.inherit({initialize:function(b,c,d,e){this.name=b,this.symbolicWeight=c instanceof a.SymbolicWeight?c:new a.SymbolicWeight(c,d,e)},get required(){return this===a.Strength.required},toString:function(){return this.name+(this.isRequired?"":":"+this.symbolicWeight)}}),a.Strength.required=new a.Strength("<Required>",1e3,1e3,1e3),a.Strength.strong=new a.Strength("strong",1,0,0),a.Strength.medium=new a.Strength("medium",0,1,0),a.Strength.weak=new a.Strength("weak",0,0,1)}(this.c||( true?module.parent.exports.c:{})),function(a){"use strict";a.AbstractVariable=a.inherit({isDummy:!1,isExternal:!1,isPivotable:!1,isRestricted:!1,_init:function(b,c){this.hashCode=a._inc(),this.name=(c||"")+this.hashCode,b&&(b.name!==void 0&&(this.name=b.name),b.value!==void 0&&(this.value=b.value),b.prefix!==void 0&&(this._prefix=b.prefix))},_prefix:"",name:"",value:0,toJSON:function(){var a={};return this._t&&(a._t=this._t),this.name&&(a.name=this.name),this.value!==void 0&&(a.value=this.value),this._prefix&&(a._prefix=this._prefix),this._t&&(a._t=this._t),a},fromJSON:function(b,c){var d=new c;return a.extend(d,b),d},toString:function(){return this._prefix+"["+this.name+":"+this.value+"]"}}),a.Variable=a.inherit({_t:"c.Variable","extends":a.AbstractVariable,initialize:function(b){this._init(b,"v");var c=a.Variable._map;c&&(c[this.name]=this)},isExternal:!0}),a.DummyVariable=a.inherit({_t:"c.DummyVariable","extends":a.AbstractVariable,initialize:function(a){this._init(a,"d")},isDummy:!0,isRestricted:!0,value:"dummy"}),a.ObjectiveVariable=a.inherit({_t:"c.ObjectiveVariable","extends":a.AbstractVariable,initialize:function(a){this._init(a,"o")},value:"obj"}),a.SlackVariable=a.inherit({_t:"c.SlackVariable","extends":a.AbstractVariable,initialize:function(a){this._init(a,"s")},isPivotable:!0,isRestricted:!0,value:"slack"})}(this.c||module.parent.exports||{}),function(a){"use strict";a.Point=a.inherit({initialize:function(b,c,d){if(b instanceof a.Variable)this._x=b;else{var e={value:b};d&&(e.name="x"+d),this._x=new a.Variable(e)}if(c instanceof a.Variable)this._y=c;else{var f={value:c};d&&(f.name="y"+d),this._y=new a.Variable(f)}},get x(){return this._x},set x(b){b instanceof a.Variable?this._x=b:this._x.value=b},get y(){return this._y},set y(b){b instanceof a.Variable?this._y=b:this._y.value=b},toString:function(){return"("+this.x+", "+this.y+")"}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.Expression=a.inherit({initialize:function(b,c,d){a.GC&&console.log("new c.Expression"),this.constant="number"!=typeof d||isNaN(d)?0:d,this.terms=new a.HashTable,b instanceof a.AbstractVariable?this.setVariable(b,"number"==typeof c?c:1):"number"==typeof b&&(isNaN(b)?console.trace():this.constant=b)},initializeFromHash:function(b,c){return a.verbose&&(console.log("*******************************"),console.log("clone c.initializeFromHash"),console.log("*******************************")),a.GC&&console.log("clone c.Expression"),this.constant=b,this.terms=c.clone(),this},multiplyMe:function(a){this.constant*=a;var b=this.terms;return b.each(function(c,d){b.set(c,d*a)}),this},clone:function(){a.verbose&&(console.log("*******************************"),console.log("clone c.Expression"),console.log("*******************************"));var b=new a.Expression;return b.initializeFromHash(this.constant,this.terms),b},times:function(b){if("number"==typeof b)return this.clone().multiplyMe(b);if(this.isConstant)return b.times(this.constant);if(b.isConstant)return this.times(b.constant);throw new a.NonExpression},plus:function(b){return b instanceof a.Expression?this.clone().addExpression(b,1):b instanceof a.Variable?this.clone().addVariable(b,1):void 0},minus:function(b){return b instanceof a.Expression?this.clone().addExpression(b,-1):b instanceof a.Variable?this.clone().addVariable(b,-1):void 0},divide:function(b){if("number"==typeof b){if(a.approx(b,0))throw new a.NonExpression;return this.times(1/b)}if(b instanceof a.Expression){if(!b.isConstant)throw new a.NonExpression;return this.times(1/b.constant)}},addExpression:function(b,c,d,e){return b instanceof a.AbstractVariable&&(b=new a.Expression(b),a.trace&&console.log("addExpression: Had to cast a var to an expression")),c=c||1,this.constant+=c*b.constant,b.terms.each(function(a,b){this.addVariable(a,b*c,d,e)},this),this},addVariable:function(b,c,d,e){null==c&&(c=1),a.trace&&console.log("c.Expression::addVariable():",b,c);var f=this.terms.get(b);if(f){var g=f+c;0==g||a.approx(g,0)?(e&&e.noteRemovedVariable(b,d),this.terms.delete(b)):this.setVariable(b,g)}else a.approx(c,0)||(this.setVariable(b,c),e&&e.noteAddedVariable(b,d));return this},setVariable:function(a,b){return this.terms.set(a,b),this},anyPivotableVariable:function(){if(this.isConstant)throw new a.InternalError("anyPivotableVariable called on a constant");var b=this.terms.escapingEach(function(a){return a.isPivotable?{retval:a}:void 0});return b&&void 0!==b.retval?b.retval:null},substituteOut:function(b,c,d,e){a.trace&&(a.fnenterprint("CLE:substituteOut: "+b+", "+c+", "+d+", ..."),a.traceprint("this = "+this));var f=this.setVariable.bind(this),g=this.terms,h=g.get(b);g.delete(b),this.constant+=h*c.constant,c.terms.each(function(b,c){var i=g.get(b);if(i){var j=i+h*c;a.approx(j,0)?(e.noteRemovedVariable(b,d),g.delete(b)):f(b,j)}else f(b,h*c),e&&e.noteAddedVariable(b,d)}),a.trace&&a.traceprint("Now this is "+this)},changeSubject:function(a,b){this.setVariable(a,this.newSubject(b))},newSubject:function(b){a.trace&&a.fnenterprint("newSubject:"+b);var c=1/this.terms.get(b);return this.terms.delete(b),this.multiplyMe(-c),c},coefficientFor:function(a){return this.terms.get(a)||0},get isConstant(){return 0==this.terms.size},toString:function(){var b="",c=!1;if(!a.approx(this.constant,0)||this.isConstant){if(b+=this.constant,this.isConstant)return b;c=!0}return this.terms.each(function(a,d){c&&(b+=" + "),b+=d+"*"+a,c=!0}),b},equals:function(b){return b===this?!0:b instanceof a.Expression&&b.constant===this.constant&&b.terms.equals(this.terms)},Plus:function(a,b){return a.plus(b)},Minus:function(a,b){return a.minus(b)},Times:function(a,b){return a.times(b)},Divide:function(a,b){return a.divide(b)}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.AbstractConstraint=a.inherit({initialize:function(b,c){this.hashCode=a._inc(),this.strength=b||a.Strength.required,this.weight=c||1},isEditConstraint:!1,isInequality:!1,isStayConstraint:!1,get required(){return this.strength===a.Strength.required},toString:function(){return this.strength+" {"+this.weight+"} ("+this.expression+")"}});var b=a.AbstractConstraint.prototype.toString,c=function(b,c,d){a.AbstractConstraint.call(this,c||a.Strength.strong,d),this.variable=b,this.expression=new a.Expression(b,-1,b.value)};a.EditConstraint=a.inherit({"extends":a.AbstractConstraint,initialize:function(){c.apply(this,arguments)},isEditConstraint:!0,toString:function(){return"edit:"+b.call(this)}}),a.StayConstraint=a.inherit({"extends":a.AbstractConstraint,initialize:function(){c.apply(this,arguments)},isStayConstraint:!0,toString:function(){return"stay:"+b.call(this)}});var d=a.Constraint=a.inherit({"extends":a.AbstractConstraint,initialize:function(b,c,d){a.AbstractConstraint.call(this,c,d),this.expression=b}});a.Inequality=a.inherit({"extends":a.Constraint,_cloneOrNewCle:function(b){return b.clone?b.clone():new a.Expression(b)},initialize:function(b,c,e,f,g){var h=b instanceof a.Expression,i=e instanceof a.Expression,j=b instanceof a.AbstractVariable,k=e instanceof a.AbstractVariable,l="number"==typeof b,m="number"==typeof e;if((h||l)&&k){var n=b,o=c,p=e,q=f,r=g;if(d.call(this,this._cloneOrNewCle(n),q,r),o==a.LEQ)this.expression.multiplyMe(-1),this.expression.addVariable(p);else{if(o!=a.GEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");this.expression.addVariable(p,-1)}}else if(j&&(i||m)){var n=e,o=c,p=b,q=f,r=g;if(d.call(this,this._cloneOrNewCle(n),q,r),o==a.GEQ)this.expression.multiplyMe(-1),this.expression.addVariable(p);else{if(o!=a.LEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");this.expression.addVariable(p,-1)}}else{if(h&&m){var s=b,o=c,t=e,q=f,r=g;if(d.call(this,this._cloneOrNewCle(s),q,r),o==a.LEQ)this.expression.multiplyMe(-1),this.expression.addExpression(this._cloneOrNewCle(t));else{if(o!=a.GEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");this.expression.addExpression(this._cloneOrNewCle(t),-1)}return this}if(l&&i){var s=e,o=c,t=b,q=f,r=g;if(d.call(this,this._cloneOrNewCle(s),q,r),o==a.GEQ)this.expression.multiplyMe(-1),this.expression.addExpression(this._cloneOrNewCle(t));else{if(o!=a.LEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");this.expression.addExpression(this._cloneOrNewCle(t),-1)}return this}if(h&&i){var s=b,o=c,t=e,q=f,r=g;if(d.call(this,this._cloneOrNewCle(t),q,r),o==a.GEQ)this.expression.multiplyMe(-1),this.expression.addExpression(this._cloneOrNewCle(s));else{if(o!=a.LEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");this.expression.addExpression(this._cloneOrNewCle(s),-1)}}else{if(h)return d.call(this,b,c,e);if(c==a.GEQ)d.call(this,new a.Expression(e),f,g),this.expression.multiplyMe(-1),this.expression.addVariable(b);else{if(c!=a.LEQ)throw new a.InternalError("Invalid operator in c.Inequality constructor");d.call(this,new a.Expression(e),f,g),this.expression.addVariable(b,-1)}}}},isInequality:!0,toString:function(){return d.prototype.toString.call(this)+" >= 0) id: "+this.hashCode}}),a.Equation=a.inherit({"extends":a.Constraint,initialize:function(b,c,e,f){if(b instanceof a.Expression&&!c||c instanceof a.Strength)d.call(this,b,c,e);else if(b instanceof a.AbstractVariable&&c instanceof a.Expression){var g=b,h=c,i=e,j=f;d.call(this,h.clone(),i,j),this.expression.addVariable(g,-1)}else if(b instanceof a.AbstractVariable&&"number"==typeof c){var g=b,k=c,i=e,j=f;d.call(this,new a.Expression(k),i,j),this.expression.addVariable(g,-1)}else if(b instanceof a.Expression&&c instanceof a.AbstractVariable){var h=b,g=c,i=e,j=f;d.call(this,h.clone(),i,j),this.expression.addVariable(g,-1)}else{if(!(b instanceof a.Expression||b instanceof a.AbstractVariable||"number"==typeof b)||!(c instanceof a.Expression||c instanceof a.AbstractVariable||"number"==typeof c))throw"Bad initializer to c.Equation";b=b instanceof a.Expression?b.clone():new a.Expression(b),c=c instanceof a.Expression?c.clone():new a.Expression(c),d.call(this,b,e,f),this.expression.addExpression(c,-1)}a.assert(this.strength instanceof a.Strength,"_strength not set")},toString:function(){return d.prototype.toString.call(this)+" = 0)"}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.EditInfo=a.inherit({initialize:function(a,b,c,d,e){this.constraint=a,this.editPlus=b,this.editMinus=c,this.prevEditConstant=d,this.index=e},toString:function(){return"<cn="+this.constraint+", ep="+this.editPlus+", em="+this.editMinus+", pec="+this.prevEditConstant+", index="+this.index+">"}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.Tableau=a.inherit({initialize:function(){this.columns=new a.HashTable,this.rows=new a.HashTable,this._infeasibleRows=new a.HashSet,this._externalRows=new a.HashSet,this._externalParametricVars=new a.HashSet},noteRemovedVariable:function(b,c){a.trace&&console.log("c.Tableau::noteRemovedVariable: ",b,c);var d=this.columns.get(b);c&&d&&d.delete(c)},noteAddedVariable:function(a,b){b&&this.insertColVar(a,b)},getInternalInfo:function(){var a="Tableau Information:\n";return a+="Rows: "+this.rows.size,a+=" (= "+(this.rows.size-1)+" constraints)",a+="\nColumns: "+this.columns.size,a+="\nInfeasible Rows: "+this._infeasibleRows.size,a+="\nExternal basic variables: "+this._externalRows.size,a+="\nExternal parametric variables: ",a+=this._externalParametricVars.size,a+="\n"},toString:function(){var a="Tableau:\n";return this.rows.each(function(b,c){a+=b,a+=" <==> ",a+=c,a+="\n"}),a+="\nColumns:\n",a+=this.columns,a+="\nInfeasible rows: ",a+=this._infeasibleRows,a+="External basic variables: ",a+=this._externalRows,a+="External parametric variables: ",a+=this._externalParametricVars},insertColVar:function(b,c){var d=this.columns.get(b);d||(d=new a.HashSet,this.columns.set(b,d)),d.add(c)},addRow:function(b,c){a.trace&&a.fnenterprint("addRow: "+b+", "+c),this.rows.set(b,c),c.terms.each(function(a){this.insertColVar(a,b),a.isExternal&&this._externalParametricVars.add(a)},this),b.isExternal&&this._externalRows.add(b),a.trace&&a.traceprint(""+this)},removeColumn:function(b){a.trace&&a.fnenterprint("removeColumn:"+b);var c=this.columns.get(b);c?(this.columns.delete(b),c.each(function(a){var c=this.rows.get(a);c.terms.delete(b)},this)):a.trace&&console.log("Could not find var",b,"in columns"),b.isExternal&&(this._externalRows.delete(b),this._externalParametricVars.delete(b))},removeRow:function(b){a.trace&&a.fnenterprint("removeRow:"+b);var c=this.rows.get(b);return a.assert(null!=c),c.terms.each(function(c){var e=this.columns.get(c);null!=e&&(a.trace&&console.log("removing from varset:",b),e.delete(b))},this),this._infeasibleRows.delete(b),b.isExternal&&this._externalRows.delete(b),this.rows.delete(b),a.trace&&a.fnexitprint("returning "+c),c},substituteOut:function(b,c){a.trace&&a.fnenterprint("substituteOut:"+b+", "+c),a.trace&&a.traceprint(""+this);var d=this.columns.get(b);d.each(function(a){var d=this.rows.get(a);d.substituteOut(b,c,a,this),a.isRestricted&&0>d.constant&&this._infeasibleRows.add(a)},this),b.isExternal&&(this._externalRows.add(b),this._externalParametricVars.delete(b)),this.columns.delete(b)},columnsHasKey:function(a){return!!this.columns.get(a)}})}(this.c||module.parent.exports||{}),function(a){var b=a.Tableau,c=b.prototype,d=1e-8,e=a.Strength.weak;a.SimplexSolver=a.inherit({"extends":a.Tableau,initialize:function(){a.Tableau.call(this),this._stayMinusErrorVars=[],this._stayPlusErrorVars=[],this._errorVars=new a.HashTable,this._markerVars=new a.HashTable,this._objective=new a.ObjectiveVariable({name:"Z"}),this._editVarMap=new a.HashTable,this._editVarList=[],this._slackCounter=0,this._artificialCounter=0,this._dummyCounter=0,this.autoSolve=!0,this._fNeedsSolving=!1,this._optimizeCount=0,this.rows.set(this._objective,new a.Expression),this._stkCedcns=[0],a.trace&&a.traceprint("objective expr == "+this.rows.get(this._objective))},addLowerBound:function(b,c){var d=new a.Inequality(b,a.GEQ,new a.Expression(c));return this.addConstraint(d)},addUpperBound:function(b,c){var d=new a.Inequality(b,a.LEQ,new a.Expression(c));return this.addConstraint(d)},addBounds:function(a,b,c){return this.addLowerBound(a,b),this.addUpperBound(a,c),this},add:function(){for(var a=0;arguments.length>a;a++)this.addConstraint(arguments[a]);return this},addConstraint:function(b){a.trace&&a.fnenterprint("addConstraint: "+b);var c=Array(2),d=Array(1),e=this.newExpression(b,c,d);if(d=d[0],this.tryAddingDirectly(e)||this.addWithArtificialVariable(e),this._fNeedsSolving=!0,b.isEditConstraint){var f=this._editVarMap.size,g=c[0],h=c[1];!g instanceof a.SlackVariable&&console.warn("cvEplus not a slack variable =",g),!h instanceof a.SlackVariable&&console.warn("cvEminus not a slack variable =",h),a.debug&&console.log("new c.EditInfo("+b+", "+g+", "+h+", "+d+", "+f+")");var i=new a.EditInfo(b,g,h,d,f);this._editVarMap.set(b.variable,i),this._editVarList[f]={v:b.variable,info:i}}return this.autoSolve&&(this.optimize(this._objective),this._setExternalVariables()),this},addConstraintNoException:function(b){a.trace&&a.fnenterprint("addConstraintNoException: "+b);try{return this.addConstraint(b),!0}catch(c){return!1}},addEditVar:function(b,c){return a.trace&&a.fnenterprint("addEditVar: "+b+" @ "+c),this.addConstraint(new a.EditConstraint(b,c||a.Strength.strong))},beginEdit:function(){return a.assert(this._editVarMap.size>0,"_editVarMap.size > 0"),this._infeasibleRows.clear(),this._resetStayConstants(),this._stkCedcns.push(this._editVarMap.size),this},endEdit:function(){return a.assert(this._editVarMap.size>0,"_editVarMap.size > 0"),this.resolve(),this._stkCedcns.pop(),this.removeEditVarsTo(this._stkCedcns[this._stkCedcns.length-1]),this},removeAllEditVars:function(){return this.removeEditVarsTo(0)},removeEditVarsTo:function(b){try{for(var c=this._editVarList.length,d=b;c>d;d++)this._editVarList[d]&&this.removeConstraint(this._editVarMap.get(this._editVarList[d].v).constraint);return this._editVarList.length=b,a.assert(this._editVarMap.size==b,"_editVarMap.size == n"),this}catch(e){throw new a.InternalError("Constraint not found in removeEditVarsTo")}},addPointStays:function(b){return a.trace&&console.log("addPointStays",b),b.forEach(function(a,b){this.addStay(a.x,e,Math.pow(2,b)),this.addStay(a.y,e,Math.pow(2,b))},this),this},addStay:function(b,c,d){var f=new a.StayConstraint(b,c||e,d||1);return this.addConstraint(f)},removeConstraint:function(a){return this.removeConstraintInternal(a),this},removeConstraintInternal:function(b){a.trace&&a.fnenterprint("removeConstraintInternal: "+b),a.trace&&a.traceprint(""+this),this._fNeedsSolving=!0,this._resetStayConstants();var c=this.rows.get(this._objective),d=this._errorVars.get(b);a.trace&&a.traceprint("eVars == "+d),null!=d&&d.each(function(e){var f=this.rows.get(e);null==f?c.addVariable(e,-b.weight*b.strength.symbolicWeight.value,this._objective,this):c.addExpression(f,-b.weight*b.strength.symbolicWeight.value,this._objective,this),a.trace&&a.traceprint("now eVars == "+d)},this);var e=this._markerVars.get(b);if(this._markerVars.delete(b),null==e)throw new a.InternalError("Constraint not found in removeConstraintInternal");if(a.trace&&a.traceprint("Looking to remove var "+e),null==this.rows.get(e)){var f=this.columns.get(e);a.trace&&a.traceprint("Must pivot -- columns are "+f);var g=null,h=0;f.each(function(b){if(b.isRestricted){var c=this.rows.get(b),d=c.coefficientFor(e);if(a.trace&&a.traceprint("Marker "+e+"'s coefficient in "+c+" is "+d),0>d){var f=-c.constant/d;(null==g||h>f||a.approx(f,h)&&b.hashCode<g.hashCode)&&(h=f,g=b)}}},this),null==g&&(a.trace&&a.traceprint("exitVar is still null"),f.each(function(a){if(a.isRestricted){var b=this.rows.get(a),c=b.coefficientFor(e),d=b.constant/c;(null==g||h>d)&&(h=d,g=a)}},this)),null==g&&(0==f.size?this.removeColumn(e):f.escapingEach(function(a){return a!=this._objective?(g=a,{brk:!0}):void 0},this)),null!=g&&this.pivot(e,g)}if(null!=this.rows.get(e)&&this.removeRow(e),null!=d&&d.each(function(a){a!=e&&this.removeColumn(a)},this),b.isStayConstraint){if(null!=d)for(var j=0;this._stayPlusErrorVars.length>j;j++)d.delete(this._stayPlusErrorVars[j]),d.delete(this._stayMinusErrorVars[j])}else if(b.isEditConstraint){a.assert(null!=d,"eVars != null");var k=this._editVarMap.get(b.variable);this.removeColumn(k.editMinus),this._editVarMap.delete(b.variable)}return null!=d&&this._errorVars.delete(d),this.autoSolve&&(this.optimize(this._objective),this._setExternalVariables()),this},reset:function(){throw a.trace&&a.fnenterprint("reset"),new a.InternalError("reset not implemented")},resolveArray:function(b){a.trace&&a.fnenterprint("resolveArray"+b);var c=b.length;this._editVarMap.each(function(a,d){var e=d.index;c>e&&this.suggestValue(a,b[e])},this),this.resolve()},resolvePair:function(a,b){this.suggestValue(this._editVarList[0].v,a),this.suggestValue(this._editVarList[1].v,b),this.resolve()},resolve:function(){a.trace&&a.fnenterprint("resolve()"),this.dualOptimize(),this._setExternalVariables(),this._infeasibleRows.clear(),this._resetStayConstants()},suggestValue:function(b,c){a.trace&&console.log("suggestValue("+b+", "+c+")");var d=this._editVarMap.get(b);if(!d)throw new a.Error("suggestValue for variable "+b+", but var is not an edit variable");var e=c-d.prevEditConstant;return d.prevEditConstant=c,this.deltaEditConstant(e,d.editPlus,d.editMinus),this},solve:function(){return this._fNeedsSolving&&(this.optimize(this._objective),this._setExternalVariables()),this},setEditedValue:function(b,c){if(!this.columnsHasKey(b)&&null==this.rows.get(b))return b.value=c,this;if(!a.approx(c,b.value)){this.addEditVar(b),this.beginEdit();try{this.suggestValue(b,c)}catch(d){throw new a.InternalError("Error in setEditedValue")}this.endEdit()}return this},addVar:function(b){if(!this.columnsHasKey(b)&&null==this.rows.get(b)){try{this.addStay(b)}catch(c){throw new a.InternalError("Error in addVar -- required failure is impossible")}a.trace&&a.traceprint("added initial stay on "+b)}return this},getInternalInfo:function(){var a=c.getInternalInfo.call(this);return a+="\nSolver info:\n",a+="Stay Error Variables: ",a+=this._stayPlusErrorVars.length+this._stayMinusErrorVars.length,a+=" ("+this._stayPlusErrorVars.length+" +, ",a+=this._stayMinusErrorVars.length+" -)\n",a+="Edit Variables: "+this._editVarMap.size,a+="\n"},getDebugInfo:function(){return""+this+this.getInternalInfo()+"\n"},toString:function(){var a=c.getInternalInfo.call(this);return a+="\n_stayPlusErrorVars: ",a+="["+this._stayPlusErrorVars+"]",a+="\n_stayMinusErrorVars: ",a+="["+this._stayMinusErrorVars+"]",a+="\n",a+="_editVarMap:\n"+this._editVarMap,a+="\n"},getConstraintMap:function(){return this._markerVars},addWithArtificialVariable:function(b){a.trace&&a.fnenterprint("addWithArtificialVariable: "+b);var c=new a.SlackVariable({value:++this._artificialCounter,prefix:"a"}),d=new a.ObjectiveVariable({name:"az"}),e=b.clone();a.trace&&a.traceprint("before addRows:\n"+this),this.addRow(d,e),this.addRow(c,b),a.trace&&a.traceprint("after addRows:\n"+this),this.optimize(d);var f=this.rows.get(d);if(a.trace&&a.traceprint("azTableauRow.constant == "+f.constant),!a.approx(f.constant,0))throw this.removeRow(d),this.removeColumn(c),new a.RequiredFailure;var g=this.rows.get(c);if(null!=g){if(g.isConstant)return this.removeRow(c),this.removeRow(d),void 0;var h=g.anyPivotableVariable();this.pivot(h,c)}a.assert(null==this.rows.get(c),"rowExpression(av) == null"),this.removeColumn(c),this.removeRow(d)},tryAddingDirectly:function(b){a.trace&&a.fnenterprint("tryAddingDirectly: "+b);var c=this.chooseSubject(b);return null==c?(a.trace&&a.fnexitprint("returning false"),!1):(b.newSubject(c),this.columnsHasKey(c)&&this.substituteOut(c,b),this.addRow(c,b),a.trace&&a.fnexitprint("returning true"),!0)},chooseSubject:function(b){a.trace&&a.fnenterprint("chooseSubject: "+b);var c=null,d=!1,e=!1,f=b.terms,g=f.escapingEach(function(a,b){if(d){if(!a.isRestricted&&!this.columnsHasKey(a))return{retval:a}}else if(a.isRestricted){if(!e&&!a.isDummy&&0>b){var f=this.columns.get(a);(null==f||1==f.size&&this.columnsHasKey(this._objective))&&(c=a,e=!0)}}else c=a,d=!0},this);if(g&&void 0!==g.retval)return g.retval;if(null!=c)return c;var h=0,g=f.escapingEach(function(a,b){return a.isDummy?(this.columnsHasKey(a)||(c=a,h=b),void 0):{retval:null}},this);if(g&&void 0!==g.retval)return g.retval;if(!a.approx(b.constant,0))throw new a.RequiredFailure;return h>0&&b.multiplyMe(-1),c},deltaEditConstant:function(b,c,d){a.trace&&a.fnenterprint("deltaEditConstant :"+b+", "+c+", "+d);var e=this.rows.get(c);if(null!=e)return e.constant+=b,0>e.constant&&this._infeasibleRows.add(c),void 0;var f=this.rows.get(d);if(null!=f)return f.constant+=-b,0>f.constant&&this._infeasibleRows.add(d),void 0;var g=this.columns.get(d);g||console.log("columnVars is null -- tableau is:\n"+this),g.each(function(a){var c=this.rows.get(a),e=c.coefficientFor(d);c.constant+=e*b,a.isRestricted&&0>c.constant&&this._infeasibleRows.add(a)},this)},dualOptimize:function(){a.trace&&a.fnenterprint("dualOptimize:");for(var b=this.rows.get(this._objective);this._infeasibleRows.size;){var c=this._infeasibleRows.values()[0];this._infeasibleRows.delete(c);var d=null,e=this.rows.get(c);if(e&&0>e.constant){var g,f=Number.MAX_VALUE,h=e.terms;if(h.each(function(c,e){if(e>0&&c.isPivotable){var h=b.coefficientFor(c);g=h/e,(f>g||a.approx(g,f)&&c.hashCode<d.hashCode)&&(d=c,f=g)}}),f==Number.MAX_VALUE)throw new a.InternalError("ratio == nil (MAX_VALUE) in dualOptimize");this.pivot(d,c)}}},newExpression:function(b,c,d){a.trace&&(a.fnenterprint("newExpression: "+b),a.traceprint("cn.isInequality == "+b.isInequality),a.traceprint("cn.required == "+b.required));var e=b.expression,f=new a.Expression(e.constant),g=new a.SlackVariable,h=new a.DummyVariable,i=new a.SlackVariable,j=new a.SlackVariable,k=e.terms;if(k.each(function(a,b){var c=this.rows.get(a);c?f.addExpression(c,b):f.addVariable(a,b)},this),b.isInequality){if(a.trace&&a.traceprint("Inequality, adding slack"),++this._slackCounter,g=new a.SlackVariable({value:this._slackCounter,prefix:"s"}),f.setVariable(g,-1),this._markerVars.set(b,g),!b.required){++this._slackCounter,i=new a.SlackVariable({value:this._slackCounter,prefix:"em"}),f.setVariable(i,1);
-var l=this.rows.get(this._objective);l.setVariable(i,b.strength.symbolicWeight.value*b.weight),this.insertErrorVar(b,i),this.noteAddedVariable(i,this._objective)}}else if(b.required)a.trace&&a.traceprint("Equality, required"),++this._dummyCounter,h=new a.DummyVariable({value:this._dummyCounter,prefix:"d"}),f.setVariable(h,1),this._markerVars.set(b,h),a.trace&&a.traceprint("Adding dummyVar == d"+this._dummyCounter);else{a.trace&&a.traceprint("Equality, not required"),++this._slackCounter,j=new a.SlackVariable({value:this._slackCounter,prefix:"ep"}),i=new a.SlackVariable({value:this._slackCounter,prefix:"em"}),f.setVariable(j,-1),f.setVariable(i,1),this._markerVars.set(b,j);var l=this.rows.get(this._objective);a.trace&&console.log(l);var m=b.strength.symbolicWeight.value*b.weight;0==m&&(a.trace&&a.traceprint("cn == "+b),a.trace&&a.traceprint("adding "+j+" and "+i+" with swCoeff == "+m)),l.setVariable(j,m),this.noteAddedVariable(j,this._objective),l.setVariable(i,m),this.noteAddedVariable(i,this._objective),this.insertErrorVar(b,i),this.insertErrorVar(b,j),b.isStayConstraint?(this._stayPlusErrorVars.push(j),this._stayMinusErrorVars.push(i)):b.isEditConstraint&&(c[0]=j,c[1]=i,d[0]=e.constant)}return 0>f.constant&&f.multiplyMe(-1),a.trace&&a.fnexitprint("returning "+f),f},optimize:function(b){a.trace&&a.fnenterprint("optimize: "+b),a.trace&&a.traceprint(""+this),this._optimizeCount++;var c=this.rows.get(b);a.assert(null!=c,"zRow != null");for(var g,h,e=null,f=null;;){if(g=0,h=c.terms,h.escapingEach(function(a,b){return a.isPivotable&&g>b?(g=b,e=a,{brk:1}):void 0},this),g>=-d)return;a.trace&&console.log("entryVar:",e,"objectiveCoeff:",g);var i=Number.MAX_VALUE,j=this.columns.get(e),k=0;if(j.each(function(b){if(a.trace&&a.traceprint("Checking "+b),b.isPivotable){var c=this.rows.get(b),d=c.coefficientFor(e);a.trace&&a.traceprint("pivotable, coeff = "+d),0>d&&(k=-c.constant/d,(i>k||a.approx(k,i)&&b.hashCode<f.hashCode)&&(i=k,f=b))}},this),i==Number.MAX_VALUE)throw new a.InternalError("Objective function is unbounded in optimize");this.pivot(e,f),a.trace&&a.traceprint(""+this)}},pivot:function(b,c){a.trace&&console.log("pivot: ",b,c);var d=!1;d&&console.time(" SimplexSolver::pivot"),null==b&&console.warn("pivot: entryVar == null"),null==c&&console.warn("pivot: exitVar == null"),d&&console.time("  removeRow");var e=this.removeRow(c);d&&console.timeEnd("  removeRow"),d&&console.time("  changeSubject"),e.changeSubject(c,b),d&&console.timeEnd("  changeSubject"),d&&console.time("  substituteOut"),this.substituteOut(b,e),d&&console.timeEnd("  substituteOut"),d&&console.time("  addRow"),this.addRow(b,e),d&&console.timeEnd("  addRow"),d&&console.timeEnd(" SimplexSolver::pivot")},_resetStayConstants:function(){a.trace&&console.log("_resetStayConstants");for(var b=0;this._stayPlusErrorVars.length>b;b++){var c=this.rows.get(this._stayPlusErrorVars[b]);null==c&&(c=this.rows.get(this._stayMinusErrorVars[b])),null!=c&&(c.constant=0)}},_setExternalVariables:function(){a.trace&&a.fnenterprint("_setExternalVariables:"),a.trace&&a.traceprint(""+this),this._externalParametricVars.each(function(b){null!=this.rows.get(b)?a.trace&&console.log("Error: variable"+b+" in _externalParametricVars is basic"):b.value=0},this),this._externalRows.each(function(a){var b=this.rows.get(a);a.value!=b.constant&&(a.value=b.constant)},this),this._fNeedsSolving=!1,this.onsolved()},onsolved:function(){},insertErrorVar:function(b,c){a.trace&&a.fnenterprint("insertErrorVar:"+b+", "+c);var d=this._errorVars.get(c);d||(d=new a.HashSet,this._errorVars.set(b,d)),d.add(c)}})}(this.c||module.parent.exports||{}),function(a){"use strict";a.Timer=a.inherit({initialize:function(){this.isRunning=!1,this._elapsedMs=0},start:function(){return this.isRunning=!0,this._startReading=new Date,this},stop:function(){return this.isRunning=!1,this._elapsedMs+=new Date-this._startReading,this},reset:function(){return this.isRunning=!1,this._elapsedMs=0,this},elapsedTime:function(){return this.isRunning?(this._elapsedMs+(new Date-this._startReading))/1e3:this._elapsedMs/1e3}})}(this.c||module.parent.exports||{}),__cassowary_parser=function(){function a(a){return'"'+a.replace(/\\/g,"\\\\").replace(/"/g,'\\"').replace(/\x08/g,"\\b").replace(/\t/g,"\\t").replace(/\n/g,"\\n").replace(/\f/g,"\\f").replace(/\r/g,"\\r").replace(/[\x00-\x07\x0B\x0E-\x1F\x80-\uFFFF]/g,escape)+'"'}var b={parse:function(b,c){function k(a){g>e||(e>g&&(g=e,h=[]),h.push(a))}function l(){var a,b,c,d,f;if(d=e,f=e,a=z(),null!==a){if(c=m(),null!==c)for(b=[];null!==c;)b.push(c),c=m();else b=null;null!==b?(c=z(),null!==c?a=[a,b,c]:(a=null,e=f)):(a=null,e=f)}else a=null,e=f;return null!==a&&(a=function(a,b){return b}(d,a[1])),null===a&&(e=d),a}function m(){var a,b,c,d;return c=e,d=e,a=P(),null!==a?(b=s(),null!==b?a=[a,b]:(a=null,e=d)):(a=null,e=d),null!==a&&(a=function(a,b){return b}(c,a[0])),null===a&&(e=c),a}function n(){var a;return b.length>e?(a=b.charAt(e),e++):(a=null,0===f&&k("any character")),a}function o(){var a;return/^[a-zA-Z]/.test(b.charAt(e))?(a=b.charAt(e),e++):(a=null,0===f&&k("[a-zA-Z]")),null===a&&(36===b.charCodeAt(e)?(a="$",e++):(a=null,0===f&&k('"$"')),null===a&&(95===b.charCodeAt(e)?(a="_",e++):(a=null,0===f&&k('"_"')))),a}function p(){var a;return f++,/^[\t\x0B\f \xA0\uFEFF]/.test(b.charAt(e))?(a=b.charAt(e),e++):(a=null,0===f&&k("[\\t\\x0B\\f \\xA0\\uFEFF]")),f--,0===f&&null===a&&k("whitespace"),a}function q(){var a;return/^[\n\r\u2028\u2029]/.test(b.charAt(e))?(a=b.charAt(e),e++):(a=null,0===f&&k("[\\n\\r\\u2028\\u2029]")),a}function r(){var a;return f++,10===b.charCodeAt(e)?(a="\n",e++):(a=null,0===f&&k('"\\n"')),null===a&&("\r\n"===b.substr(e,2)?(a="\r\n",e+=2):(a=null,0===f&&k('"\\r\\n"')),null===a&&(13===b.charCodeAt(e)?(a="\r",e++):(a=null,0===f&&k('"\\r"')),null===a&&(8232===b.charCodeAt(e)?(a="\u2028",e++):(a=null,0===f&&k('"\\u2028"')),null===a&&(8233===b.charCodeAt(e)?(a="\u2029",e++):(a=null,0===f&&k('"\\u2029"')))))),f--,0===f&&null===a&&k("end of line"),a}function s(){var a,c,d;return d=e,a=z(),null!==a?(59===b.charCodeAt(e)?(c=";",e++):(c=null,0===f&&k('";"')),null!==c?a=[a,c]:(a=null,e=d)):(a=null,e=d),null===a&&(d=e,a=y(),null!==a?(c=r(),null!==c?a=[a,c]:(a=null,e=d)):(a=null,e=d),null===a&&(d=e,a=z(),null!==a?(c=t(),null!==c?a=[a,c]:(a=null,e=d)):(a=null,e=d))),a}function t(){var a,c;return c=e,f++,b.length>e?(a=b.charAt(e),e++):(a=null,0===f&&k("any character")),f--,null===a?a="":(a=null,e=c),a}function u(){var a;return f++,a=v(),null===a&&(a=x()),f--,0===f&&null===a&&k("comment"),a}function v(){var a,c,d,g,h,i,j;if(h=e,"/*"===b.substr(e,2)?(a="/*",e+=2):(a=null,0===f&&k('"/*"')),null!==a){for(c=[],i=e,j=e,f++,"*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==d;)c.push(d),i=e,j=e,f++,"*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==c?("*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),null!==d?a=[a,c,d]:(a=null,e=h)):(a=null,e=h)}else a=null,e=h;return a}function w(){var a,c,d,g,h,i,j;if(h=e,"/*"===b.substr(e,2)?(a="/*",e+=2):(a=null,0===f&&k('"/*"')),null!==a){for(c=[],i=e,j=e,f++,"*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),null===d&&(d=q()),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==d;)c.push(d),i=e,j=e,f++,"*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),null===d&&(d=q()),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==c?("*/"===b.substr(e,2)?(d="*/",e+=2):(d=null,0===f&&k('"*/"')),null!==d?a=[a,c,d]:(a=null,e=h)):(a=null,e=h)}else a=null,e=h;return a}function x(){var a,c,d,g,h,i,j;if(h=e,"//"===b.substr(e,2)?(a="//",e+=2):(a=null,0===f&&k('"//"')),null!==a){for(c=[],i=e,j=e,f++,d=q(),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==d;)c.push(d),i=e,j=e,f++,d=q(),f--,null===d?d="":(d=null,e=j),null!==d?(g=n(),null!==g?d=[d,g]:(d=null,e=i)):(d=null,e=i);null!==c?a=[a,c]:(a=null,e=h)}else a=null,e=h;return a}function y(){var a,b;for(a=[],b=p(),null===b&&(b=w(),null===b&&(b=x()));null!==b;)a.push(b),b=p(),null===b&&(b=w(),null===b&&(b=x()));return a}function z(){var a,b;for(a=[],b=p(),null===b&&(b=r(),null===b&&(b=u()));null!==b;)a.push(b),b=p(),null===b&&(b=r(),null===b&&(b=u()));return a}function A(){var a,b;return b=e,a=C(),null===a&&(a=B()),null!==a&&(a=function(a,b){return{type:"NumericLiteral",value:b}}(b,a)),null===a&&(e=b),a}function B(){var a,c,d;if(d=e,/^[0-9]/.test(b.charAt(e))?(c=b.charAt(e),e++):(c=null,0===f&&k("[0-9]")),null!==c)for(a=[];null!==c;)a.push(c),/^[0-9]/.test(b.charAt(e))?(c=b.charAt(e),e++):(c=null,0===f&&k("[0-9]"));else a=null;return null!==a&&(a=function(a,b){return parseInt(b.join(""))}(d,a)),null===a&&(e=d),a}function C(){var a,c,d,g,h;return g=e,h=e,a=B(),null!==a?(46===b.charCodeAt(e)?(c=".",e++):(c=null,0===f&&k('"."')),null!==c?(d=B(),null!==d?a=[a,c,d]:(a=null,e=h)):(a=null,e=h)):(a=null,e=h),null!==a&&(a=function(a,b){return parseFloat(b.join(""))}(g,a)),null===a&&(e=g),a}function D(){var a,c,d,g;if(g=e,/^[\-+]/.test(b.charAt(e))?(a=b.charAt(e),e++):(a=null,0===f&&k("[\\-+]")),a=null!==a?a:"",null!==a){if(/^[0-9]/.test(b.charAt(e))?(d=b.charAt(e),e++):(d=null,0===f&&k("[0-9]")),null!==d)for(c=[];null!==d;)c.push(d),/^[0-9]/.test(b.charAt(e))?(d=b.charAt(e),e++):(d=null,0===f&&k("[0-9]"));else c=null;null!==c?a=[a,c]:(a=null,e=g)}else a=null,e=g;return a}function E(){var a,b;return f++,b=e,a=F(),null!==a&&(a=function(a,b){return b}(b,a)),null===a&&(e=b),f--,0===f&&null===a&&k("identifier"),a}function F(){var a,b,c,d,g;if(f++,d=e,g=e,a=o(),null!==a){for(b=[],c=o();null!==c;)b.push(c),c=o();null!==b?a=[a,b]:(a=null,e=g)}else a=null,e=g;return null!==a&&(a=function(a,b,c){return b+c.join("")}(d,a[0],a[1])),null===a&&(e=d),f--,0===f&&null===a&&k("identifier"),a}function G(){var a,c,d,g,h,i,j;return i=e,a=E(),null!==a&&(a=function(a,b){return{type:"Variable",name:b}}(i,a)),null===a&&(e=i),null===a&&(a=A(),null===a&&(i=e,j=e,40===b.charCodeAt(e)?(a="(",e++):(a=null,0===f&&k('"("')),null!==a?(c=z(),null!==c?(d=P(),null!==d?(g=z(),null!==g?(41===b.charCodeAt(e)?(h=")",e++):(h=null,0===f&&k('")"')),null!==h?a=[a,c,d,g,h]:(a=null,e=j)):(a=null,e=j)):(a=null,e=j)):(a=null,e=j)):(a=null,e=j),null!==a&&(a=function(a,b){return b}(i,a[2])),null===a&&(e=i))),a}function H(){var a,b,c,d,f;return a=G(),null===a&&(d=e,f=e,a=I(),null!==a?(b=z(),null!==b?(c=H(),null!==c?a=[a,b,c]:(a=null,e=f)):(a=null,e=f)):(a=null,e=f),null!==a&&(a=function(a,b,c){return{type:"UnaryExpression",operator:b,expression:c}}(d,a[0],a[2])),null===a&&(e=d)),a}function I(){var a;return 43===b.charCodeAt(e)?(a="+",e++):(a=null,0===f&&k('"+"')),null===a&&(45===b.charCodeAt(e)?(a="-",e++):(a=null,0===f&&k('"-"')),null===a&&(33===b.charCodeAt(e)?(a="!",e++):(a=null,0===f&&k('"!"')))),a}function J(){var a,b,c,d,f,g,h,i,j;if(h=e,i=e,a=H(),null!==a){for(b=[],j=e,c=z(),null!==c?(d=K(),null!==d?(f=z(),null!==f?(g=H(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==c;)b.push(c),j=e,c=z(),null!==c?(d=K(),null!==d?(f=z(),null!==f?(g=H(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==b?a=[a,b]:(a=null,e=i)}else a=null,e=i;return null!==a&&(a=function(a,b,c){for(var d=b,e=0;c.length>e;e++)d={type:"MultiplicativeExpression",operator:c[e][1],left:d,right:c[e][3]};return d}(h,a[0],a[1])),null===a&&(e=h),a}function K(){var a;return 42===b.charCodeAt(e)?(a="*",e++):(a=null,0===f&&k('"*"')),null===a&&(47===b.charCodeAt(e)?(a="/",e++):(a=null,0===f&&k('"/"'))),a}function L(){var a,b,c,d,f,g,h,i,j;if(h=e,i=e,a=J(),null!==a){for(b=[],j=e,c=z(),null!==c?(d=M(),null!==d?(f=z(),null!==f?(g=J(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==c;)b.push(c),j=e,c=z(),null!==c?(d=M(),null!==d?(f=z(),null!==f?(g=J(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==b?a=[a,b]:(a=null,e=i)}else a=null,e=i;return null!==a&&(a=function(a,b,c){for(var d=b,e=0;c.length>e;e++)d={type:"AdditiveExpression",operator:c[e][1],left:d,right:c[e][3]};return d}(h,a[0],a[1])),null===a&&(e=h),a}function M(){var a;return 43===b.charCodeAt(e)?(a="+",e++):(a=null,0===f&&k('"+"')),null===a&&(45===b.charCodeAt(e)?(a="-",e++):(a=null,0===f&&k('"-"'))),a}function N(){var a,b,c,d,f,g,h,i,j;if(h=e,i=e,a=L(),null!==a){for(b=[],j=e,c=z(),null!==c?(d=O(),null!==d?(f=z(),null!==f?(g=L(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==c;)b.push(c),j=e,c=z(),null!==c?(d=O(),null!==d?(f=z(),null!==f?(g=L(),null!==g?c=[c,d,f,g]:(c=null,e=j)):(c=null,e=j)):(c=null,e=j)):(c=null,e=j);null!==b?a=[a,b]:(a=null,e=i)}else a=null,e=i;return null!==a&&(a=function(a,b,c){for(var d=b,e=0;c.length>e;e++)d={type:"Inequality",operator:c[e][1],left:d,right:c[e][3]};return d}(h,a[0],a[1])),null===a&&(e=h),a}function O(){var a;return"<="===b.substr(e,2)?(a="<=",e+=2):(a=null,0===f&&k('"<="')),null===a&&(">="===b.substr(e,2)?(a=">=",e+=2):(a=null,0===f&&k('">="')),null===a&&(60===b.charCodeAt(e)?(a="<",e++):(a=null,0===f&&k('"<"')),null===a&&(62===b.charCodeAt(e)?(a=">",e++):(a=null,0===f&&k('">"'))))),a}function P(){var a,c,d,g,h,i,j,l,m;if(j=e,l=e,a=N(),null!==a){for(c=[],m=e,d=z(),null!==d?("=="===b.substr(e,2)?(g="==",e+=2):(g=null,0===f&&k('"=="')),null!==g?(h=z(),null!==h?(i=N(),null!==i?d=[d,g,h,i]:(d=null,e=m)):(d=null,e=m)):(d=null,e=m)):(d=null,e=m);null!==d;)c.push(d),m=e,d=z(),null!==d?("=="===b.substr(e,2)?(g="==",e+=2):(g=null,0===f&&k('"=="')),null!==g?(h=z(),null!==h?(i=N(),null!==i?d=[d,g,h,i]:(d=null,e=m)):(d=null,e=m)):(d=null,e=m)):(d=null,e=m);null!==c?a=[a,c]:(a=null,e=l)}else a=null,e=l;return null!==a&&(a=function(a,b,c){for(var d=b,e=0;c.length>e;e++)d={type:"Equality",operator:c[e][1],left:d,right:c[e][3]};return d}(j,a[0],a[1])),null===a&&(e=j),a}function Q(a){a.sort();for(var b=null,c=[],d=0;a.length>d;d++)a[d]!==b&&(c.push(a[d]),b=a[d]);return c}function R(){for(var a=1,c=1,d=!1,f=0;Math.max(e,g)>f;f++){var h=b.charAt(f);"\n"===h?(d||a++,c=1,d=!1):"\r"===h||"\u2028"===h||"\u2029"===h?(a++,c=1,d=!0):(c++,d=!1)}return{line:a,column:c}}var d={start:l,Statement:m,SourceCharacter:n,IdentifierStart:o,WhiteSpace:p,LineTerminator:q,LineTerminatorSequence:r,EOS:s,EOF:t,Comment:u,MultiLineComment:v,MultiLineCommentNoLineTerminator:w,SingleLineComment:x,_:y,__:z,Literal:A,Integer:B,Real:C,SignedInteger:D,Identifier:E,IdentifierName:F,PrimaryExpression:G,UnaryExpression:H,UnaryOperator:I,MultiplicativeExpression:J,MultiplicativeOperator:K,AdditiveExpression:L,AdditiveOperator:M,InequalityExpression:N,InequalityOperator:O,LinearExpression:P};if(void 0!==c){if(void 0===d[c])throw Error("Invalid rule name: "+a(c)+".")}else c="start";var e=0,f=0,g=0,h=[],S=d[c]();if(null===S||e!==b.length){var T=Math.max(e,g),U=b.length>T?b.charAt(T):null,V=R();throw new this.SyntaxError(Q(h),U,T,V.line,V.column)}return S},toSource:function(){return this._source}};return b.SyntaxError=function(b,c,d,e,f){function g(b,c){var d,e;switch(b.length){case 0:d="end of input";break;case 1:d=b[0];break;default:d=b.slice(0,b.length-1).join(", ")+" or "+b[b.length-1]}return e=c?a(c):"end of input","Expected "+d+" but "+e+" found."}this.name="SyntaxError",this.expected=b,this.found=c,this.message=g(b,c),this.offset=d,this.line=e,this.column=f},b.SyntaxError.prototype=Error.prototype,b}();
-}).call(
-  ( true) ?
-      (module.compiled = true && module) : this
-);
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(94)(module)))
-
-/***/ }),
-/* 94 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
 };
 
 
@@ -18485,17 +19149,17 @@ module.exports = function(module) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const ReactModal = __webpack_require__(37);
-const Button_1 = __webpack_require__(21);
-const Icons_1 = __webpack_require__(20);
-const Widgets_1 = __webpack_require__(25);
+const ReactModal = __webpack_require__(13);
+const Button_1 = __webpack_require__(5);
+const Icons_1 = __webpack_require__(6);
+const Widgets_1 = __webpack_require__(17);
 class ShareDialog extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
     render() {
-        let urlPrefix = `${location.protocol}//${location.host}${location.pathname}`;
+        const urlPrefix = `${location.protocol}//${location.host}${location.pathname}`;
         // let embedCode = `<iframe src="${urlPrefix}?embed&f=${this.props.fiddle}" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
         return React.createElement(ReactModal, { isOpen: this.props.isOpen, contentLabel: "Share Project", className: "modal", overlayClassName: "overlay", ariaHideApp: false },
             React.createElement("div", { style: { display: "flex", flexDirection: "column", height: "100%" } },
@@ -18528,11 +19192,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const service_1 = __webpack_require__(13);
-const ReactModal = __webpack_require__(37);
-const Button_1 = __webpack_require__(21);
-const Icons_1 = __webpack_require__(20);
-const Widgets_1 = __webpack_require__(25);
+const service_1 = __webpack_require__(14);
+const ReactModal = __webpack_require__(13);
+const Button_1 = __webpack_require__(5);
+const Icons_1 = __webpack_require__(6);
+const Widgets_1 = __webpack_require__(17);
 class NewProjectDialog extends React.Component {
     constructor(props) {
         super(props);
@@ -18574,7 +19238,7 @@ class NewProjectDialog extends React.Component {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield fetch("templates/templates.js");
             const js = yield response.text();
-            let templates = eval(js);
+            const templates = eval(js);
             this.setState({ templates });
             this.setTemplate(templates[0]);
         });
@@ -18595,7 +19259,7 @@ class NewProjectDialog extends React.Component {
                             React.createElement(Widgets_1.ListBox, { value: this.state.template, height: 240, onSelect: (template) => {
                                     this.setTemplate(template);
                                 } }, this.state.templates.map((template) => {
-                                return React.createElement(Widgets_1.ListItem, { value: template, label: template.name, icon: React.createElement(Icons_1.Icon, { src: template.icon }) });
+                                return React.createElement(Widgets_1.ListItem, { key: template.name, value: template, label: template.name, icon: React.createElement(Icons_1.Icon, { src: template.icon }) });
                             }))),
                         React.createElement("div", { style: { flex: 1 }, className: "new-project-dialog-description" },
                             React.createElement("div", { className: "md", dangerouslySetInnerHTML: { __html: this.state.description } })))),
@@ -18606,7 +19270,7 @@ class NewProjectDialog extends React.Component {
                         } }),
                     React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoFile, null), label: this.createButtonLabel(), title: "Cancel", isDisabled: !this.state.template, onClick: () => {
                             // let file = new File(this.fileName(), this.state.template);
-                            this.props.onCreate && this.props.onCreate(this.state.template);
+                            return this.props.onCreate && this.props.onCreate(this.state.template);
                         } }))));
     }
 }
@@ -18633,16 +19297,16 @@ exports.Errors = {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const Split_1 = __webpack_require__(10);
-const Editor_1 = __webpack_require__(18);
-const Sandbox_1 = __webpack_require__(75);
-const Tabs_1 = __webpack_require__(19);
-const Icons_1 = __webpack_require__(20);
-const Button_1 = __webpack_require__(21);
-const EditorPane_1 = __webpack_require__(36);
-const model_1 = __webpack_require__(2);
-const model_2 = __webpack_require__(2);
-const Problems_1 = __webpack_require__(99);
+const Split_1 = __webpack_require__(12);
+const Editor_1 = __webpack_require__(37);
+const Sandbox_1 = __webpack_require__(99);
+const Tabs_1 = __webpack_require__(23);
+const Icons_1 = __webpack_require__(6);
+const Button_1 = __webpack_require__(5);
+const EditorPane_1 = __webpack_require__(22);
+const model_1 = __webpack_require__(1);
+const model_2 = __webpack_require__(1);
+const Problems_1 = __webpack_require__(100);
 class ControlCenter extends React.Component {
     constructor(props) {
         super(props);
@@ -18669,10 +19333,10 @@ class ControlCenter extends React.Component {
         if (kind) {
             message = "[" + kind + "]: " + message;
         }
-        let model = this.outputView.file.buffer;
-        let lineCount = model.getLineCount();
-        let lastLineLength = model.getLineMaxColumn(lineCount);
-        let range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
+        const model = this.outputView.file.buffer;
+        const lineCount = model.getLineCount();
+        const lastLineLength = model.getLineMaxColumn(lineCount);
+        const range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
         model.applyEdits([
             { forceMoveMarkers: true, identifier: null, range, text: message }
         ]);
@@ -18691,7 +19355,7 @@ class ControlCenter extends React.Component {
             case "problems":
                 return React.createElement(Problems_1.Problems, { project: this.props.project });
             default:
-                null;
+                return null;
         }
     }
     render() {
@@ -18736,15 +19400,90 @@ exports.ControlCenter = ControlCenter;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const model_1 = __webpack_require__(2);
-const DirectoryTree_1 = __webpack_require__(100);
+const Split_1 = __webpack_require__(12);
+const model_1 = __webpack_require__(1);
+class Sandbox extends React.Component {
+    constructor() {
+        super(...arguments);
+        this.onResizeBegin = () => {
+            this.container.style.pointerEvents = "none";
+        };
+        this.onResizeEnd = () => {
+            this.container.style.pointerEvents = "auto";
+        };
+    }
+    setContainer(container) {
+        if (container == null) {
+            return;
+        }
+        if (this.container !== container) {
+            // ...
+        }
+        this.container = container;
+    }
+    componentDidMount() {
+        Split_1.Split.onResizeBegin.register(this.onResizeBegin);
+        Split_1.Split.onResizeEnd.register(this.onResizeEnd);
+    }
+    componentWillUnmount() {
+        Split_1.Split.onResizeBegin.unregister(this.onResizeBegin);
+        Split_1.Split.onResizeEnd.unregister(this.onResizeEnd);
+    }
+    run(project, src) {
+        const iframe = document.createElement("iframe");
+        iframe.className = "sandbox";
+        iframe.src = URL.createObjectURL(new Blob([src], { type: "text/html" }));
+        if (this.container.firstChild) {
+            this.container.removeChild(this.container.firstChild);
+        }
+        this.container.appendChild(iframe);
+        const contentWindow = iframe.contentWindow;
+        const logger = this.props.logger;
+        // Hijack Console
+        const log = contentWindow.console.log;
+        contentWindow.console.log = function (message) {
+            logger.logLn(message);
+            log.apply(contentWindow.console, arguments);
+        };
+        contentWindow.getFileURL = (path) => {
+            const file = project.getFile(path);
+            if (!file) {
+                this.props.logger.logLn(`Cannot find file ${path}`, "error");
+                return;
+            }
+            const blob = new Blob([file.getData()], { type: model_1.mimeTypeForFileType(file.type) });
+            return window.URL.createObjectURL(blob);
+        };
+        const ready = new Promise((resolve) => {
+            iframe.onready = () => {
+                resolve(contentWindow);
+            };
+        });
+    }
+    render() {
+        return React.createElement("div", { className: "fill", ref: (ref) => this.setContainer(ref) });
+    }
+}
+exports.Sandbox = Sandbox;
+
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+const model_1 = __webpack_require__(1);
+const DirectoryTree_1 = __webpack_require__(28);
 class ProblemTemplate {
     constructor(container) {
         this.monacoIconLabel = document.createElement("div");
         this.monacoIconLabel.className = "monaco-icon-label";
         this.monacoIconLabel.style.display = "flex";
         container.appendChild(this.monacoIconLabel);
-        let labelDescriptionContainer = document.createElement("div");
+        const labelDescriptionContainer = document.createElement("div");
         labelDescriptionContainer.className = "monaco-icon-label-description-container";
         this.monacoIconLabel.appendChild(labelDescriptionContainer);
         this.label = document.createElement("a");
@@ -18755,11 +19494,12 @@ class ProblemTemplate {
         labelDescriptionContainer.appendChild(this.description);
     }
     dispose() {
+        // TODO
     }
     set(problem) {
-        let icon = "";
-        let marker = problem.marker;
-        let position = `(${marker.startLineNumber}, ${marker.startColumn})`;
+        const icon = "";
+        const marker = problem.marker;
+        const position = `(${marker.startLineNumber}, ${marker.startColumn})`;
         this.label.innerHTML = marker.message;
         this.description.innerHTML = position;
     }
@@ -18772,8 +19512,9 @@ class Problems extends React.Component {
         this.contextMenuService = new window.ContextMenuService(document.documentElement, null, null, this.contextViewService);
     }
     setContainer(container) {
-        if (container == null)
+        if (container == null) {
             return;
+        }
         if (this.container !== container) {
             // ...
         }
@@ -18783,12 +19524,12 @@ class Problems extends React.Component {
         if (this.container.lastChild) {
             this.container.removeChild(this.container.lastChild);
         }
-        let self = this;
+        const self = this;
         class Controller extends window.TreeDefaults.DefaultController {
             onContextMenu(tree, file, event) {
                 tree.setFocus(file);
                 const anchor = { x: event.posx, y: event.posy };
-                let actions = [];
+                const actions = [];
                 self.contextMenuService.showContextMenu({
                     getAnchor: () => anchor,
                     getActions: () => {
@@ -18837,7 +19578,7 @@ class Problems extends React.Component {
                  */
                 getChildren: function (tree, element) {
                     if (element instanceof model_1.Directory && element.children.length) {
-                        let children = [];
+                        const children = [];
                         element.forEachFile((file) => {
                             if (file.problems.length) {
                                 children.push(file);
@@ -18871,7 +19612,7 @@ class Problems extends React.Component {
                     return "problem";
                 },
                 renderTemplate: function (tree, templateId, container) {
-                    return templateId == "problem" ? new ProblemTemplate(container) : new DirectoryTree_1.FileTemplate(container);
+                    return templateId === "problem" ? new ProblemTemplate(container) : new DirectoryTree_1.FileTemplate(container);
                 },
                 renderElement: function (tree, element, templateId, templateData) {
                     templateData.set(element);
@@ -18884,6 +19625,7 @@ class Problems extends React.Component {
         });
     }
     onClickFile(file) {
+        // TODO
     }
     componentDidMount() {
         this.ensureTree();
@@ -18904,235 +19646,157 @@ exports.Problems = Problems;
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const model_1 = __webpack_require__(2);
-const service_1 = __webpack_require__(13);
-class FileTemplate {
-    constructor(container) {
-        this.monacoIconLabel = document.createElement("div");
-        this.monacoIconLabel.className = "monaco-icon-label";
-        this.monacoIconLabel.style.display = "flex";
-        container.appendChild(this.monacoIconLabel);
-        let labelDescriptionContainer = document.createElement("div");
-        labelDescriptionContainer.className = "monaco-icon-label-description-container";
-        this.monacoIconLabel.appendChild(labelDescriptionContainer);
-        this.label = document.createElement("a");
-        this.label.className = "label-name";
-        labelDescriptionContainer.appendChild(this.label);
-        this.description = document.createElement("span");
-        this.description.className = "label-description";
-        labelDescriptionContainer.appendChild(this.description);
-    }
-    dispose() {
-    }
-    set(file) {
-        let icon = "";
-        switch (file.type) {
-            case model_1.FileType.C:
-                icon = "c-lang-file-icon";
-                break;
-            case model_1.FileType.Cpp:
-                icon = "cpp-lang-file-icon";
-                break;
-            case model_1.FileType.JavaScript:
-                icon = "javascript-lang-file-icon";
-                break;
-            case model_1.FileType.HTML:
-                icon = "html-lang-file-icon";
-                break;
-            case model_1.FileType.TypeScript:
-                icon = "typescript-lang-file-icon";
-                break;
-            case model_1.FileType.Markdown:
-                icon = "markdown-lang-file-icon";
-                break;
-        }
-        if (file instanceof model_1.Directory) {
-            this.monacoIconLabel.classList.add("folder-icon");
-        }
-        else {
-            this.monacoIconLabel.classList.add("file-icon");
-        }
-        if (icon) {
-            this.monacoIconLabel.classList.add(icon);
-        }
-        this.label.innerHTML = file.name;
-        this.monacoIconLabel.classList.toggle("dirty", file.isDirty);
-    }
-}
-exports.FileTemplate = FileTemplate;
-class DirectoryTree extends React.Component {
+const Tabs_1 = __webpack_require__(23);
+const EditorPane_1 = __webpack_require__(22);
+const model_1 = __webpack_require__(1);
+const index_1 = __webpack_require__(3);
+const timers_1 = __webpack_require__(34);
+const Split_1 = __webpack_require__(12);
+class TabBasicTest extends React.Component {
     constructor(props) {
         super(props);
-        this.lastClickedTime = Date.now();
-        this.contextViewService = new window.ContextViewService(document.documentElement);
-        this.contextMenuService = new window.ContextMenuService(document.documentElement, null, null, this.contextViewService);
-    }
-    setContainer(container) {
-        if (container == null)
-            return;
-        if (this.container !== container) {
-            // ...
-        }
-        this.container = container;
-    }
-    ensureTree() {
-        if (this.container.lastChild) {
-            this.container.removeChild(this.container.lastChild);
-        }
-        let self = this;
-        class Controller extends window.TreeDefaults.DefaultController {
-            onContextMenu(tree, file, event) {
-                tree.setFocus(file);
-                const anchor = { x: event.posx, y: event.posy };
-                let actions = [];
-                if (file instanceof model_1.Directory) {
-                    actions.push(new window.Action("x", "New File", "", true, () => {
-                        self.props.onNewFile && self.props.onNewFile(file);
-                    }));
-                    actions.push(new window.Action("x", "New Directory", "", true, () => {
-                        self.props.onNewDirectory && self.props.onNewDirectory(file);
-                    }));
-                }
-                else if (file.type === model_1.FileType.Wasm) {
-                    actions.push(new window.Action("x", "Optimize w/ Binaryen", "", true, () => {
-                        service_1.Service.optimizeWasmWithBinaryen(file);
-                    }));
-                    actions.push(new window.Action("x", "Validate w/ Binaryen", "", true, () => {
-                        service_1.Service.validateWasmWithBinaryen(file);
-                    }));
-                    actions.push(new window.Action("x", "Download", "", true, () => {
-                        service_1.Service.download(file);
-                    }));
-                    actions.push(new window.Action("x", "Disassemble w/ Wabt", "", true, () => {
-                        service_1.Service.disassembleWasmWithWabt(file);
-                    }));
-                    actions.push(new window.Action("x", "Firefox x86", "", true, () => {
-                        service_1.Service.disassembleX86(file);
-                    }));
-                    actions.push(new window.Action("x", "Firefox x86 Baseline", "", true, () => {
-                        service_1.Service.disassembleX86(file, "--wasm-always-baseline");
-                    }));
-                }
-                else if (file.type === model_1.FileType.C || file.type === model_1.FileType.Cpp) {
-                    actions.push(new window.Action("x", "Format w/ Clang", "", true, () => {
-                        service_1.Service.clangFormat(file);
-                    }));
-                }
-                else if (file.type === model_1.FileType.Wast) {
-                    actions.push(new window.Action("x", "Assemble w/ Wabt", "", true, () => {
-                        service_1.Service.assembleWastWithWabt(file);
-                    }));
-                }
-                actions.push(new window.Action("x", "Edit", "", true, () => {
-                    self.props.onEditFile && self.props.onEditFile(file);
-                }));
-                actions.push(new window.Action("x", "Delete", "", true, () => {
-                    self.props.onDeleteFile && self.props.onDeleteFile(file);
-                }));
-                self.contextMenuService.showContextMenu({
-                    getAnchor: () => anchor,
-                    getActions: () => {
-                        return monaco.Promise.as(actions);
-                    },
-                    getActionItem: (action) => {
-                        // const keybinding = this._keybindingService.lookupKeybinding(action.id);
-                        // if (keybinding) {
-                        //   return new ActionItem(action, action, { label: true, keybinding: keybinding.getLabel() });
-                        // }
-                        return null;
-                    },
-                    onHide: (wasCancelled) => {
-                        if (wasCancelled) {
-                            tree.DOMFocus();
-                        }
-                    }
-                });
-                super.onContextMenu(tree, file, event);
-                return true;
-            }
-        }
-        this.tree = new window.Tree(this.container, {
-            dataSource: {
-                /**
-                 * Returns the unique identifier of the given element.
-                 * No more than one element may use a given identifier.
-                 */
-                getId: function (tree, element) {
-                    return element.key;
-                },
-                /**
-                 * Returns a boolean value indicating whether the element has children.
-                 */
-                hasChildren: function (tree, element) {
-                    return element instanceof model_1.Directory;
-                },
-                /**
-                 * Returns the element's children as an array in a promise.
-                 */
-                getChildren: function (tree, element) {
-                    return monaco.Promise.as(element.children);
-                },
-                /**
-                 * Returns the element's parent in a promise.
-                 */
-                getParent: function (tree, element) {
-                    return monaco.Promise.as(element.parent);
-                }
-            },
-            renderer: {
-                getHeight: function (tree, element) {
-                    return 24;
-                },
-                renderTemplate: function (tree, templateId, container) {
-                    return new FileTemplate(container);
-                },
-                renderElement: function (tree, element, templateId, templateData) {
-                    templateData.set(element);
-                },
-                disposeTemplate: function (tree, templateId, templateData) {
-                    templateData.dispose();
-                }
-            },
-            controller: new Controller()
-        });
-    }
-    onClickFile(file) {
-        if (file instanceof model_1.Directory) {
-            return;
-        }
-        if (Date.now() - this.lastClickedTime < 1000 && this.props.onDoubleClickFile) {
-            this.props.onDoubleClickFile(file);
-        }
-        else if (this.props.onClickFile) {
-            this.props.onClickFile(file);
-        }
-        this.lastClickedTime = Date.now();
-    }
-    componentDidMount() {
-        this.ensureTree();
-        this.tree.model.setInput(this.props.directory);
-        this.tree.model.onDidSelect((e) => {
-            if (e.selection.length) {
-                this.onClickFile(e.selection[0]);
-            }
-        });
-    }
-    componentWillReceiveProps(props) {
-        this.tree.refresh();
-        this.tree.expandAll();
     }
     render() {
-        return React.createElement("div", { className: "fill", ref: (ref) => this.setContainer(ref) });
+        return React.createElement("div", null,
+            React.createElement(Tabs_1.Tabs, null,
+                React.createElement(Tabs_1.Tab, { label: "A" }),
+                React.createElement(Tabs_1.Tab, { label: "Really Long Name That I Can't Fit In This Tab" }),
+                React.createElement(Tabs_1.Tab, { label: "Ion", icon: "default_file" }),
+                React.createElement(Tabs_1.Tab, { label: "Active", isActive: true }),
+                React.createElement(Tabs_1.Tab, { label: "Marked", isMarked: true }),
+                React.createElement(Tabs_1.Tab, { label: "Active & Marked", isActive: true, isMarked: true })));
     }
 }
-exports.DirectoryTree = DirectoryTree;
+class TabSelectTest extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedTab: 0,
+            tabs: ["One Large Tab", "One Large Tab", "One Large Tab", "One Large Tab"]
+        };
+    }
+    render() {
+        return React.createElement("div", null,
+            React.createElement(Tabs_1.Tabs, null, this.state.tabs.map((x, i) => {
+                return React.createElement(Tabs_1.Tab, { key: x, label: x, onClick: () => {
+                        this.setState({ selectedTab: i });
+                    }, isActive: i === this.state.selectedTab });
+            })));
+    }
+}
+class TabSelectRandomTest extends TabSelectTest {
+    constructor(props) {
+        super(props);
+        timers_1.setInterval(() => {
+            this.setState({
+                selectedTab: Math.random() * this.state.tabs.length | 0
+            });
+        }, 200);
+    }
+}
+class TabBasicScrollTest extends React.Component {
+    render() {
+        return React.createElement("div", { style: { width: 512 } },
+            React.createElement(TabBasicTest, null));
+    }
+}
+class EditorPaneTest extends React.Component {
+    constructor(props) {
+        super(props);
+        const a = new model_1.File("A", model_1.FileType.JavaScript);
+        const b = new model_1.File("B", model_1.FileType.JavaScript);
+        const c = new model_1.File("C", model_1.FileType.JavaScript);
+        a.onDidChangeData.register(() => this.forceUpdate());
+        b.onDidChangeData.register(() => this.forceUpdate());
+        c.onDidChangeData.register(() => this.forceUpdate());
+        this.state = {
+            file: a,
+            files: [a, b, c]
+        };
+    }
+    render() {
+        return React.createElement("div", { style: { height: 128 } },
+            React.createElement(EditorPane_1.EditorPane, { preview: this.state.file, file: this.state.file, files: this.state.files, onNewFile: () => {
+                    const { files } = this.state;
+                    const f = new model_1.File("X", model_1.FileType.JavaScript);
+                    files.push(f);
+                    // files.splice(i, 1);
+                    this.setState({ files, file: files[files.length - 1] });
+                }, onClickFile: (x) => {
+                    this.setState({ file: x });
+                }, onClose: (x) => {
+                    const { files } = this.state;
+                    const i = files.indexOf(x);
+                    files.splice(i, 1);
+                    this.setState({ files, file: files[0] });
+                } }));
+    }
+}
+class Test extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            splits: [
+                { min: 128, max: 192, value: 130 }, {}, {}, { value: 64 }
+            ],
+            width: 600
+        };
+    }
+    componentDidMount() {
+        index_1.layout();
+    }
+    render() {
+        const view = new EditorPane_1.View(new model_1.File("X", model_1.FileType.JavaScript), null);
+        view.file.buffer.setValue(`
+    render() {
+      let { splits } = this.state;
+      let resizerClassName = "resizer";
+      let isHorizontal = this.props.orientation === SplitOrientation.Horizontal;
+      if (isHorizontal) {
+        resizerClassName += " horizontal";
+      } else {
+        resizerClassName += " vertical";
+      }
+      // console.log("Splits", splits, sum(splits), this.state.size);
+      let count = React.Children.count(this.props.children);
+      let children: any[] = [];
+      React.Children.forEach(this.props.children, (child, i) => {
+        let style: any = {};
+        if (i < count - 1) {
+          style.flexBasis = toCSSPx(Math.round(splits[i]));
+        } else {
+          style.flex = 1;
+        }
+        children.push(<div key={i} className="split-pane" style={style}>{child}</div>);
+        if (i < count - 1) {
+          children.push(<div key={"split:" + i} className={resizerClassName} onMouseDown={this.onResizerMouseDown.bind(this, i)}>
+          </div>);
+        }
+      });
+      return <div className="split" ref="container" style={{ flexDirection: isHorizontal ? "column" : "row" }}>
+        {children}
+      </div>;
+    }
+    `);
+        return React.createElement("div", null,
+            React.createElement("div", { style: { width: this.state.width, height: 128, border: "solid 1px red" } },
+                React.createElement(Split_1.Split, { orientation: Split_1.SplitOrientation.Vertical, splits: this.state.splits, onChange: (splits) => {
+                        this.setState({ splits });
+                    } },
+                    React.createElement("div", null, "A"),
+                    React.createElement("div", null, "B"),
+                    React.createElement("div", null, "C"),
+                    React.createElement("div", null, "D"))));
+    }
+}
+exports.Test = Test;
 
 
 /***/ })
