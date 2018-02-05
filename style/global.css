@@ -768,3 +768,65 @@ a.gist-link {
   font-family: octicons;
   content: "\f052";
 }
+
+/* Menu Item Styles */
+
+.action-label.octicon-file-add::before {
+  font-family: octicons;
+  content: '\f05d';
+  padding-right: 8px;
+}
+
+.action-label.octicon-cloud-download::before {
+  font-family: octicons;
+  content: '\f00b';
+  padding-right: 8px;
+}
+
+.action-label.octicon-pencil::before {
+  font-family: octicons;
+  content: '\f058';
+  padding-right: 8px;
+}
+
+.action-label.octicon-x::before {
+  font-family: octicons;
+  content: '\f081';
+  padding-right: 8px;
+}
+
+.action-label.octicon-quote::before {
+  font-family: octicons;
+  content: '\f063';
+  padding-right: 8px;
+}
+
+.action-label.octicon-gear::before {
+  font-family: octicons;
+  content: '\f02f';
+  padding-right: 8px;
+}
+
+.action-label.octicon-verified::before {
+  font-family: octicons;
+  content: '\f02f';
+  padding-right: 8px;
+}
+
+.action-label.octicon-file-code::before {
+  font-family: octicons;
+  content: '\f010';
+  padding-right: 8px;
+}
+
+.action-label.octicon-file-binary::before {
+  font-family: octicons;
+  content: '\f094';
+  padding-right: 8px;
+}
+
+.action-label.octicon-check::before {
+  font-family: octicons;
+  content: '\f03a';
+  padding-right: 8px;
+}

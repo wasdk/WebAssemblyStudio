@@ -95,44 +95,44 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
         const actions: any[] = [];
 
         if (file instanceof Directory) {
-          actions.push(new (window as any).Action("x", "New File", "", true, () => {
+          actions.push(new (window as any).Action("x", "New File", "octicon-file-add", true, () => {
             return self.props.onNewFile && self.props.onNewFile(file as Directory);
           }));
-          actions.push(new (window as any).Action("x", "New Directory", "", true, () => {
+          actions.push(new (window as any).Action("x", "New Directory", "octicon-file-add", true, () => {
             return self.props.onNewDirectory && self.props.onNewDirectory(file as Directory);
           }));
         } else if (file.type === FileType.Wasm) {
-          actions.push(new (window as any).Action("x", "Optimize w/ Binaryen", "", true, () => {
+          actions.push(new (window as any).Action("x", "Optimize w/ Binaryen", "octicon-gear", true, () => {
             Service.optimizeWasmWithBinaryen(file);
           }));
-          actions.push(new (window as any).Action("x", "Validate w/ Binaryen", "", true, () => {
+          actions.push(new (window as any).Action("x", "Validate w/ Binaryen", "octicon-check", true, () => {
             Service.validateWasmWithBinaryen(file);
           }));
-          actions.push(new (window as any).Action("x", "Download", "", true, () => {
+          actions.push(new (window as any).Action("x", "Download", "octicon-cloud-download", true, () => {
             Service.download(file);
           }));
-          actions.push(new (window as any).Action("x", "Disassemble w/ Wabt", "", true, () => {
+          actions.push(new (window as any).Action("x", "Disassemble w/ Wabt", "octicon-file-code", true, () => {
             Service.disassembleWasmWithWabt(file);
           }));
-          actions.push(new (window as any).Action("x", "Firefox x86", "", true, () => {
+          actions.push(new (window as any).Action("x", "Firefox x86", "octicon-file-binary", true, () => {
             Service.disassembleX86(file);
           }));
-          actions.push(new (window as any).Action("x", "Firefox x86 Baseline", "", true, () => {
+          actions.push(new (window as any).Action("x", "Firefox x86 Baseline", "octicon-file-binary", true, () => {
             Service.disassembleX86(file, "--wasm-always-baseline");
           }));
         } else if (file.type === FileType.C || file.type === FileType.Cpp) {
-          actions.push(new (window as any).Action("x", "Format w/ Clang", "", true, () => {
+          actions.push(new (window as any).Action("x", "Format w/ Clang", "octicon-quote", true, () => {
             Service.clangFormat(file);
           }));
         } else if (file.type === FileType.Wast) {
-          actions.push(new (window as any).Action("x", "Assemble w/ Wabt", "", true, () => {
+          actions.push(new (window as any).Action("x", "Assemble w/ Wabt", "octicon-file-binary", true, () => {
             Service.assembleWastWithWabt(file);
           }));
         }
-        actions.push(new (window as any).Action("x", "Edit", "", true, () => {
+        actions.push(new (window as any).Action("x", "Edit", "octicon-pencil", true, () => {
           return self.props.onEditFile && self.props.onEditFile(file as Directory);
         }));
-        actions.push(new (window as any).Action("x", "Delete", "", true, () => {
+        actions.push(new (window as any).Action("x", "Delete", "octicon-x", true, () => {
           return self.props.onDeleteFile && self.props.onDeleteFile(file as Directory);
         }));
 
