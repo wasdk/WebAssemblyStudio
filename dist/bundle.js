@@ -10546,7 +10546,7 @@ const Icons_1 = __webpack_require__(6);
 const Button_1 = __webpack_require__(5);
 const NewFileDialog_1 = __webpack_require__(79);
 const EditFileDialog_1 = __webpack_require__(91);
-const Toast_1 = __webpack_require__(92);
+const Toasts_1 = __webpack_require__(92);
 const cton_1 = __webpack_require__(93);
 const x86_1 = __webpack_require__(94);
 const ShareDialog_1 = __webpack_require__(95);
@@ -10700,10 +10700,10 @@ class App extends React.Component {
                 { min: 40, value: 256 }
             ],
             editorSplits: [],
-            toasts: [],
             showProblems: true,
             showSandbox: true
         };
+        this.toastInstance = new Toasts_1.ToastContainer();
         this.registerLanguages();
     }
     openProjectFiles(json) {
@@ -10949,20 +10949,15 @@ class App extends React.Component {
             const gistURI = yield service_1.Service.exportProjectToGist(this.project, this.state.fiddle);
             this.logLn("Project Gist CREATED ");
             if (gistURI) {
-                this.setState((prevState) => ({
-                    toasts: [...prevState.toasts, gistURI]
-                }));
+                this.toastInstance.showToast(React.createElement("span", null,
+                    "\"Gist Created!\" ",
+                    React.createElement("a", { href: gistURI, target: "_blank", className: "toast-span" }, "Open in new tab.")));
                 console.log(`Gist created: ${gistURI}`);
             }
             else {
                 console.log("Failed!");
             }
         });
-    }
-    onToastDismiss(index) {
-        this.setState((prevState) => ({
-            toasts: prevState.toasts.filter((key, value) => value !== index)
-        }));
     }
     makeToolbarButtons() {
         const toolbarButtons = [
@@ -11055,10 +11050,7 @@ class App extends React.Component {
                 index_1.layout();
             } }, makeEditorPanes(this.state.groups));
         return React.createElement("div", { className: "fill" },
-            React.createElement("div", { className: "toast-container" }, this.state.toasts && this.state.toasts.map((toast, key) => React.createElement(Toast_1.Toast, { onDismiss: this.onToastDismiss.bind(this, key), key: key, message: React.createElement("span", null,
-                    "Gist created!",
-                    React.createElement("a", { target: "_blank", href: toast },
-                        React.createElement("span", { className: "toast-span" }, "Open in new tab"))) }))),
+            React.createElement(Toasts_1.ToastContainer, { ref: (ref) => this.toastInstance = ref }),
             this.state.newProjectDialog &&
                 React.createElement(NewProjectDialog_1.NewProjectDialog, { isOpen: true, onCancel: () => {
                         this.setState({ newProjectDialog: null });
@@ -18812,18 +18804,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 const Button_1 = __webpack_require__(5);
 const Icons_1 = __webpack_require__(6);
-class Toast extends React.Component {
+class ToastContainer extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            toasts: []
+        };
+    }
+    showToast(message) {
+        this.setState((prevState) => ({
+            toasts: [...prevState.toasts, message]
+        }));
+    }
+    _onToastDismiss(index) {
+        this.setState((prevState) => ({
+            toasts: prevState.toasts.filter((key, value) => value !== index)
+        }));
     }
     render() {
-        return React.createElement("div", { className: "toast" },
-            React.createElement("div", { className: "toast-header" },
-                this.props.message,
-                React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoX, null), customClassName: "button-toast", label: "Dismiss", title: "Dismiss", onClick: this.props.onDismiss })));
+        return this.state.toasts.length > 0 &&
+            React.createElement("div", { className: "toast-container" }, this.state.toasts.map((toast, key) => React.createElement(Toast, { onDismiss: this._onToastDismiss.bind(this, key), key: key, message: toast })));
     }
 }
-exports.Toast = Toast;
+exports.ToastContainer = ToastContainer;
+class Toast extends React.Component {
+    render() {
+        const { message, onDismiss } = this.props;
+        return React.createElement("div", { className: "toast" },
+            React.createElement("div", { className: "toast-header" },
+                message,
+                React.createElement(Button_1.Button, { icon: React.createElement(Icons_1.GoX, null), customClassName: "button-toast", label: "Dismiss", title: "Dismiss", onClick: onDismiss })));
+    }
+}
 
 
 /***/ }),

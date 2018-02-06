@@ -24,7 +24,7 @@ import { Button } from "./Button";
 import * as ReactModal from "react-modal";
 import { NewFileDialog } from "./NewFileDialog";
 import { EditFileDialog } from "./EditFileDialog";
-import { Toast } from "./Toast";
+import { ToastContainer } from "./Toasts";
 import { Spacer, Divider } from "./Widgets";
 import { Cton } from "../languages/cton";
 import { X86 } from "../languages/x86";
@@ -121,7 +121,6 @@ export interface AppState {
    * Editor split state.
    */
   editorSplits: SplitInfo[];
-  toasts: string[];
   showProblems: boolean;
   showSandbox: boolean;
 }
@@ -134,6 +133,7 @@ export interface AppProps {
 export class App extends React.Component<AppProps, AppState> {
   fiddle: string;
   project: Project;
+  toastInstance: ToastContainer;
   constructor(props: AppProps) {
     super(props);
     const group0 = new Group(null, null, []);
@@ -163,10 +163,10 @@ export class App extends React.Component<AppProps, AppState> {
         { min: 40, value: 256 }
       ],
       editorSplits: [],
-      toasts: [],
       showProblems: true,
       showSandbox: true
     };
+    this.toastInstance = new ToastContainer();
     this.registerLanguages();
   }
   openProjectFiles(json: any) {
@@ -417,19 +417,11 @@ export class App extends React.Component<AppProps, AppState> {
     const gistURI = await Service.exportProjectToGist(this.project, this.state.fiddle);
     this.logLn("Project Gist CREATED ");
     if (gistURI) {
-      this.setState((prevState: any) => ({
-        toasts:  [...prevState.toasts, gistURI]
-      }));
+      this.toastInstance.showToast(<span>"Gist Created!" <a href={gistURI} target="_blank" className="toast-span">Open in new tab.</a></span>);
       console.log(`Gist created: ${gistURI}`);
     } else {
       console.log("Failed!");
     }
-  }
-
-  onToastDismiss(index: number) {
-    this.setState((prevState: any) => ({
-      toasts: prevState.toasts.filter((key: number, value: number) => value !== index )
-    }));
   }
 
   // makeMenuItems(file: File) {
@@ -661,15 +653,7 @@ export class App extends React.Component<AppProps, AppState> {
     </Split>;
 
     return <div className="fill">
-      <div className="toast-container">
-      {this.state.toasts && this.state.toasts.map((toast: string, key: number) =>
-        <Toast
-          onDismiss={this.onToastDismiss.bind(this, key)}
-          key={key}
-          message={<span>Gist created!<a target="_blank" href={toast}><span className="toast-span">Open in new tab</span></a></span>}
-        />
-      )}
-      </div>
+      <ToastContainer ref={(ref) => this.toastInstance = ref}/>
       {this.state.newProjectDialog &&
         <NewProjectDialog
           isOpen={true}
