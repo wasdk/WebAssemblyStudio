@@ -2,7 +2,7 @@ sudo: false
 language: node_js
 node_js:
 - '8'
-- '6'
+# skipping - '6'
 branches:
   only:
   - master
@@ -20,3 +20,12 @@ install:
 script:
 - npm run build
 - npm test
+- cp .gitignore.travis .gitignore
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  email: travis@webassembly.studio
+  name: "WebAssemblyStudio bot"
+  on:
+    branch: master

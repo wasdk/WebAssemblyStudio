@@ -1,3 +1,6 @@
+/* Any copyright is dedicated to the Public Domain.
+ * http://creativecommons.org/publicdomain/zero/1.0/ */
+
 import * as React from "react";
 import {shallow, mount} from "enzyme";
 import {
