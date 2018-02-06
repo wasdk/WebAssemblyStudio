@@ -4,7 +4,13 @@
         "tslint:recommended",
         "tslint-react"
     ],
-    "exclude": [ "./src/languages/*.ts", "src/monaco-extra.ts", "lib/**/*.ts" ],
+    "linterOptions": {
+        "exclude": [
+            "src/languages/*.ts",
+            "src/monaco-extra.ts",
+            "lib/**/*.ts"
+        ]
+    },
     "jsRules": {},
     "rules": {
       "no-string-literal": false,
@@ -34,7 +40,8 @@
       "jsx-wrap-multiline": false,
       "jsx-no-multiline-js": false,
       "jsx-no-lambda": false,
-      "jsx-boolean-value": false
+      "jsx-boolean-value": false,
+      "file-header": [true, "(Mozilla Foundation|the Public Domain)"]
     },
     "rulesDirectory": []
 }
