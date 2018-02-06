@@ -21,7 +21,7 @@
 
 import * as React from "react";
 import { ReactElement, ReactNode, MouseEvent, WheelEvent } from "react";
-import { clamp } from "../index";
+import { clamp } from "../../index";
 
 export class Tabs extends React.Component<{
   onDoubleClick?: Function;

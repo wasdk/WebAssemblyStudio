@@ -21,13 +21,13 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import * as ReactModal from "react-modal";
+
 import { Workspace } from "./Workspace";
-import { Editor } from "./Editor";
+import { Editor, EditorPane, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 
-import { Tabs, Tab } from "./Tabs";
-import { EditorPane, View } from "./EditorPane";
 import { Project, File, FileType, Directory, shallowCompare } from "../model";
 import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
@@ -39,10 +39,26 @@ import { Log } from "../languages/log";
 import * as Mousetrap from "mousetrap";
 import { Sandbox } from "./Sandbox";
 import { Gulpy, testGulpy } from "../gulpy";
-import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload, GoBook, GoRepoForked, GoRocket, GoBeaker, GoThreeBars, GoGist, GoOpenIssue } from "./Icons";
-import { Button } from "./Button";
+import {
+  GoDelete,
+  GoPencil,
+  GoGear,
+  GoVerified,
+  GoFileCode,
+  GoQuote,
+  GoFileBinary,
+  GoFile,
+  GoDesktopDownload,
+  GoBook,
+  GoRepoForked,
+  GoRocket,
+  GoBeaker,
+  GoThreeBars,
+  GoGist,
+  GoOpenIssue
+} from "./shared/Icons";
+import { Button } from "./shared/Button";
 
-import * as ReactModal from "react-modal";
 import { NewFileDialog } from "./NewFileDialog";
 import { EditFileDialog } from "./EditFileDialog";
 import { UploadFileDialog } from "./UploadFileDialog";
@@ -54,55 +70,8 @@ import { ShareDialog } from "./ShareDialog";
 import { NewProjectDialog, Template } from "./NewProjectDialog";
 import { Errors } from "../errors";
 import { ControlCenter } from "./ControlCenter";
+import Group from "../utils/group";
 import { StatusBar } from "./StatusBar";
-
-export class Group {
-  file: File;
-  files: File[];
-  preview: File;
-  constructor(file: File, preview: File, files: File[]) {
-    this.file = file;
-    this.preview = preview;
-    this.files = files;
-  }
-  open(file: File, shouldPreview: boolean = true) {
-    const files = this.files;
-    const index = files.indexOf(file);
-    if (index >= 0) {
-      // Switch to file if it's already open.
-      this.file = file;
-      if (!shouldPreview) {
-        this.preview = null;
-      }
-      return;
-    }
-    if (shouldPreview) {
-      if (this.preview) {
-        // Replace preview file if there is one.
-        const previewIndex = files.indexOf(this.preview);
-        assert(previewIndex >= 0);
-        this.file = this.preview = files[previewIndex] = file;
-      } else {
-        files.push(file);
-        this.file = this.preview = file;
-      }
-    } else {
-      files.push(file);
-      this.file = file;
-      this.preview = null;
-    }
-    file.ensureBufferIsLoaded();
-  }
-  close(file: File) {
-    const i = this.files.indexOf(file);
-    assert(i >= 0);
-    if (file === this.preview) {
-      this.preview = null;
-    }
-    this.files.splice(i, 1);
-    this.file = this.files.length ? this.files[Math.min(this.files.length - 1, i)] : null;
-  }
-}
 
 export interface AppState {
   file: File;
