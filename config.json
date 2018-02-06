@@ -1,0 +1,4 @@
+{
+  "serviceUrl": "//wasmexplorer-service.herokuapp.com/service.php",
+  "rustc": "//rust-heroku.herokuapp.com/rustc"
+}

@@ -25,6 +25,7 @@ import { isUndefined } from "util";
 import "monaco-editor";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes } from "./util";
 import { assert } from "./index";
+import getConfig from "./config";
 
 declare interface BinaryenModule {
   optimize(): any;
@@ -93,14 +94,34 @@ export interface IServiceRequest {
   output: string;
 }
 
+export enum ServiceTypes {
+  Rustc,
+  Service
+}
+
 export class Service {
-  static async sendRequest(command: string): Promise<IServiceRequest> {
-    const response = await fetch("//wasmexplorer-service.herokuapp.com/service.php", {
+  static async sendRequestJSON(content: Object, to: ServiceTypes): Promise<IServiceRequest> {
+    const config = await getConfig();
+    const url = to === ServiceTypes.Rustc ? config.rustc : config.serviceUrl;
+    const response = await fetch(url, {
       method: "POST",
-      body: command,
-      headers: new Headers({ "Content-type": "application/x-www-form-urlencoded" })
+      body: JSON.stringify(content),
+      headers: new Headers({ "Content-Type": "application/json" })
     });
-    return JSON.parse(await response.text());
+
+    return response.json();
+  }
+
+  static async sendRequest(content: string, to: ServiceTypes): Promise<IServiceRequest> {
+    const config = await getConfig();
+    const url = to === ServiceTypes.Rustc ? config.rustc : config.serviceUrl;
+
+    const response = await fetch(url, {
+      method: "POST",
+      body: content,
+      headers: new Headers({ "Content-Type": "application/x-www-form-urlencoded" })
+    });
+    return response.json();
   }
 
   static getMarkers(response: string): monaco.editor.IMarkerData[] {
@@ -189,19 +210,13 @@ export class Service {
         ]
       };
       const input = encodeURIComponent(JSON.stringify(project)).replace("%20", "+");
-      return this.sendRequest("input=" + input + "&action=build");
+      return this.sendRequest("input=" + input + "&action=build", ServiceTypes.Service);
     } else if (from === Language.Wasm && to === Language.x86) {
       const input = encodeURIComponent(base64js.fromByteArray(src as ArrayBuffer));
-      return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options));
+      return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options), ServiceTypes.Service);
     } else if (from === Language.Rust && to === Language.Wasm) {
       // TODO: Temporary until we integrate rustc into the service.
-      return fetch("https://rust-heroku.herokuapp.com/rustc", {
-        method: "POST",
-        body: JSON.stringify({code: src}),
-        headers: new Headers({
-          "Content-Type": "application/json"
-        })
-      }).then(res => res.json());
+      return this.sendRequestJSON({ code: src }, ServiceTypes.Rustc);
     }
     /*
     src = encodeURIComponent(src).replace('%20', '+');
