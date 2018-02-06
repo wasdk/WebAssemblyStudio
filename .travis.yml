@@ -20,6 +20,7 @@ install:
 script:
 - npm run build
 - npm test
+- cp .gitignore.travis .gitignore
 deploy:
   provider: pages
   skip-cleanup: true
