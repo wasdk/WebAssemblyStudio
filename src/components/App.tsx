@@ -45,7 +45,7 @@ import { Button } from "./Button";
 import * as ReactModal from "react-modal";
 import { NewFileDialog } from "./NewFileDialog";
 import { EditFileDialog } from "./EditFileDialog";
-import { Toast } from "./Toast";
+import { ToastContainer } from "./Toasts";
 import { Spacer, Divider } from "./Widgets";
 import { Cton } from "../languages/cton";
 import { X86 } from "../languages/x86";
@@ -142,12 +142,6 @@ export interface AppState {
    * Editor split state.
    */
   editorSplits: SplitInfo[];
-
-  /**
-   * Gists saved
-   */
-  toast: string;
-
   showProblems: boolean;
   showSandbox: boolean;
 }
@@ -160,6 +154,7 @@ export interface AppProps {
 export class App extends React.Component<AppProps, AppState> {
   fiddle: string;
   project: Project;
+  toastContainer: ToastContainer;
   constructor(props: AppProps) {
     super(props);
     const group0 = new Group(null, null, []);
@@ -189,7 +184,6 @@ export class App extends React.Component<AppProps, AppState> {
         { min: 40, value: 256 }
       ],
       editorSplits: [],
-      toast: null,
       showProblems: true,
       showSandbox: true
     };
@@ -443,19 +437,13 @@ export class App extends React.Component<AppProps, AppState> {
     const gistURI = await Service.exportProjectToGist(this.project, this.state.fiddle);
     this.logLn("Project Gist CREATED ");
     if (gistURI) {
-      this.setState({
-        toast:  gistURI
-      });
+      if (this.toastContainer) {
+        this.toastContainer.showToast(<span>"Gist Created!" <a href={gistURI} target="_blank" className="toast-span">Open in new tab.</a></span>);
+      }
       console.log(`Gist created: ${gistURI}`);
     } else {
       console.log("Failed!");
     }
-  }
-
-  onToastDismiss(index: number) {
-      this.setState({
-          toast:  null
-      });
   }
 
   // makeMenuItems(file: File) {
@@ -687,13 +675,7 @@ export class App extends React.Component<AppProps, AppState> {
     </Split>;
 
     return <div className="fill">
-      {this.state.toast &&
-        <Toast
-          // tslint:disable-next-line:jsx-no-bind
-          onDismiss={this.onToastDismiss.bind(this)}
-          message={<span>"Gist Created!" <a href={this.state.toast} target="_blank" className="gist-link">Open in new tab.</a></span>}
-        />
-      }
+      <ToastContainer ref={(ref) => this.toastContainer = ref}/>
       {this.state.newProjectDialog &&
         <NewProjectDialog
           isOpen={true}
