@@ -34,8 +34,8 @@ npm test
 
 ### Contributing
 
-You can start off with [easy issues](https://github.com/mbebenita/WebAssemblyStudio/labels/good%20first%20issue)
+You can start off with [easy issues](https://github.com/mbebenita/WebAssemblyStudio/labels/good%20first%20issue).
 
-Any doubts or questions ? you can always find us on slack http://wasm-studio.slack.com
+Any doubts or questions? You can always find us on slack at http://wasm-studio.slack.com
 
 Need a slack invite? https://wasm-studio-invite.herokuapp.com/
