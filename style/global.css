@@ -42,6 +42,26 @@ body {
   padding: 0;
 }
 
+body:after {
+    content: "beta";
+    position: fixed;
+    width: 80px;
+    height: 20px;
+    background: #191f23;
+    top: 7px;
+    left: -20px;
+    text-align: center;
+    font-size: 10px;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #fff;
+    line-height: 22px;
+    -ms-transform:rotate(-45deg);
+    -webkit-transform:rotate(-45deg);
+    transform:rotate(-45deg);
+}
+
 input {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -113,7 +133,7 @@ a {
 
 .wasmStudioHeader {
   font-family: 'Zilla Slab', serif;
-  font-size: 18px;
+  font-size: 16px;
   width: 100%;
   height: 40px;
   /* font-weight: bold; */
@@ -132,7 +152,7 @@ a {
 
 .waHeaderText {
   vertical-align: middle;
-  margin-left: 1rem;
+  margin-left: 2.2rem;
   line-height: 40px;
 }
 
@@ -436,6 +456,16 @@ a {
 .button .octicon {
   padding-left: 4px;
   padding-right: 4px;
+}
+
+.issue {
+  background-color: #a73535;	
+  float: right;
+}
+.issue:hover:not(.disabled) {
+  border-bottom: 2px solid #1a1a1a;
+  color: #1a1a1a;
+  cursor: pointer;
 }
 
 .menu {

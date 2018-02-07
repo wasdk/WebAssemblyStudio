@@ -39,7 +39,7 @@ import { Log } from "../languages/log";
 import * as Mousetrap from "mousetrap";
 import { Sandbox } from "./Sandbox";
 import { Gulpy, testGulpy } from "../gulpy";
-import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload, GoBook, GoRepoForked, GoRocket, GoBeaker, GoThreeBars, GoGist } from "./Icons";
+import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload, GoBook, GoRepoForked, GoRocket, GoBeaker, GoThreeBars, GoGist, GoOpenIssue } from "./Icons";
 import { Button } from "./Button";
 
 import * as ReactModal from "react-modal";
@@ -606,6 +606,15 @@ export class App extends React.Component<AppProps, AppState> {
         title="Run: CtrlCmd + Enter"
         onClick={() => {
           this.run();
+        }}
+      />,
+      <Button
+        icon={<GoOpenIssue />}
+        label="Github Issues"
+        title="Github"
+        customClassName="issue"
+        onClick={() => {
+          window.open("https://github.com/wasdk/WebAssemblyStudio", "_blank");
         }}
       />);
     return toolbarButtons;
