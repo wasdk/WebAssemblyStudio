@@ -741,10 +741,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.setState({ uploadFileDialogDirectory: null });
            }}
           onUpload={(files: File[]) => {
-            console.log(this.state.uploadFileDialogDirectory);
-            console.log(this.project);
             if (!(this.state.uploadFileDialogDirectory instanceof Project)) {
-              console.log("true");
               files.map((file: File) => {
                 this.state.uploadFileDialogDirectory.children.push(file);
               });
