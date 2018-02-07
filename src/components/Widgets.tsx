@@ -74,6 +74,36 @@ export class TextInputBox extends React.Component<{
   }
 }
 
+export class FileUploadInput extends React.Component<{
+  label: string;
+  error?: string;
+  onChange?: ChangeEventHandler<any>;
+}, {
+
+}> {
+  constructor(props: any) {
+    super(props);
+  }
+  render() {
+    const input = <input className="file-upload-input" type="file" onChange={this.props.onChange} multiple/>;
+    if (this.props.label) {
+      return <div>
+          <div className="row">
+            <div className="column">
+              <div className="text-input-box-label">{this.props.label}</div>
+            </div>
+            <div className="column">
+              <div>{input}</div>
+            </div>
+          </div>
+          {this.props.error && <div className="text-input-box-error">{this.props.error}</div>}
+        </div>;
+    } else {
+      return input;
+    }
+  }
+}
+
 export class ListItem extends React.Component<{
   label: string;
   onClick?: Function;
@@ -98,7 +128,7 @@ export class ListItem extends React.Component<{
 
 export class ListBox extends React.Component<{
   height: number;
-  value: any;
+  value?: any;
   onSelect?: (value: any) => void;
 }, {
 

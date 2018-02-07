@@ -34,6 +34,7 @@ export interface DirectoryTreeProps {
   onNewDirectory?: (directory: Directory) => void;
   onClickFile?: (file: File) => void;
   onDoubleClickFile?: (file: File) => void;
+  onUploadFile?: (directory: Directory) => void;
 }
 
 export class FileTemplate {
@@ -121,6 +122,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           }));
           actions.push(new (window as any).Action("x", "New Directory", "octicon-file-add", true, () => {
             return self.props.onNewDirectory && self.props.onNewDirectory(file as Directory);
+          }));
+          actions.push(new (window as any).Action("x", "Upload File", "octicon-cloud-upload", true, () => {
+             return self.props.onUploadFile && self.props.onUploadFile(file as Directory);
           }));
         } else if (file.type === FileType.Wasm) {
           actions.push(new (window as any).Action("x", "Optimize w/ Binaryen", "octicon-gear", true, () => {

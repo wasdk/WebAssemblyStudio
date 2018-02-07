@@ -86,6 +86,16 @@ a {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
+.column {
+  float: left;
+  width: 50%;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
 
 .workspaceContainer {
   background: var(--grey-950);
@@ -647,6 +657,28 @@ a {
   box-sizing: border-box;
 }
 
+.file-upload-input {
+    color: transparent;
+}
+
+.file-upload-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.file-upload-input::before {
+    content: 'Select some files';
+    color: black;
+    display: inline-block;
+    background: #333;
+    border: 1px solid #292929;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    color: #fff;
+}
+
 .divider {
   background-color: var(--grey-850);
   height: 1px;
@@ -788,6 +820,12 @@ a {
 .action-label.octicon-cloud-download::before {
   font-family: octicons;
   content: '\f00b';
+  padding-right: 8px;
+}
+
+.action-label.octicon-cloud-upload::before {
+  font-family: octicons;
+  content: '\f00c';
   padding-right: 8px;
 }
 
