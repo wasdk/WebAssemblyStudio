@@ -34,7 +34,7 @@ npm test
 
 ### Contributing
 
-You can start off with [easy issues](https://github.com/mbebenita/WebAssemblyStudio/labels/good%20first%20issue).
+Please get familiar with the [contributing guide](https://github.com/wasdk/WebAssemblyStudio/wiki/Contributing).
 
 Any doubts or questions? You can always find us on slack at http://wasm-studio.slack.com
 
