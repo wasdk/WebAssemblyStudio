@@ -44,6 +44,7 @@ import {
   closeView,
   saveProject,
   focusTabGroup,
+  showPreview,
   logLn,
 } from "../actions/AppActions";
 import { Project, File, FileType, Directory, shallowCompare, ModelRef, filetypeForExtension } from "../model";
@@ -452,6 +453,7 @@ export class App extends React.Component<AppProps, AppState> {
             // TODO: Should be taken care of in shouldComponentUpdate instead.
             focusTabGroup(group);
           }}
+          onPreview={() => showPreview(group.currentView)}
           onClickView={(view: View) => {
             focusTabGroup(group);
             openView(view);

@@ -27,16 +27,17 @@ import { Project, File, getIconForFileType, FileType } from "../../model";
 import "monaco-editor";
 import { Markdown } from ".././Markdown";
 import { Button } from "../shared/Button";
-import { GoBook, GoClippy, GoFile, GoKebabHorizontal } from "../shared/Icons";
+import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye } from "../shared/Icons";
 import { View, ViewMode } from "./View";
 
 export class EditorPaneProps {
   view: View;
   views: View[];
-  preview: View;
+  preview?: View;
   onClickView?: (view: View) => void;
   onDoubleClickView?: (view: View) => void;
   onClose?: (view: View) => void;
+  onPreview?: (view: View) => void;
   onNewFile?: () => void;
   onFocus?: () => void;
   hasFocus?: boolean;
@@ -59,16 +60,46 @@ export class EditorPane extends React.Component<EditorPaneProps> {
     this.forceUpdate();
   }
 
+  renderCommands() {
+    const { view, onSplitEditor } = this.props;
+    const { file } = view;
+
+    const commands = [
+      <Button
+        key="split"
+        icon={<GoBook />}
+        title="Split Editor"
+        onClick={() => {
+          return onSplitEditor && onSplitEditor();
+        }}
+      />
+    ];
+
+    if (file.type === FileType.Markdown && view.mode !== ViewMode.PREVIEW) {
+      commands.unshift(
+        <Button
+          key="preview"
+          icon={<GoEye />}
+          title="Preview"
+          onClick={() => this.props.onPreview && this.props.onPreview(view)}
+        />
+      );
+    }
+
+    return commands;
+  }
+
   render() {
     const { onClickView, onDoubleClickView, onClose, view, views, preview, hasFocus } = this.props;
     if (!view) {
       return <div />;
     }
-
     const { file } = view;
 
     let viewer;
-    if (file) {
+    if (file && file.type === FileType.Markdown && view.mode === ViewMode.PREVIEW) {
+      viewer = <Markdown src={file.buffer.getValue()} />;
+    } else if (file) {
       viewer = <Editor view={view} options={{ readOnly: file.isBufferReadOnly }} />;
     } else {
       return <div className="editor-pane-container empty"/>;
@@ -81,28 +112,10 @@ export class EditorPane extends React.Component<EditorPaneProps> {
           return this.props.onNewFile && this.props.onNewFile();
         }
       }
-        commands={[
-          <Button
-            key="split"
-            icon={<GoBook />}
-            title="Split Editor"
-            onClick={() => {
-              return this.props.onSplitEditor && this.props.onSplitEditor();
-            }}
-          />,
-          <Button
-            key="save"
-            icon={<GoClippy />}
-            label="Save"
-            title="Save: CtrlCmd + S"
-            isDisabled={!file.isDirty}
-            onClick={() => file.save()}
-          />
-        ]}
+        commands={this.renderCommands()}
       >
         {views.map(view => {
           const { file: x } = view;
-
           return <Tab
             key={x.key}
             label={x.name}
