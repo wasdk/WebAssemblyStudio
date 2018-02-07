@@ -143,6 +143,9 @@ export interface AppState {
    * Editor split state.
    */
   editorSplits: SplitInfo[];
+  /**
+   * If true, the upload file dialog is open.
+   */
   uploadFileDialogDirectory: Directory;
   showProblems: boolean;
   showSandbox: boolean;
@@ -743,7 +746,7 @@ export class App extends React.Component<AppProps, AppState> {
           onUpload={(files: File[]) => {
             if (!(this.state.uploadFileDialogDirectory instanceof Project)) {
               files.map((file: File) => {
-                this.state.uploadFileDialogDirectory.children.push(file);
+                this.state.uploadFileDialogDirectory.addFile(file);
               });
             } else {
               files.map((file: File) => {
@@ -796,7 +799,7 @@ export class App extends React.Component<AppProps, AppState> {
               this.forceUpdate();
             }}
             onUploadFile={(directory: Directory) => {
-                this.setState({ uploadFileDialogDirectory: directory});
+              this.setState({ uploadFileDialogDirectory: directory});
             }}
           />
           <div className="fill">
