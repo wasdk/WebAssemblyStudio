@@ -86,17 +86,6 @@ a {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.column {
-  float: left;
-  width: 50%;
-}
-
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
 .workspaceContainer {
   background: var(--grey-950);
   width: 100%;
@@ -574,6 +563,12 @@ a {
   background: rgba(0,0,0,0);
 }
 
+.list-item-flex{
+    display: flex;
+    flex-direction: column;
+    margin-left: 7px;
+}
+
 .list-item {
   display: flex;
   min-width: fit-content;
@@ -599,10 +594,19 @@ a {
   height: 16px;
 }
 
-.list-item>.label {
+.label {
   font-size: 12px;
   padding-left: 8px;
   flex: 1;
+}
+
+.list-item-flex>.label {
+    padding-left: 0px;
+}
+
+.error{
+    font-size:11px;
+    color: #ff0000;
 }
 
 .new-file-dialog-description {

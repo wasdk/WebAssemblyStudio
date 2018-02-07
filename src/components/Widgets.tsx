@@ -76,7 +76,6 @@ export class TextInputBox extends React.Component<{
 
 export class FileUploadInput extends React.Component<{
   label: string;
-  error?: string;
   onChange?: ChangeEventHandler<any>;
 }, {
 
@@ -85,22 +84,7 @@ export class FileUploadInput extends React.Component<{
     super(props);
   }
   render() {
-    const input = <input className="file-upload-input" type="file" onChange={this.props.onChange} multiple/>;
-    if (this.props.label) {
-      return <div>
-          <div className="row">
-            <div className="column">
-              <div className="text-input-box-label">{this.props.label}</div>
-            </div>
-            <div className="column">
-              <div>{input}</div>
-            </div>
-          </div>
-          {this.props.error && <div className="text-input-box-error">{this.props.error}</div>}
-        </div>;
-    } else {
-      return input;
-    }
+    return <input id="file-upload-input" type="file" onChange={this.props.onChange} multiple hidden/>;
   }
 }
 
@@ -110,6 +94,7 @@ export class ListItem extends React.Component<{
   icon?: JSX.Element;
   selected?: boolean;
   value: any;
+  error?: string;
 }, {
 
   }> {
@@ -119,9 +104,16 @@ export class ListItem extends React.Component<{
     if (this.props.selected) {
       className += " selected";
     }
+    let content = <div className="label">{this.props.label}</div>;
+    if (this.props.error) {
+        content = <div className="list-item-flex">
+          <div className="label">{this.props.label}</div>
+          <div className="error">{this.props.error}</div>
+        </div>;
+    }
     return <div className={className} onClick={this.props.onClick as any}>
       <div className="icon">{this.props.icon}</div>
-      <div className="label">{this.props.label}</div>
+        {content}
     </div>;
   }
 }
