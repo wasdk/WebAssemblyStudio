@@ -451,7 +451,11 @@ export class App extends React.Component<AppProps, AppState> {
       console.log("Failed!");
     }
   }
-
+  async download() {
+    this.logLn("Downloading Project ...");
+    await Service.downloadProject(this.project, this.state.fiddle);
+    this.logLn("Project Zip CREATED ");
+  }
   /**
    * Remember workspace split.
    */
@@ -513,6 +517,14 @@ export class App extends React.Component<AppProps, AppState> {
           title="Export to Gist"
           onClick={() => {
             this.gist();
+          }}
+        />,
+        <Button
+          icon={<GoDesktopDownload />}
+          label="Download"
+          title="Download as zip"
+          onClick={() => {
+            this.download();
           }}
         />,
         <Button
