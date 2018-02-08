@@ -38,6 +38,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
     files: Object[];
     hasError: boolean;
   }> {
+  fileUploadInput: FileUploadInput;
   constructor(props: any) {
     super(props);
     this.state = {
@@ -115,7 +116,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
         </div>
         <div className="row">
           <div className="column">
-            <FileUploadInput label="Upload:" onChange={(e) => this._handleUpload(e.target.files)}/>
+            <FileUploadInput label="Upload:" ref={(ref) => this.fileUploadInput = ref} onChange={(e) => this._handleUpload(e.target.files)}/>
           </div>
           <div className="column">
             <ListBox height={290}>
@@ -139,7 +140,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
             label="Upload"
             title="Upload files"
             onClick={() => {
-              document.getElementById("file-upload-input").click();
+              this.fileUploadInput.open();
             }}
           />
           <Button

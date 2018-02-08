@@ -80,11 +80,15 @@ export class FileUploadInput extends React.Component<{
 }, {
 
 }> {
+  inputElement: any;
   constructor(props: any) {
     super(props);
   }
+  open() {
+    this.inputElement.click();
+  }
   render() {
-    return <input id="file-upload-input" type="file" onChange={this.props.onChange} multiple hidden/>;
+    return <input id="file-upload-input"  ref={input => this.inputElement = input} type="file" onChange={this.props.onChange} multiple hidden/>;
   }
 }
 
