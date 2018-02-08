@@ -42,8 +42,6 @@ export class ShareDialog extends React.Component<{
 
   render() {
     const urlPrefix = `${location.protocol}//${location.host}${location.pathname}`;
-
-    // let embedCode = `<iframe src="${urlPrefix}?embed&f=${this.props.fiddle}" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`;
     return <ReactModal
       isOpen={this.props.isOpen}
       contentLabel="Share Project"

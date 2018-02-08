@@ -169,10 +169,6 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           },
 
           getActionItem: (action: any): any => {
-            // const keybinding = this._keybindingService.lookupKeybinding(action.id);
-            // if (keybinding) {
-            //   return new ActionItem(action, action, { label: true, keybinding: keybinding.getLabel() });
-            // }
             return null;
           },
 

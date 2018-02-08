@@ -104,10 +104,6 @@ export class Problems extends React.Component<ProblemsProps, {
           },
 
           getActionItem: (action: any): any => {
-            // const keybinding = this._keybindingService.lookupKeybinding(action.id);
-            // if (keybinding) {
-            //   return new ActionItem(action, action, { label: true, keybinding: keybinding.getLabel() });
-            // }
             return null;
           },
 

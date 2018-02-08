@@ -394,22 +394,6 @@ export class Directory extends File {
       this.children.forEach(fn);
     }
   }
-  //     function go(directory: Directory) {
-//       directory.forEachFile((file) => {
-//         if (file instanceof Directory) {
-//           go(file);
-//         } else {
-//           // let depth = file.getDepth();
-//           if (file.problems.length) {
-//             treeViewItems.push(<TreeViewItem depth={0} icon={getIconForFileType(file.type)} label={file.name}></TreeViewItem>);
-//             file.problems.forEach((problem) => {
-//               treeViewItems.push(<TreeViewProblemItem depth={1} problem={problem} />);
-//             });
-//           }
-//         }
-//       });
-//     }
-//     go(this.props.project);
   mapEachFile<T>(fn: (file: File) => T): T[] {
     return this.children.map(fn);
   }
@@ -526,14 +510,6 @@ export class Project extends Directory {
   static build() {
     Project.onBuild.dispatch();
   }
-
-  // saveProject(openedFiles: string [][], uri: string) {
-  //   Service.saveProject(this, openedFiles, uri);
-  // }
-
-  // forkProject() {
-  //   Service.saveProject(this, []);
-  // }
 }
 
 export interface ILogger {

@@ -218,47 +218,6 @@ export class Service {
       // TODO: Temporary until we integrate rustc into the service.
       return this.sendRequestJSON({ code: src }, ServiceTypes.Rustc);
     }
-    /*
-    src = encodeURIComponent(src).replace('%20', '+');
-    if (from === Language.C && to === Language.Wast) {
-      let action = "c2wast";
-      let version = "2";
-      options = "-O3 -fdiagnostics-print-source-range-info " + options;
-      let command = [
-        `input=${src}`,
-        `action=${action}`,
-        `version=${version}`,
-        `options=${encodeURIComponent(options)}`
-      ]
-      return this.sendRequest(command.join("&"));
-    } else if (from === Language.Wast && to === Language.Wasm) {
-      let action = "wast2wasm";
-      let version = "";
-      let command = [
-        `input=${src}`,
-        `action=${action}`,
-        `version=${version}`,
-        `options=${encodeURIComponent(options)}`
-      ]
-      const x = await this.sendRequest(command.join("&"));
-      var buffer = atob(x.split('\n', 2)[1]);
-      var data = new Uint8Array(buffer.length);
-      for (var i = 0; i < buffer.length; i++) {
-        data[i] = buffer.charCodeAt(i);
-      }
-      return data;
-    } else if (from === Language.Wast && to === Language.x86) {
-      let action = "wast2assembly";
-      let version = "";
-      let command = [
-        `input=${src}`,
-        `action=${action}`,
-        `version=${version}`,
-        `options=${encodeURIComponent(options)}`
-      ]
-      return this.sendRequest(command.join("&"));
-    }
-    */
   }
 
   static async disassembleWasm(buffer: ArrayBuffer): Promise<string> {
@@ -510,13 +469,6 @@ export class Service {
       Service.downloadLink.click();
     }
   }
-
-  // static disassembleWasmWithWasmDisassembler(file: File) {
-  //   let data = file.getData() as ArrayBuffer;
-  //   let output = file.parent.newFile(file.name + ".wast", FileType.Wast);
-  //   output.description = "Disassembled from " + file.name + " using WasmDisassembler.";
-  //   output.setData(Service.disassembleWasm(data));
-  // }
 
   static clangFormatModule: any = null;
   // Kudos to https://github.com/tbfleming/cib

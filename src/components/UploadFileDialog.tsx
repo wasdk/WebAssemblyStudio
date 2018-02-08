@@ -122,7 +122,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
             <ListBox height={290}>
               {this.state.files.map( (file: any, key: number) => {
                 return <ListItem key={key} value={file.fileType} label={file.name} error={file.error} icon={<Icon src="svg/default_file.svg"/>} />;
-              })}
+                })}
             </ListBox>
           </div>
         </div>

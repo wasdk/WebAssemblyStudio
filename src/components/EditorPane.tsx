@@ -94,10 +94,7 @@ export class EditorPane extends React.Component<EditorPaneProps, {
     if (file) {
       viewer = <Editor view={view} options={{ readOnly: file.isBufferReadOnly }} />;
     } else {
-      return <div className="editor-pane-container empty">
-        {/* <img width="80%" height="80%" src="svg/web-assembly-logo-black.svg" /> */}
-        {/* Build, Run and Share WebAssembly Fiddles */}
-      </div>;
+      return <div className="editor-pane-container empty"/>;
     }
     let className = "editor-pane-container";
     if (!hasFocus) { className += " blurred"; }

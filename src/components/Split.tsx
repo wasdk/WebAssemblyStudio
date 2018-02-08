@@ -183,15 +183,9 @@ export class Split extends React.Component<SplitProps, {
     for (let i = 0; i < splits.length; i++) {
       splits[i].value = vars[i + 1].value - vars[i].value;
     }
-    // console.log(vars.map(v => v.value));
   }
 
   componentWillReceiveProps(nextProps: SplitProps) {
-    // if (this.props.name === "Editors") {
-    //   console.info("X: " );
-    // }
-    // console.info(this.props.name + ": " + this.getContainerSize(nextProps.orientation));
-    // console.log("componentWillReceiveProps");
     const splits = this.canonicalizeSplits(nextProps);
     this.setupSolver(splits, this.getContainerSize(nextProps.orientation));
     this.querySolver(splits);
@@ -299,16 +293,7 @@ export class Split extends React.Component<SplitProps, {
     }
   }
 
-  // onGlobalResize = (target: any) => {
-  //   if (this === target) {
-  //     return;
-  //   }
-  //   // this.resizePanes();
-  //   // this.props.onChange && this.props.onChange();
-  // }
   componentDidMount() {
-    // console.log("componentDidMount");
-    // Split.onGlobalResize.register(this.onGlobalResize);
     document.addEventListener("mousemove", this.onResizerMouseMove as any);
     document.addEventListener("mouseup", this.onResizerMouseUp);
     const splits = this.canonicalizeSplits(this.props);
@@ -317,18 +302,12 @@ export class Split extends React.Component<SplitProps, {
     this.setState({ splits });
   }
   componentWillUnmount() {
-    // Split.onGlobalResize.unregister(this.onGlobalResize);
     document.removeEventListener("mousemove", this.onResizerMouseMove as any);
     document.removeEventListener("mouseup", this.onResizerMouseUp);
   }
 
   render() {
     const { splits } = this.state;
-    // let layout = [];
-    // let layout = [splits[0].value];
-    // for (let i = 1; i < this.vars.length; i++) {
-    //   layout.push(vars[i].value - vars[i - 1].value);
-    // }
     let resizerClassName = "resizer";
     const isHorizontal = this.props.orientation === SplitOrientation.Horizontal;
     if (isHorizontal) {
@@ -336,7 +315,6 @@ export class Split extends React.Component<SplitProps, {
     } else {
       resizerClassName += " vertical";
     }
-    // console.log("Splits", splits, sum(splits), this.state.size);
     const count = React.Children.count(this.props.children);
     const children: any[] = [];
     React.Children.forEach(this.props.children, (child, i) => {

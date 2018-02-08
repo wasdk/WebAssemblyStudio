@@ -58,26 +58,9 @@ export class NewProjectDialog extends React.Component<{
     this.setState({ name: event.target.value });
   }
   nameError() {
-    // let directory = this.props.directory;
-    // if (this.state.name) {
-    //   if (!/^[a-z0-9\.\-\_]+$/i.test(this.state.name)) {
-    //     return "Illegal characters in file name.";
-    //   } else if (!this.state.name.endsWith(extensionForFileType(this.state.fileType))) {
-    //     return nameForFileType(this.state.fileType) + " file extension is missing.";
-    //   } else if (directory && directory.getImmediateChild(this.state.name)) {
-    //     return `File '${this.state.name}' already exists.`;
-    //   }
-    // }
-    // return "";
+    return;
   }
-  // fileName() {
-  //   let name = this.state.name;
-  //   let extension = extensionForFileType(this.state.template);
-  //   if (!name.endsWith("." + extension)) {
-  //     name += "." + extension;
-  //   }
-  //   return name;
-  // }
+
   createButtonLabel() {
     return "Create";
   }
@@ -131,9 +114,7 @@ export class NewProjectDialog extends React.Component<{
             </div>
           </div>
         </div>
-        <div style={{ flex: 1, padding: "8px" }}>
-          {/* <TextInputBox label={"Name: " + (this.props.directory ? this.props.directory.getPath() + "/": "")} error={this.nameError()} value={this.state.name} onChange={this.onChangeName}/> */}
-        </div>
+        <div style={{ flex: 1, padding: "8px" }}/>
         <div>
           <Button
             icon={<GoX />}
@@ -149,7 +130,6 @@ export class NewProjectDialog extends React.Component<{
             title="Cancel"
             isDisabled={!this.state.template}
             onClick={() => {
-              // let file = new File(this.fileName(), this.state.template);
               return this.props.onCreate && this.props.onCreate(this.state.template);
             }}
           />
