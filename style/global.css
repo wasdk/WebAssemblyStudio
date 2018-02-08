@@ -42,26 +42,6 @@ body {
   padding: 0;
 }
 
-body:after {
-    content: "beta";
-    position: fixed;
-    width: 80px;
-    height: 20px;
-    background: #191f23;
-    top: 7px;
-    left: -20px;
-    text-align: center;
-    font-size: 10px;
-    font-family: sans-serif;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: #fff;
-    line-height: 22px;
-    -ms-transform:rotate(-45deg);
-    -webkit-transform:rotate(-45deg);
-    transform:rotate(-45deg);
-}
-
 input {
   font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -110,6 +90,26 @@ a {
   background: var(--grey-950);
   width: 100%;
   height: 100%;
+}
+
+.workspaceContainer:after {
+    content: "beta";
+    position: fixed;
+    width: 80px;
+    height: 20px;
+    background: #191f23;
+    top: 7px;
+    left: -20px;
+    text-align: center;
+    font-size: 10px;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #fff;
+    line-height: 22px;
+    -ms-transform:rotate(-45deg);
+    -webkit-transform:rotate(-45deg);
+    transform:rotate(-45deg);
 }
 
 .consoleContainer {
