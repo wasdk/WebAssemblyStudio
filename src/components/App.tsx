@@ -45,6 +45,7 @@ import { Button } from "./Button";
 import * as ReactModal from "react-modal";
 import { NewFileDialog } from "./NewFileDialog";
 import { EditFileDialog } from "./EditFileDialog";
+import { UploadFileDialog } from "./UploadFileDialog";
 import { ToastContainer } from "./Toasts";
 import { Spacer, Divider } from "./Widgets";
 import { Cton } from "../languages/cton";
@@ -142,6 +143,10 @@ export interface AppState {
    * Editor split state.
    */
   editorSplits: SplitInfo[];
+  /**
+   * If true, the upload file dialog is open.
+   */
+  uploadFileDialogDirectory: Directory;
   showProblems: boolean;
   showSandbox: boolean;
 }
@@ -185,7 +190,8 @@ export class App extends React.Component<AppProps, AppState> {
       ],
       editorSplits: [],
       showProblems: true,
-      showSandbox: true
+      showSandbox: true,
+      uploadFileDialogDirectory: null
     };
     this.registerLanguages();
   }
@@ -739,6 +745,27 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         />
       }
+      {this.state.uploadFileDialogDirectory &&
+        <UploadFileDialog
+          isOpen={true}
+          directory={this.state.uploadFileDialogDirectory}
+          onCancel={() => {
+            this.setState({ uploadFileDialogDirectory: null });
+           }}
+          onUpload={(files: File[]) => {
+            if (!(this.state.uploadFileDialogDirectory instanceof Project)) {
+              files.map((file: File) => {
+                this.state.uploadFileDialogDirectory.addFile(file);
+              });
+            } else {
+              files.map((file: File) => {
+                this.project.addFile(file);
+              });
+            }
+            this.setState({ uploadFileDialogDirectory: null });
+          }}
+        />
+      }
       <div style={{ height: "calc(100% - 22px)" }}>
         <Split
           name="Workspace"
@@ -779,6 +806,9 @@ export class App extends React.Component<AppProps, AppState> {
               }
               this.state.group.open(file, false);
               this.forceUpdate();
+            }}
+            onUploadFile={(directory: Directory) => {
+              this.setState({ uploadFileDialogDirectory: directory});
             }}
           />
           <div className="fill">

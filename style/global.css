@@ -106,7 +106,6 @@ a {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-
 .workspaceContainer {
   background: var(--grey-950);
   width: 100%;
@@ -594,6 +593,12 @@ a {
   background: rgba(0,0,0,0);
 }
 
+.list-item-flex{
+    display: flex;
+    flex-direction: column;
+    margin-left: 7px;
+}
+
 .list-item {
   display: flex;
   min-width: fit-content;
@@ -619,10 +624,19 @@ a {
   height: 16px;
 }
 
-.list-item>.label {
+.label {
   font-size: 12px;
   padding-left: 8px;
   flex: 1;
+}
+
+.list-item-flex>.label {
+    padding-left: 0px;
+}
+
+.error{
+    font-size:11px;
+    color: #ff0000;
 }
 
 .new-file-dialog-description {
@@ -675,6 +689,28 @@ a {
   background-color: #1d1d1d;
   color: #ff0000;
   box-sizing: border-box;
+}
+
+.file-upload-input {
+    color: transparent;
+}
+
+.file-upload-input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.file-upload-input::before {
+    content: 'Select some files';
+    color: black;
+    display: inline-block;
+    background: #333;
+    border: 1px solid #292929;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    color: #fff;
 }
 
 .divider {
@@ -818,6 +854,12 @@ a {
 .action-label.octicon-cloud-download::before {
   font-family: octicons;
   content: '\f00b';
+  padding-right: 8px;
+}
+
+.action-label.octicon-cloud-upload::before {
+  font-family: octicons;
+  content: '\f00c';
   padding-right: 8px;
 }
 

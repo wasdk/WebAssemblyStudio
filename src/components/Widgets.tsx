@@ -74,12 +74,31 @@ export class TextInputBox extends React.Component<{
   }
 }
 
+export class FileUploadInput extends React.Component<{
+  label: string;
+  onChange?: ChangeEventHandler<any>;
+}, {
+
+}> {
+  inputElement: any;
+  constructor(props: any) {
+    super(props);
+  }
+  open() {
+    this.inputElement.click();
+  }
+  render() {
+    return <input id="file-upload-input"  ref={input => this.inputElement = input} type="file" onChange={this.props.onChange} multiple hidden/>;
+  }
+}
+
 export class ListItem extends React.Component<{
   label: string;
   onClick?: Function;
   icon?: JSX.Element;
   selected?: boolean;
   value: any;
+  error?: string;
 }, {
 
   }> {
@@ -89,16 +108,23 @@ export class ListItem extends React.Component<{
     if (this.props.selected) {
       className += " selected";
     }
+    let content = <div className="label">{this.props.label}</div>;
+    if (this.props.error) {
+        content = <div className="list-item-flex">
+          <div className="label">{this.props.label}</div>
+          <div className="error">{this.props.error}</div>
+        </div>;
+    }
     return <div className={className} onClick={this.props.onClick as any}>
       <div className="icon">{this.props.icon}</div>
-      <div className="label">{this.props.label}</div>
+        {content}
     </div>;
   }
 }
 
 export class ListBox extends React.Component<{
   height: number;
-  value: any;
+  value?: any;
   onSelect?: (value: any) => void;
 }, {
 

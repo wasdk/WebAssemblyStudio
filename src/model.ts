@@ -132,6 +132,33 @@ export function extensionForFileType(type: FileType): string {
   return "";
 }
 
+export function filetypeForExtension(extension: string): FileType {
+  if (extension === "html") {
+    return FileType.HTML;
+  } else if (extension === "css") {
+    return FileType.CSS;
+  } else if (extension === "js") {
+    return FileType.JavaScript;
+  } else if (extension === "ts") {
+    return FileType.TypeScript;
+  } else if (extension === "c") {
+    return FileType.C;
+  } else if (extension === "cpp") {
+    return FileType.Cpp;
+  } else if (extension === "wast") {
+    return FileType.Wast;
+  } else if (extension === "wasm") {
+     return FileType.Wasm;
+  } else if (extension === "md") {
+    return FileType.Markdown;
+  } else if (extension === "rs") {
+    return FileType.Rust;
+  } else if (extension === "cton") {
+    return FileType.Cretonne;
+  }
+  return null;
+}
+
 export function mimeTypeForFileType(type: FileType): string {
   if (type === FileType.HTML) {
     return "text/html";
