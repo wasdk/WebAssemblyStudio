@@ -79,7 +79,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
           files: [...prevState.files, {name, fileType, data, error}]
         }));
       } catch (e) {
-          console.log("Unable to read the file!");
+        console.log("Unable to read the file!");
       }
     });
   }
