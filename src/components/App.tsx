@@ -400,24 +400,25 @@ export class App extends React.Component<AppProps, AppState> {
     this.setState({ group });
   }
   async build() {
-    const run = (src: string) => {
+    const run = async (src: string) => {
       const fn = new Function("gulp", "project", "Service", "logLn", src);
       const gulp = new Gulpy();
       fn(gulp, this.project, Service, this.logLn.bind(self));
-      gulp.run("default");
+      await gulp.run("default");
     };
-
     const buildTs = this.project.getFile("build.ts");
-    const buildJS = this.project.getFile("build.js");
+    const buildJs = this.project.getFile("build.js");
+    this.project.setStatus("Building Project ...");
     if (buildTs) {
       const output = await buildTs.getEmitOutput();
-      run(output.outputFiles[0].text);
-    } else if (buildJS) {
-      run(buildJS.getData() as string);
+      await run(output.outputFiles[0].text);
+    } else if (buildJs) {
+      await run(buildJs.getData() as string);
     } else {
       this.logLn(Errors.BuildFileMissing, "error");
-      return;
     }
+    this.project.clearStatus();
+    return;
   }
   async update() {
     this.logLn("Saving Project ...");

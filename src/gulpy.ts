@@ -68,7 +68,7 @@ class GulpySession {
     await Promise.all(dependencies.map(x => this.runInstance(x)));
     return instance.makePromise();
   }
-  run(task: Task): Promise<any> {
+  async run(task: Task): Promise<any> {
     return this.runInstance(this.ensureInstance(task));
   }
 }
@@ -95,9 +95,9 @@ export class Gulpy {
   parallel(tasks: string[]): PromiseMaker {
     return null;
   }
-  run(name: string) {
+  async run(name: string) {
     const session = new GulpySession(this);
-    session.run(this.tasks[name]);
+    await session.run(this.tasks[name]);
   }
 }
 
