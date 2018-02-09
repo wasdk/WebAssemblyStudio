@@ -348,15 +348,15 @@ a {
   font-size: 12px;
   user-select: none;
   font-weight: 700;
-  font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif
+  font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
+  display: flex;
 }
 
 .status-bar-item {
-  display: inline-block;
   line-height: 22px;
   height: 100%;
   vertical-align: top;
-  margin: 0 5px;
+  margin-left: 5px;
 }
 
 .split {

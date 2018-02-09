@@ -54,6 +54,7 @@ import { ShareDialog } from "./ShareDialog";
 import { NewProjectDialog, Template } from "./NewProjectDialog";
 import { Errors } from "../errors";
 import { ControlCenter } from "./ControlCenter";
+import { StatusBar } from "./StatusBar";
 
 export class Group {
   file: File;
@@ -765,11 +766,7 @@ export class App extends React.Component<AppProps, AppState> {
           </div>
         </Split>
       </div>
-      <div className="status-bar">
-        <div className="status-bar-item">
-          Web Assembly Studio
-        </div>
-      </div>
+      <StatusBar project={this.project}/>
     </div>;
   }
 }
