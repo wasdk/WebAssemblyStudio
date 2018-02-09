@@ -50,7 +50,17 @@ export enum FileType {
   Log = "log",
   x86 = "x86",
   Markdown = "markdown",
-  Cretonne = "cretonne"
+  Cretonne = "cretonne",
+  Unknown = "unknown"
+}
+
+export function isBinaryFileType(type: FileType) {
+  switch (type) {
+    case FileType.Wasm:
+      return true;
+    default:
+      return false;
+  }
 }
 
 export function languageForFileType(type: FileType): string {
@@ -248,6 +258,9 @@ export class File {
   type: FileType;
   data: string | ArrayBuffer;
   parent: Directory;
+  /**
+   * True if the buffer is out of sync with the data.
+   */
   isDirty: boolean = false;
   isBufferReadOnly: boolean = false;
   readonly onDidChangeData = new EventDispatcher("File Data Change");
@@ -255,31 +268,75 @@ export class File {
   readonly onDidChangeProblems = new EventDispatcher("File Problems Change");
   readonly key = String(getNextKey());
   readonly buffer?: monaco.editor.IModel;
+  /**
+   * File type of the buffer. This may be different than this file's type, true for
+   * non-text files.
+   */
+  bufferType: FileType;
   description: string;
   problems: Problem[] = [];
   constructor(name: string, type: FileType) {
     this.name = name;
     this.type = type;
-    this.data = null; // localStorage.getItem(this.name);
-    this.buffer = monaco.editor.createModel(this.data as any, languageForFileType(type));
+    this.data = null;
+    if (isBinaryFileType(type)) {
+      this.bufferType = FileType.Unknown;
+      this.buffer = monaco.editor.createModel("");
+    } else {
+      this.bufferType = type;
+      this.buffer = monaco.editor.createModel(this.data as any, languageForFileType(type));
+    }
     this.buffer.updateOptions({ tabSize: 2, insertSpaces: true });
     this.buffer.onDidChangeContent((e) => {
+      // isFlush is only true for buffer.setValue() calls and the isDirty logic is handled at those
+      // call sites, here we only care for user edits.
+      if (e.isFlush) {
+        return;
+      }
       const dispatch = !this.isDirty;
       this.isDirty = true;
       if (dispatch) {
-        let file: File = this;
-        while (file) {
-          file.onDidChangeBuffer.dispatch();
-          file = file.parent;
-        }
+        this.notifyDidChangeBuffer();
       }
       monaco.editor.setModelMarkers(this.buffer, "compiler", []);
     });
-    this.isBufferReadOnly = type === FileType.Wasm;
-    if (this.isBufferReadOnly) {
-      this.description = "Read Only";
-    }
     this.parent = null;
+  }
+  notifyDidChangeBuffer() {
+    let file: File = this;
+    while (file) {
+      file.onDidChangeBuffer.dispatch();
+      file = file.parent;
+    }
+  }
+  notifyDidChangeData() {
+    let file: File = this;
+    while (file) {
+      file.onDidChangeData.dispatch();
+      file = file.parent;
+    }
+  }
+  async ensureBufferIsLoaded() {
+    if (this.bufferType !== FileType.Unknown) {
+      return;
+    }
+    this.updateBuffer();
+  }
+  private async updateBuffer() {
+    if (this.type === FileType.Wasm) {
+      const result = await Service.disassembleWasm(this.data as ArrayBuffer);
+      this.buffer.setValue(result);
+      this.isDirty = false;
+      this.bufferType = FileType.Wast;
+      this.notifyDidChangeBuffer();
+      monaco.editor.setModelLanguage(this.buffer, languageForFileType(FileType.Wast));
+      this.description = "This .wasm file is editable as a .wast file, and is automatically reassembled to .wasm when saved.";
+      return;
+    } else {
+      this.buffer.setValue(this.data as string);
+      this.isDirty = false;
+      this.notifyDidChangeBuffer();
+    }
   }
   setProblems(problems: Problem []) {
     this.problems = problems;
@@ -298,19 +355,10 @@ export class File {
     const client = await worker(model.uri);
     return client.getEmitOutput(model.uri.toString());
   }
-  setData(data: string | ArrayBuffer, setBuffer = true) {
+  setData(data: string | ArrayBuffer) {
     this.data = data;
-    let file: File = this;
-    if (typeof data === "string") {
-      if (setBuffer) {
-        this.buffer.setValue(data);
-      }
-      this.isDirty = false;
-    }
-    while (file) {
-      file.onDidChangeData.dispatch();
-      file = file.parent;
-    }
+    this.notifyDidChangeData();
+    this.updateBuffer();
   }
   getData(): string | ArrayBuffer {
     if (this.isDirty && !this.isBufferReadOnly) {
@@ -355,12 +403,25 @@ export class File {
     path.push(this.name);
     return path.join("/");
   }
-  save() {
+  async save() {
     if (!this.isDirty) {
       return;
     }
-    this.isDirty = false;
-    this.setData(this.buffer.getValue(), false);
+    if (this.bufferType !== this.type) {
+      if (this.bufferType === FileType.Wast && this.type === FileType.Wasm) {
+        try {
+          const data = await Service.assembleWast(this.buffer.getValue());
+          this.isDirty = false;
+          this.data = data;
+        } catch (e) {
+          alert(e);
+        }
+      }
+    } else {
+      this.data = this.buffer.getValue();
+      this.isDirty = false;
+    }
+    this.notifyDidChangeData();
   }
   toString() {
     return "File [" + this.name + "]";

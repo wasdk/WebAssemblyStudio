@@ -90,6 +90,7 @@ export class Group {
       this.file = file;
       this.preview = null;
     }
+    file.ensureBufferIsLoaded();
   }
   close(file: File) {
     const i = this.files.indexOf(file);
