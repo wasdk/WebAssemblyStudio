@@ -910,3 +910,24 @@ a {
   content: '\f03a';
   padding-right: 8px;
 }
+
+.label-name.error-dark::before {
+  content: url("../svg/error-dark.svg");
+  padding-right: 4px;
+  position: relative;
+  top: 4px;
+}
+
+.label-name.warning-dark::before {
+  content: url("../svg/warning-dark.svg");
+  padding-right: 4px;
+  position: relative;
+  top: 4px;
+}
+
+.label-name.info-dark::before {
+  content: url("../svg/info-dark.svg");
+  padding-right: 4px;
+  position: relative;
+  top: 4px;
+}

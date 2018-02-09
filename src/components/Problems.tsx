@@ -58,6 +58,7 @@ class ProblemTemplate {
   }
   set(problem: Problem) {
     const icon = "";
+    this.label.classList.toggle(problem.severity + "-dark", true);
     const marker = problem.marker;
     const position = `(${marker.startLineNumber}, ${marker.startColumn})`;
     this.label.innerHTML = marker.message;
