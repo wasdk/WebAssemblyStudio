@@ -22,14 +22,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Workspace } from "./components/Workspace";
-import { Editor } from "./components/Editor";
+import { Editor, EditorPane, Tab, Tabs } from "./components/editor";
 import { Project } from "./model";
 import { Header } from "./components/Header";
 import { Split } from "./components/Split";
 import { Toolbar } from "./components/Toolbar";
 
-import { Tabs, Tab } from "./components/Tabs";
-import { EditorPane } from "./components/EditorPane";
 import { App } from "./components/App";
 import { Test } from "./components/Test";
 import { Service } from "./service";

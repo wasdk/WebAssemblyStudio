@@ -22,12 +22,10 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Workspace } from "./Workspace";
-import { Editor } from "./Editor";
+import { Editor, EditorPane, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 
-import { Tabs, Tab } from "./Tabs";
-import { EditorPane, View } from "./EditorPane";
 import { Project, File, FileType } from "../model";
 import { App } from "./App";
 
@@ -35,7 +33,7 @@ import { layout, assert } from "../index";
 import { setInterval } from "timers";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 import { Z_STREAM_END } from "zlib";
-import { Button } from "./Button";
+import { Button } from "./shared/Button";
 
 class TabBasicTest extends React.Component<{
 }, {

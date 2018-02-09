@@ -20,8 +20,8 @@
  */
 
 import * as React from "react";
-import { Button } from "./Button";
-import { GoX } from "./Icons";
+import { Button } from "./shared/Button";
+import { GoX } from "./shared/Icons";
 
 export class ToastContainer extends React.Component<{}, {
     toasts: JSX.Element[]

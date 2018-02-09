@@ -22,8 +22,8 @@
 import * as React from "react";
 import { Service } from "../service";
 import * as ReactModal from "react-modal";
-import { Button } from "./Button";
-import { GoGear, GoFile, GoX, Icon } from "./Icons";
+import { Button } from "./shared/Button";
+import { GoGear, GoFile, GoX, Icon } from "./shared/Icons";
 import { File, FileType, Directory, extensionForFileType, nameForFileType } from "../model";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 

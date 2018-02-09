@@ -20,14 +20,14 @@
  */
 
 import * as React from "react";
-import { assert } from "../index";
+import { assert } from "../../index";
 import { Tabs, Tab, TabProps } from "./Tabs";
 import { Editor } from "./Editor";
-import { Project, File, getIconForFileType, FileType } from "../model";
+import { Project, File, getIconForFileType, FileType } from "../../model";
 import "monaco-editor";
-import { Markdown } from "./Markdown";
-import { Button } from "./Button";
-import { GoBook, GoFile, GoKebabHorizontal } from "./Icons";
+import { Markdown } from ".././Markdown";
+import { Button } from "../shared/Button";
+import { GoBook, GoFile, GoKebabHorizontal } from "../shared/Icons";
 
 export class View {
   constructor(

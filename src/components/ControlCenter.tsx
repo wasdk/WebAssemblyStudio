@@ -21,12 +21,10 @@
 
 import * as React from "react";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
-import { Editor } from "./Editor";
+import { Editor, View, Tab, Tabs } from "./editor";
 import { Sandbox } from "./Sandbox";
-import { Tabs, Tab } from "./Tabs";
-import { GoThreeBars, GoFile } from "./Icons";
-import { Button } from "./Button";
-import { View } from "./EditorPane";
+import { GoThreeBars, GoFile } from "./shared/Icons";
+import { Button } from "./shared/Button";
 import { FileType, getIconForFileType, Problem } from "../model";
 import { Project, File, Directory, shallowCompare } from "../model";
 import { Problems } from "./Problems";

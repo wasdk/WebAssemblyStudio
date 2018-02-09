@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import {shallow} from "enzyme";
-import {Button} from "../../src/components/Button";
+import {Button} from "../../src/components/shared/Button";
 
 describe("Tests for button component", () => {
   const setup = (value: any) => {

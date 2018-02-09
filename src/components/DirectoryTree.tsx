@@ -22,7 +22,7 @@
 import * as React from "react";
 import { Project, File, Directory, FileType, getIconForFileType } from "../model";
 import { Service } from "../service";
-import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./Icons";
+import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
 import { ITree, ContextMenuEvent } from "../monaco-extra";
 
 export interface DirectoryTreeProps {
