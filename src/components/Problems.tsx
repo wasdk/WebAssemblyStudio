@@ -202,6 +202,7 @@ export class Problems extends React.Component<ProblemsProps, {
     (this.tree as any).model.setInput(this.props.project);
     this.props.project.onDidChangeProblems.register(() => {
       this.tree.refresh();
+      this.tree.expandAll();
     });
   }
   componentWillReceiveProps(props: ProblemsProps) {
