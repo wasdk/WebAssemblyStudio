@@ -542,8 +542,8 @@ export class App extends React.Component<AppProps, AppState> {
       />,
       <Button
         icon={<GoOpenIssue />}
-        label="Github Issues"
-        title="Github"
+        label="GitHub Issues"
+        title="GitHub Issues"
         customClassName="issue"
         onClick={() => {
           window.open("https://github.com/wasdk/WebAssemblyStudio", "_blank");
