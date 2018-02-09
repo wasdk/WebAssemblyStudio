@@ -555,11 +555,21 @@ export class Directory extends File {
 }
 
 export class Project extends Directory {
+  onDidChangeStatus = new EventDispatcher("Status Change");
   onChange = new EventDispatcher("Project Change");
   onDirtyFileUsed = new EventDispatcher("Dirty File Used");
 
   constructor() {
     super("Project");
+  }
+
+  status: string = "";
+  setStatus(status: string) {
+    this.status = status;
+    this.onDidChangeStatus.dispatch();
+  }
+  clearStatus() {
+    this.setStatus("");
   }
 
   static onRun = new EventDispatcher("Project Run");
