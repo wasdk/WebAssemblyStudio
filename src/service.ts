@@ -183,6 +183,8 @@ export class Service {
         file.setProblems(markers.map(marker => {
           return Problem.fromMarker(file, marker);
         }));
+      } else {
+        file.setProblems([]);
       }
     }
     if (!result.success) {
