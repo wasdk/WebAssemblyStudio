@@ -68,6 +68,7 @@ import { Cton } from "../languages/cton";
 import { X86 } from "../languages/x86";
 import { ShareDialog } from "./ShareDialog";
 import { NewProjectDialog, Template } from "./NewProjectDialog";
+import { NewDirectoryDialog } from "./NewDirectoryDialog";
 import { Errors } from "../errors";
 import { ControlCenter } from "./ControlCenter";
 import Group from "../utils/group";
@@ -118,6 +119,10 @@ export interface AppState {
    * If true, the upload file dialog is open.
    */
   uploadFileDialogDirectory: Directory;
+  /**
+   * If true, the new directory dialog is open.
+   */
+  newDirectoryDialog: Directory;
   showProblems: boolean;
   showSandbox: boolean;
 }
@@ -162,7 +167,8 @@ export class App extends React.Component<AppProps, AppState> {
       editorSplits: [],
       showProblems: true,
       showSandbox: true,
-      uploadFileDialogDirectory: null
+      uploadFileDialogDirectory: null,
+      newDirectoryDialog: null
     };
     this.registerLanguages();
   }
@@ -676,6 +682,19 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         />
       }
+      {this.state.newDirectoryDialog &&
+        <NewDirectoryDialog
+          isOpen={true}
+          directory={this.state.newDirectoryDialog}
+          onCancel={() => {
+            this.setState({ newDirectoryDialog: null });
+           }}
+          onCreate={(directory: Directory) => {
+            this.state.newDirectoryDialog.addFile(directory);
+            this.setState({ newDirectoryDialog: null });
+          }}
+        />
+      }
       <div style={{ height: "calc(100% - 22px)" }}>
         <Split
           name="Workspace"
@@ -719,6 +738,9 @@ export class App extends React.Component<AppProps, AppState> {
             }}
             onUploadFile={(directory: Directory) => {
               this.setState({ uploadFileDialogDirectory: directory});
+            }}
+            onNewDirectory={(directory: Directory) => {
+              this.setState({ newDirectoryDialog: directory});
             }}
           />
           <div className="fill">
