@@ -91,7 +91,7 @@ export namespace Language {
       case "json": case "map": return Language.Json;
       case "js": return Language.JavaScript;
       case "ts": return Language.TypeScript;
-      default: Language.Text;
+      default: return Language.Text;
     }
   }
 }
