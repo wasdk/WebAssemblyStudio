@@ -60,4 +60,35 @@
       ["README.md"]
     ]
   }
+}, {
+  "name": "Empty TypeScript Project",
+  "description": `# Empty TypeScript Project
+`,
+  "icon": "svg/file_type_typescript.svg",
+  "project": {
+    "name": "Project",
+    "directory": "empty_ts",
+    "children": [{
+      "name": "src",
+      "children": [{
+        "name": "main.ts",
+        "type": "typescript"
+      }, {
+        "name": "main.js",
+        "type": "javascript",
+      }, {
+        "name": "main.html",
+        "type": "html",
+      }]
+    }, {
+      "name": "build.ts",
+      "type": "typescript",
+    }, {
+      "name": "README.md",
+      "type": "markdown",
+    }],
+    "openedFiles": [
+      ["README.md"]
+    ]
+  }
 }]
