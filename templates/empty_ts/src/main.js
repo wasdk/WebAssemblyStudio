@@ -1,13 +1,13 @@
-WebAssembly.instantiateStreaming(fetch(getFileURL("out/main.wasm")), {})
-.then(result => {
-  const { module, instance } = result;
-  const exports = instance.exports;
-
-  document.getElementById("container").innerText = getString(exports.message) + ": " + exports.add(19, 23);
-
-  function getString(ptr) {
-    const len = new Uint32Array(exports.memory.buffer, ptr)[0];
-    const str = new Uint16Array(exports.memory.buffer, ptr + 4, len);
-    return String.fromCharCode.apply(String, str);
+WebAssembly.instantiateStreaming(fetch(getFileURL("out/main.wasm")), {
+  env: {
+    sayHello: function() {
+      console.log("Hello from WebAssembly!");
+    },
+    abort: function(msg, file, line, column) {
+      console.error("abort called at main.ts:" + line + ":" + column);
+    }
   }
+}).then(result => {
+  const exports = result.instance.exports;
+  document.getElementById("container").innerText = "Result: " + exports.add(19, 23);
 });

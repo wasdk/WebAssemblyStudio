@@ -21,6 +21,10 @@ gulp.task("build", async () => require(["asc"], asc => {
 
 gulp.task("default", ["build"], async () => {});
 
+gulp.task("load", async () => require(["asc"], asc => {
+  monaco.languages.typescript.typescriptDefaults.addExtraLib(asc.definitionFiles.assembly);
+}));
+
 require.config({ paths: {
   "binaryen": "https://rawgit.com/AssemblyScript/binaryen.js/master/index",
   "assemblyscript": "https://rawgit.com/AssemblyScript/assemblyscript/master/dist/assemblyscript",
