@@ -19,7 +19,6 @@
  * SOFTWARE.
  */
 
-import { BinaryReader, WasmDisassembler } from "wasmparser";
 import { File, Project, Directory, FileType, Problem } from "./model";
 import { isUndefined } from "util";
 import "monaco-editor";
@@ -258,20 +257,6 @@ export class Service {
     const output = file.parent.newFile(file.name + ".wasm", FileType.Wasm);
     output.description = "Assembled from " + file.name + " using Wabt.";
     output.setData(result);
-  }
-
-  static disassembleWasmWithWasmDisassembler(file: File) {
-    const buffer = file.getData() as ArrayBuffer;
-    const reader = new BinaryReader();
-    reader.setData(buffer, 0, buffer.byteLength);
-    const dis = new WasmDisassembler();
-    dis.addOffsets = true;
-    dis.disassembleChunk(reader);
-    const result = dis.getResult().lines.join("\n");
-    const output = file.parent.newFile(file.name + ".wast", FileType.Wast);
-    output.description = "Disassembled from " + file.name + " using WasmDisassembler.";
-    output.setData(result);
-    return;
   }
 
   static createGist(json: object): Promise<string> {

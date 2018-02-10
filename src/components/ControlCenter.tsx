@@ -67,9 +67,6 @@ export class ControlCenter extends React.Component<{
   }
   logLnTimeout: any;
   logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
-    if (!this.outputViewEditor) {
-      return;
-    }
     message = message + "\n";
     if (kind) {
       message = "[" + kind + "]: " + message;
@@ -81,6 +78,9 @@ export class ControlCenter extends React.Component<{
     model.applyEdits([
       { forceMoveMarkers: true, identifier: null, range, text: message }
     ]);
+    if (!this.outputViewEditor) {
+      return;
+    }
     this.outputViewEditor.revealLastLine();
     if (!this.logLnTimeout) {
       this.logLnTimeout = window.setTimeout(() => {
