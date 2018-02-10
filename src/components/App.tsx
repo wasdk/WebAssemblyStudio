@@ -632,7 +632,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.setState({ newFileDialogDirectory: null });
           }}
           onCreate={(file: File) => {
-            this.project.addFile(file);
+            this.state.newFileDialogDirectory.addFile(file);
             this.setState({ newFileDialogDirectory: null });
           }}
         />
@@ -669,15 +669,9 @@ export class App extends React.Component<AppProps, AppState> {
             this.setState({ uploadFileDialogDirectory: null });
            }}
           onUpload={(files: File[]) => {
-            if (!(this.state.uploadFileDialogDirectory instanceof Project)) {
-              files.map((file: File) => {
-                this.state.uploadFileDialogDirectory.addFile(file);
-              });
-            } else {
-              files.map((file: File) => {
-                this.project.addFile(file);
-              });
-            }
+            files.map((file: File) => {
+              this.state.uploadFileDialogDirectory.addFile(file);
+            });
             this.setState({ uploadFileDialogDirectory: null });
           }}
         />
