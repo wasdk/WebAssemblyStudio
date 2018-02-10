@@ -31,6 +31,7 @@ export const Log = {
     tokenizer: {
       root: [
         [/\[error.*/, "custom-error"],
+        [/\[warn.*/, "custom-warn"],
         [/\[notice.*/, "custom-notice"],
         [/\[info.*/, "custom-info"]
       ]

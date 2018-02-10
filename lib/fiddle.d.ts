@@ -29,3 +29,5 @@ declare class Service {
   static disassembleWasm(buffer: ArrayBuffer): Promise<string>;
 }
 declare const project: any;
+
+declare function logLn(message: string, kind?: "" | "info" | "warn" | "error"): void;

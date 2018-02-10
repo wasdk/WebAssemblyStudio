@@ -372,7 +372,7 @@ export class App extends React.Component<AppProps, AppState> {
     const run = async (src: string) => {
       const fn = new Function("gulp", "project", "Service", "logLn", src);
       const gulp = new Gulpy();
-      fn(gulp, this.project, Service, this.logLn.bind(self));
+      fn(gulp, this.project, Service, this.logLn.bind(this));
       await gulp.run("default");
     };
     const buildTs = this.project.getFile("build.ts");
