@@ -570,7 +570,7 @@ export class App extends React.Component<AppProps, AppState> {
             if (file instanceof Directory) {
               return;
             }
-            group.open(file, false);
+            group.open(file);
             self.setState({ group });
           }}
           onClose={(file) => {
