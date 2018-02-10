@@ -154,13 +154,14 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
             Service.assembleWastWithWabt(file);
           }));
         }
-        actions.push(new (window as any).Action("x", "Edit", "octicon-pencil", true, () => {
-          return self.props.onEditFile && self.props.onEditFile(file as Directory);
-        }));
-        actions.push(new (window as any).Action("x", "Delete", "octicon-x", true, () => {
-          return self.props.onDeleteFile && self.props.onDeleteFile(file as Directory);
-        }));
-
+        if (!(file instanceof Project)) {
+          actions.push(new (window as any).Action("x", "Edit", "octicon-pencil", true, () => {
+            return self.props.onEditFile && self.props.onEditFile(file as Directory);
+          }));
+          actions.push(new (window as any).Action("x", "Delete", "octicon-x", true, () => {
+            return self.props.onDeleteFile && self.props.onDeleteFile(file as Directory);
+          }));
+        }
         self.contextMenuService.showContextMenu({
           getAnchor: () => anchor,
 
