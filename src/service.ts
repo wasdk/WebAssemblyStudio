@@ -70,7 +70,30 @@ export enum Language {
   Wasm = "wasm",
   Rust = "rust",
   Cretonne = "cton",
-  x86 = "x86"
+  x86 = "x86",
+  Json = "json",
+  JavaScript = "javascript",
+  TypeScript = "typescript",
+  Text = "text"
+}
+
+export namespace Language {
+  export function of(filename: string): Language {
+    const ext = filename.substring(filename.lastIndexOf(".") + 1);
+    switch (ext) {
+      case "c": return Language.C;
+      case "cpp": return Language.Cpp;
+      case "wast": return Language.Wast;
+      case "wasm": return Language.Wasm;
+      case "rs": return Language.Rust;
+      case "cton": return Language.Cretonne;
+      case "x86": return Language.x86;
+      case "json": case "map": return Language.Json;
+      case "js": return Language.JavaScript;
+      case "ts": return Language.TypeScript;
+      default: Language.Text;
+    }
+  }
 }
 
 interface IFile {

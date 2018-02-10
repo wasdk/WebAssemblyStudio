@@ -18,7 +18,17 @@ declare enum Language {
   Cpp = "cpp",
   Wast = "wast",
   Wasm = "wasm",
-  x86 = "x86"
+  Rust = "rust",
+  Cretonne = "cton",
+  x86 = "x86",
+  Json = "json",
+  JavaScript = "javascript",
+  TypeScript = "typescript",
+  Text = "text"
+}
+
+declare namespace Language {
+  export function of(filename: string): Language;
 }
 
 declare class Service {
