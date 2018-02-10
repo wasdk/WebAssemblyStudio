@@ -25,12 +25,12 @@ import { Editor, View, Tab, Tabs } from "./editor";
 import { Sandbox } from "./Sandbox";
 import { GoThreeBars, GoFile } from "./shared/Icons";
 import { Button } from "./shared/Button";
-import { FileType, getIconForFileType, Problem } from "../model";
+import { FileType, getIconForFileType, Problem, ModelRef } from "../model";
 import { Project, File, Directory, shallowCompare } from "../model";
 import { Problems } from "./Problems";
 
 export class ControlCenter extends React.Component<{
-  project: Project;
+  project: ModelRef<Project>;
 }, {
     /**
      * Split state.

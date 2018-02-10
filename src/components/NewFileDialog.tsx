@@ -24,13 +24,13 @@ import { Service } from "../service";
 import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoGear, GoFile, GoX, Icon } from "./shared/Icons";
-import { File, FileType, Directory, extensionForFileType, nameForFileType } from "../model";
+import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef } from "../model";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
 
 export class NewFileDialog extends React.Component<{
   isOpen: boolean;
-  directory: Directory
+  directory: ModelRef<Directory>
   onCreate: (file: File) => void;
   onCancel: () => void;
 }, {
@@ -56,7 +56,7 @@ export class NewFileDialog extends React.Component<{
         return "Illegal characters in file name.";
       } else if (!this.state.name.endsWith(extensionForFileType(this.state.fileType))) {
         return nameForFileType(this.state.fileType) + " file extension is missing.";
-      } else if (directory && directory.getImmediateChild(this.state.name)) {
+      } else if (directory && directory.getModel().getImmediateChild(this.state.name)) {
         return `File '${this.state.name}' already exists.`;
       }
     }
@@ -122,7 +122,7 @@ export class NewFileDialog extends React.Component<{
           </div>
         </div>
         <div style={{ flex: 1, padding: "8px" }}>
-          <TextInputBox label={"Name: " + (this.props.directory ? this.props.directory.getPath() + "/" : "")} error={this.nameError()} value={this.state.name} onChange={this.onChangeName}/>
+          <TextInputBox label={"Name: " + (this.props.directory ? this.props.directory.getModel().getPath() + "/" : "")} error={this.nameError()} value={this.state.name} onChange={this.onChangeName}/>
         </div>
         <div>
           <Button

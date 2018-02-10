@@ -20,14 +20,14 @@
  */
 
 import * as React from "react";
-import { Project, File, Directory, FileType, getIconForFileType } from "../model";
+import { Project, File, Directory, FileType, getIconForFileType, ModelRef } from "../model";
 import { Service } from "../service";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
 import { ITree, ContextMenuEvent } from "../monaco-extra";
 
 export interface DirectoryTreeProps {
-  directory: Directory;
-  value?: File;
+  directory: ModelRef<Directory>;
+  value?: ModelRef<File>;
   onEditFile?: (file: File) => void;
   onDeleteFile?: (file: File) => void;
   onNewFile?: (directory: Directory) => void;
@@ -252,7 +252,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
   }
   componentDidMount() {
     this.ensureTree();
-    (this.tree as any).model.setInput(this.props.directory);
+    (this.tree as any).model.setInput(this.props.directory.getModel());
     (this.tree as any).model.onDidSelect((e: any) => {
       if (e.selection.length) {
         this.onClickFile(e.selection[0]);

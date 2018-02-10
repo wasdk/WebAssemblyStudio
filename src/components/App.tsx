@@ -28,7 +28,7 @@ import { Editor, EditorPane, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 
-import { Project, File, FileType, Directory, shallowCompare } from "../model";
+import { Project, File, FileType, Directory, shallowCompare, ModelRef } from "../model";
 import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 
@@ -76,7 +76,7 @@ import Group from "../utils/group";
 import { StatusBar } from "./StatusBar";
 
 export interface AppState {
-  file: File;
+  file: ModelRef<File>;
   fiddle: string;
   groups: Group[];
   group: Group;
@@ -85,12 +85,12 @@ export interface AppState {
    * If not null, the the new file dialog is open and files are created in this
    * directory.
    */
-  newFileDialogDirectory: Directory;
+  newFileDialogDirectory?: ModelRef<Directory>;
 
   /**
    * If not null, the the edit file dialog is open.
    */
-  editFileDialogFile: File;
+  editFileDialogFile?: ModelRef<File>;
 
   /**
    * If true, the share fiddle dialog is open.
@@ -117,13 +117,13 @@ export interface AppState {
    */
   editorSplits: SplitInfo[];
   /**
-   * If true, the upload file dialog is open.
+   * If not null, the upload file dialog is open.
    */
-  uploadFileDialogDirectory: Directory;
+  uploadFileDialogDirectory: ModelRef<Directory>;
   /**
    * If true, the new directory dialog is open.
    */
-  newDirectoryDialog: Directory;
+  newDirectoryDialog: ModelRef<Directory>;
   showProblems: boolean;
   showSandbox: boolean;
 }
@@ -606,7 +606,7 @@ export class App extends React.Component<AppProps, AppState> {
             group.open(file);
             self.setState({ group });
           }}
-          onDoubleClickFile={(file) => {
+          onDoubleClickFile={(file: File) => {
             if (file instanceof Directory) {
               return;
             }
@@ -673,7 +673,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.setState({ newFileDialogDirectory: null });
           }}
           onCreate={(file: File) => {
-            this.state.newFileDialogDirectory.addFile(file);
+            this.state.newFileDialogDirectory.getModel().addFile(file);
             this.setState({ newFileDialogDirectory: null });
           }}
         />
@@ -686,7 +686,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.setState({ editFileDialogFile: null });
           }}
           onChange={(name: string, description) => {
-            const file = this.state.editFileDialogFile;
+            const file = this.state.editFileDialogFile.getModel();
             file.name = name;
             file.description = description;
             this.setState({ editFileDialogFile: null });
@@ -711,7 +711,7 @@ export class App extends React.Component<AppProps, AppState> {
            }}
           onUpload={(files: File[]) => {
             files.map((file: File) => {
-              this.state.uploadFileDialogDirectory.addFile(file);
+              this.state.uploadFileDialogDirectory.getModel().addFile(file);
             });
             this.setState({ uploadFileDialogDirectory: null });
           }}
@@ -725,7 +725,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.setState({ newDirectoryDialog: null });
            }}
           onCreate={(directory: Directory) => {
-            this.state.newDirectoryDialog.addFile(directory);
+            this.state.newDirectoryDialog.getModel().addFile(directory);
             this.setState({ newDirectoryDialog: null });
           }}
         />
@@ -741,13 +741,13 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         >
           <Workspace
-            project={this.project}
+            project={ModelRef.getRef(this.project)}
             file={this.state.file}
             onNewFile={(directory: Directory) => {
-              this.setState({ newFileDialogDirectory: directory});
+              this.setState({ newFileDialogDirectory: ModelRef.getRef(directory)});
             }}
             onEditFile={(file: File) => {
-              this.setState({ editFileDialogFile: file});
+              this.setState({ editFileDialogFile: ModelRef.getRef(file)});
             }}
             onDeleteFile={(file: File) => {
               let message = "";
@@ -772,10 +772,10 @@ export class App extends React.Component<AppProps, AppState> {
               this.forceUpdate();
             }}
             onUploadFile={(directory: Directory) => {
-              this.setState({ uploadFileDialogDirectory: directory});
+              this.setState({ uploadFileDialogDirectory: ModelRef.getRef(directory)});
             }}
             onNewDirectory={(directory: Directory) => {
-              this.setState({ newDirectoryDialog: directory});
+              this.setState({ newDirectoryDialog: ModelRef.getRef(directory)});
             }}
           />
           <div className="fill">
@@ -793,13 +793,13 @@ export class App extends React.Component<AppProps, AppState> {
                 }}
               >
                 {editorPanes}
-                <ControlCenter project={this.project} ref={(ref) => this.setControlCenter(ref)} />
+                <ControlCenter project={ModelRef.getRef(this.project)} ref={(ref) => this.setControlCenter(ref)} />
               </Split>
             </div>
           </div>
         </Split>
       </div>
-      <StatusBar project={this.project}/>
+      <StatusBar project={ModelRef.getRef(this.project)}/>
     </div>;
   }
 }

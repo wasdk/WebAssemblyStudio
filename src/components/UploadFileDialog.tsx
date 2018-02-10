@@ -24,13 +24,13 @@ import { Service } from "../service";
 import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoGear, GoFile, GoX, Icon, GoPencil, GoCheck } from "./shared/Icons";
-import {File, FileType, Directory, extensionForFileType, nameForFileType, filetypeForExtension} from "../model";
+import {File, FileType, Directory, extensionForFileType, nameForFileType, filetypeForExtension, ModelRef } from "../model";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, FileUploadInput } from "./Widgets";
 
 export interface UploadFileDialogProps {
   isOpen: boolean;
-  directory: Directory;
+  directory: ModelRef<Directory>;
   onUpload: (file: File[]) => void;
   onCancel: () => void;
 }
@@ -57,7 +57,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
         errorStr += "Illegal characters in file name.";
       } else if (!file.name.endsWith(extensionForFileType(file.fileType))) {
         errorStr +=  nameForFileType(file.fileType) + " file extension is missing.";
-      } else if (directory && directory.getImmediateChild(file.name)) {
+      } else if (directory && directory.getModel().getImmediateChild(file.name)) {
         errorStr += `File '${file.name}' already exists.`;
       }
     }
