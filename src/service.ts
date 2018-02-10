@@ -25,7 +25,6 @@ import "monaco-editor";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes } from "./util";
 import { assert } from "./index";
 import getConfig from "./config";
-import * as JSZip from "jszip";
 
 declare interface BinaryenModule {
   optimize(): any;
@@ -318,37 +317,6 @@ export class Service {
       }
     }
     return uri;
-  }
-
-  static async downloadProject(project: Project, uri?: string) {
-    const zipFile: JSZip = new JSZip();
-    let zipName: string = "download.zip";
-    if (!isUndefined(uri)) {
-      zipName = `${uri}.zip`;
-    }
-    const queue: Array<{filePrefix: string; file: File}> = [];
-    project.mapEachFile((f: File) => queue.push({filePrefix: "", file: f}));
-    while (queue.length > 0) {
-      const {filePrefix, file} = queue.shift();
-      const fileName = filePrefix + file.name;
-      if (file instanceof Directory) {
-        file.mapEachFile(f => queue.push({filePrefix: fileName + "/", file: f}));
-        zipFile.folder(fileName);
-        continue;
-      }
-      zipFile.file(fileName, file.data);
-    }
-    await zipFile.generateAsync({type: "blob", mimeType: "application/zip"}).then((blob: Blob) => {
-      // Creating <a> to programmatically click for downloading zip via blob's URL
-      const link = document.createElement("a");
-      link.download = zipName;
-      link.href = URL.createObjectURL(blob);
-      // A fix for making link clickable in Firefox
-      // Explicity adding link to DOM for Firefox
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
   }
 
   static async exportProjectToGist(project: Project, uri?: string): Promise<string> {
