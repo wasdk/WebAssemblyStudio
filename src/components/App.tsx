@@ -28,6 +28,7 @@ import { Editor, EditorPane, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 
+import appStore from "../stores/AppStore";
 import { Project, File, FileType, Directory, shallowCompare, ModelRef } from "../model";
 import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
@@ -76,6 +77,7 @@ import Group from "../utils/group";
 import { StatusBar } from "./StatusBar";
 
 export interface AppState {
+  project: ModelRef<Project>;
   file: ModelRef<File>;
   fiddle: string;
   groups: Group[];
@@ -135,13 +137,13 @@ export interface AppProps {
 
 export class App extends React.Component<AppProps, AppState> {
   fiddle: string;
-  project: Project;
   toastContainer: ToastContainer;
   constructor(props: AppProps) {
     super(props);
     const group0 = new Group(null, null, []);
     this.state = {
       fiddle: props.fiddle,
+      project: null,
       file: null,
       groups: [
         group0,
@@ -176,38 +178,50 @@ export class App extends React.Component<AppProps, AppState> {
   openProjectFiles(json: any) {
     const groups = json.openedFiles.map((paths: string[]) => {
       const files = paths.map(file => {
-        return this.project.getFile(file);
+        return appStore.getFileByName(file).getModel();
       });
       return new Group(files[0], null, files);
     });
     this.setState({ group: groups[0], groups });
   }
   async initializeProject() {
-    this.project = new Project();
+    appStore.initStore();
+    this.setState({ project: appStore.getProject() });
+    this.bindAppStoreEvents();
     if (this.state.fiddle) {
-      let json = await Service.loadJSON(this.state.fiddle);
-      json = await Service.loadProject(json, this.project);
-      if (false && (json as any).openedFiles) {
-        // this.loadProject(json);
-      }
-      this.logLn("Project Loaded ...");
+      this.loadProjectFromFiddle();
+    }
+  }
+  async loadProjectFromFiddle() {
+    const newProject = new Project();
+    let json = await Service.loadJSON(this.state.fiddle);
+    json = await Service.loadProject(json, newProject);
+    if (false && (json as any).openedFiles) {
+      // this.openProjectFiles(json);
+    }
+    this.logLn("Project Loaded ...");
+    appStore.loadProject(newProject);
+  }
+  bindAppStoreEvents() {
+    appStore.onLoadProject.register(() => {
+      this.setState({ project: appStore.getProject() });
       this.forceUpdate();
       this.runTask("project:load");
-    }
-    this.project.onDidChangeBuffer.register(() => {
+    });
+    appStore.onDidChangeBuffer.register(() => {
       this.forceUpdate();
     });
-    this.project.onDidChangeData.register(() => {
+    appStore.onDidChangeData.register(() => {
       this.forceUpdate();
     });
-    this.project.onDidChangeChildren.register(() => {
+    appStore.onDidChangeChildren.register(() => {
       this.forceUpdate();
     });
-
-    this.project.onDirtyFileUsed.register((file: File) => {
+    appStore.onDirtyFileUsed.register((file: File) => {
       this.logLn(`Changes in ${file.getPath()} were ignored, save your changes.`, "warn");
     });
   }
+
   // TODO: Optimize
   // shouldComponentUpdate(nextProps: any, nextState: AppState) {
   //   let state = this.state;
@@ -368,15 +382,17 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   run() {
-    const root = this.project;
-    let src = root.getFile("src/main.html").getData() as string;
+    const file = appStore.getFileByName("src/main.html");
+    let src = appStore.getFileSource(file);
 
     src = src.replace(/src\s*=\s*"(.+?)"/, (a: string, b: any) => {
-      const src = root.getFile(b).buffer.getValue();
+      const bFile = appStore.getFileByName(b);
+      const src = appStore.getFileBuffer(bFile).getValue();
       const blob = new Blob([src], { type: "text/javascript" });
       return `src="${window.URL.createObjectURL(blob)}"`;
     });
-    this.controlCenter.sandbox.run(this.project, src);
+    const projectModel = this.state.project.getModel();
+    this.controlCenter.sandbox.run(projectModel, src);
   }
   splitGroup() {
     const groups = this.state.groups;
@@ -396,7 +412,7 @@ export class App extends React.Component<AppProps, AppState> {
       const gulp = new Gulpy();
       const context = {
         gulp,
-        project: this.project,
+        project: this.state.project.getModel(),
         Service,
         Language,
         logLn: this.logLn.bind(this)
@@ -412,33 +428,37 @@ export class App extends React.Component<AppProps, AppState> {
         this.logLn(`Task ${name} is not optional.` , "error");
       }
     };
-    const buildTs = this.project.getFile("build.ts");
-    const buildJs = this.project.getFile("build.js");
-    if (buildTs) {
-      const output = await buildTs.getEmitOutput();
+    const buildTsFile = appStore.getFileByName("build.ts");
+    const buildJsFile = appStore.getFileByName("build.js");
+    if (buildTsFile) {
+      const output = await buildTsFile.getModel().getEmitOutput();
       await run(output.outputFiles[0].text);
-    } else if (buildJs) {
-      await run(buildJs.getData() as string);
+    } else if (buildJsFile) {
+      await run(appStore.getFileSource(buildJsFile));
     } else {
       this.logLn(Errors.BuildFileMissing, "error");
     }
   }
   async build() {
-    this.project.setStatus("Building Project ...");
+    const projectModel = this.state.project.getModel();
+    projectModel.setStatus("Building Project ...");
     await this.runTask("default");
-    this.project.clearStatus();
+    projectModel.clearStatus();
+    return;
   }
   async update() {
     this.logLn("Saving Project ...");
     const openedFiles = this.state.groups.map((group) => {
       return group.files.map((file) => file.getPath());
     });
-    await Service.saveProject(this.project, openedFiles, this.state.fiddle);
+    const projectModel = this.state.project.getModel();
+    await Service.saveProject(projectModel, openedFiles, this.state.fiddle);
     this.logLn("Saved Project OK");
   }
   async fork() {
     this.logLn("Forking Project ...");
-    const fiddle = await Service.saveProject(this.project, []);
+    const projectModel = this.state.project.getModel();
+    const fiddle = await Service.saveProject(projectModel, []);
     this.logLn("Forked Project OK " + fiddle);
     const search = window.location.search;
     if (this.state.fiddle) {
@@ -451,7 +471,8 @@ export class App extends React.Component<AppProps, AppState> {
   }
   async gist() {
     this.logLn("Exporting Project ...");
-    const gistURI = await Service.exportProjectToGist(this.project, this.state.fiddle);
+    const projectModel = this.state.project.getModel();
+    const gistURI = await Service.exportProjectToGist(projectModel, this.state.fiddle);
     this.logLn("Project Gist CREATED ");
     if (gistURI) {
       if (this.toastContainer) {
@@ -465,7 +486,8 @@ export class App extends React.Component<AppProps, AppState> {
   async download() {
     this.logLn("Downloading Project ...");
     const downloadService = await import("../utils/download");
-    await downloadService.downloadProject(this.project, this.state.fiddle);
+    const projectModel = this.state.project.getModel();
+    await downloadService.downloadProject(projectModel, this.state.fiddle);
     this.logLn("Project Zip CREATED ");
   }
   /**
@@ -657,7 +679,8 @@ export class App extends React.Component<AppProps, AppState> {
             if (!template.project) {
               this.logLn("Template doesn't contain a project definition.", "error");
             } else {
-              const json = await Service.loadProject(template.project, this.project);
+              const projectModel = this.state.project.getModel();
+              const json = await Service.loadProject(template.project, projectModel);
               this.openProjectFiles(json);
               this.runTask("project:load");
             }
@@ -741,7 +764,7 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         >
           <Workspace
-            project={ModelRef.getRef(this.project)}
+            project={this.state.project}
             file={this.state.file}
             onNewFile={(directory: Directory) => {
               this.setState({ newFileDialogDirectory: ModelRef.getRef(directory)});
@@ -793,13 +816,13 @@ export class App extends React.Component<AppProps, AppState> {
                 }}
               >
                 {editorPanes}
-                <ControlCenter project={ModelRef.getRef(this.project)} ref={(ref) => this.setControlCenter(ref)} />
+                <ControlCenter ref={(ref) => this.setControlCenter(ref)} />
               </Split>
             </div>
           </div>
         </Split>
       </div>
-      <StatusBar project={ModelRef.getRef(this.project)}/>
+      <StatusBar />
     </div>;
   }
 }

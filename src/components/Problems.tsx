@@ -20,6 +20,7 @@
  */
 
 import * as React from "react";
+import appStore from "../stores/AppStore";
 import { Project, File, Directory, FileType, getIconForFileType, Problem, ModelRef } from "../model";
 import { Service } from "../service";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
@@ -27,7 +28,6 @@ import { ITree, ContextMenuEvent } from "../monaco-extra";
 import { FileTemplate } from "./DirectoryTree";
 
 export interface ProblemsProps {
-  project: ModelRef<Project>;
 }
 
 class ProblemTemplate {
@@ -200,10 +200,13 @@ export class Problems extends React.Component<ProblemsProps, {
   }
   componentDidMount() {
     this.ensureTree();
-    (this.tree as any).model.setInput(this.props.project.getModel());
-    this.props.project.getModel().onDidChangeProblems.register(() => {
+    (this.tree as any).model.setInput(appStore.getProject().getModel());
+    appStore.onDidChangeProblems.register(() => {
       this.tree.refresh();
       this.tree.expandAll();
+    });
+    appStore.onLoadProject.register(() => {
+      (this.tree as any).model.setInput(appStore.getProject().getModel());
     });
   }
   componentWillReceiveProps(props: ProblemsProps) {

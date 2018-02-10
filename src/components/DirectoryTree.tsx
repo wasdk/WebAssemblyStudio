@@ -86,11 +86,13 @@ export class FileTemplate {
 }
 
 export class DirectoryTree extends React.Component<DirectoryTreeProps, {
+  directory: ModelRef<Directory>;
 }> {
   constructor(props: DirectoryTreeProps) {
     super(props);
     this.contextViewService = new (window as any).ContextViewService(document.documentElement);
     this.contextMenuService = new (window as any).ContextMenuService(document.documentElement, null, null, this.contextViewService);
+    this.state = { directory: this.props.directory };
   }
 
   tree: ITree;
@@ -260,8 +262,13 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
     });
   }
   componentWillReceiveProps(props: DirectoryTreeProps) {
-    this.tree.refresh();
-    this.tree.expandAll();
+    if (this.state.directory !== props.directory) {
+      (this.tree as any).model.setInput(props.directory.getModel());
+      this.setState({ directory: props.directory });
+    } else {
+      this.tree.refresh();
+      this.tree.expandAll();
+    }
   }
   render() {
     return <div className="fill" ref={(ref) => this.setContainer(ref)}/>;

@@ -24,6 +24,7 @@ import { Service } from "../service";
 import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoGear, GoFile, GoX, Icon, GoPencil } from "./shared/Icons";
+import appStore from "../stores/AppStore";
 import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef } from "../model";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, TextInputBox, Spacer } from "./Widgets";
@@ -53,8 +54,8 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, {
     this.setState({ description: event.target.value });
   }
   error() {
-    const directory = this.props.file.getModel().parent;
-    const file = ModelRef.getRef(directory.getImmediateChild(this.state.name));
+    const directory = appStore.getParent(this.props.file);
+    const file = appStore.getImmediateChild(directory, this.state.name);
     if (file && file !== this.props.file) {
       return `A file with the same name already exists.`;
     }

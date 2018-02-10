@@ -29,9 +29,7 @@ import { FileType, getIconForFileType, Problem, ModelRef } from "../model";
 import { Project, File, Directory, shallowCompare } from "../model";
 import { Problems } from "./Problems";
 
-export class ControlCenter extends React.Component<{
-  project: ModelRef<Project>;
-}, {
+export class ControlCenter extends React.Component<{}, {
     /**
      * Split state.
      */
@@ -97,7 +95,7 @@ export class ControlCenter extends React.Component<{
           view={this.outputView}
         />;
       case "problems":
-        return <Problems project={this.props.project} />;
+        return <Problems />;
       default:
         return null;
     }

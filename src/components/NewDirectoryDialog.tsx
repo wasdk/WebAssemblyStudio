@@ -24,6 +24,7 @@ import { Service } from "../service";
 import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoFile, GoX, Icon } from "./shared/Icons";
+import appStore from "../stores/AppStore";
 import { Directory, ModelRef } from "../model";
 import { ChangeEvent } from "react";
 import { TextInputBox } from "./Widgets";
@@ -50,7 +51,7 @@ export class NewDirectoryDialog extends React.Component<{
     if (this.state.name) {
       if (!/^[a-z0-9\.\-\_]+$/i.test(this.state.name)) {
         return "Illegal characters in directory name.";
-      } else if (directory && directory.getModel().getImmediateChild(this.state.name)) {
+      } else if (directory && appStore.getImmediateChild(directory, this.state.name)) {
         return `Directory '${this.state.name}' already exists.`;
       }
     }
