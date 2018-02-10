@@ -63,6 +63,10 @@
 }, {
   "name": "Empty AssemblyScript Project",
   "description": `# Empty AssemblyScript Project
+
+[AssemblyScript](https://github.com/AssemblyScript/assemblyscript) compiles strictly typed TypeScript to WebAssembly using Binaryen.
+
+See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/wiki) for further instructions and documentation.
 `,
   "icon": "svg/file_type_typescript.svg",
   "project": {
