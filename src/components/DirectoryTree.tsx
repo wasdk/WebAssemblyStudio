@@ -133,6 +133,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           actions.push(new (window as any).Action("x", "Validate w/ Binaryen", "octicon-check", true, () => {
             Service.validateWasmWithBinaryen(file);
           }));
+          actions.push(new (window as any).Action("x", "To asm.js w/ Binaryen", "octicon-file-code", true, () => {
+            Service.convertWasmToAsmWithBinaryen(file);
+          }));
           actions.push(new (window as any).Action("x", "Download", "octicon-cloud-download", true, () => {
             Service.download(file);
           }));

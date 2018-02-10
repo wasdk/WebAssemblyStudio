@@ -3,14 +3,11 @@ gulp.task("build", async () => require(["asc"], asc => {
   const args = [
     "main.ts",
     "--baseDir", "src",
-    "--textFile", "../out/main.wast",
     "--binaryFile", "../out/main.wasm",
-    "--asmjsFile", "../out/main.asm.js",
     "--sourceMap",
     "--measure"
   ];
 
-  project.setStatus("Building Project ...");
   logLn(`Executing: asc ${args.join(" ")}\n`, "info");
   asc.main(args, {
     stdout: asc.createMemoryStream(),
