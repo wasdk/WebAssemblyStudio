@@ -1,18 +1,15 @@
 {
   "compilerOptions": {
-      "outDir": "./dist/",
-      "sourceMap": true,
       "noImplicitAny": true,
       "skipLibCheck": true,
-      "module": "esnext",
-      "moduleResolution": "node",
+      "module": "commonjs",
       "target": "es6",
       "lib": ["dom", "es6"],
       "jsx": "react",
       "declaration": true
   },
   "include": [
-      "./src/**/*"
+      "./tests/**/*"
   ],
   "exclude": [
       "./templates/**/*"

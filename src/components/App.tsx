@@ -425,7 +425,8 @@ export class App extends React.Component<AppProps, AppState> {
   }
   async download() {
     this.logLn("Downloading Project ...");
-    await Service.downloadProject(this.project, this.state.fiddle);
+    const downloadService = await import("../utils/download");
+    await downloadService.downloadProject(this.project, this.state.fiddle);
     this.logLn("Project Zip CREATED ");
   }
   /**
