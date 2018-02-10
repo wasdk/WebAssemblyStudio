@@ -1,1 +1,1 @@
-# Empty TypeScript Project
+# Empty AssemblyScript Project

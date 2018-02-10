@@ -61,8 +61,8 @@
     ]
   }
 }, {
-  "name": "Empty TypeScript Project",
-  "description": `# Empty TypeScript Project
+  "name": "Empty AssemblyScript Project",
+  "description": `# Empty AssemblyScript Project
 `,
   "icon": "svg/file_type_typescript.svg",
   "project": {
