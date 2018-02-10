@@ -29,6 +29,13 @@ import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 
 import appStore from "../stores/AppStore";
+import {
+  addFileTo,
+  loadProject,
+  initStore,
+  updateFileNameAndDescription,
+  deleteFile,
+} from "../actions/AppActions";
 import { Project, File, FileType, Directory, shallowCompare, ModelRef } from "../model";
 import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
@@ -185,7 +192,7 @@ export class App extends React.Component<AppProps, AppState> {
     this.setState({ group: groups[0], groups });
   }
   async initializeProject() {
-    appStore.initStore();
+    initStore();
     this.setState({ project: appStore.getProject() });
     this.bindAppStoreEvents();
     if (this.state.fiddle) {
@@ -200,7 +207,7 @@ export class App extends React.Component<AppProps, AppState> {
       // this.openProjectFiles(json);
     }
     this.logLn("Project Loaded ...");
-    appStore.loadProject(newProject);
+    loadProject(newProject);
   }
   bindAppStoreEvents() {
     appStore.onLoadProject.register(() => {
@@ -696,7 +703,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.setState({ newFileDialogDirectory: null });
           }}
           onCreate={(file: File) => {
-            this.state.newFileDialogDirectory.getModel().addFile(file);
+            addFileTo(file, this.state.newFileDialogDirectory.getModel());
             this.setState({ newFileDialogDirectory: null });
           }}
         />
@@ -710,8 +717,7 @@ export class App extends React.Component<AppProps, AppState> {
           }}
           onChange={(name: string, description) => {
             const file = this.state.editFileDialogFile.getModel();
-            file.name = name;
-            file.description = description;
+            updateFileNameAndDescription(file, name, description);
             this.setState({ editFileDialogFile: null });
           }}
         />
@@ -734,7 +740,7 @@ export class App extends React.Component<AppProps, AppState> {
            }}
           onUpload={(files: File[]) => {
             files.map((file: File) => {
-              this.state.uploadFileDialogDirectory.getModel().addFile(file);
+              addFileTo(file, this.state.uploadFileDialogDirectory.getModel());
             });
             this.setState({ uploadFileDialogDirectory: null });
           }}
@@ -748,7 +754,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.setState({ newDirectoryDialog: null });
            }}
           onCreate={(directory: Directory) => {
-            this.state.newDirectoryDialog.getModel().addFile(directory);
+            addFileTo(directory, this.state.newDirectoryDialog.getModel());
             this.setState({ newDirectoryDialog: null });
           }}
         />
@@ -780,7 +786,7 @@ export class App extends React.Component<AppProps, AppState> {
                 message = `Are you sure you want to delete '${file.name}'?`;
               }
               if (confirm(message)) {
-                file.parent.removeFile(file);
+                deleteFile(file);
               }
             }}
             onClickFile={(file: File) => {

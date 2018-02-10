@@ -21,6 +21,9 @@
 
 import { EventDispatcher, ModelRef, Project, File, Directory } from "../model";
 
+import dispatcher from "../dispatcher";
+import { AppActionType, AppAction, AddFileToAction, DeleteFileAction, UpdateFileNameAndDescriptionAction, LoadProjectAction } from "../actions/AppActions";
+
 export class AppStore {
   private project: Project;
 
@@ -40,12 +43,12 @@ export class AppStore {
   get onRun() { return Project.onRun; }
   get onBuild() { return Project.onBuild; }
 
-  public initStore() {
+  private initStore() {
     this.project = new Project();
     this.bindProject();
   }
 
-  public loadProject(project: Project) {
+  private loadProject(project: Project) {
     this.project = project;
     this.bindProject();
     this.onLoadProject.dispatch();
@@ -61,8 +64,17 @@ export class AppStore {
     this.project.onDidChangeChildren.register(() => this.onDidChangeChildren.dispatch());
   }
 
-  public addFile(file: File) {
-    this.project.addFile(file);
+  private addFileTo(file: File, parent: Directory) {
+    parent.addFile(file);
+  }
+
+  private deleteFile(file: File) {
+    file.parent.removeFile(file);
+  }
+
+  private updateFileNameAndDescription(file: File, name: string, description: string) {
+    file.name = name;
+    file.description = description;
   }
 
   public getProject(): ModelRef<Project> {
@@ -100,8 +112,38 @@ export class AppStore {
   public getStatus(): string {
     return this.project.status;
   }
+
+  public handleActions(action: AppAction ) {
+    switch (action.type) {
+      case AppActionType.ADD_FILE_TO: {
+        const { file, parent } = action as AddFileToAction;
+        this.addFileTo(file, parent);
+        break;
+      }
+      case AppActionType.DELETE_FILE: {
+        const { file } = action as DeleteFileAction;
+        this.deleteFile(file);
+        break;
+      }
+      case AppActionType.UPDATE_FILE_NAME_AND_DESCRIPTION: {
+        const { file, name, description } = action as UpdateFileNameAndDescriptionAction;
+        this.updateFileNameAndDescription(file, name, description);
+        break;
+      }
+      case AppActionType.LOAD_PROJECT: {
+        const { project } = action as LoadProjectAction;
+        this.loadProject(project);
+        break;
+      }
+      case AppActionType.INIT_STORE: {
+        this.initStore();
+        break;
+      }
+    }
+  }
 }
 
 const appStore = new AppStore();
+dispatcher.register((action: any) => appStore.handleActions(action));
 
 export default appStore;
