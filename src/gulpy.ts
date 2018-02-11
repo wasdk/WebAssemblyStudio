@@ -95,6 +95,9 @@ export class Gulpy {
   parallel(tasks: string[]): PromiseMaker {
     return null;
   }
+  hasTask(name: string) {
+    return name in this.tasks;
+  }
   async run(name: string) {
     const session = new GulpySession(this);
     await session.run(this.tasks[name]);

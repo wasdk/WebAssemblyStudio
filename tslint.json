@@ -41,7 +41,8 @@
       "jsx-no-multiline-js": false,
       "jsx-no-lambda": false,
       "jsx-boolean-value": false,
-      "file-header": [true, "(Mozilla Foundation|the Public Domain)"]
+      "file-header": [true, "(Mozilla Foundation|the Public Domain)"],
+      "no-namespace": false
     },
     "rulesDirectory": []
 }

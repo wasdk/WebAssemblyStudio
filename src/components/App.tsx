@@ -192,6 +192,7 @@ export class App extends React.Component<AppProps, AppState> {
       }
       this.logLn("Project Loaded ...");
       this.forceUpdate();
+      this.runTask("project:load");
     }
     this.project.onDidChangeBuffer.register(() => {
       this.forceUpdate();
@@ -387,16 +388,32 @@ export class App extends React.Component<AppProps, AppState> {
     this.state.groups.push(group);
     this.setState({ group });
   }
-  async build() {
+  /**
+   * Runs a gulp task.
+   */
+  async runTask(name: string, optional: boolean = false) {
     const run = async (src: string) => {
-      const fn = new Function("gulp", "project", "Service", "logLn", src);
       const gulp = new Gulpy();
-      fn(gulp, this.project, Service, this.logLn.bind(this));
-      await gulp.run("default");
+      const context = {
+        gulp,
+        project: this.project,
+        Service,
+        Language,
+        logLn: this.logLn.bind(this)
+      };
+      Function.apply(null, Object.keys(context).concat(src)).apply(gulp, Object.values(context));
+      if (gulp.hasTask(name)) {
+        try {
+          await gulp.run(name);
+        } catch (e) {
+          this.logLn(e.message, "error");
+        }
+      } else if (!optional) {
+        this.logLn(`Task ${name} is not optional.` , "error");
+      }
     };
     const buildTs = this.project.getFile("build.ts");
     const buildJs = this.project.getFile("build.js");
-    this.project.setStatus("Building Project ...");
     if (buildTs) {
       const output = await buildTs.getEmitOutput();
       await run(output.outputFiles[0].text);
@@ -405,8 +422,11 @@ export class App extends React.Component<AppProps, AppState> {
     } else {
       this.logLn(Errors.BuildFileMissing, "error");
     }
+  }
+  async build() {
+    this.project.setStatus("Building Project ...");
+    await this.runTask("default");
     this.project.clearStatus();
-    return;
   }
   async update() {
     this.logLn("Saving Project ...");
@@ -639,6 +659,7 @@ export class App extends React.Component<AppProps, AppState> {
             } else {
               const json = await Service.loadProject(template.project, this.project);
               this.openProjectFiles(json);
+              this.runTask("project:load");
             }
             this.setState({ newProjectDialog: false });
           }}
