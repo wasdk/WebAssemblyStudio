@@ -63,14 +63,14 @@ export class Tabs extends Component<TabsProps, TabsState> {
   }
 
   onDoubleClick   = (e: MouseEvent<any>)  => { this.props.onDoubleClick(); };
-  getContainerRef = (ref: HTMLDivElement) => { this.container = ref; };
+  setContainerRef = (ref: HTMLDivElement) => { this.container = ref; };
 
   render() {
     const { onDoubleClick, children, commands } = this.props;
     return (
       <div className="tabs-container">
         <div
-          ref={this.getContainerRef}
+          ref={this.setContainerRef}
           className="tabs-tab-container"
           onWheel={this.onWheel}
           onDoubleClick={this.onDoubleClick}
