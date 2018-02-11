@@ -458,10 +458,10 @@ export class Directory extends File {
   mapEachFile<T>(fn: (file: File) => T): T[] {
     return this.children.map(fn);
   }
-  addFile(file: File) {
-    assert(file.parent === null);
-    this.children.push(file);
-    file.parent = this;
+  addFile(fileOrDirectory: File) {
+    assert(fileOrDirectory.parent === null);
+    this.children.push(fileOrDirectory);
+    fileOrDirectory.parent = this;
     this.notifyDidChangeChildren();
   }
   removeFile(file: File) {
