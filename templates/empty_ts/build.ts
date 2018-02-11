@@ -1,6 +1,5 @@
-const asc = require("assemblyscript/bin/asc");
-
 gulp.task("build", async () => {
+  const asc = require("assemblyscript/bin/asc");
   return asc.main([
     "main.ts",
     "--baseDir", "src",
@@ -16,3 +15,5 @@ gulp.task("build", async () => {
 });
 
 gulp.task("default", ["build"], async () => {});
+
+gulp.task("project:load", async () => eval(project.getFile("setup.ts").data));

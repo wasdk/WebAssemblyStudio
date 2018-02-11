@@ -185,6 +185,7 @@ export class App extends React.Component<AppProps, AppState> {
       }
       this.logLn("Project Loaded ...");
       this.forceUpdate();
+      this.runGulpTask("project:load");
     }
     this.project.onDidChangeBuffer.register(() => {
       this.forceUpdate();
@@ -631,14 +632,8 @@ export class App extends React.Component<AppProps, AppState> {
               this.logLn("Template doesn't contain a project definition.", "error");
             } else {
               const json = await Service.loadProject(template.project, this.project);
-              if (template.onload) {
-                const context = {
-                  project: this.project,
-                  Language
-                };
-                Function.apply(null, Object.keys(context).concat(template.onload)).apply(this, Object.values(context));
-              }
               this.openProjectFiles(json);
+              this.runGulpTask("project:load");
             }
             this.setState({ newProjectDialog: false });
           }}

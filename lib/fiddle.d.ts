@@ -52,3 +52,5 @@ declare namespace require {
   /** Configures external module paths etc. */
   export function config(options: {}): void;
 }
+
+declare const monaco: any;
