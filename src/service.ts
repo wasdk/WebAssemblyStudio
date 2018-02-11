@@ -78,6 +78,7 @@ interface IFile {
   children: IFile[];
   type?: string;
   data?: string;
+  description?: string;
 }
 
 export interface IServiceRequestTask {
@@ -372,6 +373,7 @@ export class Service {
         return directory;
       }
       const file = new File(json.name, json.type as FileType);
+      file.description = json.description;
       if (json.data) {
         file.setData(json.data);
       } else {
