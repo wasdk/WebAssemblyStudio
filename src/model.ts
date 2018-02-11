@@ -191,6 +191,10 @@ export function getIconForFileType(fileType: FileType): string {
     return "file_type_c";
   } else if (fileType === FileType.Cpp) {
     return "file_type_cpp";
+  } else if (fileType === FileType.Rust) {
+    return "file_type_rust";
+  } else if (fileType === FileType.Markdown) {
+    return "file_type_markdown";
   } else if (fileType === FileType.Directory) {
     return "default_folder";
   }

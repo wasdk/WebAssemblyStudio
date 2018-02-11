@@ -20,22 +20,38 @@
  */
 
 import * as React from "react";
-import { ReactElement, ReactNode, MouseEvent, WheelEvent } from "react";
+import {
+  Component,
+  PureComponent,
+  ReactElement,
+  ReactNode,
+  MouseEvent,
+  WheelEvent,
+} from "react";
 import { clamp } from "../../index";
 
-export class Tabs extends React.Component<{
+export interface TabsProps {
   onDoubleClick?: Function;
   commands?: JSX.Element | JSX.Element [];
-}, {
-    scrollLeft: number;
-  }> {
+}
+
+export interface TabsState {
+  scrollLeft: number;
+}
+
+export class Tabs extends Component<TabsProps, TabsState> {
+
+  static defaultProps: TabsProps = {
+    // tslint:disable-next-line
+    onDoubleClick: () => {},
+  };
+
   container: HTMLDivElement;
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      scrollLeft: 0
-    };
-  }
+
+  state = {
+    scrollLeft: 0,
+  };
+
   onWheel = (e: WheelEvent<any>) => {
     const delta = clamp(e.deltaY, -16, 16);
     let { scrollLeft } = this.state;
@@ -46,25 +62,29 @@ export class Tabs extends React.Component<{
     e.preventDefault();
   }
 
-  onDoubleClick = (e: MouseEvent<any>) => {
-    return this.props.onDoubleClick && this.props.onDoubleClick();
-  }
+  onDoubleClick   = (e: MouseEvent<any>)  => this.props.onDoubleClick();
+  getContainerRef = (ref: HTMLDivElement) => { this.container = ref; };
 
   render() {
-    return <div className="tabs-container">
-      <div
-        ref={(ref) => { this.container = ref; }}
-        className="tabs-tab-container"
-        onWheel={this.onWheel}
-        onDoubleClick={this.onDoubleClick}
-      >
-        {this.props.children}
+    const { onDoubleClick, children, commands } = this.props;
+    return (
+      <div className="tabs-container">
+        <div
+          ref={this.getContainerRef}
+          className="tabs-tab-container"
+          onWheel={this.onWheel}
+          onDoubleClick={this.onDoubleClick}
+        >
+          {children}
+        </div>
+
+        <div className="tabs-command-container">
+          {commands}
+        </div>
       </div>
-      <div className="tabs-command-container">
-        {this.props.commands}
-      </div>
-    </div>;
+    );
   }
+
   componentDidUpdate() {
     this.container.scrollLeft = this.state.scrollLeft;
   }
@@ -82,39 +102,64 @@ export interface TabProps {
   isMarked?: boolean;
 }
 
-export class Tab extends React.Component<TabProps, {}> {
+export class Tab extends PureComponent<TabProps, {}> {
+  static defaultProps: TabProps = {
+    // tslint:disable-next-line
+    onClick: () => {},
+    // tslint:disable-next-line
+    onDoubleClick: () => {},
+    // tslint:disable-next-line
+    onClose: () => {},
+  };
+
   render() {
-    const { onClick, onDoubleClick, onClose } = this.props;
+    const {
+      value,
+      label,
+      icon,
+
+      onClick,
+      onDoubleClick,
+      onClose,
+
+      isActive,
+      isMarked,
+      isItalic,
+    } = this.props;
+
     let className = "tab";
-    if (this.props.isActive) { className += " active"; }
-    if (this.props.isMarked) { className += " marked"; }
-    if (this.props.isItalic) { className += " italic"; }
-    return <div
-      className={className}
-      onClick={(e: MouseEvent<HTMLElement>) => {
-        e.stopPropagation();
-        return onClick && onClick(this.props.value);
-      }}
-      onDoubleClick={(e: MouseEvent<HTMLElement>) => {
-        e.stopPropagation();
-        return onDoubleClick && onDoubleClick(this.props.value);
-      }}
-    >
-      {this.props.icon && <div
-        className="icon"
-        style={{
-          backgroundImage: `url(svg/${this.props.icon}.svg)`
-        }}
-      />
-      }
-      <div className="label">{this.props.label}</div>
+    if (isActive) { className += " active"; }
+    if (isMarked) { className += " marked"; }
+    if (isItalic) { className += " italic"; }
+
+    return (
       <div
-        className="close"
+        className={className}
         onClick={(e: MouseEvent<HTMLElement>) => {
           e.stopPropagation();
-          return onClose && onClose(this.props.value);
+          return onClick(value);
         }}
-      />
-    </div>;
+        onDoubleClick={(e: MouseEvent<HTMLElement>) => {
+          e.stopPropagation();
+          return onDoubleClick(value);
+        }}
+      >
+        {icon && <div
+          className="icon"
+          style={{
+            backgroundImage: `url(svg/${icon}.svg)`
+          }}
+        />
+        }
+        <div className="label">{label}</div>
+        <div
+          className="close"
+          onClick={(e: MouseEvent<HTMLElement>) => {
+            e.stopPropagation();
+            return onClose(value);
+          }}
+        />
+      </div>
+    );
   }
 }
