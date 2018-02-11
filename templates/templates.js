@@ -88,8 +88,8 @@ See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/w
       "name": "build.ts",
       "type": "typescript",
     }, {
-      "name": "setup.ts",
-      "type": "typescript",
+      "name": "setup.js",
+      "type": "javascript",
       "description": "Setup code for convenient use of the AssemblyScript compiler within WebAssemblyStudio."
     }, {
       "name": "README.md",

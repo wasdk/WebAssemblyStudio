@@ -16,4 +16,4 @@ gulp.task("build", async () => {
 
 gulp.task("default", ["build"], async () => {});
 
-gulp.task("project:load", async () => eval(project.getFile("setup.ts").data));
+gulp.task("project:load", async () => eval(project.getFile("setup.js").data));
