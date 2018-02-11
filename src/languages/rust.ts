@@ -158,9 +158,10 @@ const MonarchDefinitions = {
       // delimiters and operators
       [/[{}()\[\]]/,       "@brackets"],
       [/[<>](?!@symbols)/, "@brackets"],
+
       [/@symbols/, {
         cases: {
-          "@ops": "operator",
+          "@operators": "operator",
           "@default": ""
         }
       }],
