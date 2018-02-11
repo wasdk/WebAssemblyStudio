@@ -192,6 +192,7 @@ export class App extends React.Component<AppProps, AppState> {
       }
       this.logLn("Project Loaded ...");
       this.forceUpdate();
+      this.runTask("project:load");
     }
     this.project.onDidChangeBuffer.register(() => {
       this.forceUpdate();
@@ -387,7 +388,10 @@ export class App extends React.Component<AppProps, AppState> {
     this.state.groups.push(group);
     this.setState({ group });
   }
-  async runTask(name: string) {
+  /**
+   * Runs a gulp task.
+   */
+  async runTask(name: string, optional: boolean = false) {
     const run = async (src: string) => {
       const gulp = new Gulpy();
       const context = {
@@ -398,10 +402,14 @@ export class App extends React.Component<AppProps, AppState> {
         logLn: this.logLn.bind(this)
       };
       Function.apply(null, Object.keys(context).concat(src)).apply(gulp, Object.values(context));
-      try {
-        await gulp.run(name);
-      } catch (e) {
-        this.logLn(e.message, "error");
+      if (gulp.hasTask(name)) {
+        try {
+          await gulp.run(name);
+        } catch (e) {
+          this.logLn(e.message, "error");
+        }
+      } else if (!optional) {
+        this.logLn(`Task ${name} is not optional.` , "error");
       }
     };
     const buildTs = this.project.getFile("build.ts");
@@ -651,6 +659,7 @@ export class App extends React.Component<AppProps, AppState> {
             } else {
               const json = await Service.loadProject(template.project, this.project);
               this.openProjectFiles(json);
+              this.runTask("project:load");
             }
             this.setState({ newProjectDialog: false });
           }}
