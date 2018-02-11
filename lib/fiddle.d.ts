@@ -41,14 +41,3 @@ declare class Service {
 declare const project: any;
 
 declare function logLn(message: string, kind?: "" | "info" | "warn" | "error"): void;
-
-/** Asynchronously requires the specified dependencies.. */
-declare function require(deps: string[], fn: (...deps: any[]) => void): void;
-
-/** Synchronously requires the specified (already loaded) dependency. */
-declare function require(name: string): any;
-
-declare namespace require {
-  /** Configures external module paths etc. */
-  export function config(options: {}): void;
-}
