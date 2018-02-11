@@ -195,6 +195,10 @@ export function getIconForFileType(fileType: FileType): string {
     return "file_type_rust";
   } else if (fileType === FileType.Markdown) {
     return "file_type_markdown";
+  } else if (fileType === FileType.HTML) {
+    return "file_type_html";
+  } else if (fileType === FileType.CSS) {
+    return "file_type_css";
   } else if (fileType === FileType.Directory) {
     return "default_folder";
   }
