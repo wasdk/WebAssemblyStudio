@@ -62,7 +62,7 @@ export class Tabs extends Component<TabsProps, TabsState> {
     e.preventDefault();
   }
 
-  onDoubleClick   = (e: MouseEvent<any>)  => this.props.onDoubleClick();
+  onDoubleClick   = (e: MouseEvent<any>)  => { this.props.onDoubleClick(); };
   getContainerRef = (ref: HTMLDivElement) => { this.container = ref; };
 
   render() {
