@@ -137,11 +137,11 @@ export class Tab extends PureComponent<TabProps, {}> {
         className={className}
         onClick={(e: MouseEvent<HTMLElement>) => {
           e.stopPropagation();
-          return onClick(value);
+          onClick(value);
         }}
         onDoubleClick={(e: MouseEvent<HTMLElement>) => {
           e.stopPropagation();
-          return onDoubleClick(value);
+          onDoubleClick(value);
         }}
       >
         {icon && <div
@@ -156,7 +156,7 @@ export class Tab extends PureComponent<TabProps, {}> {
           className="close"
           onClick={(e: MouseEvent<HTMLElement>) => {
             e.stopPropagation();
-            return onClose(value);
+            onClose(value);
           }}
         />
       </div>
