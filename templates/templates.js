@@ -85,8 +85,8 @@ See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/w
         "type": "html",
       }]
     }, {
-      "name": "build.ts",
-      "type": "typescript",
+      "name": "build.js",
+      "type": "javascript",
     }, {
       "name": "setup.js",
       "type": "javascript",
