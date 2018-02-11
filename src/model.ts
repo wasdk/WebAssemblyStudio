@@ -39,19 +39,19 @@ export function shallowCompare(a: any[], b: any[]) {
 export enum FileType {
   JavaScript = "javascript",
   TypeScript = "typescript",
-  HTML = "html",
-  CSS = "css",
-  C = "c",
-  Cpp = "cpp",
-  Rust = "rust",
-  Wast = "wast",
-  Wasm = "wasm",
-  Directory = "directory",
-  Log = "log",
-  x86 = "x86",
-  Markdown = "markdown",
-  Cretonne = "cretonne",
-  Unknown = "unknown"
+  HTML       = "html",
+  CSS        = "css",
+  C          = "c",
+  Cpp        = "cpp",
+  Rust       = "rust",
+  Wast       = "wast",
+  Wasm       = "wasm",
+  Directory  = "directory",
+  Log        = "log",
+  x86        = "x86",
+  Markdown   = "markdown",
+  Cretonne   = "cretonne",
+  Unknown    = "unknown"
 }
 
 export function isBinaryFileType(type: FileType) {
@@ -74,6 +74,8 @@ export function languageForFileType(type: FileType): string {
     return "typescript";
   } else if (type === FileType.C || type === FileType.Cpp) {
     return "cpp";
+  } else if (type === FileType.Rust) {
+    return "rust";
   } else if (type === FileType.Wast || type === FileType.Wasm) {
     return "wast";
   } else if (type === FileType.Log) {
