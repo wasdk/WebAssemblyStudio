@@ -35,6 +35,7 @@ import { Split, SplitOrientation, SplitInfo } from "./Split";
 import { layout, assert } from "../index";
 import { Wast } from "../languages/wast";
 import { Log } from "../languages/log";
+import { Rust } from "../languages/rust";
 
 import * as Mousetrap from "mousetrap";
 import { Sandbox } from "./Sandbox";
@@ -269,6 +270,18 @@ export class App extends React.Component<AppProps, AppState> {
       // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
       // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
       // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
+    });
+
+    // Rust
+
+    monaco.languages.register({
+      id: "rust"
+    });
+    monaco.languages.onLanguage("rust", () => {
+      monaco.languages.setMonarchTokensProvider("rust", Rust.MonarchDefinitions as any);
+      // monaco.languages.setLanguageConfiguration("rust", Rust.LanguageConfiguration);
+      // monaco.languages.registerCompletionItemProvider("rust", Rust.CompletionItemProvider);
+      // monaco.languages.registerHoverProvider("rust", Rust.HoverProvider);
     });
 
     let response = await fetch("lib/lib.es6.d.ts");
