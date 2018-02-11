@@ -1,4 +1,4 @@
-const asc = require("asc");
+const asc = require("assemblyscript/bin/asc");
 
 gulp.task("build", async () => {
   return asc.main([
