@@ -94,7 +94,8 @@ export class Problems extends React.Component<ProblemsProps, {
     class Controller extends (window as any).TreeDefaults.DefaultController {
       onContextMenu(tree: ITree, file: File, event: ContextMenuEvent): boolean {
         tree.setFocus(file);
-        const anchor = { x: event.posx, y: event.posy };
+        const anchorOffset = { x: -10, y: -3 };
+        const anchor = { x: event.posx + anchorOffset.x, y: event.posy + anchorOffset.y };
         const actions: any[] = [];
 
         self.contextMenuService.showContextMenu({
