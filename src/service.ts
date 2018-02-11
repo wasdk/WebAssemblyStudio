@@ -31,6 +31,7 @@ declare interface BinaryenModule {
   validate(): any;
   emitBinary(): ArrayBuffer;
   emitText(): string;
+  emitAsmjs(): string;
 }
 
 declare var Binaryen: {
@@ -69,7 +70,30 @@ export enum Language {
   Wasm = "wasm",
   Rust = "rust",
   Cretonne = "cton",
-  x86 = "x86"
+  x86 = "x86",
+  Json = "json",
+  JavaScript = "javascript",
+  TypeScript = "typescript",
+  Text = "text"
+}
+
+export namespace Language {
+  export function of(filename: string): Language {
+    const ext = filename.substring(filename.lastIndexOf(".") + 1);
+    switch (ext) {
+      case "c": return Language.C;
+      case "cpp": return Language.Cpp;
+      case "wast": return Language.Wast;
+      case "wasm": return Language.Wasm;
+      case "rs": return Language.Rust;
+      case "cton": return Language.Cretonne;
+      case "x86": return Language.x86;
+      case "json": case "map": return Language.Json;
+      case "js": return Language.JavaScript;
+      case "ts": return Language.TypeScript;
+      default: return Language.Text;
+    }
+  }
 }
 
 interface IFile {
@@ -77,6 +101,7 @@ interface IFile {
   children: IFile[];
   type?: string;
   data?: string;
+  description?: string;
 }
 
 export interface IServiceRequestTask {
@@ -371,6 +396,9 @@ export class Service {
         return directory;
       }
       const file = new File(json.name, json.type as FileType);
+      if (json.description) {
+        file.description = json.description;
+      }
       if (json.data) {
         file.setData(json.data);
       } else {
@@ -440,6 +468,18 @@ export class Service {
     const output = file.parent.newFile(file.name + ".wast", FileType.Wast);
     output.description = "Disassembled from " + file.name + " using Binaryen.";
     output.setData(module.emitText());
+  }
+
+  static async convertWasmToAsmWithBinaryen(file: File) {
+    if (typeof Binaryen === "undefined") {
+      await Service.lazyLoad("lib/binaryen.js");
+    }
+    const data = file.getData() as ArrayBuffer;
+    const module = Binaryen.readBinary(data);
+    const result = module.emitAsmjs();
+    const output = file.parent.newFile(file.name + ".asm.js", FileType.JavaScript);
+    output.description = "Converted from " + file.name + " using Binaryen.";
+    output.setData(result);
   }
 
   static downloadLink: HTMLAnchorElement = null;

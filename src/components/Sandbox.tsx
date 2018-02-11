@@ -66,11 +66,22 @@ export class Sandbox extends React.Component<{
     const contentWindow = iframe.contentWindow as SandboxWindow;
     const logger = this.props.logger;
     // Hijack Console
-    const log = contentWindow.console.log;
-    contentWindow.console.log = function(message: any) {
-      logger.logLn(message);
+    contentWindow.console.log = (log => function() {
+      logger.logLn(Array.prototype.join.call(arguments));
       log.apply(contentWindow.console, arguments);
-    };
+    })(contentWindow.console.log);
+    contentWindow.console.info = (info => function() {
+      logger.logLn(Array.prototype.join.call(arguments), "info");
+      info.apply(contentWindow.console, arguments);
+    })(contentWindow.console.info);
+    contentWindow.console.warn = (warn => function() {
+      logger.logLn(Array.prototype.join.call(arguments), "warn");
+      warn.apply(contentWindow.console, arguments);
+    })(contentWindow.console.warn);
+    contentWindow.console.error = (error => function() {
+      logger.logLn(Array.prototype.join.call(arguments), "error");
+      error.apply(contentWindow.console, arguments);
+    })(contentWindow.console.error);
     contentWindow.getFileURL = (path: string) => {
       const file = project.getFile(path);
       if (!file) {

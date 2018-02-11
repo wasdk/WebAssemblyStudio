@@ -7,7 +7,7 @@
       "module": "esnext",
       "moduleResolution": "node",
       "target": "es6",
-      "lib": ["dom", "es6"],
+      "lib": ["dom", "es6", "es2017.object"],
       "jsx": "react",
       "declaration": true
   },
