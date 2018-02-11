@@ -31,6 +31,7 @@ declare interface BinaryenModule {
   validate(): any;
   emitBinary(): ArrayBuffer;
   emitText(): string;
+  emitAsmjs(): string;
 }
 
 declare var Binaryen: {
@@ -440,6 +441,18 @@ export class Service {
     const output = file.parent.newFile(file.name + ".wast", FileType.Wast);
     output.description = "Disassembled from " + file.name + " using Binaryen.";
     output.setData(module.emitText());
+  }
+
+  static async convertWasmToAsmWithBinaryen(file: File) {
+    if (typeof Binaryen === "undefined") {
+      await Service.lazyLoad("lib/binaryen.js");
+    }
+    const data = file.getData() as ArrayBuffer;
+    const module = Binaryen.readBinary(data);
+    const result = module.emitAsmjs();
+    const output = file.parent.newFile(file.name + ".asm.js", FileType.JavaScript);
+    output.description = "Converted from " + file.name + " using Binaryen.";
+    output.setData(result);
   }
 
   static downloadLink: HTMLAnchorElement = null;
