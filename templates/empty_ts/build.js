@@ -1,16 +1,16 @@
 gulp.task("build", async () => {
   const asc = require("assemblyscript/bin/asc");
-  return asc.main([
-    "main.ts",
-    "--baseDir", "src",
-    "--binaryFile", "../out/main.wasm",
-    "--sourceMap",
-    "--measure"
-  ], err => {
-    if (err)
-      return Promise.reject(err);
-    else
-      return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    asc.main([
+      "main.ts",
+      "--baseDir", "src",
+      "--binaryFile", "../out/main.wasm",
+      "--sourceMap",
+      "--measure"
+    ], err => {
+      if (err) reject(err);
+      else resolve();
+    });
   });
 });
 
