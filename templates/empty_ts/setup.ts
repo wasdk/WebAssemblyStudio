@@ -15,5 +15,11 @@ require(["assemblyscript/bin/asc"], asc => {
     listFiles: (dirname) => []
   };
   const main = asc.main;
-  asc.main = (args, options, fn) => main(args, options || opts, fn);
+  asc.main = (args, options, fn) => {
+    if (typeof options === "function") {
+      fn = options;
+      options = undefined;
+    }
+    main(args, options || opts, fn);
+  };
 });
