@@ -70,7 +70,11 @@ export enum Language {
   Wasm = "wasm",
   Rust = "rust",
   Cretonne = "cton",
-  x86 = "x86"
+  x86 = "x86",
+  Json = "json",
+  JavaScript = "javascript",
+  TypeScript = "typescript",
+  Text = "text"
 }
 
 interface IFile {
