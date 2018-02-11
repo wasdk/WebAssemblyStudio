@@ -33,7 +33,6 @@ export interface Template {
   description: string;
   project: any;
   icon: string;
-  onload?: string;
 }
 
 export class NewProjectDialog extends React.Component<{
