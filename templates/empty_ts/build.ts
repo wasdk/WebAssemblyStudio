@@ -1,32 +1,18 @@
-gulp.task("build", async () => require(["asc"], asc => {
+const asc = require("asc");
 
-  const args = [
+gulp.task("build", async () => {
+  return asc.main([
     "main.ts",
     "--baseDir", "src",
     "--binaryFile", "../out/main.wasm",
     "--sourceMap",
     "--measure"
-  ];
-
-  logLn(`Executing: asc ${args.join(" ")}\n`, "info");
-  asc.main(args, {
-    stdout: asc.createMemoryStream(),
-    stderr: asc.createMemoryStream(logLn),
-    readFile: (filename) => project.getFile(filename.replace(/^\//, "")).data,
-    writeFile: (filename, contents) => project.newFile(filename.replace(/^\//, ""), Language.of(filename)).setData(contents),
-    listFiles: (dirname) => []
-  }, err => err ? logLn(err.message, "error") : logLn("SUCCESS", "info"));
-
-}));
+  ], err => {
+    if (err)
+      return Promise.reject(err);
+    else
+      return Promise.resolve();
+  });
+});
 
 gulp.task("default", ["build"], async () => {});
-
-gulp.task("load", async () => require(["asc"], asc => {
-  monaco.languages.typescript.typescriptDefaults.addExtraLib(asc.definitionFiles.assembly);
-}));
-
-require.config({ paths: {
-  "binaryen": "https://rawgit.com/AssemblyScript/binaryen.js/master/index",
-  "assemblyscript": "https://rawgit.com/AssemblyScript/assemblyscript/master/dist/assemblyscript",
-  "asc": "https://rawgit.com/AssemblyScript/assemblyscript/master/dist/asc"
-}});

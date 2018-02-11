@@ -368,16 +368,25 @@ export class App extends React.Component<AppProps, AppState> {
     this.state.groups.push(group);
     this.setState({ group });
   }
-  async build() {
+  async runGulpTask(taskName: string) {
     const run = async (src: string) => {
-      const fn = new Function("gulp", "project", "Service", "Language", "logLn", src);
       const gulp = new Gulpy();
-      fn(gulp, this.project, Service, Language, this.logLn.bind(this));
-      await gulp.run("default");
+      const context = {
+        gulp,
+        project: this.project,
+        Service,
+        Language,
+        logLn: this.logLn.bind(this)
+      };
+      Function.apply(null, Object.keys(context).concat(src)).apply(gulp, Object.values(context));
+      try {
+        await gulp.run(taskName);
+      } catch (e) {
+        this.logLn(e.message, "error");
+      }
     };
     const buildTs = this.project.getFile("build.ts");
     const buildJs = this.project.getFile("build.js");
-    this.project.setStatus("Building Project ...");
     if (buildTs) {
       const output = await buildTs.getEmitOutput();
       await run(output.outputFiles[0].text);
@@ -386,8 +395,11 @@ export class App extends React.Component<AppProps, AppState> {
     } else {
       this.logLn(Errors.BuildFileMissing, "error");
     }
+  }
+  async build() {
+    this.project.setStatus("Building Project ...");
+    await this.runGulpTask("default");
     this.project.clearStatus();
-    return;
   }
   async update() {
     this.logLn("Saving Project ...");
@@ -618,6 +630,13 @@ export class App extends React.Component<AppProps, AppState> {
               this.logLn("Template doesn't contain a project definition.", "error");
             } else {
               const json = await Service.loadProject(template.project, this.project);
+              if (template.onload) {
+                const context = {
+                  project: this.project,
+                  Language
+                };
+                Function.apply(null, Object.keys(context).concat(template.onload)).apply(this, Object.values(context));
+              }
               this.openProjectFiles(json);
             }
             this.setState({ newProjectDialog: false });
