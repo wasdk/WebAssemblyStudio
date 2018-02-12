@@ -605,7 +605,7 @@ export class App extends React.Component<AppProps, AppState> {
               const projectModel = this.state.project.getModel();
               const json = await Service.loadProject(template.project, projectModel);
               this.openProjectFiles(json);
-              this.runTask("project:load");
+              this.runTask("project:load", true);
             }
             this.setState({ newProjectDialog: false });
           }}
