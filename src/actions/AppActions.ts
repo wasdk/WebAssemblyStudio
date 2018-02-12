@@ -28,6 +28,7 @@ export enum AppActionType {
   INIT_STORE = "INIT_STORE",
   UPDATE_FILE_NAME_AND_DESCRIPTION = "UPDATE_FILE_NAME_AND_DESCRIPTION",
   DELETE_FILE = "DELETE_FILE",
+  LOG_LN = "LOG_LN",
 }
 
 export interface AppAction {
@@ -92,4 +93,18 @@ export function deleteFile(file: File) {
     type: AppActionType.DELETE_FILE,
     file,
   } as DeleteFileAction);
+}
+
+export interface LogLnAction extends AppAction {
+  type: AppActionType.LOG_LN;
+  message: string;
+  kind: ("" | "info" | "warn" | "error");
+}
+
+export function logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
+  dispatcher.dispatch({
+    type: AppActionType.LOG_LN,
+    message,
+    kind,
+  } as LogLnAction);
 }

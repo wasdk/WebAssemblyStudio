@@ -21,7 +21,8 @@
 
 import * as React from "react";
 import { Split } from "./Split";
-import { Project, mimeTypeForFileType, ILogger } from "../model";
+import { Project, mimeTypeForFileType } from "../model";
+import { logLn } from "../actions/AppActions";
 
 interface SandboxWindow extends Window {
   /**
@@ -30,9 +31,7 @@ interface SandboxWindow extends Window {
   getFileURL(path: string): string;
 }
 
-export class Sandbox extends React.Component<{
-  logger: ILogger
-}, {}> {
+export class Sandbox extends React.Component<{}, {}> {
   container: HTMLDivElement;
   private setContainer(container: HTMLDivElement) {
     if (container == null) { return; }
@@ -64,7 +63,7 @@ export class Sandbox extends React.Component<{
     }
     this.container.appendChild(iframe);
     const contentWindow = iframe.contentWindow as SandboxWindow;
-    const logger = this.props.logger;
+    const logger = { logLn, };
     // Hijack Console
     contentWindow.console.log = (log => function() {
       logger.logLn(Array.prototype.join.call(arguments));
@@ -85,7 +84,7 @@ export class Sandbox extends React.Component<{
     contentWindow.getFileURL = (path: string) => {
       const file = project.getFile(path);
       if (!file) {
-        this.props.logger.logLn(`Cannot find file ${path}`, "error");
+        logger.logLn(`Cannot find file ${path}`, "error");
         return;
       }
       const blob = new Blob([file.getData()], { type: mimeTypeForFileType(file.type) });

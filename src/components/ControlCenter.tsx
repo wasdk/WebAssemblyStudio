@@ -28,6 +28,7 @@ import { Button } from "./shared/Button";
 import { FileType, getIconForFileType, Problem, ModelRef } from "../model";
 import { Project, File, Directory, shallowCompare } from "../model";
 import { Problems } from "./Problems";
+import appStore from "../stores/AppStore";
 
 export class ControlCenter extends React.Component<{}, {
     /**
@@ -49,7 +50,17 @@ export class ControlCenter extends React.Component<{}, {
         { min: 128, value: 256 }
       ]
     };
-    this.outputView = new View(new File("output", FileType.Log), null);
+    const outputFile = appStore.getOutput().getModel();
+    this.outputView = new View(outputFile, null);
+  }
+  onOutputChanged = () => {
+    this.updateOutputView();
+  }
+  componentDidMount() {
+    appStore.onOutputChanged.register(this.onOutputChanged);
+  }
+  componentWillUnmount() {
+    appStore.onOutputChanged.unregister(this.onOutputChanged);
   }
   sandbox: Sandbox;
   outputView: View;
@@ -63,27 +74,16 @@ export class ControlCenter extends React.Component<{}, {
   setSandbox(sandbox: Sandbox) {
     this.sandbox = sandbox;
   }
-  logLnTimeout: any;
-  logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
-    message = message + "\n";
-    if (kind) {
-      message = "[" + kind + "]: " + message;
-    }
-    const model = this.outputView.file.buffer;
-    const lineCount = model.getLineCount();
-    const lastLineLength = model.getLineMaxColumn(lineCount);
-    const range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
-    model.applyEdits([
-      { forceMoveMarkers: true, identifier: null, range, text: message }
-    ]);
+  updateOutputViewTimeout: any;
+  updateOutputView() {
     if (!this.outputViewEditor) {
       return;
     }
     this.outputViewEditor.revealLastLine();
-    if (!this.logLnTimeout) {
-      this.logLnTimeout = window.setTimeout(() => {
+    if (!this.updateOutputViewTimeout) {
+      this.updateOutputViewTimeout = window.setTimeout(() => {
         this.forceUpdate();
-        this.logLnTimeout = null;
+        this.updateOutputViewTimeout = null;
       });
     }
   }
@@ -148,7 +148,7 @@ export class ControlCenter extends React.Component<{}, {
           }}
         >
           {this.createPane()}
-          <Sandbox ref={(ref) => this.setSandbox(ref)} logger={this} />
+          <Sandbox ref={(ref) => this.setSandbox(ref)} />
         </Split>
       </div>
     </div>;

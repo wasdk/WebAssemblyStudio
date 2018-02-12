@@ -19,13 +19,22 @@
  * SOFTWARE.
  */
 
-import { EventDispatcher, ModelRef, Project, File, Directory } from "../model";
+import { EventDispatcher, ModelRef, Project, File, Directory, FileType } from "../model";
 
 import dispatcher from "../dispatcher";
-import { AppActionType, AppAction, AddFileToAction, DeleteFileAction, UpdateFileNameAndDescriptionAction, LoadProjectAction } from "../actions/AppActions";
+import {
+  AppActionType,
+  AppAction,
+  AddFileToAction,
+  DeleteFileAction,
+  UpdateFileNameAndDescriptionAction,
+  LoadProjectAction,
+  LogLnAction
+} from "../actions/AppActions";
 
 export class AppStore {
   private project: Project;
+  private output: File;
 
   onLoadProject = new EventDispatcher("AppStore onLoadProject");
   onDidChangeStatus = new EventDispatcher("AppStore onDidChangeStatus");
@@ -35,9 +44,11 @@ export class AppStore {
   onDidChangeBuffer = new EventDispatcher("AppStore onDidChangeBuffer");
   onDidChangeData = new EventDispatcher("AppStore onDidChangeData");
   onDidChangeChildren = new EventDispatcher("AppStore onDidChangeChildren");
+  onOutputChanged = new EventDispatcher("AppStore onOutputChanged");
 
   constructor() {
     this.project = null;
+    this.output = null;
   }
 
   get onRun() { return Project.onRun; }
@@ -46,6 +57,7 @@ export class AppStore {
   private initStore() {
     this.project = new Project();
     this.bindProject();
+    this.output = new File("output", FileType.Log);
   }
 
   private loadProject(project: Project) {
@@ -84,6 +96,10 @@ export class AppStore {
     return ModelRef.getRef(this.project);
   }
 
+  public getOutput(): ModelRef<File> {
+    return ModelRef.getRef(this.output);
+  }
+
   public getFileByName(name: string): ModelRef<File> {
     const file = this.project.getFile(name);
     return file ? ModelRef.getRef(file) : null;
@@ -116,6 +132,21 @@ export class AppStore {
     return this.project.status;
   }
 
+  private logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
+    message = message + "\n";
+    if (kind) {
+      message = "[" + kind + "]: " + message;
+    }
+    const model = this.output.buffer;
+    const lineCount = model.getLineCount();
+    const lastLineLength = model.getLineMaxColumn(lineCount);
+    const range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
+    model.applyEdits([
+      { forceMoveMarkers: true, identifier: null, range, text: message }
+    ]);
+    this.onOutputChanged.dispatch();
+  }
+
   public handleActions(action: AppAction ) {
     switch (action.type) {
       case AppActionType.ADD_FILE_TO: {
@@ -140,6 +171,11 @@ export class AppStore {
       }
       case AppActionType.INIT_STORE: {
         this.initStore();
+        break;
+      }
+      case AppActionType.LOG_LN: {
+        const { message, kind } = action as LogLnAction;
+        this.logLn(message, kind);
         break;
       }
     }

@@ -595,10 +595,6 @@ export class Project extends Directory {
   }
 }
 
-export interface ILogger {
-  logLn(message: string, kind?: string): void;
-}
-
 const modelRefMap: WeakMap<any, any> = new WeakMap();
 
 export class ModelRef<T> {

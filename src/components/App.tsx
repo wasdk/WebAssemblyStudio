@@ -35,6 +35,7 @@ import {
   initStore,
   updateFileNameAndDescription,
   deleteFile,
+  logLn,
 } from "../actions/AppActions";
 import { Project, File, FileType, Directory, shallowCompare, ModelRef } from "../model";
 import { Service, Language } from "../service";
@@ -281,9 +282,7 @@ export class App extends React.Component<AppProps, AppState> {
     // });
   }
   logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
-    if (this.controlCenter) {
-      this.controlCenter.logLn(message, kind);
-    }
+    logLn(message, kind);
   }
   componentWillMount() {
     this.initializeProject();
