@@ -468,10 +468,11 @@ export class Directory extends File {
   mapEachFile<T>(fn: (file: File) => T): T[] {
     return this.children.map(fn);
   }
-  addFile(fileOrDirectory: File) {
-    assert(fileOrDirectory.parent === null);
-    this.children.push(fileOrDirectory);
-    fileOrDirectory.parent = this;
+  addFile(file: File) {
+    assert(file.parent === null);
+    assert(!this.getImmediateChild(file.name));
+    this.children.push(file);
+    file.parent = this;
     this.notifyDidChangeChildren();
   }
   removeFile(file: File) {
@@ -479,6 +480,7 @@ export class Directory extends File {
     const i = this.children.indexOf(file);
     assert(i >= 0);
     this.children.splice(i, 1);
+    file.parent = null;
     this.notifyDidChangeChildren();
   }
   newDirectory(path: string | string[]): Directory {
