@@ -51,6 +51,7 @@ export enum FileType {
   x86        = "x86",
   Markdown   = "markdown",
   Cretonne   = "cretonne",
+  JSON       = "json",
   Unknown    = "unknown"
 }
 
@@ -86,6 +87,8 @@ export function languageForFileType(type: FileType): string {
     return "markdown";
   } else if (type === FileType.Cretonne) {
     return "cton";
+  } else if (type === FileType.JSON) {
+    return "json";
   }
   return "";
 }
@@ -113,6 +116,8 @@ export function nameForFileType(type: FileType): string {
     return "Rust";
   } else if (type === FileType.Cretonne) {
     return "Cretonne";
+  } else if (type === FileType.JSON) {
+    return "JSON";
   }
   return "";
 }
@@ -140,6 +145,8 @@ export function extensionForFileType(type: FileType): string {
     return "rs";
   } else if (type === FileType.Cretonne) {
     return "cton";
+  } else if (type === FileType.JSON) {
+    return "json";
   }
   return "";
 }
@@ -167,6 +174,8 @@ export function filetypeForExtension(extension: string): FileType {
     return FileType.Rust;
   } else if (extension === "cton") {
     return FileType.Cretonne;
+  } else if (extension === "json" || extension === "map") {
+    return FileType.JSON;
   }
   return null;
 }
@@ -178,6 +187,8 @@ export function mimeTypeForFileType(type: FileType): string {
     return "application/javascript";
   } else if (type === FileType.Wasm) {
     return "application/wasm";
+  } else if (type === FileType.JSON) {
+    return "application/json";
   }
   return "";
 }
@@ -201,6 +212,8 @@ export function getIconForFileType(fileType: FileType): string {
     return "file_type_css";
   } else if (fileType === FileType.Directory) {
     return "default_folder";
+  } else if (fileType === FileType.JSON) {
+    return "file_type_json";
   }
   return "default_file";
 }
