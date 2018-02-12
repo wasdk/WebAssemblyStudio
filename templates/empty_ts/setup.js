@@ -1,20 +1,3 @@
-function languageOf(filename) {
-  const ext = filename.substring(filename.lastIndexOf(".") + 1);
-  switch (ext) {
-    case "c": return Language.C;
-    case "cpp": return Language.Cpp;
-    case "wast": return Language.Wast;
-    case "wasm": return Language.Wasm;
-    case "rs": return Language.Rust;
-    case "cton": return Language.Cretonne;
-    case "x86": return Language.x86;
-    case "json": case "map": return Language.Json;
-    case "js": return Language.JavaScript;
-    case "ts": return Language.TypeScript;
-    default: return Language.Text;
-  }
-}
-
 require.config({
   paths: {
     "binaryen": "https://rawgit.com/AssemblyScript/binaryen.js/master/index",
@@ -29,11 +12,18 @@ require(["assemblyscript/bin/asc"], asc => {
       fn = options;
       options = undefined;
     }
-    main(args, options || {
+    return main(args, options || {
       stdout: asc.createMemoryStream(),
       stderr: asc.createMemoryStream(logLn),
-      readFile: (filename) => project.getFile(filename.replace(/^\//, "")).data,
-      writeFile: (filename, contents) => project.newFile(filename.replace(/^\//, ""), languageOf(filename)).setData(contents),
+      readFile: (filename) => {
+        const file = project.getFile(filename.replace(/^\//, ""));
+        return file ? file.data : null;
+      },
+      writeFile: (filename, contents) => {
+        const name = filename.startsWith("/") ? filename.substring(1) : filename;
+        const type = filetypeForExtension(name.substring(name.lastIndexOf(".") + 1));
+        project.newFile(name, type).setData(contents);
+      },
       listFiles: (dirname) => []
     }, fn);
   })(asc.main);

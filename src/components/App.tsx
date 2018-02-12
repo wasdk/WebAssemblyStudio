@@ -36,7 +36,7 @@ import {
   updateFileNameAndDescription,
   deleteFile,
 } from "../actions/AppActions";
-import { Project, File, FileType, Directory, shallowCompare, ModelRef } from "../model";
+import { Project, File, FileType, Directory, shallowCompare, ModelRef, filetypeForExtension } from "../model";
 import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 
@@ -339,7 +339,8 @@ export class App extends React.Component<AppProps, AppState> {
         project: this.state.project.getModel(),
         Service,
         Language,
-        logLn: this.logLn.bind(this)
+        logLn: this.logLn.bind(this),
+        filetypeForExtension
       };
       Function.apply(null, Object.keys(context).concat(src)).apply(gulp, Object.values(context));
       if (gulp.hasTask(name)) {
