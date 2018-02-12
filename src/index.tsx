@@ -32,23 +32,9 @@ import { App } from "./components/App";
 import { Test } from "./components/Test";
 import { Service } from "./service";
 // import { ITree } from "./monaco-extra";
+import { layout } from "./util";
 
 declare var window: any;
-
-export function layout() {
-  const event = new Event("layout");
-  document.dispatchEvent(event);
-}
-
-export function assert(c: any, message?: string) {
-  if (!c) {
-    throw new Error(message);
-  }
-}
-
-export function clamp(x: number, min: number, max: number): number {
-  return Math.min(Math.max(min, x), max);
-}
 
 window.addEventListener("resize", layout, false);
 window.addEventListener("resize", () => {

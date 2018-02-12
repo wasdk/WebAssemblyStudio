@@ -29,7 +29,7 @@ import { Toolbar } from "./Toolbar";
 import { Project, File, FileType } from "../model";
 import { App } from "./App";
 
-import { layout, assert } from "../index";
+import { layout, assert } from "../util";
 import { setInterval } from "timers";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 import { Z_STREAM_END } from "zlib";

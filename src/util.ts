@@ -97,3 +97,18 @@ export function decodeRestrictedBase64ToBytes(encoded: any) {
   }
   return decoded;
 }
+
+export function layout() {
+  const event = new Event("layout");
+  document.dispatchEvent(event);
+}
+
+export function assert(c: any, message?: string) {
+  if (!c) {
+    throw new Error(message);
+  }
+}
+
+export function clamp(x: number, min: number, max: number): number {
+  return Math.min(Math.max(min, x), max);
+}

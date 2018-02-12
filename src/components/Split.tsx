@@ -22,7 +22,7 @@
 import * as React from "react";
 import { MouseEvent } from "react";
 import { EventDispatcher } from "../model";
-import { assert } from "../index";
+import { assert } from "../util";
 
 const Cassowary = require("cassowary");
 

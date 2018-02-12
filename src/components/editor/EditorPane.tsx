@@ -20,7 +20,7 @@
  */
 
 import * as React from "react";
-import { assert } from "../../index";
+import { assert } from "../../util";
 import { Tabs, Tab, TabProps } from "./Tabs";
 import { Editor } from "./Editor";
 import { Project, File, getIconForFileType, FileType } from "../../model";

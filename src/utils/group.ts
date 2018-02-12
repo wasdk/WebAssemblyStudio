@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { assert } from "../index";
+import { assert } from "../util";
 import { File } from "../model";
 
 export default class Group {

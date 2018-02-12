@@ -40,7 +40,7 @@ import { Project, File, FileType, Directory, shallowCompare, ModelRef } from "..
 import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 
-import { layout, assert } from "../index";
+import { layout, assert } from "../util";
 import registerLanguages from "../utils/registerLanguages";
 
 import * as Mousetrap from "mousetrap";

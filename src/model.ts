@@ -20,7 +20,7 @@
  */
 
 import "monaco-editor";
-import { assert } from "./index";
+import { assert } from "./util";
 import "minimatch";
 import { Minimatch } from "minimatch";
 import { Service } from "./service";

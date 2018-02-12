@@ -23,7 +23,7 @@ import { File, Project, Directory, FileType, Problem } from "./model";
 import { isUndefined } from "util";
 import "monaco-editor";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes } from "./util";
-import { assert } from "./index";
+import { assert } from "./util";
 import getConfig from "./config";
 
 declare interface BinaryenModule {

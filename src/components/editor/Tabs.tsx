@@ -28,7 +28,7 @@ import {
   MouseEvent,
   WheelEvent,
 } from "react";
-import { clamp } from "../../index";
+import { clamp } from "../../util";
 
 export interface TabsProps {
   onDoubleClick?: Function;
