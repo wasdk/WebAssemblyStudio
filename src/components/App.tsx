@@ -41,9 +41,7 @@ import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 
 import { layout, assert } from "../index";
-import { Wast } from "../languages/wast";
-import { Log } from "../languages/log";
-import { Rust } from "../languages/rust";
+import registerLanguages from "../utils/registerLanguages";
 
 import * as Mousetrap from "mousetrap";
 import { Sandbox } from "./Sandbox";
@@ -73,8 +71,6 @@ import { EditFileDialog } from "./EditFileDialog";
 import { UploadFileDialog } from "./UploadFileDialog";
 import { ToastContainer } from "./Toasts";
 import { Spacer, Divider } from "./Widgets";
-import { Cton } from "../languages/cton";
-import { X86 } from "../languages/x86";
 import { ShareDialog } from "./ShareDialog";
 import { NewProjectDialog, Template } from "./NewProjectDialog";
 import { NewDirectoryDialog } from "./NewDirectoryDialog";
@@ -180,7 +176,7 @@ export class App extends React.Component<AppProps, AppState> {
       uploadFileDialogDirectory: null,
       newDirectoryDialog: null
     };
-    this.registerLanguages();
+    registerLanguages();
   }
   openProjectFiles(json: any) {
     const groups = json.openedFiles.map((paths: string[]) => {
@@ -237,85 +233,6 @@ export class App extends React.Component<AppProps, AppState> {
   //   if (!shallowCompare(state.groups, nextState.groups)) return true;
   //   return false;
   // }
-
-  async registerLanguages() {
-    monaco.editor.defineTheme("fiddle-theme", {
-      base: "vs-dark",
-      inherit: true,
-      rules: [
-        { token: "custom-info", foreground: "d4d4d4" },
-        { token: "custom-warn", foreground: "ff9900" },
-        { token: "custom-error", background: "00ff00", foreground: "ff0000", fontStyle: "bold" }
-      ]
-    } as any);
-
-    // Wast
-
-    monaco.languages.onLanguage("wast", () => {
-      monaco.languages.setMonarchTokensProvider("wast", Wast.MonarchDefinitions as any);
-      monaco.languages.setLanguageConfiguration("wast", Wast.LanguageConfiguration);
-      monaco.languages.registerCompletionItemProvider("wast", Wast.CompletionItemProvider);
-      monaco.languages.registerHoverProvider("wast", Wast.HoverProvider);
-    });
-    monaco.languages.register({
-      id: "wast"
-    });
-
-    // Log
-
-    monaco.languages.onLanguage("log", () => {
-      monaco.languages.setMonarchTokensProvider("log", Log.MonarchTokensProvider as any);
-    });
-    monaco.languages.register({
-      id: "log"
-    });
-
-    // Cretonne
-
-    monaco.languages.onLanguage("cton", () => {
-      monaco.languages.setMonarchTokensProvider("cton", Cton.MonarchDefinitions as any);
-      // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
-      // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
-      // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
-    });
-    monaco.languages.register({
-      id: "cton"
-    });
-
-    // X86
-
-    monaco.languages.onLanguage("x86", () => {
-      monaco.languages.setMonarchTokensProvider("x86", X86.MonarchDefinitions as any);
-      // monaco.languages.setLanguageConfiguration("cton", Cton.LanguageConfiguration);
-      // monaco.languages.registerCompletionItemProvider("cton", Cton.CompletionItemProvider);
-      // monaco.languages.registerHoverProvider("cton", Cton.HoverProvider);
-    });
-    monaco.languages.register({
-      id: "x86"
-    });
-
-    // Rust
-
-    monaco.languages.onLanguage("rust", () => {
-      monaco.languages.setMonarchTokensProvider("rust", Rust.MonarchDefinitions as any);
-      // monaco.languages.setLanguageConfiguration("rust", Rust.LanguageConfiguration);
-      // monaco.languages.registerCompletionItemProvider("rust", Rust.CompletionItemProvider);
-      // monaco.languages.registerHoverProvider("rust", Rust.HoverProvider);
-    });
-    monaco.languages.register({
-      id: "rust"
-    });
-
-    let response = await fetch("lib/lib.es6.d.ts");
-    monaco.languages.typescript.typescriptDefaults.addExtraLib(await response.text());
-
-    response = await fetch("lib/fiddle.d.ts");
-    monaco.languages.typescript.typescriptDefaults.addExtraLib(await response.text());
-
-    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
-
-  }
 
   async loadReleaseNotes() {
     const response = await fetch("notes/notes.md");
