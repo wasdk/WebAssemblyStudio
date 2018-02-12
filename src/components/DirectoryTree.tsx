@@ -72,6 +72,7 @@ export class FileTemplate {
       case FileType.HTML: icon = "html-lang-file-icon"; break;
       case FileType.TypeScript: icon = "typescript-lang-file-icon"; break;
       case FileType.Markdown: icon = "markdown-lang-file-icon"; break;
+      case FileType.JSON: icon = "json-lang-file-icon"; break;
     }
     if (file instanceof Directory) {
       this.monacoIconLabel.classList.add("folder-icon");
