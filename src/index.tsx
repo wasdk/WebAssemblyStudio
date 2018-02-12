@@ -46,14 +46,6 @@ export function assert(c: any, message?: string) {
   }
 }
 
-let nextObjectId = 0;
-export function objectId(o: any): number {
-  if (!o) { return o; }
-  assert(typeof o === "object");
-  if ("__id__" in o) { return o.__id__; }
-  return o.__id__ = nextObjectId++;
-}
-
 export function clamp(x: number, min: number, max: number): number {
   return Math.min(Math.max(min, x), max);
 }
