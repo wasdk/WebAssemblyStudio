@@ -112,15 +112,27 @@ export class Tab extends PureComponent<TabProps, {}> {
     onClose: () => {},
   };
 
+  onMouseHandle = (e: MouseEvent<HTMLElement>, handler: Function) => {
+    e.stopPropagation();
+    handler(this.props.value);
+  }
+
+  onClick = (e: MouseEvent<HTMLElement>) => {
+    this.onMouseHandle(e, this.props.onClick);
+  }
+
+  onDoubleClick = (e: MouseEvent<HTMLElement>) => {
+    this.onMouseHandle(e, this.props.onDoubleClick);
+  }
+
+  onClose = (e: MouseEvent<HTMLElement>) => {
+    this.onMouseHandle(e, this.props.onClose);
+  }
+
   render() {
     const {
-      value,
       label,
       icon,
-
-      onClick,
-      onDoubleClick,
-      onClose,
 
       isActive,
       isMarked,
@@ -135,14 +147,8 @@ export class Tab extends PureComponent<TabProps, {}> {
     return (
       <div
         className={className}
-        onClick={(e: MouseEvent<HTMLElement>) => {
-          e.stopPropagation();
-          onClick(value);
-        }}
-        onDoubleClick={(e: MouseEvent<HTMLElement>) => {
-          e.stopPropagation();
-          onDoubleClick(value);
-        }}
+        onClick={this.onClick}
+        onDoubleClick={this.onDoubleClick}
       >
         {icon && <div
           className="icon"
@@ -154,10 +160,7 @@ export class Tab extends PureComponent<TabProps, {}> {
         <div className="label">{label}</div>
         <div
           className="close"
-          onClick={(e: MouseEvent<HTMLElement>) => {
-            e.stopPropagation();
-            onClose(value);
-          }}
+          onClick={this.onClose}
         />
       </div>
     );
