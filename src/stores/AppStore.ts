@@ -65,6 +65,9 @@ export class AppStore {
   }
 
   private addFileTo(file: File, parent: Directory) {
+    if (file.parent) {
+      this.deleteFile(file);
+    }
     parent.addFile(file);
   }
 
