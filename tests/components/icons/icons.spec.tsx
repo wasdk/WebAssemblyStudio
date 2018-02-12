@@ -21,7 +21,7 @@ import {
   GoThreeBars,
   GoVerified,
   GoX
-} from "../../src/components/shared/Icons";
+} from "../../../src/components/shared/Icons";
 
 describe("Tests for Icon component", () => {
   const setup = () => {
