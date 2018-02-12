@@ -717,6 +717,9 @@ export class App extends React.Component<AppProps, AppState> {
               this.state.group.open(file, false);
               this.forceUpdate();
             }}
+            onMoveFile={(file: File, directory: Directory) => {
+              addFileTo(file, directory);
+            }}
             onUploadFile={(directory: Directory) => {
               this.setState({ uploadFileDialogDirectory: ModelRef.getRef(directory)});
             }}

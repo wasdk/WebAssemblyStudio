@@ -23,13 +23,14 @@ import * as React from "react";
 import { Project, File, Directory, FileType, getIconForFileType, ModelRef } from "../model";
 import { Service } from "../service";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
-import { ITree, ContextMenuEvent } from "../monaco-extra";
+import { ITree, ContextMenuEvent, IDragAndDrop, DragMouseEvent, IDragAndDropData, IDragOverReaction, DragOverEffect, DragOverBubble } from "../monaco-extra";
 
 export interface DirectoryTreeProps {
   directory: ModelRef<Directory>;
   value?: ModelRef<File>;
   onEditFile?: (file: File) => void;
   onDeleteFile?: (file: File) => void;
+  onMoveFile?: (file: File, directory: Directory) => void;
   onNewFile?: (directory: Directory) => void;
   onNewDirectory?: (directory: Directory) => void;
   onClickFile?: (file: File) => void;
@@ -191,6 +192,51 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
       }
     }
 
+    class DragAndDrop implements IDragAndDrop {
+      /**
+       * Returns a uri if the given element should be allowed to drag.
+       * Returns null, otherwise.
+       */
+      getDragURI(tree: ITree, element: File): string {
+        return element.key;
+      }
+
+      /**
+       * Returns a label to display when dragging the element.
+       */
+      getDragLabel?(tree: ITree, elements: any[]): string {
+        return "X";
+      }
+
+      /**
+       * Sent when the drag operation is starting.
+       */
+      onDragStart(tree: ITree, data: IDragAndDropData, originalEvent: DragMouseEvent): void {
+        return;
+      }
+
+      /**
+       * Returns a DragOverReaction indicating whether sources can be
+       * dropped into target or some parent of the target.
+       */
+      onDragOver(tree: ITree, data: IDragAndDropData, targetElement: File, originalEvent: DragMouseEvent): IDragOverReaction {
+        const file: File = (data.getData() as any)[0];
+        return {
+          accept: targetElement instanceof Directory,
+          bubble: DragOverBubble.BUBBLE_DOWN,
+          autoExpand: true
+        };
+      }
+
+      /**
+       * Handles the action of dropping sources into target.
+       */
+      drop(tree: ITree, data: IDragAndDropData, targetElement: File, originalEvent: DragMouseEvent): void {
+        const file: File = (data.getData() as any)[0];
+        return self.props.onMoveFile && self.props.onMoveFile(file, targetElement as Directory);
+      }
+    }
+
     this.tree = new (window as any).Tree(this.container, {
       dataSource: {
         /**
@@ -236,7 +282,8 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           (templateData as FileTemplate).dispose();
         }
       },
-      controller: new Controller()
+      controller: new Controller(),
+      dnd: new DragAndDrop()
     });
   }
   lastClickedTime = Date.now();

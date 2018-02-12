@@ -35,6 +35,7 @@ export interface WorkspaceProps {
   project: ModelRef<Project>;
   onEditFile?: (file: File) => void;
   onDeleteFile?: (file: File) => void;
+  onMoveFile?: (file: File, directory: Directory) => void;
   onRenameFile?: (file: File) => void;
   onNewFile?: (directory: Directory) => void;
   onNewDirectory?: (directory: Directory) => void;
@@ -78,6 +79,7 @@ export class Workspace extends React.Component<WorkspaceProps, {
             onEditFile={this.props.onEditFile}
             onDeleteFile={this.props.onDeleteFile}
             onUploadFile={this.props.onUploadFile}
+            onMoveFile={this.props.onMoveFile}
             onClickFile={(file: File) => {
               this.props.onClickFile(file);
             }}
