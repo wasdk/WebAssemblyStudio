@@ -24,15 +24,15 @@ import * as React from "react";
 import { Header } from "./Header";
 import { DirectoryTree } from "./DirectoryTree";
 import { WorkspaceEntry } from "./WorkspaceEntry";
-import { Project, File, Directory } from "../model";
+import { Project, File, Directory, ModelRef } from "../model";
 import { SplitOrientation, SplitInfo, Split } from "./Split";
 
 export interface WorkspaceProps {
   /**
    * Active file.
    */
-  file: File;
-  project: Project;
+  file: ModelRef<File>;
+  project: ModelRef<Project>;
   onEditFile?: (file: File) => void;
   onDeleteFile?: (file: File) => void;
   onRenameFile?: (file: File) => void;

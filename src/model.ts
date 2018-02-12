@@ -596,3 +596,23 @@ export class Project extends Directory {
 export interface ILogger {
   logLn(message: string, kind?: string): void;
 }
+
+const modelRefMap: WeakMap<any, any> = new WeakMap();
+
+export class ModelRef<T> {
+  obj: T;
+  private constructor(obj: T) {
+    this.obj = obj;
+  }
+  public getModel(): T {
+    return this.obj;
+  }
+  public static getRef<T>(obj: T): ModelRef<T> {
+    if (modelRefMap.has(obj)) {
+      return modelRefMap.get(obj);
+    }
+    const ref = new ModelRef<T>(obj);
+    modelRefMap.set(obj, ref);
+    return ref;
+  }
+}

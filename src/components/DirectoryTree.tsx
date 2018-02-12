@@ -20,14 +20,14 @@
  */
 
 import * as React from "react";
-import { Project, File, Directory, FileType, getIconForFileType } from "../model";
+import { Project, File, Directory, FileType, getIconForFileType, ModelRef } from "../model";
 import { Service } from "../service";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
 import { ITree, ContextMenuEvent } from "../monaco-extra";
 
 export interface DirectoryTreeProps {
-  directory: Directory;
-  value?: File;
+  directory: ModelRef<Directory>;
+  value?: ModelRef<File>;
   onEditFile?: (file: File) => void;
   onDeleteFile?: (file: File) => void;
   onNewFile?: (directory: Directory) => void;
@@ -86,11 +86,13 @@ export class FileTemplate {
 }
 
 export class DirectoryTree extends React.Component<DirectoryTreeProps, {
+  directory: ModelRef<Directory>;
 }> {
   constructor(props: DirectoryTreeProps) {
     super(props);
     this.contextViewService = new (window as any).ContextViewService(document.documentElement);
     this.contextMenuService = new (window as any).ContextMenuService(document.documentElement, null, null, this.contextViewService);
+    this.state = { directory: this.props.directory };
   }
 
   tree: ITree;
@@ -252,7 +254,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
   }
   componentDidMount() {
     this.ensureTree();
-    (this.tree as any).model.setInput(this.props.directory);
+    (this.tree as any).model.setInput(this.props.directory.getModel());
     (this.tree as any).model.onDidSelect((e: any) => {
       if (e.selection.length) {
         this.onClickFile(e.selection[0]);
@@ -260,8 +262,13 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
     });
   }
   componentWillReceiveProps(props: DirectoryTreeProps) {
-    this.tree.refresh();
-    this.tree.expandAll();
+    if (this.state.directory !== props.directory) {
+      (this.tree as any).model.setInput(props.directory.getModel());
+      this.setState({ directory: props.directory });
+    } else {
+      this.tree.refresh();
+      this.tree.expandAll();
+    }
   }
   render() {
     return <div className="fill" ref={(ref) => this.setContainer(ref)}/>;
