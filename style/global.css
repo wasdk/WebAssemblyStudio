@@ -16,6 +16,7 @@
 
   --title: #654FF0;
   --title-light: #c0b9f0;
+  --title-complement: #f0db4f;
 }
 
 
@@ -123,7 +124,7 @@ a {
   height: calc(100% - 22px);
 }
 .editor-status-bar {
-  color: var(--grey-300);
+  color: var(--title-complement);
   background-color: var(--grey-1000);
   padding: 3px;
   height: 22px;
