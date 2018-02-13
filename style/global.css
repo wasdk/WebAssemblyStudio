@@ -123,12 +123,14 @@ a {
   height: calc(100% - 22px);
 }
 .editor-status-bar {
-  color: rgb(255, 255, 255);
-  background-color: var(--title);
+  color: var(--grey-300);
+  background-color: var(--grey-1000);
+  padding: 3px;
   height: 22px;
   font-size: 12px;
   user-select: none;
   font-weight: 700;
+  font-style: italic;
   font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif
 }
 
