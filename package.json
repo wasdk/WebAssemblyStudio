@@ -25,7 +25,7 @@
       "^.+\\.(ts|tsx)$": "<rootDir>/test-preprocessor.js"
     },
     "testMatch": [
-      "**/tests/**/**/**.(ts|tsx|js)"
+      "**/tests/**/**/**.spec.(ts|tsx|js)"
     ]
   },
   "repository": {
