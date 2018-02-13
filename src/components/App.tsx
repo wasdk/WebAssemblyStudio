@@ -35,6 +35,12 @@ import {
   initStore,
   updateFileNameAndDescription,
   deleteFile,
+  splitGroup,
+  openProjectFiles,
+  openFile,
+  closeFile,
+  saveProject,
+  focusTabGroup,
   logLn,
 } from "../actions/AppActions";
 import { Project, File, FileType, Directory, shallowCompare, ModelRef, filetypeForExtension } from "../model";
@@ -84,8 +90,6 @@ export interface AppState {
   project: ModelRef<Project>;
   file: ModelRef<File>;
   fiddle: string;
-  groups: Group[];
-  group: Group;
 
   /**
    * If not null, the the new file dialog is open and files are created in this
@@ -144,15 +148,10 @@ export class App extends React.Component<AppProps, AppState> {
   toastContainer: ToastContainer;
   constructor(props: AppProps) {
     super(props);
-    const group0 = new Group(null, null, []);
     this.state = {
       fiddle: props.fiddle,
       project: null,
       file: null,
-      groups: [
-        group0,
-      ],
-      group: group0,
       newFileDialogDirectory: null,
       editFileDialogFile: null,
       newProjectDialog: !props.fiddle,
@@ -178,15 +177,6 @@ export class App extends React.Component<AppProps, AppState> {
       newDirectoryDialog: null
     };
     registerLanguages();
-  }
-  openProjectFiles(json: any) {
-    const groups = json.openedFiles.map((paths: string[]) => {
-      const files = paths.map(file => {
-        return appStore.getFileByName(file).getModel();
-      });
-      return new Group(files[0], null, files);
-    });
-    this.setState({ group: groups[0], groups });
   }
   async initializeProject() {
     initStore();
@@ -224,6 +214,10 @@ export class App extends React.Component<AppProps, AppState> {
     appStore.onDirtyFileUsed.register((file: File) => {
       this.logLn(`Changes in ${file.getPath()} were ignored, save your changes.`, "warn");
     });
+    appStore.onTabsChange.register(() => {
+      this.forceUpdate();
+      layout();
+    });
   }
 
   // TODO: Optimize
@@ -240,8 +234,7 @@ export class App extends React.Component<AppProps, AppState> {
     const src = await response.text();
     const notes = new File("Release Notes", FileType.Markdown);
     notes.setData(src);
-    this.state.group.open(notes);
-    this.forceUpdate();
+    openFile(notes);
   }
 
   registerShortcuts() {
@@ -317,16 +310,6 @@ export class App extends React.Component<AppProps, AppState> {
     const projectModel = this.state.project.getModel();
     this.controlCenter.sandbox.run(projectModel, src);
   }
-  splitGroup() {
-    const groups = this.state.groups;
-    const lastGroup = groups[groups.length - 1];
-    if (lastGroup.files.length === 0) {
-      return;
-    }
-    const group = new Group(lastGroup.file, null, [lastGroup.file]);
-    this.state.groups.push(group);
-    this.setState({ group });
-  }
   /**
    * Runs a gulp task.
    */
@@ -371,13 +354,7 @@ export class App extends React.Component<AppProps, AppState> {
     return;
   }
   async update() {
-    this.logLn("Saving Project ...");
-    const openedFiles = this.state.groups.map((group) => {
-      return group.files.map((file) => file.getPath());
-    });
-    const projectModel = this.state.project.getModel();
-    await Service.saveProject(projectModel, openedFiles, this.state.fiddle);
-    this.logLn("Saved Project OK");
+    saveProject(this.state.fiddle);
   }
   async fork() {
     this.logLn("Forking Project ...");
@@ -528,7 +505,10 @@ export class App extends React.Component<AppProps, AppState> {
   render() {
     const self = this;
 
-    function makeEditorPanes(groups: Group[]): any {
+    function makeEditorPanes(): any {
+      const groups = appStore.getTabGroups();
+      const activeGroup = appStore.getActiveTabGroup();
+
       if (groups.length === 0) {
         return <div>No Groups</div>;
       }
@@ -538,40 +518,27 @@ export class App extends React.Component<AppProps, AppState> {
           files={group.files.slice(0)}
           file={group.file}
           preview={group.preview}
-          onSplitEditor={() => {
-            self.splitGroup();
-          }}
-          hasFocus={self.state.group === group}
+          onSplitEditor={() => splitGroup()}
+          hasFocus={activeGroup === group}
           onFocus={() => {
             // TODO: Should be taken care of in shouldComponentUpdate instead.
-            if (self.state.group !== group) {
-              self.setState({ group });
-            }
+            focusTabGroup(group);
           }}
-          onClickFile={(file) => {
-            group.open(file);
-            self.setState({ group });
+          onClickFile={(file: File) => {
+            focusTabGroup(group);
+            openFile(file);
           }}
           onDoubleClickFile={(file: File) => {
             if (file instanceof Directory) {
               return;
             }
-            group.open(file, false);
-            self.setState({ group });
+            openFile(file, false);
           }}
           onClose={(file) => {
-            const groups = self.state.groups;
-            group.close(file);
-            if (group.files.length === 0 && groups.length > 1) {
-              const i = groups.indexOf(group);
-              groups.splice(i, 1);
-              const g = groups.length ? groups[Math.min(groups.length - 1, i)] : null;
-              self.setState({ groups, group: g });
-              layout();
-            } else {
-              self.setState({ group });
+            focusTabGroup(group);
+            closeFile(file);
             }
-          }}
+          }
         />;
       });
     }
@@ -588,7 +555,7 @@ export class App extends React.Component<AppProps, AppState> {
         layout();
       }}
     >
-      {makeEditorPanes(this.state.groups)}
+      {makeEditorPanes()}
     </Split>;
 
     return <div className="fill">
@@ -603,9 +570,7 @@ export class App extends React.Component<AppProps, AppState> {
             if (!template.project) {
               this.logLn("Template doesn't contain a project definition.", "error");
             } else {
-              const projectModel = this.state.project.getModel();
-              const json = await Service.loadProject(template.project, projectModel);
-              this.openProjectFiles(json);
+              await openProjectFiles(template.project);
               this.runTask("project:load", true);
             }
             this.setState({ newProjectDialog: false });
@@ -707,15 +672,13 @@ export class App extends React.Component<AppProps, AppState> {
               }
             }}
             onClickFile={(file: File) => {
-              this.state.group.open(file);
-              this.forceUpdate();
+              openFile(file);
             }}
             onDoubleClickFile={(file: File) => {
               if (file instanceof Directory) {
                 return;
               }
-              this.state.group.open(file, false);
-              this.forceUpdate();
+              openFile(file, false);
             }}
             onMoveFile={(file: File, directory: Directory) => {
               addFileTo(file, directory);

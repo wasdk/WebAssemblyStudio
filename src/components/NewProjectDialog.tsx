@@ -28,10 +28,17 @@ import { File, FileType, Directory, extensionForFileType, nameForFileType, Proje
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
 
+export interface ProjectTemplate {
+  name: string;
+  directory?: string;
+  children: ProjectTemplate[];
+  openedFiles: [string[]];
+}
+
 export interface Template {
   name: string;
   description: string;
-  project: any;
+  project: ProjectTemplate;
   icon: string;
 }
 
