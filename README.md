@@ -1,8 +1,8 @@
-Web Assembly Studio
+WebAssembly Studio
 ====
 [![Build Status](https://travis-ci.org/wasdk/WebAssemblyStudio.svg?branch=master)](https://travis-ci.org/wasdk/WebAssemblyStudio)
 
-This repository contains the [Web Assembly Studio](https://webassembly.studio) website source code.
+This repository contains the [WebAssembly Studio](https://webassembly.studio) website source code.
 
 Running your own local copy of the website
 ===
@@ -14,7 +14,7 @@ npm install
 npm install --dev
 ```
 
-To build Web Assembly Studio whenever a file changes run:
+To build WebAssembly Studio whenever a file changes run:
 
 ```
 npm run build-watch

@@ -422,7 +422,7 @@ export class App extends React.Component<AppProps, AppState> {
       toolbarButtons.push(
         <Button
           icon={<GoPencil />}
-          label="Edit in Web Assembly Studio"
+          label="Edit in WebAssembly Studio"
           title="Edit in WebAssembly Studio"
           onClick={() => {
             // this.update();

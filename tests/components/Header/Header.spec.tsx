@@ -11,6 +11,6 @@ describe("Tests for Header component", () => {
   };
   it("Header renders correctly", () => {
     const header = setup();
-    expect(header.text()).toBe("Web Assembly Studio");
+    expect(header.text()).toBe("WebAssembly Studio");
   });
 });
