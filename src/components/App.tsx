@@ -393,10 +393,10 @@ export class App extends React.Component<AppProps, AppState> {
     }
     this.setState({ fiddle });
   }
-  async gist() {
+  async gist(fileOrDirectory?: File) {
     this.logLn("Exporting Project ...");
-    const projectModel = this.state.project.getModel();
-    const gistURI = await Service.exportProjectToGist(projectModel, this.state.fiddle);
+    const target: File = fileOrDirectory || this.state.project.getModel();
+    const gistURI = await Service.exportToGist(target, this.state.fiddle);
     this.logLn("Project Gist CREATED ");
     if (gistURI) {
       if (this.toastContainer) {
@@ -725,6 +725,9 @@ export class App extends React.Component<AppProps, AppState> {
             }}
             onNewDirectory={(directory: Directory) => {
               this.setState({ newDirectoryDialog: ModelRef.getRef(directory)});
+            }}
+            onCreateGist={(fileOrDirectory: File) => {
+                this.gist(fileOrDirectory);
             }}
           />
           <div className="fill">

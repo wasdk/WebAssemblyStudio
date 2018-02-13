@@ -325,7 +325,7 @@ export class Service {
     return uri;
   }
 
-  static async exportProjectToGist(project: Project, uri?: string): Promise<string> {
+  static async exportToGist(content: File, uri?: string): Promise<string> {
     const files: any = {};
     function serialize(file: File) {
       if (file instanceof Directory) {
@@ -336,7 +336,7 @@ export class Service {
         files[file.name] = {content: file.data};
       }
     }
-    serialize(project);
+    serialize(content);
     const json: any = { description: "source: http://webassembly.studio", public: true, files};
     if (!isUndefined(uri)) {
       json["description"] = json["description"] + `/?f=${uri}`;
