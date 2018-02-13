@@ -204,7 +204,7 @@ export class Service {
   }
 
   static async compile(src: string | ArrayBuffer, from: Language, to: Language, options = ""): Promise<IServiceRequest> {
-    if (from === Language.C && to === Language.Wasm) {
+    if ((from === Language.C || from === Language.Cpp) && to === Language.Wasm) {
       const project = {
         output: "wasm",
         files: [
