@@ -10,6 +10,7 @@ describe("Tests for Header component", () => {
     return shallow(<Header/>);
   };
   it("Header renders correctly", () => {
-    setup();
+    const header = setup();
+    expect(header.text()).toBe("Web Assembly Studio");
   });
 });
