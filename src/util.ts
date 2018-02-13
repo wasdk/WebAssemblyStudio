@@ -65,7 +65,7 @@ const base64DecodeMap = [ // starts at 0x2B
 const base64DecodeMapOffset = 0x2B;
 const base64EOF = 0x3D;
 
-export function decodeRestrictedBase64ToBytes(encoded: any) {
+export function decodeRestrictedBase64ToBytes(encoded: string) {
   let ch: any;
   let code: any;
   let code2: any;

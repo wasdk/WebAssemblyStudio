@@ -25,6 +25,7 @@ import "monaco-editor";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes } from "./util";
 import { assert } from "./util";
 import getConfig from "./config";
+import { isZlibData, decompressZlib } from "./utils/zlib";
 
 declare interface BinaryenModule {
   optimize(): any;
@@ -195,11 +196,9 @@ export class Service {
     if (!result.success) {
       throw new Error((result as any).message);
     }
-    const buffer = atob(result.output);
-    const data = new Uint8Array(buffer.length);
-    for (let i = 0; i < buffer.length; i++) {
-      data[i] = buffer.charCodeAt(i);
-    }
+    let data = decodeRestrictedBase64ToBytes(result.output);
+    if (isZlibData(data))
+      data = await decompressZlib(data);
     return data;
   }
 
@@ -207,6 +206,7 @@ export class Service {
     if ((from === Language.C || from === Language.Cpp) && to === Language.Wasm) {
       const project = {
         output: "wasm",
+        compress: true,
         files: [
           {
             type: from,
