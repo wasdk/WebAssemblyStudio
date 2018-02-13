@@ -36,6 +36,7 @@ export interface DirectoryTreeProps {
   onClickFile?: (file: File) => void;
   onDoubleClickFile?: (file: File) => void;
   onUploadFile?: (directory: Directory) => void;
+  onCreateGist: (fileOrDirectory: File) => void;
 }
 
 export class FileTemplate {
@@ -170,6 +171,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
             return self.props.onDeleteFile && self.props.onDeleteFile(file as Directory);
           }));
         }
+        actions.push(new (window as any).Action("x", "Gist", "octicon-gist", true, () => {
+            return self.props.onCreateGist && self.props.onCreateGist(file as Directory);
+        }));
         self.contextMenuService.showContextMenu({
           getAnchor: () => anchor,
 
