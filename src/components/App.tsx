@@ -210,7 +210,7 @@ export class App extends React.Component<AppProps, AppState> {
     appStore.onLoadProject.register(() => {
       this.setState({ project: appStore.getProject() });
       this.forceUpdate();
-      this.runTask("project:load");
+      this.runTask("project:load", true);
     });
     appStore.onDidChangeBuffer.register(() => {
       this.forceUpdate();
