@@ -186,6 +186,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           actions.push(new MonacoUtils.Action("x", "To Firefox x86 Baseline", "octicon-file-binary", true, () => {
             Service.disassembleX86(file, "--wasm-always-baseline");
           }));
+          actions.push(new MonacoUtils.Action("x", "Binary Explorer", "octicon-file-binary", true, () => {
+            Service.openBinaryExplorer(file);
+          }));
         } else if (file.type === FileType.C || file.type === FileType.Cpp) {
           actions.push(new MonacoUtils.Action("x", "Clang-Format", "octicon-quote ruler", true, () => {
             Service.clangFormat(file);
