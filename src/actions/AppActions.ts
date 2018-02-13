@@ -21,6 +21,11 @@
 
 import dispatcher from "../dispatcher";
 import { File, Directory, Project } from "../model";
+import { App } from "../components/App";
+import { ProjectTemplate } from "../components/NewProjectDialog";
+import appStore from "../stores/AppStore";
+import { Service } from "../service";
+import Group from "../utils/group";
 
 export enum AppActionType {
   ADD_FILE_TO = "ADD_FILE_TO",
@@ -28,6 +33,12 @@ export enum AppActionType {
   INIT_STORE = "INIT_STORE",
   UPDATE_FILE_NAME_AND_DESCRIPTION = "UPDATE_FILE_NAME_AND_DESCRIPTION",
   DELETE_FILE = "DELETE_FILE",
+  SPLIT_GROUP = "SPLIT_GROUP",
+  OPEN_FILE = "OPEN_FILE",
+  CLOSE_FILE = "CLOSE_FILE",
+  SAVE_PROJECT = "SAVE_PROJECT",
+  OPEN_PROJECT_FILES = "OPEN_PROJECT_FILES",
+  FOCUS_TAB_GROUP = "FOCUS_TAB_GROUP",
   LOG_LN = "LOG_LN",
 }
 
@@ -107,4 +118,86 @@ export function logLn(message: string, kind: "" | "info" | "warn" | "error" = ""
     message,
     kind,
   } as LogLnAction);
+}
+
+export interface SplitGroupAction extends AppAction {
+  type: AppActionType.SPLIT_GROUP;
+}
+
+export function splitGroup() {
+  dispatcher.dispatch({
+    type: AppActionType.SPLIT_GROUP
+  } as SplitGroupAction);
+}
+
+export interface OpenFileAction extends AppAction {
+  type: AppActionType.OPEN_FILE;
+  file: File;
+  preview: boolean;
+}
+
+export function openFile(file: File, preview = true) {
+  dispatcher.dispatch({
+    type: AppActionType.OPEN_FILE,
+    file,
+    preview
+  } as OpenFileAction);
+}
+
+export interface CloseFileAction extends AppAction {
+  type: AppActionType.CLOSE_FILE;
+  file: File;
+}
+
+export function closeFile(file: File) {
+  dispatcher.dispatch({
+    type: AppActionType.CLOSE_FILE,
+    file
+  } as CloseFileAction);
+}
+
+export interface OpenProjectFilesAction extends AppAction {
+  type: AppActionType.OPEN_PROJECT_FILES;
+  openedFiles: [string[]];
+}
+
+export async function openProjectFiles(json: ProjectTemplate) {
+  const newProject = new Project();
+  await Service.loadProject(json, newProject);
+  const { openedFiles } = json;
+
+  dispatcher.dispatch({
+    type: AppActionType.LOAD_PROJECT,
+    project: newProject
+  } as LoadProjectAction);
+
+  dispatcher.dispatch({
+    type: AppActionType.OPEN_PROJECT_FILES,
+    openedFiles
+  } as OpenProjectFilesAction);
+}
+
+export async function saveProject(fiddle: string) {
+  logLn("Saving Project ...");
+  const tabGroups = appStore.getTabGroups();
+  const projectModel = appStore.getProject().getModel();
+
+  const openedFiles = tabGroups.map((group) => {
+    return group.files.map((file) => file.getPath());
+  });
+
+  await Service.saveProject(projectModel, openedFiles, fiddle);
+  logLn("Saved Project OK");
+}
+
+export interface FocusTabGroupAction extends AppAction {
+  type: AppActionType.FOCUS_TAB_GROUP;
+  group: Group;
+}
+
+export function focusTabGroup(group: Group) {
+  dispatcher.dispatch({
+    type: AppActionType.FOCUS_TAB_GROUP,
+    group
+  } as FocusTabGroupAction);
 }

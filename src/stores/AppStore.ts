@@ -20,6 +20,7 @@
  */
 
 import { EventDispatcher, ModelRef, Project, File, Directory, FileType } from "../model";
+import { Service } from "../service";
 
 import dispatcher from "../dispatcher";
 import {
@@ -29,12 +30,20 @@ import {
   DeleteFileAction,
   UpdateFileNameAndDescriptionAction,
   LoadProjectAction,
-  LogLnAction
+  LogLnAction,
+  OpenProjectFilesAction,
+  OpenFileAction,
+  CloseFileAction,
+  FocusTabGroupAction
 } from "../actions/AppActions";
+import Group from "../utils/group";
+import { ProjectTemplate } from "../components/NewProjectDialog";
 
 export class AppStore {
   private project: Project;
   private output: File;
+  private tabGroups: Group[];
+  private activeTabGroup: Group;
 
   onLoadProject = new EventDispatcher("AppStore onLoadProject");
   onDidChangeStatus = new EventDispatcher("AppStore onDidChangeStatus");
@@ -45,6 +54,7 @@ export class AppStore {
   onDidChangeData = new EventDispatcher("AppStore onDidChangeData");
   onDidChangeChildren = new EventDispatcher("AppStore onDidChangeChildren");
   onOutputChanged = new EventDispatcher("AppStore onOutputChanged");
+  onTabsChange = new EventDispatcher("AppStore onTabsChange");
 
   constructor() {
     this.project = null;
@@ -56,6 +66,8 @@ export class AppStore {
 
   private initStore() {
     this.project = new Project();
+    this.activeTabGroup = new Group(null, null, []);
+    this.tabGroups = [this.activeTabGroup];
     this.bindProject();
     this.output = new File("output", FileType.Log);
   }
@@ -90,6 +102,14 @@ export class AppStore {
   private updateFileNameAndDescription(file: File, name: string, description: string) {
     file.name = name;
     file.description = description;
+  }
+
+  public getActiveTabGroup(): Group {
+    return this.activeTabGroup;
+  }
+
+  public getTabGroups(): Group[] {
+    return this.tabGroups;
   }
 
   public getProject(): ModelRef<Project> {
@@ -147,8 +167,75 @@ export class AppStore {
     this.onOutputChanged.dispatch();
   }
 
+  private splitGroup() {
+    const groups = this.tabGroups;
+    const lastGroup = groups[groups.length - 1];
+    if (lastGroup.files.length === 0) {
+      return;
+    }
+    const group = new Group(lastGroup.file, null, [lastGroup.file]);
+    this.tabGroups.push(group);
+    this.activeTabGroup = group;
+    this.onTabsChange.dispatch();
+  }
+
+  private openFile(file: File, preview: boolean) {
+    this.activeTabGroup.open(file, preview);
+    this.onTabsChange.dispatch();
+  }
+
+  private closeFile(file: File) {
+    const { activeTabGroup, tabGroups } = this;
+    activeTabGroup.close(file);
+    if (activeTabGroup.files.length === 0 && tabGroups.length > 1) {
+      const i = tabGroups.indexOf(activeTabGroup);
+      tabGroups.splice(i, 1);
+      const g = tabGroups.length ? tabGroups[Math.min(tabGroups.length - 1, i)] : null;
+      this.activeTabGroup = g;
+      this.tabGroups = tabGroups;
+    }
+    this.onTabsChange.dispatch();
+  }
+
+  private openProjectFiles(openedFiles: [string[]]) {
+    const groups = openedFiles.map((paths: string[]) => {
+      const files = paths.map(file => {
+        return this.getFileByName(file).getModel();
+      });
+      return new Group(files[0], null, files);
+    });
+    this.activeTabGroup = groups[0];
+    this.tabGroups = groups;
+    this.onTabsChange.dispatch();
+  }
+
   public handleActions(action: AppAction ) {
     switch (action.type) {
+      case AppActionType.FOCUS_TAB_GROUP: {
+        const { group } = action as FocusTabGroupAction;
+        this.activeTabGroup = group;
+        this.onTabsChange.dispatch();
+        break;
+      }
+      case AppActionType.CLOSE_FILE: {
+        const { file } = action as CloseFileAction;
+        this.closeFile(file);
+        break;
+      }
+      case AppActionType.OPEN_FILE: {
+        const { file, preview } = action as OpenFileAction;
+        this.openFile(file, preview);
+        break;
+      }
+      case AppActionType.OPEN_PROJECT_FILES: {
+        const { openedFiles } = action as OpenProjectFilesAction;
+        this.openProjectFiles(openedFiles);
+        break;
+      }
+      case AppActionType.SPLIT_GROUP: {
+        this.splitGroup();
+        break;
+      }
       case AppActionType.ADD_FILE_TO: {
         const { file, parent } = action as AddFileToAction;
         this.addFileTo(file, parent);
