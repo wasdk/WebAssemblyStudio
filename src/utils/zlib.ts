@@ -19,13 +19,12 @@
  * SOFTWARE.
  */
 
- export function isZlibData(data: Uint8Array): boolean {
+export function isZlibData(data: Uint8Array): boolean {
   const [ firstByte, secondByte ] = data;
-  return firstByte === 0x78 && (secondByte === 0x01 || secondByte === 0x9C || secondByte == 0xDA);
+  return firstByte === 0x78 && (secondByte === 0x01 || secondByte === 0x9C || secondByte === 0xDA);
 }
-  
+
 export async function decompressZlib(data: Uint8Array): Promise<Uint8Array> {
     const { inflate } = await import("pako");
     return inflate(data);
 }
-  

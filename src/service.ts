@@ -197,8 +197,9 @@ export class Service {
       throw new Error((result as any).message);
     }
     let data = decodeRestrictedBase64ToBytes(result.output);
-    if (isZlibData(data))
+    if (isZlibData(data)) {
       data = await decompressZlib(data);
+    }
     return data;
   }
 
