@@ -911,6 +911,12 @@ a {
   padding-right: 8px;
 }
 
+.action-label.octicon-gist::before {
+  font-family: octicons;
+  content: '\f00e';
+  padding-right: 8px;
+}
+
 .label-name.error-dark::before {
   content: url("../svg/error-dark.svg");
   padding-right: 4px;
