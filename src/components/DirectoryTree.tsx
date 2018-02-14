@@ -20,7 +20,7 @@
  */
 
 import * as React from "react";
-import { Project, File, Directory, FileType, getIconForFileType, ModelRef } from "../model";
+import { Project, File, Directory, FileType, getIconForFileType, ModelRef, isBinaryFileType } from "../model";
 import { Service } from "../service";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
 import { ITree, ContextMenuEvent, IDragAndDrop, DragMouseEvent, IDragAndDropData, IDragOverReaction, DragOverEffect, DragOverBubble } from "../monaco-extra";
@@ -123,6 +123,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
         const anchor = { x: event.posx + anchorOffset.x, y: event.posy + anchorOffset.y };
         const actions: any[] = [];
 
+        // Directory options
         if (file instanceof Directory) {
           actions.push(new MonacoUtils.Action("x", "New File", "octicon-file-add", true, () => {
             return self.props.onNewFile && self.props.onNewFile(file as Directory);
@@ -133,37 +134,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           actions.push(new MonacoUtils.Action("x", "Upload File", "octicon-cloud-upload", true, () => {
              return self.props.onUploadFile && self.props.onUploadFile(file as Directory);
           }));
-        } else if (file.type === FileType.Wasm) {
-          actions.push(new MonacoUtils.Action("x", "Optimize w/ Binaryen", "octicon-gear", true, () => {
-            Service.optimizeWasmWithBinaryen(file);
-          }));
-          actions.push(new MonacoUtils.Action("x", "Validate w/ Binaryen", "octicon-check", true, () => {
-            Service.validateWasmWithBinaryen(file);
-          }));
-          actions.push(new MonacoUtils.Action("x", "To asm.js w/ Binaryen", "octicon-file-code", true, () => {
-            Service.convertWasmToAsmWithBinaryen(file);
-          }));
-          actions.push(new MonacoUtils.Action("x", "Download", "octicon-cloud-download", true, () => {
-            Service.download(file);
-          }));
-          actions.push(new MonacoUtils.Action("x", "Disassemble w/ Wabt", "octicon-file-code", true, () => {
-            Service.disassembleWasmWithWabt(file);
-          }));
-          actions.push(new MonacoUtils.Action("x", "Firefox x86", "octicon-file-binary", true, () => {
-            Service.disassembleX86(file);
-          }));
-          actions.push(new MonacoUtils.Action("x", "Firefox x86 Baseline", "octicon-file-binary", true, () => {
-            Service.disassembleX86(file, "--wasm-always-baseline");
-          }));
-        } else if (file.type === FileType.C || file.type === FileType.Cpp) {
-          actions.push(new MonacoUtils.Action("x", "Format w/ Clang", "octicon-quote", true, () => {
-            Service.clangFormat(file);
-          }));
-        } else if (file.type === FileType.Wast) {
-          actions.push(new MonacoUtils.Action("x", "Assemble w/ Wabt", "octicon-file-binary", true, () => {
-            Service.assembleWastWithWabt(file);
-          }));
         }
+
+        // Common file options
         if (!(file instanceof Project)) {
           actions.push(new MonacoUtils.Action("x", "Edit", "octicon-pencil", true, () => {
             return self.props.onEditFile && self.props.onEditFile(file as Directory);
@@ -171,10 +144,47 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           actions.push(new MonacoUtils.Action("x", "Delete", "octicon-x", true, () => {
             return self.props.onDeleteFile && self.props.onDeleteFile(file as Directory);
           }));
+          actions.push(new MonacoUtils.Action("x", "Download", "octicon-cloud-download", true, () => {
+            Service.download(file);
+          }));
         }
-        actions.push(new MonacoUtils.Action("x", "Gist", "octicon-gist", true, () => {
+
+        // Create a gist from everything but binary
+        if (!isBinaryFileType(file.type)) {
+          actions.push(new MonacoUtils.Action("x", "Create Gist", "octicon-gist", true, () => {
             return self.props.onCreateGist && self.props.onCreateGist(file as Directory);
-        }));
+          }));
+        }
+
+        // File-type specific separated with a ruler
+        if (file.type === FileType.Wasm) {
+          actions.push(new MonacoUtils.Action("x", "Validate", "octicon-check ruler", true, () => {
+            Service.validateWasmWithBinaryen(file);
+          }));
+          actions.push(new MonacoUtils.Action("x", "Optimize", "octicon-gear", true, () => {
+            Service.optimizeWasmWithBinaryen(file);
+          }));
+          actions.push(new MonacoUtils.Action("x", "Disassemble", "octicon-file-code", true, () => {
+            Service.disassembleWasmWithWabt(file);
+          }));
+          actions.push(new MonacoUtils.Action("x", "To asm.js", "octicon-file-code", true, () => {
+            Service.convertWasmToAsmWithBinaryen(file);
+          }));
+          actions.push(new MonacoUtils.Action("x", "To Firefox x86", "octicon-file-binary", true, () => {
+            Service.disassembleX86(file);
+          }));
+          actions.push(new MonacoUtils.Action("x", "To Firefox x86 Baseline", "octicon-file-binary", true, () => {
+            Service.disassembleX86(file, "--wasm-always-baseline");
+          }));
+        } else if (file.type === FileType.C || file.type === FileType.Cpp) {
+          actions.push(new MonacoUtils.Action("x", "Clang-Format", "octicon-quote ruler", true, () => {
+            Service.clangFormat(file);
+          }));
+        } else if (file.type === FileType.Wast) {
+          actions.push(new MonacoUtils.Action("x", "Assemble", "octicon-file-binary ruler", true, () => {
+            Service.assembleWastWithWabt(file);
+          }));
+        }
         self.contextMenuService.showContextMenu({
           getAnchor: () => anchor,
 

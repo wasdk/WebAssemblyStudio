@@ -434,7 +434,7 @@ export class Service {
     }
     const data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
-    alert(module.validate());
+    alert(module.validate() ? "Module is valid" : "Module is not valid");
   }
 
   static async validateWastWithBinaryen(file: File) {
@@ -479,8 +479,7 @@ export class Service {
       Service.downloadLink.style.display = "none";
       document.body.appendChild(Service.downloadLink);
     }
-    assert(file.type === FileType.Wasm);
-    const url = URL.createObjectURL(new Blob([file.getData()], { type: "application/wasm" }));
+    const url = URL.createObjectURL(new Blob([file.getData()], { type: "application/octet-stream" }));
     Service.downloadLink.href = url;
     Service.downloadLink.download = file.name;
     if (Service.downloadLink.href as any !== document.location) {
