@@ -596,16 +596,6 @@ export class Project extends Directory {
   clearStatus() {
     this.setStatus("");
   }
-
-  static onRun = new EventDispatcher("Project Run");
-  static run() {
-    Project.onRun.dispatch();
-  }
-
-  static onBuild = new EventDispatcher("Project Build");
-  static build() {
-    Project.onBuild.dispatch();
-  }
 }
 
 const modelRefMap: WeakMap<any, any> = new WeakMap();
@@ -626,4 +616,9 @@ export class ModelRef<T> {
     modelRefMap.set(obj, ref);
     return ref;
   }
+}
+
+export interface SandboxRun {
+  project: Project;
+  src: string;
 }

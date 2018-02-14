@@ -27,6 +27,7 @@ import { Workspace } from "./Workspace";
 import { Editor, EditorPane, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
+import { build, run, runTask } from "../actions/AppActions";
 
 import appStore from "../stores/AppStore";
 import {
@@ -200,7 +201,7 @@ export class App extends React.Component<AppProps, AppState> {
     appStore.onLoadProject.register(() => {
       this.setState({ project: appStore.getProject() });
       this.forceUpdate();
-      this.runTask("project:load", true);
+      runTask("project:load", true);
     });
     appStore.onDidChangeBuffer.register(() => {
       this.forceUpdate();
@@ -238,17 +239,11 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   registerShortcuts() {
-    Project.onBuild.register(() => {
-      this.build();
-    });
-    Project.onRun.register(() => {
-      this.run();
-    });
     Mousetrap.bind("command+b", () => {
-      Project.build();
+      build();
     });
     Mousetrap.bind("command+enter", () => {
-      Project.run();
+      run();
     });
     // Mousetrap.bind('command+1', (e) => {
     //   let groups = this.state.groups;
@@ -297,62 +292,6 @@ export class App extends React.Component<AppProps, AppState> {
     this.setState({ shareDialog: true });
   }
 
-  run() {
-    const file = appStore.getFileByName("src/main.html");
-    let src = appStore.getFileSource(file);
-
-    src = src.replace(/src\s*=\s*"(.+?)"/, (a: string, b: any) => {
-      const bFile = appStore.getFileByName(b);
-      const src = appStore.getFileBuffer(bFile).getValue();
-      const blob = new Blob([src], { type: "text/javascript" });
-      return `src="${window.URL.createObjectURL(blob)}"`;
-    });
-    const projectModel = this.state.project.getModel();
-    this.controlCenter.sandbox.run(projectModel, src);
-  }
-  /**
-   * Runs a gulp task.
-   */
-  async runTask(name: string, optional: boolean = false) {
-    const run = async (src: string) => {
-      const gulp = new Gulpy();
-      const context = {
-        gulp,
-        project: this.state.project.getModel(),
-        Service,
-        Language,
-        logLn: this.logLn.bind(this),
-        filetypeForExtension
-      };
-      Function.apply(null, Object.keys(context).concat(src)).apply(gulp, Object.values(context));
-      if (gulp.hasTask(name)) {
-        try {
-          await gulp.run(name);
-        } catch (e) {
-          this.logLn(e.message, "error");
-        }
-      } else if (!optional) {
-        this.logLn(`Task ${name} is not optional.` , "error");
-      }
-    };
-    const buildTsFile = appStore.getFileByName("build.ts");
-    const buildJsFile = appStore.getFileByName("build.js");
-    if (buildTsFile) {
-      const output = await buildTsFile.getModel().getEmitOutput();
-      await run(output.outputFiles[0].text);
-    } else if (buildJsFile) {
-      await run(appStore.getFileSource(buildJsFile));
-    } else {
-      this.logLn(Errors.BuildFileMissing, "error");
-    }
-  }
-  async build() {
-    const projectModel = this.state.project.getModel();
-    projectModel.setStatus("Building Project ...");
-    await this.runTask("default");
-    projectModel.clearStatus();
-    return;
-  }
   async update() {
     saveProject(this.state.fiddle);
   }
@@ -476,7 +415,7 @@ export class App extends React.Component<AppProps, AppState> {
         label="Build"
         title="Build: CtrlCmd + B"
         onClick={() => {
-          this.build();
+          build();
         }}
       />,
       <Button
@@ -484,7 +423,7 @@ export class App extends React.Component<AppProps, AppState> {
         label="Run"
         title="Run: CtrlCmd + Enter"
         onClick={() => {
-          this.run();
+          run();
         }}
       />,
       <Button
@@ -497,10 +436,6 @@ export class App extends React.Component<AppProps, AppState> {
         }}
       />);
     return toolbarButtons;
-  }
-  private controlCenter: ControlCenter;
-  setControlCenter(controlCenter: ControlCenter) {
-    this.controlCenter = controlCenter;
   }
   render() {
     const self = this;
@@ -568,10 +503,10 @@ export class App extends React.Component<AppProps, AppState> {
           }}
           onCreate={async (template: Template) => {
             if (!template.project) {
-              this.logLn("Template doesn't contain a project definition.", "error");
+              logLn("Template doesn't contain a project definition.", "error");
             } else {
               await openProjectFiles(template.project);
-              this.runTask("project:load", true);
+              runTask("project:load", true);
             }
             this.setState({ newProjectDialog: false });
           }}
@@ -708,7 +643,7 @@ export class App extends React.Component<AppProps, AppState> {
                 }}
               >
                 {editorPanes}
-                <ControlCenter ref={(ref) => this.setControlCenter(ref)} />
+                <ControlCenter />
               </Split>
             </div>
           </div>

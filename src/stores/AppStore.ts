@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { EventDispatcher, ModelRef, Project, File, Directory, FileType } from "../model";
+import { EventDispatcher, ModelRef, Project, File, Directory, FileType, SandboxRun } from "../model";
 import { Service } from "../service";
 
 import dispatcher from "../dispatcher";
@@ -34,7 +34,9 @@ import {
   OpenProjectFilesAction,
   OpenFileAction,
   CloseFileAction,
-  FocusTabGroupAction
+  FocusTabGroupAction,
+  SetStatusAction,
+  SandboxRunAction
 } from "../actions/AppActions";
 import Group from "../utils/group";
 import { ProjectTemplate } from "../components/NewProjectDialog";
@@ -55,14 +57,12 @@ export class AppStore {
   onDidChangeChildren = new EventDispatcher("AppStore onDidChangeChildren");
   onOutputChanged = new EventDispatcher("AppStore onOutputChanged");
   onTabsChange = new EventDispatcher("AppStore onTabsChange");
+  onSandboxRun = new EventDispatcher("AppStore onSandboxRun");
 
   constructor() {
     this.project = null;
     this.output = null;
   }
-
-  get onRun() { return Project.onRun; }
-  get onBuild() { return Project.onBuild; }
 
   private initStore() {
     this.project = new Project();
@@ -209,6 +209,21 @@ export class AppStore {
     this.onTabsChange.dispatch();
   }
 
+  private setStatus(status: string) {
+    if (!status) {
+      this.project.setStatus(status);
+    } else {
+      this.project.clearStatus();
+    }
+  }
+
+  private sendSandboxRun(src: string) {
+    this.onSandboxRun.dispatch({
+      project: this.project,
+      src,
+    } as SandboxRun);
+  }
+
   public handleActions(action: AppAction ) {
     switch (action.type) {
       case AppActionType.FOCUS_TAB_GROUP: {
@@ -263,6 +278,16 @@ export class AppStore {
       case AppActionType.LOG_LN: {
         const { message, kind } = action as LogLnAction;
         this.logLn(message, kind);
+        break;
+      }
+      case AppActionType.SET_STATUS: {
+        const { status } = action as SetStatusAction;
+        this.setStatus(status);
+        break;
+      }
+      case AppActionType.SANDBOX_RUN: {
+        const { src } = action as SandboxRunAction;
+        this.sendSandboxRun(src);
         break;
       }
     }
