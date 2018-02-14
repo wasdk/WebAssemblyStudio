@@ -90,7 +90,7 @@ See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/w
     }, {
       "name": "setup.js",
       "type": "javascript",
-      "description": "Setup code for convenient use of the AssemblyScript compiler within WebAssemblyStudio."
+      "description": "Setup code for convenient use of the AssemblyScript compiler within WebAssembly Studio."
     }, {
       "name": "README.md",
       "type": "markdown",
