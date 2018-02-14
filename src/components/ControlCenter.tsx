@@ -102,7 +102,7 @@ export class ControlCenter extends React.Component<{}, {
   }
   render() {
     return <div className="fill">
-      <div style={{ display: "flex" }}>
+      <div className="tabs" style={{ display: "flex" }}>
         <div>
           <Button
             icon={<GoThreeBars />}
