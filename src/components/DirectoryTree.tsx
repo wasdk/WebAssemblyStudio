@@ -303,16 +303,18 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
     });
   }
   lastClickedTime = Date.now();
+  lastClickedFile: File | null = null;
   onClickFile(file: File) {
     if (file instanceof Directory) {
       return;
     }
-    if (Date.now() - this.lastClickedTime < 1000 && this.props.onDoubleClickFile) {
+    if (Date.now() - this.lastClickedTime < 500 && this.lastClickedFile === file && this.props.onDoubleClickFile) {
       this.props.onDoubleClickFile(file);
     } else if (this.props.onClickFile) {
       this.props.onClickFile(file);
     }
     this.lastClickedTime = Date.now();
+    this.lastClickedFile = file;
 
   }
   componentDidMount() {
