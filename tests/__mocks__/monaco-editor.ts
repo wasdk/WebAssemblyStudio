@@ -1,3 +1,5 @@
+const { MonacoUtils } = require("../../src/monaco-utils");
+
 class EditorModel {
     buffer: Array<string>;
     constructor() {
@@ -40,11 +42,11 @@ class ContextViewService {
     constructor() { }
 }
 
-(<any>global).ContextViewService = ContextViewService;
+MonacoUtils.ContextViewService = ContextViewService;
 
 class ContextMenuService {
     constructor() { }
     showContextMenu() { }
 }
 
-(<any>global).ContextMenuService = ContextMenuService;
+MonacoUtils.ContextMenuService = ContextMenuService;

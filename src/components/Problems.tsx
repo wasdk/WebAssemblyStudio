@@ -26,6 +26,7 @@ import { Service } from "../service";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
 import { ITree, ContextMenuEvent } from "../monaco-extra";
 import { FileTemplate } from "./DirectoryTree";
+import { MonacoUtils } from "../monaco-utils";
 
 export interface ProblemsProps {
 }
@@ -70,8 +71,8 @@ export class Problems extends React.Component<ProblemsProps, {
 }> {
   constructor(props: ProblemsProps) {
     super(props);
-    this.contextViewService = new (window as any).ContextViewService(document.documentElement);
-    this.contextMenuService = new (window as any).ContextMenuService(document.documentElement, null, null, this.contextViewService);
+    this.contextViewService = new MonacoUtils.ContextViewService(document.documentElement);
+    this.contextMenuService = new MonacoUtils.ContextMenuService(document.documentElement, null, null, this.contextViewService);
   }
 
   tree: ITree;
@@ -91,7 +92,7 @@ export class Problems extends React.Component<ProblemsProps, {
       this.container.removeChild(this.container.lastChild);
     }
     const self = this;
-    class Controller extends (window as any).TreeDefaults.DefaultController {
+    class Controller extends MonacoUtils.TreeDefaults.DefaultController {
       onContextMenu(tree: ITree, file: File, event: ContextMenuEvent): boolean {
         tree.setFocus(file);
         const anchorOffset = { x: -10, y: -3 };
@@ -121,7 +122,7 @@ export class Problems extends React.Component<ProblemsProps, {
       }
     }
 
-    this.tree = new (window as any).Tree(this.container, {
+    this.tree = new MonacoUtils.Tree(this.container, {
       dataSource: {
         /**
          * Returns the unique identifier of the given element.
