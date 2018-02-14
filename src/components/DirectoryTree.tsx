@@ -307,7 +307,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
     if (file instanceof Directory) {
       return;
     }
-    if (Date.now() - this.lastClickedTime < 1000 && this.props.onDoubleClickFile) {
+    if (Date.now() - this.lastClickedTime < 500 && this.props.onDoubleClickFile) {
       this.props.onDoubleClickFile(file);
     } else if (this.props.onClickFile) {
       this.props.onClickFile(file);
