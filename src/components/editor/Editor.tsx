@@ -22,6 +22,7 @@
 import * as React from "react";
 import { Project, File, Directory, FileType, languageForFileType } from "../../model";
 import { View, EditorPane } from "./EditorPane";
+import { build, run } from "../../actions/AppActions";
 import "monaco-editor";
 
 declare var window: any;
@@ -118,11 +119,11 @@ export class Monaco extends React.Component<MonacoProps, {}> {
     });
 
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_B, function() {
-      Project.build();
+      build();
     },  null);
 
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function() {
-      Project.run();
+      run();
     },  null);
 
   }

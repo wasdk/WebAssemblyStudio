@@ -62,7 +62,6 @@ export class ControlCenter extends React.Component<{}, {
   componentWillUnmount() {
     appStore.onOutputChanged.unregister(this.onOutputChanged);
   }
-  sandbox: Sandbox;
   outputView: View;
   refs: {
     container: HTMLDivElement;
@@ -70,9 +69,6 @@ export class ControlCenter extends React.Component<{}, {
   outputViewEditor: Editor;
   setOutputViewEditor(editor: Editor) {
     this.outputViewEditor = editor;
-  }
-  setSandbox(sandbox: Sandbox) {
-    this.sandbox = sandbox;
   }
   updateOutputViewTimeout: any;
   updateOutputView() {
@@ -148,7 +144,7 @@ export class ControlCenter extends React.Component<{}, {
           }}
         >
           {this.createPane()}
-          <Sandbox ref={(ref) => this.setSandbox(ref)} />
+          <Sandbox />
         </Split>
       </div>
     </div>;

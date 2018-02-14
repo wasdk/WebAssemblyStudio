@@ -20,12 +20,14 @@
  */
 
 import dispatcher from "../dispatcher";
-import { File, Directory, Project } from "../model";
+import { File, Directory, Project, filetypeForExtension } from "../model";
 import { App } from "../components/App";
 import { ProjectTemplate } from "../components/NewProjectDialog";
 import appStore from "../stores/AppStore";
-import { Service } from "../service";
+import { Service, Language } from "../service";
 import Group from "../utils/group";
+import { Gulpy } from "../gulpy";
+import { Errors } from "../errors";
 
 export enum AppActionType {
   ADD_FILE_TO = "ADD_FILE_TO",
@@ -40,6 +42,8 @@ export enum AppActionType {
   OPEN_PROJECT_FILES = "OPEN_PROJECT_FILES",
   FOCUS_TAB_GROUP = "FOCUS_TAB_GROUP",
   LOG_LN = "LOG_LN",
+  SET_STATUS = "SET_STATUS",
+  SANDBOX_RUN = "SANDBOX_RUN",
 }
 
 export interface AppAction {
@@ -200,4 +204,85 @@ export function focusTabGroup(group: Group) {
     type: AppActionType.FOCUS_TAB_GROUP,
     group
   } as FocusTabGroupAction);
+}
+
+export interface SetStatusAction extends AppAction {
+  type: AppActionType.SET_STATUS;
+  status?: string;
+}
+
+export function setStatus(status: string) {
+  dispatcher.dispatch({
+    type: AppActionType.SET_STATUS,
+    status,
+  } as SetStatusAction);
+}
+
+export function clearStatus() {
+  dispatcher.dispatch({
+    type: AppActionType.SET_STATUS,
+  } as SetStatusAction);
+}
+
+export interface SandboxRunAction extends AppAction {
+  type: AppActionType.SANDBOX_RUN;
+  src: string;
+}
+
+export async function runTask(name: string, optional: boolean = false) {
+  const run = async (src: string) => {
+    const gulp = new Gulpy();
+    const project = appStore.getProject().getModel();
+    const context = {
+      gulp,
+      project,
+      Service,
+      Language,
+      logLn,
+      filetypeForExtension,
+    };
+    Function.apply(null, Object.keys(context).concat(src)).apply(gulp, Object.values(context));
+    if (gulp.hasTask(name)) {
+      try {
+        await gulp.run(name);
+      } catch (e) {
+        logLn(e.message, "error");
+      }
+    } else if (!optional) {
+      logLn(`Task ${name} is not optional.` , "error");
+    }
+  };
+  const buildTsFile = appStore.getFileByName("build.ts");
+  const buildJsFile = appStore.getFileByName("build.js");
+  if (buildTsFile) {
+    const output = await buildTsFile.getModel().getEmitOutput();
+    await run(output.outputFiles[0].text);
+  } else if (buildJsFile) {
+    await run(appStore.getFileSource(buildJsFile));
+  } else {
+    logLn(Errors.BuildFileMissing, "error");
+  }}
+
+export async function run() {
+  const file = appStore.getFileByName("src/main.html");
+  let src = appStore.getFileSource(file);
+
+  src = src.replace(/src\s*=\s*"(.+?)"/, (a: string, b: any) => {
+    const bFile = appStore.getFileByName(b);
+    const src = appStore.getFileBuffer(bFile).getValue();
+    const blob = new Blob([src], { type: "text/javascript" });
+    return `src="${window.URL.createObjectURL(blob)}"`;
+  });
+
+  const projectModel = appStore.getProject().getModel();
+  dispatcher.dispatch({
+    type: AppActionType.SANDBOX_RUN,
+    src,
+  } as SandboxRunAction);
+}
+
+export async function build() {
+  setStatus("Building Project ...");
+  await runTask("default");
+  clearStatus();
 }

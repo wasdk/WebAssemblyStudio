@@ -21,8 +21,9 @@
 
 import * as React from "react";
 import { Split } from "./Split";
-import { Project, mimeTypeForFileType } from "../model";
+import { Project, mimeTypeForFileType, SandboxRun } from "../model";
 import { logLn } from "../actions/AppActions";
+import appStore from "../stores/AppStore";
 
 interface SandboxWindow extends Window {
   /**
@@ -31,7 +32,7 @@ interface SandboxWindow extends Window {
   getFileURL(path: string): string;
 }
 
-export class Sandbox extends React.Component<{}, {}> {
+export class Sandbox extends React.Component<{}, {}>  {
   container: HTMLDivElement;
   private setContainer(container: HTMLDivElement) {
     if (container == null) { return; }
@@ -46,13 +47,18 @@ export class Sandbox extends React.Component<{}, {}> {
   onResizeEnd = () => {
     this.container.style.pointerEvents = "auto";
   }
+  onSandboxRun = (e: SandboxRun) => {
+    this.run(e.project, e.src);
+  }
   componentDidMount() {
     Split.onResizeBegin.register(this.onResizeBegin);
     Split.onResizeEnd.register(this.onResizeEnd);
+    appStore.onSandboxRun.register(this.onSandboxRun);
   }
   componentWillUnmount() {
     Split.onResizeBegin.unregister(this.onResizeBegin);
     Split.onResizeEnd.unregister(this.onResizeEnd);
+    appStore.onSandboxRun.register(this.onSandboxRun);
   }
   run(project: Project, src: string) {
     const iframe = document.createElement("iframe");
