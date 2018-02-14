@@ -20,7 +20,10 @@ import {
   GoQuote,
   GoThreeBars,
   GoVerified,
-  GoX
+  GoX,
+  GoGist,
+  GoCheck,
+  GoOpenIssue,
 } from "../../../src/components/shared/Icons";
 
 describe("Tests for Icon component", () => {
@@ -81,5 +84,14 @@ describe("Tests for Icon component", () => {
   });
   it("GoBook renders correctly", () => {
     shallow(<GoBook/>);
+  });
+  it("GoGist renders correctly", () => {
+    shallow(<GoGist/>);
+  });
+  it("GoCheck renders correctly", () => {
+    shallow(<GoCheck/>);
+  });
+  it("GoOpenIssue renders correctly", () => {
+    shallow(<GoOpenIssue/>);
   });
 });
