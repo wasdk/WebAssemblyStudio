@@ -1,0 +1,31 @@
+[
+    {
+        "name": "Test Project",
+        "description": "# Test Project",
+        "icon": "svg/file_type_test.svg",
+        "project": {
+            "name": "Project",
+            "directory": "dir",
+            "children": [
+                {
+                    "name": "src",
+                    "children": [
+                        {
+                            "name": "main.c",
+                            "type": "c"
+                        }
+                    ]
+                },
+                {
+                    "name": "file.txt",
+                    "type": "text"
+                }
+            ],
+            "openedFiles": [
+                [
+                    "file.txt"
+                ]
+            ]
+        }
+    }
+]

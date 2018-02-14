@@ -27,6 +27,7 @@ import { GoGear, GoFile, GoX, Icon } from "./shared/Icons";
 import { File, FileType, Directory, extensionForFileType, nameForFileType, Project } from "../model";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
+import fetchTemplates from "../utils/fetchTemplates";
 
 export interface ProjectTemplate {
   name: string;
@@ -72,9 +73,7 @@ export class NewProjectDialog extends React.Component<{
     return "Create";
   }
   async componentDidMount() {
-    const response = await fetch("templates/templates.js");
-    const js = await response.text();
-    const templates = eval(js);
+    const templates = await fetchTemplates();
     this.setState({templates});
     this.setTemplate(templates[0]);
   }
@@ -134,7 +133,7 @@ export class NewProjectDialog extends React.Component<{
           <Button
             icon={<GoFile />}
             label={this.createButtonLabel()}
-            title="Cancel"
+            title="Create"
             isDisabled={!this.state.template}
             onClick={() => {
               return this.props.onCreate && this.props.onCreate(this.state.template);
