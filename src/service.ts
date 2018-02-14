@@ -26,6 +26,7 @@ import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes }
 import { assert } from "./util";
 import getConfig from "./config";
 import { isZlibData, decompressZlib } from "./utils/zlib";
+import { gaEvent } from "./utils/ga";
 
 declare interface BinaryenModule {
   optimize(): any;
@@ -204,6 +205,7 @@ export class Service {
   }
 
   static async compile(src: string | ArrayBuffer, from: Language, to: Language, options = ""): Promise<IServiceRequest> {
+    gaEvent("compile", "Service", `${from}->${to}` );
     if ((from === Language.C || from === Language.Cpp) && to === Language.Wasm) {
       const project = {
         output: "wasm",
@@ -229,6 +231,7 @@ export class Service {
   }
 
   static async disassembleWasm(buffer: ArrayBuffer): Promise<string> {
+    gaEvent("disassemble", "Service", "wabt");
     if (typeof wabt === "undefined") {
       await Service.lazyLoad("lib/libwabt.js");
     }
@@ -248,6 +251,7 @@ export class Service {
   }
 
   static async assembleWast(wast: string): Promise<ArrayBuffer> {
+    gaEvent("assemble", "Service", "wabt");
     if (typeof wabt === "undefined") {
       await Service.lazyLoad("lib/libwabt.js");
     }
@@ -327,6 +331,7 @@ export class Service {
   }
 
   static async exportToGist(content: File, uri?: string): Promise<string> {
+    gaEvent("export", "Service", "gist");
     const files: any = {};
     function serialize(file: File) {
       if (file instanceof Directory) {
@@ -410,6 +415,7 @@ export class Service {
   }
 
   static async optimizeWasmWithBinaryen(file: File) {
+    gaEvent("optimize", "Service", "binaryen");
     if (typeof Binaryen === "undefined") {
       await Service.lazyLoad("lib/binaryen.js");
     }
@@ -422,6 +428,7 @@ export class Service {
   }
 
   static async validateWasmWithBinaryen(file: File) {
+    gaEvent("validate", "Service", "binaryen");
     if (typeof Binaryen === "undefined") {
       await Service.lazyLoad("lib/binaryen.js");
     }
@@ -431,6 +438,7 @@ export class Service {
   }
 
   static async validateWastWithBinaryen(file: File) {
+    gaEvent("optimize", "Service", "binaryen (wast)");
     if (typeof Binaryen === "undefined") {
       await Service.lazyLoad("lib/binaryen.js");
     }
@@ -440,6 +448,7 @@ export class Service {
   }
 
   static async disassembleWasmWithBinaryen(file: File) {
+    gaEvent("disassemble", "Service", "binaryen");
     if (typeof Binaryen === "undefined") {
       await Service.lazyLoad("lib/binaryen.js");
     }
@@ -451,6 +460,7 @@ export class Service {
   }
 
   static async convertWasmToAsmWithBinaryen(file: File) {
+    gaEvent("disassemble", "Service", "binaryen");
     if (typeof Binaryen === "undefined") {
       await Service.lazyLoad("lib/binaryen.js");
     }
@@ -481,6 +491,7 @@ export class Service {
   static clangFormatModule: any = null;
   // Kudos to https://github.com/tbfleming/cib
   static async clangFormat(file: File) {
+    gaEvent("format", "Service", "clang-format");
     function format() {
       const result = Service.clangFormatModule.ccall("formatCode", "string", ["string"], [file.buffer.getValue()]);
       file.buffer.setValue(result);
@@ -503,6 +514,7 @@ export class Service {
   }
 
   static async disassembleX86(file: File, options = "") {
+    gaEvent("disassemble", "Service", "capstone.x86");
     if (typeof capstone === "undefined") {
       await Service.lazyLoad("lib/capstone.x86.min.js");
     }
