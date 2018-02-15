@@ -1,7 +1,7 @@
 {
-  "name": "web-assembly-studio",
+  "name": "webassembly-studio",
   "version": "1.0.0",
-  "description": "",
+  "description": "Learn, Teach, Work and Play in the WebAssembly Studio",
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
@@ -30,14 +30,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mbebenita/WebAssemblyStudio.git"
+    "url": "git+https://github.com/wasdk/WebAssemblyStudio.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Mozilla Foundation",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mbebenita/WebAssemblyStudio/issues"
+    "url": "https://github.com/wasdk/WebAssemblyStudio/issues"
   },
-  "homepage": "https://github.com/mbebenita/WebAssemblyStudio",
+  "homepage": "https://github.com/wasdk/WebAssemblyStudio",
   "dependencies": {
     "@types/flux": "^3.1.6",
     "@types/jszip": "^3.1.3",
