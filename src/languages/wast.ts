@@ -51,6 +51,7 @@ function getCompletionItems() {
     { label: "i64", documentation: "64-bit integer", kind: keyword, insertText: "i64" },
     { label: "f32", documentation: "32-bit floating point", kind: keyword, insertText: "f32" },
     { label: "f64", documentation: "64-bit floating point", kind: keyword, insertText: "f64" },
+    { label: "anyfunc", documentation: "function reference", kind: keyword, insertText: "anyfunc" },
 
     { label: "i32.load8_s", documentation: "load 1 byte and sign-extend i8 to i32", kind: keyword, insertText: "i32.load8_s" },
     { label: "i32.load8_u", documentation: "load 1 byte and zero-extend i8 to i32", kind: keyword, insertText: "i32.load8_u" },
@@ -199,7 +200,10 @@ function getCompletionItems() {
     { label: "f64.convert_s/i64", documentation: "convert a signed 64-bit integer to a 64-bit float", kind: keyword, insertText: "f64.convert_s/i64" },
     { label: "f64.convert_u/i32", documentation: "convert an unsigned 32-bit integer to a 64-bit float", kind: keyword, insertText: "f64.convert_u/i32" },
     { label: "f64.convert_u/i64", documentation: "convert an unsigned 64-bit integer to a 64-bit float", kind: keyword, insertText: "f64.convert_u/i64" },
-    { label: "f64.reinterpret/i64", documentation: "reinterpret the bits of a 64-bit integer as a 64-bit float", kind: keyword, insertText: "f64.reinterpret/i64" }
+    { label: "f64.reinterpret/i64", documentation: "reinterpret the bits of a 64-bit integer as a 64-bit float", kind: keyword, insertText: "f64.reinterpret/i64" },
+
+    { label: "current_memory", documentation: "current memory size in 64k pages", kind: keyword, insertText: "current_memory" },
+    { label: "grow_memory", documentation: "grow memory size by the specified amount of 64k pages", kind: keyword, insertText: "grow_memory" }
   ];
 }
 
@@ -246,6 +250,15 @@ const MonarchDefinitions = {
     "result",
     "offset",
     "anyfunc",
+    "type",
+    "data",
+    "start",
+    "element",
+    "global",
+    "local",
+    "mut",
+    "param",
+    "result",
 
     "i32.load8_s",
     "i32.load8_u",
@@ -377,11 +390,20 @@ const MonarchDefinitions = {
 
     "get_local",
     "set_local",
-    "tee_local"
+    "tee_local",
+    "get_global",
+    "set_global",
+
+    "current_memory",
+    "grow_memory"
   ],
 
   typeKeywords: [
-    "i32", "i64", "f32", "f64"
+    "i32",
+    "i64",
+    "f32",
+    "f64",
+    "anyfunc"
   ],
 
   operators: [
