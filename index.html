@@ -22,14 +22,7 @@ SOFTWARE.
 -->
 <html class="vs-dark">
     <head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-93230088-3"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'UA-93230088-3');
-            gtag('config', 'GA_TRACKING_ID', { 'send_page_view': window.location.origin.indexOf("webassembly") >= 0 });
-        </script>
+        <script async src="lib/ga.js"></script>
         <meta charset="UTF-8" />
         <title>WebAssembly Studio</title>
         <link href="style/global.css" rel="stylesheet">
@@ -43,10 +36,10 @@ SOFTWARE.
         <div id="app" class="show-file-icons"></div>
 
         <!-- Dependencies -->
-        
+
             <!-- <script src="./node_modules/react/umd/react.development.js"></script> -->
             <!-- <script src="./node_modules/react-dom/umd/react-dom.development.js"></script> -->
-       
+
 
         <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
         <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
@@ -58,7 +51,7 @@ SOFTWARE.
 
         <!-- Main -->
 
-        
+
         <script src="./lib/base64js.min.js"></script>
         <script src="./dist/main.bundle.js"></script>
     </body>
