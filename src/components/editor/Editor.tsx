@@ -55,7 +55,7 @@ export class Monaco extends React.Component<MonacoProps, {}> {
       this.editor.restoreViewState(view.state);
       this.editor.updateOptions({ readOnly: view.file.isBufferReadOnly });
     }
-    document.addEventListener("layout", this.layout);
+    document.addEventListener("layout", this.onLayout);
   }
 
   componentWillReceiveProps(nextProps: EditorProps) {
@@ -82,19 +82,12 @@ export class Monaco extends React.Component<MonacoProps, {}> {
     }
   }
 
-  timeout = 0;
-  layout = () => {
-    if (this.timeout) {
-      window.clearTimeout(this.timeout);
-    }
-    this.timeout = window.setTimeout(() => {
-      this.timeout = 0;
-      this.editor.layout();
-    }, 10);
+  onLayout = () => {
+    this.editor.layout();
   }
 
   componentWillUnmount() {
-    document.removeEventListener("layout", this.layout);
+    document.removeEventListener("layout", this.onLayout);
     // We're about to close the editor, save the view state.
     this.props.view.state = this.editor.saveViewState();
   }
