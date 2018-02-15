@@ -119,7 +119,20 @@ const MonarchDefinitions = {
     "virtual",
     "where",
     "while",
-    "yield"
+    "yield",
+
+    // keywords for macros
+    "macro_rules",
+    "block",
+    "expr",
+    "ident",
+    "item",
+    "pat",
+    "path",
+    "stmt",
+    "meta",
+    "tt",
+    "ty"
   ],
 
   typeKeywords: [
@@ -166,8 +179,8 @@ const MonarchDefinitions = {
         }
       }],
 
-      [/#!\[[^]*\]/, "annotation"],
-      [/#!.*$/,      "annotation.invalid"],
+      [/#!?\[[^]*\]/, "annotation"],
+      [/#!?.*$/,      "annotation.invalid"],
 
       // numbers
       [/\d*\.\d+([eE][\-+]?\d+)?[fFdD]?/,    "number.float"],
