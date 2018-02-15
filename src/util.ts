@@ -98,9 +98,17 @@ export function decodeRestrictedBase64ToBytes(encoded: string) {
   return decoded;
 }
 
+const layoutThrottleDuration = 10;
+var layoutTimeout = 0;
+
 export function layout() {
-  const event = new Event("layout");
-  document.dispatchEvent(event);
+  if (layoutTimeout) {
+    window.clearTimeout(layoutTimeout);
+  }
+  window.setTimeout(() => {
+    layoutTimeout = 0;
+    document.dispatchEvent(new Event("layout"));
+  }, layoutThrottleDuration);
 }
 
 export function assert(c: any, message?: string) {

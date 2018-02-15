@@ -317,6 +317,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
     this.lastClickedFile = file;
 
   }
+  onLayout = () => {
+    this.tree.layout();
+  }
   componentDidMount() {
     this.ensureTree();
     (this.tree as any).model.setInput(this.props.directory.getModel());
@@ -325,6 +328,10 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
         this.onClickFile(e.selection[0]);
       }
     });
+    document.addEventListener("layout", this.onLayout);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("layout", this.onLayout);
   }
   componentWillReceiveProps(props: DirectoryTreeProps) {
     if (this.state.directory !== props.directory) {
