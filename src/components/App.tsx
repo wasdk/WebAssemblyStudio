@@ -27,7 +27,7 @@ import { Workspace } from "./Workspace";
 import { Editor, EditorPane, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
-import { build, run, runTask } from "../actions/AppActions";
+import { build, run, runTask, editInWebAssemblyStudio } from "../actions/AppActions";
 
 import appStore from "../stores/AppStore";
 import {
@@ -362,9 +362,10 @@ export class App extends React.Component<AppProps, AppState> {
         <Button
           icon={<GoPencil />}
           label="Edit in WebAssembly Studio"
-          title="Edit in WebAssembly Studio"
+          title="Edit Project in WebAssembly Studio"
           onClick={() => {
-            // this.update();
+            assert(this.state.fiddle);
+            editInWebAssemblyStudio(this.state.fiddle);
           }}
         />);
     } else {
