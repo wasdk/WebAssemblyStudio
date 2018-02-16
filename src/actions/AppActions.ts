@@ -138,6 +138,7 @@ export interface OpenFileAction extends AppAction {
   type: AppActionType.OPEN_FILE;
   file: File;
   preview: boolean;
+  // TODO: Add the location where the file should open.
 }
 
 export function openFile(file: File, preview = true) {
