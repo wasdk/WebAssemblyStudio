@@ -97,6 +97,10 @@ export class ControlCenter extends React.Component<{}, {
     }
   }
   render() {
+    let problemCount = 0;
+    appStore.getProject().getModel().forEachFile((file: File) => {
+      problemCount += file.problems.length;
+    }, true);
     return <div className="fill">
       <div className="tabs" style={{ display: "flex" }}>
         <div>
@@ -123,7 +127,7 @@ export class ControlCenter extends React.Component<{}, {
               }}
             />
             <Tab
-              label="Problems"
+              label={`Problems (${problemCount})`}
               isActive={this.state.visible === "problems"}
               onClick={() => {
                 this.setState({ visible: "problems" });
