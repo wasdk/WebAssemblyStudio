@@ -72,16 +72,16 @@ export class ControlCenter extends React.Component<{}, {
   }
   updateOutputViewTimeout: any;
   updateOutputView() {
-    if (!this.outputViewEditor) {
-      return;
-    }
-    this.outputViewEditor.revealLastLine();
     if (!this.updateOutputViewTimeout) {
       this.updateOutputViewTimeout = window.setTimeout(() => {
         this.forceUpdate();
         this.updateOutputViewTimeout = null;
       });
     }
+    if (!this.outputViewEditor) {
+      return;
+    }
+    this.outputViewEditor.revealLastLine();
   }
   createPane() {
     switch (this.state.visible) {
