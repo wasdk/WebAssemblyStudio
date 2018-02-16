@@ -336,7 +336,7 @@ export class Service {
     function serialize(file: File) {
       if (file instanceof Directory) {
         if (file.name !== "out") {
-          file.mapEachFile((file: File) => serialize(file));
+          file.mapEachFile((file: File) => serialize(file), true);
         }
       } else {
         files[file.name] = {content: file.data};
@@ -352,10 +352,11 @@ export class Service {
 
   static async saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {
     function serialize(file: File): any {
+      assert(!file.isTransient);
       if (file instanceof Directory) {
         return {
           name: file.name,
-          children: file.mapEachFile((file: File) => serialize(file))
+          children: file.mapEachFile((file: File) => serialize(file), true)
         };
       } else {
         return {

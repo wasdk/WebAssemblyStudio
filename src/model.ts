@@ -286,6 +286,11 @@ export class File {
    */
   isDirty: boolean = false;
   isBufferReadOnly: boolean = false;
+  /**
+   * True if the file is temporary. Transient files are usually not serialized to a
+   * backing store.
+   */
+  isTransient = false;
   readonly onDidChangeData = new EventDispatcher("File Data Change");
   readonly onDidChangeBuffer = new EventDispatcher("File Buffer Change");
   readonly onDidChangeProblems = new EventDispatcher("File Problems Change");
@@ -478,8 +483,13 @@ export class Directory extends File {
       this.children.forEach(fn);
     }
   }
-  mapEachFile<T>(fn: (file: File) => T): T[] {
-    return this.children.map(fn);
+  mapEachFile<T>(fn: (file: File) => T, excludeTransientFiles = false): T[] {
+    return this.children.filter((file: File) => {
+      if (excludeTransientFiles && file.isTransient) {
+        return false;
+      }
+      return true;
+    }).map(fn);
   }
   addFile(file: File) {
     assert(file.parent === null);
@@ -515,7 +525,7 @@ export class Directory extends File {
     assert(directory instanceof Directory);
     return directory;
   }
-  newFile(path: string | string[], type: FileType): File {
+  newFile(path: string | string[], type: FileType, isTransient = false): File {
     if (typeof path === "string") {
       path = path.split("/");
     }
@@ -531,6 +541,7 @@ export class Directory extends File {
       file = new File(path[path.length - 1], type);
       directory.addFile(file);
     }
+    file.isTransient = isTransient;
     return file;
   }
   getImmediateChild(name: string): File {
