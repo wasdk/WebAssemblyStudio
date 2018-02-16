@@ -210,7 +210,7 @@ export class AppStore {
   }
 
   private setStatus(status: string) {
-    if (!status) {
+    if (status) {
       this.project.setStatus(status);
     } else {
       this.project.clearStatus();
