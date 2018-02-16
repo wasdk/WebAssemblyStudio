@@ -86,6 +86,16 @@ export class FileTemplate {
     }
     this.label.innerHTML = file.name;
     this.monacoIconLabel.classList.toggle("dirty", file.isDirty);
+    this.monacoIconLabel.classList.toggle("transient", file.isTransient);
+    let title = "";
+    if (file.isDirty && file.isTransient) {
+      title =  "File has been modified and is transient.";
+    } else if (file.isDirty && !file.isTransient) {
+      title =  "File has been modified.";
+    } else if (!file.isDirty && file.isTransient) {
+      title =  "File is transient.";
+    }
+    this.monacoIconLabel.title = title;
   }
 }
 

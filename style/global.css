@@ -851,8 +851,18 @@ a {
 }
 
 .monaco-icon-label.dirty::after {
-  font-family: octicons;
-  content: "\f052";
+  content: "M";
+  font-size: 10px;
+}
+
+.monaco-icon-label.transient::after {
+  content: "T";
+  font-size: 10px;
+}
+
+.monaco-icon-label.dirty.transient::after {
+  content: "M T";
+  font-size: 10px;
 }
 
 /* Menu Item Styles */
