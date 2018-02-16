@@ -230,8 +230,8 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
       /**
        * Returns a label to display when dragging the element.
        */
-      getDragLabel?(tree: ITree, elements: any[]): string {
-        return "X";
+      getDragLabel?(tree: ITree, elements: File[]): string {
+        return elements[0].name;
       }
 
       /**
