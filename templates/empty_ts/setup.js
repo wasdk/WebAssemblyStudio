@@ -22,7 +22,7 @@ require(["assemblyscript/bin/asc"], asc => {
       writeFile: (filename, contents) => {
         const name = filename.startsWith("/") ? filename.substring(1) : filename;
         const type = filetypeForExtension(name.substring(name.lastIndexOf(".") + 1));
-        project.newFile(name, type).setData(contents);
+        project.newFile(name, type, true).setData(contents);
       },
       listFiles: (dirname) => []
     }, fn);
