@@ -27,6 +27,7 @@ import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBina
 import { ITree, ContextMenuEvent } from "../monaco-extra";
 import { FileTemplate } from "./DirectoryTree";
 import { MonacoUtils } from "../monaco-utils";
+import { openFile } from "../actions/AppActions";
 
 export interface ProblemsProps {
 }
@@ -195,13 +196,20 @@ export class Problems extends React.Component<ProblemsProps, {
       controller: new Controller()
     });
   }
-  lastClickedTime = Date.now();
-  onClickFile(file: File) {
-    // TODO
+  onSelectProblem(problem: File | Problem) {
+    if (problem instanceof File) {
+      return;
+    }
+    openFile(problem.file, true);
   }
   componentDidMount() {
     this.ensureTree();
     (this.tree as any).model.setInput(appStore.getProject().getModel());
+    (this.tree as any).model.onDidSelect((e: any) => {
+      if (e.selection.length) {
+        this.onSelectProblem(e.selection[0]);
+      }
+    });
     appStore.onDidChangeProblems.register(() => {
       this.tree.refresh();
       this.tree.expandAll();
