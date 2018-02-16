@@ -384,6 +384,7 @@ export class File {
     return client.getEmitOutput(model.uri.toString());
   }
   setData(data: string | ArrayBuffer) {
+    assert(data != null);
     this.data = data;
     this.notifyDidChangeData();
     this.updateBuffer();

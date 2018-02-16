@@ -385,6 +385,8 @@ export class Service {
       file.description = json.description;
       if (json.data) {
         file.setData(json.data);
+      } else if (json.data === null) {
+        file.setData("");
       } else {
         const request = await fetch(basePath + "/" + json.name);
         file.setData(await request.text());
