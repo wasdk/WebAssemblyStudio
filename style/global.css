@@ -555,7 +555,6 @@ a {
     opacity: 1;
     background-color: var(--title);
     vertical-align: middle;
-    font-family: 'Zilla Slab', serif;
     box-shadow: 1px 2px 10px black;
 }
 
