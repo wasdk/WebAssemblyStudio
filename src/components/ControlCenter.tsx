@@ -117,12 +117,14 @@ export class ControlCenter extends React.Component<{}, {
           <Tabs>
             <Tab
               label={`Output (${this.outputView.file.buffer.getLineCount()})`}
+              isActive={this.state.visible === "output"}
               onClick={() => {
                 this.setState({ visible: "output" });
               }}
             />
             <Tab
               label="Problems"
+              isActive={this.state.visible === "problems"}
               onClick={() => {
                 this.setState({ visible: "problems" });
               }}
