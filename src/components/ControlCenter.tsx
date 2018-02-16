@@ -44,7 +44,7 @@ export class ControlCenter extends React.Component<{}, {
   constructor(props: any) {
     super(props);
     this.state = {
-      visible: "problems",
+      visible: "output",
       splits: [
         { min: 128, value: 512 },
         { min: 128, value: 256 }
