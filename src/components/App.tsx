@@ -340,7 +340,7 @@ export class App extends React.Component<AppProps, AppState> {
       <Button
         key="View Workspace"
         icon={<GoThreeBars />}
-        title="View Workspace"
+        title="View Project Workspace"
         onClick={() => {
           const workspaceSplits = this.state.workspaceSplits;
           const first = workspaceSplits[0];
@@ -373,7 +373,7 @@ export class App extends React.Component<AppProps, AppState> {
         <Button
           icon={<GoPencil />}
           label="Update"
-          title="Update Fiddle"
+          title="Update Project"
           onClick={() => {
             this.update();
           }}
@@ -381,15 +381,15 @@ export class App extends React.Component<AppProps, AppState> {
         <Button
           icon={<GoRepoForked />}
           label="Fork"
-          title="Fork Fiddle"
+          title="Fork Project"
           onClick={() => {
             this.fork();
           }}
         />,
         <Button
           icon={<GoGist />}
-          label="Gist"
-          title="Export to Gist"
+          label="Create Gist"
+          title="Create GitHub Gist from Project"
           onClick={() => {
             this.gist();
           }}
@@ -397,7 +397,7 @@ export class App extends React.Component<AppProps, AppState> {
         <Button
           icon={<GoDesktopDownload />}
           label="Download"
-          title="Download as zip"
+          title="Download Project"
           onClick={() => {
             this.download();
           }}
@@ -405,6 +405,8 @@ export class App extends React.Component<AppProps, AppState> {
         <Button
           icon={<GoRocket />}
           label="Share"
+          title={this.state.fiddle ? "Share Project" : "Cannot share a project that has not been forked yet."}
+          isDisabled={!this.state.fiddle}
           onClick={() => {
             this.share();
           }}
@@ -414,7 +416,7 @@ export class App extends React.Component<AppProps, AppState> {
       <Button
         icon={<GoBeaker />}
         label="Build"
-        title="Build: CtrlCmd + B"
+        title="Build Project: CtrlCmd + B"
         onClick={() => {
           build();
         }}
@@ -422,7 +424,7 @@ export class App extends React.Component<AppProps, AppState> {
       <Button
         icon={<GoGear />}
         label="Run"
-        title="Run: CtrlCmd + Enter"
+        title="Run Project: CtrlCmd + Enter"
         onClick={() => {
           run();
         }}
