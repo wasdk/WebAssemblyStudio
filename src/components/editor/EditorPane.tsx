@@ -82,9 +82,7 @@ export class EditorPane extends React.Component<EditorPaneProps, {
       }
     });
   }
-  setEditor(editor: Editor) {
-    this.editor = editor;
-  }
+
   render() {
     const { onClickFile, onDoubleClickFile, onClose, file, preview, hasFocus } = this.props;
     const { views } = this.state;
@@ -95,7 +93,7 @@ export class EditorPane extends React.Component<EditorPaneProps, {
     }
     let viewer;
     if (file) {
-      viewer = <Editor ref={(ref) => this.setEditor(ref)} view={view} options={{ readOnly: file.isBufferReadOnly }} />;
+      viewer = <Editor view={view} options={{ readOnly: file.isBufferReadOnly }} />;
     } else {
       return <div className="editor-pane-container empty"/>;
     }
@@ -121,9 +119,9 @@ export class EditorPane extends React.Component<EditorPaneProps, {
             icon={<GoClippy />}
             label="Save"
             title="Save: CtrlCmd + S"
-            isDisabled={this.editor && (!this.editor.props.view.file.isDirty)}
+            isDisabled={!this.props.file.isDirty}
             onClick={() => {
-              this.editor.monaco.editor.trigger("anystring", "save", "");
+              this.props.file.save();
             }}
           />
         ]}
