@@ -70,7 +70,7 @@ import {
   GoBeaker,
   GoThreeBars,
   GoGist,
-  GoOpenIssue,
+  GoOpenIssue
 } from "./shared/Icons";
 import { Button } from "./shared/Button";
 

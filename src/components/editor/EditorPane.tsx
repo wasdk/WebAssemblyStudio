@@ -124,7 +124,6 @@ export class EditorPane extends React.Component<EditorPaneProps, {
             isDisabled={this.editor && (!this.editor.props.view.file.isDirty)}
             onClick={() => {
               this.editor.monaco.editor.trigger("anystring", "save", "");
-              console.log(this.editor);
             }}
           />
         ]}
