@@ -70,7 +70,6 @@ import {
   GoThreeBars,
   GoGist,
   GoOpenIssue,
-  GoClippy
 } from "./shared/Icons";
 import { Button } from "./shared/Button";
 
@@ -714,13 +713,7 @@ export class App extends React.Component<AppProps, AppState> {
             </div>
           </div>
         </Split>
-        </div>
-        <Button
-          icon={<GoClippy />}
-          label="Save"
-          title="Save: CtrlCmd + S"
-          onClick={() => {console.log("Save..")}}
-        />
+      </div>
       <StatusBar />
     </div>;
   }
