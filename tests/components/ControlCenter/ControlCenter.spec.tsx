@@ -17,8 +17,8 @@ describe("Tests for ControlCenter component", () => {
   });
   it("ControlCenter initially renders correctly", () => {
     const cc = setup();
-    expect(cc.find("Editor").exists()).toBeFalsy();
-    expect(cc.find("Problems").exists()).toBeTruthy();
+    expect(cc.find("Editor").exists()).toBeTruthy();
+    expect(cc.find("Problems").exists()).toBeFalsy();
   });
   it("ControlCenter renders correctly after tabs clicking", () => {
     const cc = setup();
