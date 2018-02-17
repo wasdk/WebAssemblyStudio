@@ -27,7 +27,7 @@ import { Project, File, getIconForFileType, FileType } from "../../model";
 import "monaco-editor";
 import { Markdown } from ".././Markdown";
 import { Button } from "../shared/Button";
-import { GoBook, GoFile, GoKebabHorizontal } from "../shared/Icons";
+import { GoBook, GoClippy, GoFile, GoKebabHorizontal } from "../shared/Icons";
 
 export class View {
   constructor(
@@ -60,6 +60,7 @@ function diff(a: any[], b: any[]): { ab: any[], ba: any[] } {
 export class EditorPane extends React.Component<EditorPaneProps, {
   views: Map<File, View>;
 }> {
+  editor: Editor;
   constructor(props: any) {
     super(props);
     const views = new Map<File, View>();
@@ -81,7 +82,9 @@ export class EditorPane extends React.Component<EditorPaneProps, {
       }
     });
   }
-
+  setEditor(editor: Editor) {
+    this.editor = editor;
+  }
   render() {
     const { onClickFile, onDoubleClickFile, onClose, file, preview, hasFocus } = this.props;
     const { views } = this.state;
@@ -92,7 +95,7 @@ export class EditorPane extends React.Component<EditorPaneProps, {
     }
     let viewer;
     if (file) {
-      viewer = <Editor view={view} options={{ readOnly: file.isBufferReadOnly }} />;
+      viewer = <Editor ref={(ref) => this.setEditor(ref)} view={view} options={{ readOnly: file.isBufferReadOnly }} />;
     } else {
       return <div className="editor-pane-container empty"/>;
     }
@@ -111,6 +114,17 @@ export class EditorPane extends React.Component<EditorPaneProps, {
             title="Split Editor"
             onClick={() => {
               return this.props.onSplitEditor && this.props.onSplitEditor();
+            }}
+          />,
+          <Button
+            key="save"
+            icon={<GoClippy />}
+            label="Save"
+            title="Save: CtrlCmd + S"
+            isDisabled={this.editor && (!this.editor.props.view.file.isDirty)}
+            onClick={() => {
+              this.editor.monaco.editor.trigger("anystring", "save", "");
+              console.log(this.editor);
             }}
           />
         ]}
