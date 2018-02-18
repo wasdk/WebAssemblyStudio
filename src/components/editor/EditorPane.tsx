@@ -60,7 +60,6 @@ function diff(a: any[], b: any[]): { ab: any[], ba: any[] } {
 export class EditorPane extends React.Component<EditorPaneProps, {
   views: Map<File, View>;
 }> {
-  editor: Editor;
   constructor(props: any) {
     super(props);
     const views = new Map<File, View>();
