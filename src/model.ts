@@ -44,7 +44,7 @@ export enum FileType {
   C          = "c",
   Cpp        = "cpp",
   Rust       = "rust",
-  Wast       = "wast",
+  Wat       = "wat",
   Wasm       = "wasm",
   Directory  = "directory",
   Log        = "log",
@@ -77,8 +77,8 @@ export function languageForFileType(type: FileType): string {
     return "cpp";
   } else if (type === FileType.Rust) {
     return "rust";
-  } else if (type === FileType.Wast || type === FileType.Wasm) {
-    return "wast";
+  } else if (type === FileType.Wat || type === FileType.Wasm) {
+    return "wat";
   } else if (type === FileType.Log) {
     return "log";
   } else if (type === FileType.x86) {
@@ -106,8 +106,8 @@ export function nameForFileType(type: FileType): string {
     return "C";
   } else if (type === FileType.Cpp) {
     return "C++";
-  } else if (type === FileType.Wast) {
-    return "Wast";
+  } else if (type === FileType.Wat) {
+    return "Wat";
   } else if (type === FileType.Wasm) {
     return "Wasm";
   } else if (type === FileType.Markdown) {
@@ -135,8 +135,8 @@ export function extensionForFileType(type: FileType): string {
     return "c";
   } else if (type === FileType.Cpp) {
     return "cpp";
-  } else if (type === FileType.Wast) {
-    return "wast";
+  } else if (type === FileType.Wat) {
+    return "wat";
   } else if (type === FileType.Wasm) {
     return "wasm";
   } else if (type === FileType.Markdown) {
@@ -164,8 +164,8 @@ export function filetypeForExtension(extension: string): FileType {
     return FileType.C;
   } else if (extension === "cpp") {
     return FileType.Cpp;
-  } else if (extension === "wast") {
-    return FileType.Wast;
+  } else if (extension === "wat") {
+    return FileType.Wat;
   } else if (extension === "wasm") {
      return FileType.Wasm;
   } else if (extension === "md") {
@@ -355,10 +355,10 @@ export class File {
       const result = await Service.disassembleWasm(this.data as ArrayBuffer);
       this.buffer.setValue(result);
       this.isDirty = false;
-      this.bufferType = FileType.Wast;
+      this.bufferType = FileType.Wat;
       this.notifyDidChangeBuffer();
-      monaco.editor.setModelLanguage(this.buffer, languageForFileType(FileType.Wast));
-      this.description = "This .wasm file is editable as a .wast file, and is automatically reassembled to .wasm when saved.";
+      monaco.editor.setModelLanguage(this.buffer, languageForFileType(FileType.Wat));
+      this.description = "This .wasm file is editable as a .wat file, and is automatically reassembled to .wasm when saved.";
       return;
     } else {
       this.buffer.setValue(this.data as string);
@@ -437,9 +437,9 @@ export class File {
       return;
     }
     if (this.bufferType !== this.type) {
-      if (this.bufferType === FileType.Wast && this.type === FileType.Wasm) {
+      if (this.bufferType === FileType.Wat && this.type === FileType.Wasm) {
         try {
-          const data = await Service.assembleWast(this.buffer.getValue());
+          const data = await Service.assembleWat(this.buffer.getValue());
           this.isDirty = false;
           this.data = data;
         } catch (e) {

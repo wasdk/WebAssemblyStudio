@@ -108,7 +108,7 @@ export class NewFileDialog extends React.Component<{
                 <ListItem value={FileType.Rust} label={"Rust File (.rs)"} icon={<Icon src="svg/file_type_rust.svg" />} />
 
                 <ListItem value={FileType.Cretonne} label={"Cretonne (.cton)"} icon={<Icon src="svg/default_file.svg" />} />
-                <ListItem value={FileType.Wast} label={"Wast (.wast)"} icon={<Icon src="svg/default_file.svg" />} />
+                <ListItem value={FileType.Wat} label={"Wat (.wat)"} icon={<Icon src="svg/default_file.svg" />} />
 
                 <ListItem value={FileType.JavaScript} label={"JavaScript (.js)"} icon={<Icon src="svg/file_type_js.svg" />} />
                 <ListItem value={FileType.TypeScript} label={"TypeScript (.ts)"} icon={<Icon src="svg/file_type_typescript.svg" />} />

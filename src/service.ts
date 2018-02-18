@@ -68,7 +68,7 @@ declare var wabt: {
 export enum Language {
   C = "c",
   Cpp = "cpp",
-  Wast = "wast",
+  Wat = "wat",
   Wasm = "wasm",
   Rust = "rust",
   Cretonne = "cton",
@@ -245,25 +245,25 @@ export class Service {
 
   static async disassembleWasmWithWabt(file: File) {
     const result = await Service.disassembleWasm(file.getData() as ArrayBuffer);
-    const output = file.parent.newFile(file.name + ".wast", FileType.Wast);
+    const output = file.parent.newFile(file.name + ".wat", FileType.Wat);
     output.description = "Disassembled from " + file.name + " using Wabt.";
     output.setData(result);
   }
 
-  static async assembleWast(wast: string): Promise<ArrayBuffer> {
+  static async assembleWat(wat: string): Promise<ArrayBuffer> {
     gaEvent("assemble", "Service", "wabt");
     if (typeof wabt === "undefined") {
       await Service.lazyLoad("lib/libwabt.js");
     }
-    const module = wabt.parseWat("test.wast", wast);
+    const module = wabt.parseWat("test.wat", wat);
     module.resolveNames();
     module.validate();
     const binary = module.toBinary({ log: true, write_debug_names: true });
     return binary.buffer;
   }
 
-  static async assembleWastWithWabt(file: File) {
-    const result = await Service.assembleWast(file.getData() as string);
+  static async assembleWatWithWabt(file: File) {
+    const result = await Service.assembleWat(file.getData() as string);
     const output = file.parent.newFile(file.name + ".wasm", FileType.Wasm);
     output.description = "Assembled from " + file.name + " using Wabt.";
     output.setData(result);
@@ -438,8 +438,8 @@ export class Service {
     alert(module.validate() ? "Module is valid" : "Module is not valid");
   }
 
-  static async validateWastWithBinaryen(file: File) {
-    gaEvent("optimize", "Service", "binaryen (wast)");
+  static async validateWatWithBinaryen(file: File) {
+    gaEvent("optimize", "Service", "binaryen (wat)");
     if (typeof Binaryen === "undefined") {
       await Service.lazyLoad("lib/binaryen.js");
     }
@@ -455,7 +455,7 @@ export class Service {
     }
     const data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
-    const output = file.parent.newFile(file.name + ".wast", FileType.Wast);
+    const output = file.parent.newFile(file.name + ".wat", FileType.Wat);
     output.description = "Disassembled from " + file.name + " using Binaryen.";
     output.setData(module.emitText());
   }

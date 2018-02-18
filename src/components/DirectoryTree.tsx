@@ -190,9 +190,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           actions.push(new MonacoUtils.Action("x", "Clang-Format", "octicon-quote ruler", true, () => {
             Service.clangFormat(file);
           }));
-        } else if (file.type === FileType.Wast) {
+        } else if (file.type === FileType.Wat) {
           actions.push(new MonacoUtils.Action("x", "Assemble", "octicon-file-binary ruler", true, () => {
-            Service.assembleWastWithWabt(file);
+            Service.assembleWatWithWabt(file);
           }));
         }
         self.contextMenuService.showContextMenu({
