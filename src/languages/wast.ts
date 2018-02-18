@@ -27,7 +27,7 @@ import IModel = monaco.editor.IModel;
 import IPosition = monaco.IPosition;
 
 let completionItems: monaco.languages.CompletionItem[] = null;
-function getCompletionItems() {
+export function getWatCompletionItems() {
   const keyword = monaco.languages.CompletionItemKind.Keyword;
   if (completionItems) {
     return completionItems;
@@ -494,21 +494,39 @@ const MonarchDefinitions = {
   },
 };
 
+export function watWordAt(s: string, i: number) {
+  const l = s.slice(0, i + 1).search(/[A-Za-z0-9_\.\/]+$/);
+  const r = s.slice(i).search(/[^A-Za-z0-9_\.\/]/);
+  if (r < 0) {
+    return { index: l, word: s.slice(l) };
+  }
+  return { index: l, word: s.slice(l, r + i) };
+}
+
 export const Wast = {
   MonarchDefinitions,
   LanguageConfiguration,
   CompletionItemProvider: {
     provideCompletionItems: function(model: IModel, position: IPosition) {
-      return getCompletionItems();
+      return getWatCompletionItems();
     }
   },
   HoverProvider: {
     provideHover: function(model: IModel, position: IPosition) {
+      const lineContent = model.getLineContent(position.lineNumber);
+      const { index, word } = watWordAt(lineContent, position.column - 1);
+      if (!word) {
+        return;
+      }
+      const item = getWatCompletionItems().find(x => x.label === word);
+      if (!item) {
+        return;
+      }
       return {
-        range: new monaco.Range(1, 1, model.getLineCount(), model.getLineMaxColumn(model.getLineCount())),
+        range: new monaco.Range(position.lineNumber, index + 1, position.lineNumber, index + 1 + word.length),
         contents: [
           "**DETAILS**",
-          { language: "html", value: "TODO" }
+          { language: "html", value: item.documentation }
         ]
       };
     }
