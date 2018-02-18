@@ -503,7 +503,7 @@ export function watWordAt(s: string, i: number) {
   return { index: l, word: s.slice(l, r + i) };
 }
 
-export const Wast = {
+export const Wat = {
   MonarchDefinitions,
   LanguageConfiguration,
   CompletionItemProvider: {

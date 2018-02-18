@@ -16,7 +16,7 @@ declare const gulp: Gulpy;
 declare enum Language {
   C = "c",
   Cpp = "cpp",
-  Wast = "wast",
+  Wat = "wat",
   Wasm = "wasm",
   Rust = "rust",
   Cretonne = "cton",
@@ -30,7 +30,7 @@ declare enum Language {
 declare class Service {
   static compileFile(file: File, from: Language | string, to: Language | string, options?: string): Promise<any>;
   /**
-   * Disassembles WebAssembly binary into Wast format using Wabt.
+   * Disassembles WebAssembly binary into Wat format using Wabt.
    */
   static disassembleWasm(buffer: ArrayBuffer): Promise<string>;
 }
