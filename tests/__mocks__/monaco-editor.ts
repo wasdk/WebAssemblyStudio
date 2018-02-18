@@ -36,6 +36,11 @@ class EditorModel {
   Range: function (l1, c1, l2, c2) {
     this.r = [l1, c1, l2, c2];
   },
+  languages: {
+    CompletionItemKind: {
+      Keyword: 12
+    }
+  }
 };
 
 class ContextViewService {
@@ -50,3 +55,5 @@ class ContextMenuService {
 }
 
 MonacoUtils.ContextMenuService = ContextMenuService;
+
+
