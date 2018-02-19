@@ -565,6 +565,23 @@ export class Service {
     output.setData(s);
   }
 
+  static openBinaryExplorer(file: File) {
+    const childWindow = window.open(
+      "//wasdk.github.io/wasmcodeexplorer/?api=postmessage",
+      "",
+      "toolbar=no,ocation=no,directories=no,status=no,menubar=no,location=no,scrollbars=yes,resizable=yes,width=1024,height=568"
+    );
+    window.addEventListener("message", function(e: any) {
+      if (e.data.type === "wasmexplorer-ready") {
+        const dataToSend = new Uint8Array((file.data as any).slice(0));
+        e.source.postMessage({
+          type: "wasmexplorer-load",
+          data: dataToSend
+        }, "*", [dataToSend.buffer]);
+      }
+    } , false);
+  }
+
   static async compileMarkdownToHtml(src: string): Promise<string> {
     if (typeof showdown === "undefined") {
       await Service.lazyLoad("lib/showdown.min.js");
