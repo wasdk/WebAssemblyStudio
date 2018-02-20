@@ -99,4 +99,35 @@ See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/w
       ["README.md"]
     ]
   }
+}, {
+  "name": "Empty Wat Project",
+  "description": `# Empty Wat Project
+`,
+  "icon": "",
+  "project": {
+    "name": "Project",
+    "directory": "empty_wat",
+    "children": [{
+      "name": "src",
+      "children": [{
+        "name": "main.wat",
+        "type": "wat"
+      }, {
+        "name": "main.js",
+        "type": "javascript",
+      }, {
+        "name": "main.html",
+        "type": "html",
+      }]
+    }, {
+      "name": "build.ts",
+      "type": "typescript",
+    }, {
+      "name": "README.md",
+      "type": "markdown",
+    }],
+    "openedFiles": [
+      ["README.md"]
+    ]
+  }
 }]
