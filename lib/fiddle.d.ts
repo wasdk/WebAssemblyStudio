@@ -33,6 +33,7 @@ declare class Service {
    * Disassembles WebAssembly binary into Wat format using Wabt.
    */
   static disassembleWasm(buffer: ArrayBuffer): Promise<string>;
+  static assembleWat(wat: string): Promise<ArrayBuffer>;
 }
 declare const project: any;
 
