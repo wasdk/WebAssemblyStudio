@@ -23,6 +23,7 @@ import dispatcher from "../dispatcher";
 import { File, Directory, Project, filetypeForExtension } from "../model";
 import { App } from "../components/App";
 import { ProjectTemplate } from "../components/NewProjectDialog";
+import { View } from "../components/editor/View";
 import appStore from "../stores/AppStore";
 import { Service, Language } from "../service";
 import Group from "../utils/group";
@@ -44,6 +45,8 @@ export enum AppActionType {
   LOG_LN = "LOG_LN",
   SET_STATUS = "SET_STATUS",
   SANDBOX_RUN = "SANDBOX_RUN",
+  CLOSE_VIEW = "CLOSE_VIEW",
+  OPEN_VIEW = "OPEN_VIEW",
 }
 
 export interface AppAction {
@@ -134,6 +137,32 @@ export function splitGroup() {
   } as SplitGroupAction);
 }
 
+export interface OpenViewAction extends AppAction {
+  type: AppActionType.OPEN_VIEW;
+  view: View;
+  preview: boolean;
+}
+
+export function openView(view: View, preview = true) {
+  dispatcher.dispatch({
+    type: AppActionType.OPEN_VIEW,
+    view,
+    preview
+  } as OpenViewAction);
+}
+
+export interface CloseViewAction extends AppAction {
+  type: AppActionType.CLOSE_VIEW;
+  view: View;
+}
+
+export function closeView(view: View) {
+  dispatcher.dispatch({
+    type: AppActionType.CLOSE_VIEW,
+    view
+  } as CloseViewAction);
+}
+
 export interface OpenFileAction extends AppAction {
   type: AppActionType.OPEN_FILE;
   file: File;
@@ -147,18 +176,6 @@ export function openFile(file: File, preview = true) {
     file,
     preview
   } as OpenFileAction);
-}
-
-export interface CloseFileAction extends AppAction {
-  type: AppActionType.CLOSE_FILE;
-  file: File;
-}
-
-export function closeFile(file: File) {
-  dispatcher.dispatch({
-    type: AppActionType.CLOSE_FILE,
-    file
-  } as CloseFileAction);
 }
 
 export interface OpenProjectFilesAction extends AppAction {
@@ -188,7 +205,7 @@ export async function saveProject(fiddle: string) {
   const projectModel = appStore.getProject().getModel();
 
   const openedFiles = tabGroups.map((group) => {
-    return group.files.map((file) => file.getPath());
+    return group.views.map((view) => view.file.getPath());
   });
 
   await Service.saveProject(projectModel, openedFiles, fiddle);

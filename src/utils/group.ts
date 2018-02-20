@@ -20,23 +20,25 @@
  */
 
 import { assert } from "../util";
+import { View, ViewMode } from "../components/editor/View";
 import { File } from "../model";
 
 export default class Group {
-  file: File;
-  files: File[];
-  preview: File;
-  constructor(file: File, preview: File, files: File[]) {
-    this.file = file;
-    this.preview = preview;
-    this.files = files;
+  currentView: View;
+  views: View[];
+  preview: View;
+
+  constructor(view: View, views: View[] = []) {
+    this.currentView = view;
+    this.views = views;
   }
-  open(file: File, shouldPreview: boolean = true) {
-    const files = this.files;
-    const index = files.indexOf(file);
+  open(view: View, shouldPreview = true) {
+    const views = this.views;
+    const index = views.indexOf(view);
+
     if (index >= 0) {
-      // Switch to file if it's already open.
-      this.file = file;
+      // Switch to the view if it's already open.
+      this.currentView = view;
       if (!shouldPreview) {
         this.preview = null;
       }
@@ -45,26 +47,42 @@ export default class Group {
     if (shouldPreview) {
       if (this.preview) {
         // Replace preview file if there is one.
-        const previewIndex = files.indexOf(this.preview);
+        const previewIndex = views.indexOf(this.preview);
         assert(previewIndex >= 0);
-        this.file = this.preview = files[previewIndex] = file;
+        this.currentView = this.preview = views[previewIndex] = view;
       } else {
-        files.push(file);
-        this.file = this.preview = file;
+        views.push(view);
+        this.currentView = this.preview = view;
       }
     } else {
-      files.push(file);
-      this.file = file;
+      views.push(view);
+      this.currentView = view;
       this.preview = null;
     }
   }
-  close(file: File) {
-    const i = this.files.indexOf(file);
-    assert(i >= 0);
-    if (file === this.preview) {
+  openFile(file: File, preview = true, mode: ViewMode = ViewMode.EDITOR) {
+    const index =  this.views.findIndex(view => view.file === file);
+    const view = (index >= 0) ? this.views[index] : new View({ file, mode, preview });
+
+    this.open(view, preview);
+  }
+
+  close(view: View) {
+    const i = this.views.indexOf(view);
+    if (i < 0) {
+      return ;
+    }
+
+    this.views.splice(i, 1);
+    if (this.currentView.onClose) {
+      this.currentView.onClose();
+    }
+
+    const numViews = this.views.length;
+    this.currentView = numViews ? this.views[Math.min(numViews - 1, i)] : null;
+
+    if (view === this.preview) {
       this.preview = null;
     }
-    this.files.splice(i, 1);
-    this.file = this.files.length ? this.files[Math.min(this.files.length - 1, i)] : null;
   }
 }

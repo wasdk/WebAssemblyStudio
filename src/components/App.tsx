@@ -27,6 +27,7 @@ import { Workspace } from "./Workspace";
 import { Editor, EditorPane, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
+import { ViewMode } from "./editor/View";
 import { build, run, runTask, editInWebAssemblyStudio } from "../actions/AppActions";
 
 import appStore from "../stores/AppStore";
@@ -39,7 +40,8 @@ import {
   splitGroup,
   openProjectFiles,
   openFile,
-  closeFile,
+  openView,
+  closeView,
   saveProject,
   focusTabGroup,
   logLn,
@@ -453,8 +455,8 @@ export class App extends React.Component<AppProps, AppState> {
       return groups.map(group => {
         // tslint:disable-next-line:jsx-key
         return <EditorPane
-          files={group.files.slice(0)}
-          file={group.file}
+          views={group.views.slice(0)}
+          view={group.currentView}
           preview={group.preview}
           onSplitEditor={() => splitGroup()}
           hasFocus={activeGroup === group}
@@ -462,19 +464,17 @@ export class App extends React.Component<AppProps, AppState> {
             // TODO: Should be taken care of in shouldComponentUpdate instead.
             focusTabGroup(group);
           }}
-          onClickFile={(file: File) => {
+          onClickView={(view: View) => {
             focusTabGroup(group);
-            openFile(file);
+            openView(view);
           }}
-          onDoubleClickFile={(file: File) => {
-            if (file instanceof Directory) {
-              return;
-            }
-            openFile(file, false);
-          }}
-          onClose={(file) => {
+          onDoubleClickView={(view: View) => {
             focusTabGroup(group);
-            closeFile(file);
+            openView(view, false);
+          }}
+          onClose={(view: View) => {
+            focusTabGroup(group);
+            closeView(view);
             }
           }
         />;
