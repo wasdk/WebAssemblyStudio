@@ -565,21 +565,29 @@ export class Service {
     output.setData(s);
   }
 
+  private static binaryExplorerMessageListener: (e: any) => void;
+
   static openBinaryExplorer(file: File) {
-    const childWindow = window.open(
+    window.open(
       "//wasdk.github.io/wasmcodeexplorer/?api=postmessage",
       "",
       "toolbar=no,ocation=no,directories=no,status=no,menubar=no,location=no,scrollbars=yes,resizable=yes,width=1024,height=568"
     );
-    window.addEventListener("message", function(e: any) {
+    if (Service.binaryExplorerMessageListener) {
+      window.removeEventListener("message", Service.binaryExplorerMessageListener, false);
+    }
+    Service.binaryExplorerMessageListener = (e: any) => {
       if (e.data.type === "wasmexplorer-ready") {
+        window.removeEventListener("message", Service.binaryExplorerMessageListener, false);
+        Service.binaryExplorerMessageListener = null;
         const dataToSend = new Uint8Array((file.data as any).slice(0));
         e.source.postMessage({
           type: "wasmexplorer-load",
           data: dataToSend
         }, "*", [dataToSend.buffer]);
       }
-    } , false);
+    };
+    window.addEventListener("message", Service.binaryExplorerMessageListener, false);
   }
 
   static async compileMarkdownToHtml(src: string): Promise<string> {
