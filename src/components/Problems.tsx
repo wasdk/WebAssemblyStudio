@@ -83,9 +83,6 @@ export class Problems extends React.Component<ProblemsProps, {
   container: HTMLDivElement;
   private setContainer(container: HTMLDivElement) {
     if (container == null) { return; }
-    if (this.container !== container) {
-      // ...
-    }
     this.container = container;
   }
   private ensureTree() {

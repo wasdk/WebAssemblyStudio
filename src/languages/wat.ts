@@ -38,15 +38,6 @@ export function getWatCompletionItems() {
     { label: "func", documentation: "function declaration", kind: keyword, insertText: "func" },
     { label: "param", documentation: "parameter", kind: keyword, insertText: { value: "param ${1:identifier} ${2:type}" } },
 
-    // 'table',
-    // 'memory',
-    // 'export',
-    // 'import',
-    // 'func',
-    // 'result',
-    // 'offset',
-    // 'anyfunc',
-
     { label: "i32", documentation: "32-bit integer", kind: keyword, insertText: "i32" },
     { label: "i64", documentation: "64-bit integer", kind: keyword, insertText: "i64" },
     { label: "f32", documentation: "32-bit floating point", kind: keyword, insertText: "f32" },
@@ -407,10 +398,6 @@ const MonarchDefinitions = {
   ],
 
   operators: [
-    // '=', '>', '<', '!', '~', '?', ':', '==', '<=', '>=', '!=',
-    // '&&', '||', '++', '--', '+', '-', '*', '/', '&', '|', '^', '%',
-    // '<<', '>>', '>>>', '+=', '-=', '*=', '/=', '&=', '|=', '^=',
-    // '%=', '<<=', '>>=', '>>>='
   ] as any,
 
   brackets: [
@@ -436,38 +423,12 @@ const MonarchDefinitions = {
           "@default": "type.identifier"
         }
       }],
-      // [/[A-Z][\w\$]*/, 'type.identifier' ],  // to show class names nicely
 
-      // // whitespace
-      // { include: '@whitespace' },
-
-      // // delimiters and operators
-      // [/[{}()\[\]]/, '@brackets'],
-      // [/[<>](?!@symbols)/, '@brackets'],
-      // [/@symbols/, { cases: { '@operators': 'operator',
-      //                         '@default'  : '' } } ],
-
-      // // @ annotations.
-      // // As an example, we emit a debugging log message on these tokens.
-      // // Note: message are supressed during the first load -- change some lines to see them.
-      // [/@\s*[a-zA-Z_\$][\w\$]*/, { token: 'annotation', log: 'annotation token: $0' }],
-
-      // // numbers
-      // [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
-      // [/0[xX][0-9a-fA-F]+/, 'number.hex'],
+      // numbers
       [/\d+/, "number"],
 
-      // // delimiter: after number because of .\d floats
-      // [/[;,.]/, 'delimiter'],
-
       // strings
-      // [/"([^"\\]|\\.)*$/, 'string.invalid' ],  // non-teminated string
       [/"/, { token: "string.quote", bracket: "@open", next: "@string" }],
-
-      // // characters
-      // [/'[^\\']'/, 'string'],
-      // [/(')(@escapes)(')/, ['string','string.escape','string']],
-      // [/'/, 'string.invalid']
 
       [/[{}()\[\]]/, "@brackets"]
     ] as any,

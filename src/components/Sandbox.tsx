@@ -36,9 +36,6 @@ export class Sandbox extends React.Component<{}, {}>  {
   container: HTMLDivElement;
   private setContainer(container: HTMLDivElement) {
     if (container == null) { return; }
-    if (this.container !== container) {
-      // ...
-    }
     this.container = container;
   }
   onResizeBegin = () => {

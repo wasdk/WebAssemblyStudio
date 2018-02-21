@@ -197,9 +197,7 @@ export class App extends React.Component<AppProps, AppState> {
     const newProject = new Project();
     let json = await Service.loadJSON(this.state.fiddle);
     json = await Service.loadProject(json, newProject);
-    if (false && (json as any).openedFiles) {
-      // this.openProjectFiles(json);
-    }
+    // TODO openProjectFiles ?
     this.logLn("Project Loaded ...");
     loadProject(newProject);
   }
@@ -251,29 +249,6 @@ export class App extends React.Component<AppProps, AppState> {
     Mousetrap.bind("command+enter", () => {
       run();
     });
-    // Mousetrap.bind('command+1', (e) => {
-    //   let groups = this.state.groups;
-    //   groups.length > 0 && this.setState({group: groups[0]});
-    //   e.preventDefault();
-    // });
-    // Mousetrap.bind('command+2', (e) => {
-    //   let groups = this.state.groups;
-    //   groups.length > 1 && this.setState({group: groups[1]});
-    //   e.preventDefault();
-    // });
-    // Mousetrap.bind('command+3', (e) => {
-    //   let groups = this.state.groups;
-    //   groups.length > 2 && this.setState({group: groups[2]});
-    //   e.preventDefault();
-    // });
-    // Mousetrap.bind('command+shift+left', (e) => {
-    //   console.log("left");
-    //   e.preventDefault();
-    // });
-    // Mousetrap.bind('command+shift+right', (e) => {
-    //   console.log("right");
-    //   e.preventDefault();
-    // });
   }
   logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
     logLn(message, kind);

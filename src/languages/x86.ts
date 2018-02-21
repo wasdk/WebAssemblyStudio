@@ -40,10 +40,6 @@ function getCompletionItems() {
 const LanguageConfiguration: IRichLanguageConfiguration = {
   // the default separators except `@$`
   wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
-  // comments: {
-  //   lineComment: '//',
-  //   blockComment: ['/*', '*/'],
-  // },
   brackets: [
     ["{", "}"],
     ["[", "]"],
@@ -97,22 +93,6 @@ const MonarchDefinitions = {
     "CS", "DS", "ES", "FS", "GS", "SS", "RAX", "EAX", "RBX", "EBX", "RCX", "ECX", "RDX", "EDX",
     "RCX", "RIP", "EIP", "IP", "RSP", "ESP", "SP", "RSI", "ESI", "SI", "RDI", "EDI", "DI", "RFLAGS", "EFLAGS", "FLAGS"
   ],
-  // operators: [
-  //   // '=', '>', '<', '!', '~', '?', ':', '==', '<=', '>=', '!=',
-  //   // '&&', '||', '++', '--', '+', '-', '*', '/', '&', '|', '^', '%',
-  //   // '<<', '>>', '>>>', '+=', '-=', '*=', '/=', '&=', '|=', '^=',
-  //   // '%=', '<<=', '>>=', '>>>='
-  // ] as any,
-
-  // brackets: [
-  //   ['(', ')', 'bracket.parenthesis'],
-  //   ['{', '}', 'bracket.curly'],
-  //   ['[', ']', 'bracket.square']
-  // ],
-
-  // we include these common regular expressions
-  // symbols: /[=><!~?:&|+\-*\/\^%]+/,
-  // symbols:  /[=><~&|+\-*\/%@#]+/,
 
   // C# style strings
   escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
@@ -130,49 +110,25 @@ const MonarchDefinitions = {
           "@default": "identifier"
         }
       }],
-      // [/[A-Z][\w\$]*/, 'type.identifier' ],  // to show class names nicely
 
-      // // whitespace
+      // whitespace
       { include: "@whitespace" },
 
-      // // delimiters and operators
-      // [/[{}()\[\]]/, '@brackets'],
-      // [/[<>](?!@symbols)/, '@brackets'],
-      // [/@symbols/, { cases: { '@operators': 'operator',
-      //                         '@default'  : '' } } ],
-
-      // // @ annotations.
-      // // As an example, we emit a debugging log message on these tokens.
-      // // Note: message are supressed during the first load -- change some lines to see them.
-      // [/@\s*[a-zA-Z_\$][\w\$]*/, { token: 'annotation', log: 'annotation token: $0' }],
-
-      // // numbers
-      // [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
+      // numbers
       [/0[xX][0-9a-fA-F]+/, "number.hex"],
       [/\d+/, "number"],
 
-      // // delimiter: after number because of .\d floats
+      // delimiter: after number because of .\d floats
       [/[;,.]/, "delimiter"],
 
       // strings
-      // [/"([^"\\]|\\.)*$/, 'string.invalid' ],  // non-teminated string
       [/"/, { token: "string.quote", bracket: "@open", next: "@string" }],
-
-      // // characters
-      // [/'[^\\']'/, 'string'],
-      // [/(')(@escapes)(')/, ['string','string.escape','string']],
-      // [/'/, 'string.invalid']
 
       [/[{}()\[\]]/, "@brackets"]
     ] as any,
 
     comment: [
-      [/;.*/, "comment"],
-      // [/[^\/*]+/, 'comment'],
-      // [/[^\/*]+/, 'comment'],
-      // [/\/\*/, 'comment', '@push'],    // nested comment
-      // ["\\*/", 'comment', '@pop'],
-      // [/[\/*]/, 'comment']
+      [/;.*/, "comment"]
     ],
 
     string: [
@@ -185,8 +141,6 @@ const MonarchDefinitions = {
     whitespace: [
       [/[ \t\r\n]+/, "white"],
       [/;.*$/, "comment"]
-      // [/\/\*/, 'comment', '@comment'],
-      // [/\/\/.*$/, 'comment'],
     ],
   },
 };

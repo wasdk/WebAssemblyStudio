@@ -63,7 +63,7 @@ export class FileTemplate {
     labelDescriptionContainer.appendChild(this.description);
   }
   dispose() {
-    // TODO
+    // TODO dispose resources?
   }
   set(file: File) {
     let icon = "";
@@ -116,9 +116,6 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
   container: HTMLDivElement;
   private setContainer(container: HTMLDivElement) {
     if (container == null) { return; }
-    if (this.container !== container) {
-      // ...
-    }
     this.container = container;
   }
   private ensureTree() {

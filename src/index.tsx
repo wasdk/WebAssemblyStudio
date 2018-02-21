@@ -38,9 +38,6 @@ declare var window: any;
 declare var WebAssembly: any;
 
 window.addEventListener("resize", layout, false);
-window.addEventListener("resize", () => {
-  // Split.onGlobalResize.dispatch();
-}, false);
 
 export function forEachUrlParameter(callback: (key: string, value: any) => void) {
   let url = window.location.search.substring(1);

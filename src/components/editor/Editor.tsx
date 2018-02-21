@@ -141,9 +141,6 @@ export class Monaco extends React.Component<MonacoProps, {}> {
   }
   private setContainer(container: HTMLDivElement) {
     if (container == null) { return; }
-    if (this.container !== container) {
-      // ...
-    }
     this.container = container;
   }
   render() {
