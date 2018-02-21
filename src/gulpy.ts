@@ -19,8 +19,6 @@
  * SOFTWARE.
  */
 
-import { resolve } from "url";
-
 export type PromiseMaker = () => Promise<any>;
 
 class Task {

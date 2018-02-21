@@ -20,13 +20,12 @@
  */
 
 import { File, Project, Directory } from "../model";
-import { isUndefined } from "util";
 import * as JSZip from "jszip";
 
 export async function downloadProject(project: Project, uri?: string) {
   const zipFile: JSZip = new JSZip();
   let zipName: string = "wasm-project.zip";
-  if (!isUndefined(uri)) {
+  if (uri !== undefined) {
     zipName = `wasm-project-${uri}.zip`;
   }
   const queue: Array<{filePrefix: string; file: File}> = [];

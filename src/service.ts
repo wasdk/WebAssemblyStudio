@@ -20,7 +20,6 @@
  */
 
 import { File, Project, Directory, FileType, Problem } from "./model";
-import { isUndefined } from "util";
 import "monaco-editor";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes } from "./util";
 import { assert } from "./util";
@@ -342,7 +341,7 @@ export class Service {
     }
     serialize(content);
     const json: any = { description: "source: http://webassembly.studio", public: true, files};
-    if (!isUndefined(uri)) {
+    if (uri !== undefined) {
       json["description"] = json["description"] + `/?f=${uri}`;
     }
     return await this.createGist(json);
