@@ -34,8 +34,10 @@ import { Service } from "./service";
 // import { ITree } from "./monaco-extra";
 import { layout } from "./util";
 import { MonacoUtils } from "./monaco-utils";
+import { BrowserNotSupported } from "./components/BrowserNotSupported";
 
 declare var window: any;
+declare var WebAssembly: any;
 
 window.addEventListener("resize", layout, false);
 window.addEventListener("resize", () => {
@@ -71,9 +73,15 @@ const fiddle = parameters["fiddle"] || parameters["f"];
 
 (window["require"])(["vs/editor/editor.main", "require"], (_: any, require: any) => {
   MonacoUtils.initialize(require);
-
-  ReactDOM.render(
-    parameters["test"] ? <Test/> : <App embed={embed} update={update} fiddle={fiddle}/>,
-    document.getElementById("app")
-  );
+  if (typeof WebAssembly !== "object") {
+    ReactDOM.render(
+      <BrowserNotSupported/>,
+      document.getElementById("app")
+    );
+  } else {
+    ReactDOM.render(
+      parameters["test"] ? <Test/> : <App embed={embed} update={update} fiddle={fiddle}/>,
+      document.getElementById("app")
+    );
+  }
 });

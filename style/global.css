@@ -957,3 +957,13 @@ a {
   position: relative;
   top: 4px;
 }
+
+.browser-not-supported-description {
+  font-family: 'Roboto', sans-serif;
+  padding: 8px;
+  line-height: 1.5em;
+  font-size: 18px;
+}
+.browser-not-supported-description a {
+  color: #c0b9f0;
+}
