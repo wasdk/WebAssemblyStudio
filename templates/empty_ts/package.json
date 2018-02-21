@@ -1,0 +1,13 @@
+{
+    "name": "@wasm/empty_ts",
+    "description": "",
+    "version": "1.0.0",
+    "scripts": {
+        "build": "gulp"
+    },
+    "devDependencies": {
+        "@wasm/studio-utils": "*",
+        "gulp": "~3.9.1",
+        "typescript": "~2.7.2"
+    }
+}

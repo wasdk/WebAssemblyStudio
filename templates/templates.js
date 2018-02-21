@@ -22,6 +22,9 @@
       "name": "build.ts",
       "type": "typescript",
     }, {
+      "name": "package.json",
+      "type": "json",
+    }, {
       "name": "README.md",
       "type": "markdown",
     }],
@@ -52,6 +55,9 @@
     }, {
       "name": "build.ts",
       "type": "typescript",
+    }, {
+      "name": "package.json",
+      "type": "json",
     }, {
       "name": "README.md",
       "type": "markdown",
@@ -92,6 +98,9 @@ See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/w
       "type": "javascript",
       "description": "Setup code for convenient use of the AssemblyScript compiler within WebAssembly Studio."
     }, {
+      "name": "package.json",
+      "type": "json",
+    }, {
       "name": "README.md",
       "type": "markdown",
     }],
@@ -122,6 +131,9 @@ See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/w
     }, {
       "name": "build.ts",
       "type": "typescript",
+    }, {
+      "name": "package.json",
+      "type": "json",
     }, {
       "name": "README.md",
       "type": "markdown",

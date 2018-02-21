@@ -146,10 +146,10 @@ export function contextify(
   // Use provided contextual keys as parameters and wrap the source in an IIFE
   // so redefining variables using parameter names is allowed...
   const contextParameters = Object.keys(context)
-    .concat("require", "return ()=>{" + src + "}");
+    .concat("require", "exports", "return ()=>{" + src + "}");
   // ...and use provided contextual values as arguments.
   const contextArguments = Object.values(context)
-    .concat(require);
+    .concat(require, {});
 
   // Call the function constructor with our variable parameters and arguments.
   return Function.apply(null, contextParameters)
