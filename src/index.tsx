@@ -66,13 +66,14 @@ export function getUrlParameters(): any {
 
 const parameters = getUrlParameters();
 const embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed"], 10);
+const update = parameters["update"] === true ? true : !!parseInt(parameters["update"], 10);
 const fiddle = parameters["fiddle"] || parameters["f"];
 
 (window["require"])(["vs/editor/editor.main", "require"], (_: any, require: any) => {
   MonacoUtils.initialize(require);
 
   ReactDOM.render(
-    parameters["test"] ? <Test/> : <App embed={embed} fiddle={fiddle}/>,
+    parameters["test"] ? <Test/> : <App embed={embed} update={update} fiddle={fiddle}/>,
     document.getElementById("app")
   );
 });
