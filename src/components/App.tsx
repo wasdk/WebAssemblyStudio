@@ -428,16 +428,21 @@ export class App extends React.Component<AppProps, AppState> {
         onClick={() => {
           run();
         }}
-      />,
-      <Button
-        icon={<GoOpenIssue />}
-        label="GitHub Issues"
-        title="GitHub Issues"
-        customClassName="issue"
-        onClick={() => {
-          window.open("https://github.com/wasdk/WebAssemblyStudio", "_blank");
-        }}
-      />);
+      />
+    );
+    if (!this.props.embed) {
+      toolbarButtons.push(
+        <Button
+          icon={<GoOpenIssue />}
+          label="GitHub Issues"
+          title="GitHub Issues"
+          customClassName="issue"
+          onClick={() => {
+            window.open("https://github.com/wasdk/WebAssemblyStudio", "_blank");
+          }}
+        />
+      );
+    }
     return toolbarButtons;
   }
   render() {
