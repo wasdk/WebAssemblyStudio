@@ -129,6 +129,7 @@ a {
   padding: 3px;
   height: 22px;
   font-size: 12px;
+  -moz-user-select: none;
   user-select: none;
   font-weight: 700;
   font-style: italic;
@@ -203,6 +204,7 @@ a {
   padding-left: 10px;
   align-items: center;
   height: 30px;
+  -moz-user-select: none;
   user-select: none;
 }
 
@@ -287,6 +289,7 @@ a {
   padding-left: 10px;
   align-items: center;
   color:#868686;
+  -moz-user-select: none;
   user-select: none;
 }
 
@@ -354,6 +357,7 @@ a {
   background-color: var(--title);
   height: 22px;
   font-size: 12px;
+  -moz-user-select: none;
   user-select: none;
   font-weight: 700;
   font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
@@ -388,6 +392,8 @@ a {
   -moz-background-clip: padding;
   -webkit-background-clip: padding;
   background-clip: padding-box;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 .resizer:hover {
@@ -446,6 +452,7 @@ a {
   height: 40px;
   background-color: var(--grey-900);
   line-height: 24px;
+  -moz-user-select: none;
   user-select: none;
 }
 
@@ -496,6 +503,7 @@ a {
   padding-right: 10px;
   align-items: center;
   height: 30px;
+  -moz-user-select: none;
   user-select: none;
 }
 
@@ -614,6 +622,7 @@ a {
   padding-right: 10px;
   align-items: center;
   height: 40px;
+  -moz-user-select: none;
   user-select: none;
 }
 
@@ -715,7 +724,8 @@ a {
     padding: 5px 8px;
     outline: none;
     white-space: nowrap;
-    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
     cursor: pointer;
     color: #fff;
 }
@@ -810,6 +820,7 @@ a {
   padding-left: 10px;
   align-items: center;
   height: 24px;
+  -moz-user-select: none;
   user-select: none;
 }
 
