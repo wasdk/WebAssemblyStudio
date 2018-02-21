@@ -29,9 +29,7 @@ import { Split } from "./components/Split";
 import { Toolbar } from "./components/Toolbar";
 
 import { App } from "./components/App";
-import { Test } from "./components/Test";
 import { Service } from "./service";
-// import { ITree } from "./monaco-extra";
 import { layout } from "./util";
 import { MonacoUtils } from "./monaco-utils";
 import { BrowserNotSupported } from "./components/BrowserNotSupported";
@@ -80,7 +78,7 @@ const fiddle = parameters["fiddle"] || parameters["f"];
     );
   } else {
     ReactDOM.render(
-      parameters["test"] ? <Test/> : <App embed={embed} update={update} fiddle={fiddle}/>,
+      <App embed={embed} update={update} fiddle={fiddle}/>,
       document.getElementById("app")
     );
   }
