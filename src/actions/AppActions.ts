@@ -28,6 +28,7 @@ import { Service, Language } from "../service";
 import Group from "../utils/group";
 import { Gulpy } from "../gulpy";
 import { Errors } from "../errors";
+import { contextify } from "../util";
 
 export enum AppActionType {
   ADD_FILE_TO = "ADD_FILE_TO",
@@ -235,18 +236,30 @@ export interface SandboxRunAction extends AppAction {
 }
 
 export async function runTask(name: string, optional: boolean = false) {
+  // Runs the provided source in our fantasy gulp context
   const run = async (src: string) => {
     const gulp = new Gulpy();
     const project = appStore.getProject().getModel();
-    const context = {
+    contextify(src,
+      // thisArg
       gulp,
-      project,
+    {
+      // context for backwards compatibility
+      gulp,
       Service,
-      Language,
+      project,
       logLn,
-      filetypeForExtension,
-    };
-    Function.apply(null, Object.keys(context).concat(src)).apply(gulp, Object.values(context));
+      filetypeForExtension
+    }, {
+      // modules
+      "gulp": gulp,
+      "@wasm/studio-utils": {
+        Service,
+        project,
+        logLn,
+        filetypeForExtension
+      }
+    })();
     if (gulp.hasTask(name)) {
       try {
         await gulp.run(name);
@@ -257,16 +270,22 @@ export async function runTask(name: string, optional: boolean = false) {
       logLn(`Task ${name} is not optional.` , "error");
     }
   };
-  const buildTsFile = appStore.getFileByName("build.ts");
-  const buildJsFile = appStore.getFileByName("build.js");
-  if (buildTsFile) {
-    const output = await buildTsFile.getModel().getEmitOutput();
-    await run(output.outputFiles[0].text);
-  } else if (buildJsFile) {
-    await run(appStore.getFileSource(buildJsFile));
+  let gulpfile = appStore.getFileByName("gulpfile.js");
+  if (gulpfile) {
+    await run(appStore.getFileSource(gulpfile));
   } else {
-    logLn(Errors.BuildFileMissing, "error");
-  }}
+    if (gulpfile = appStore.getFileByName("build.ts")) {
+      const output = await gulpfile.getModel().getEmitOutput();
+      await run(output.outputFiles[0].text);
+    } else {
+      if (gulpfile = appStore.getFileByName("build.js")) {
+        await run(appStore.getFileSource(gulpfile));
+      } else {
+        logLn(Errors.BuildFileMissing, "error");
+      }
+    }
+  }
+}
 
 export async function run() {
   const file = appStore.getFileByName("src/main.html");

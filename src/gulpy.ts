@@ -77,15 +77,20 @@ export class Gulpy {
   private session: GulpySession;
 
   task(name: string, fn: PromiseMaker): void;
-  task(name: string, dependencies: string[], fn: PromiseMaker): void;
+  task(name: string, dependencies: string[], fn?: PromiseMaker): void;
   task(name: string, a: string [] | PromiseMaker, b?: PromiseMaker): void {
     let dependencies: string [] = [];
     let fn: PromiseMaker = null;
     if (arguments.length === 3) {
-      dependencies = a as string [];
+      dependencies = a as string[];
       fn = b;
     } else if (arguments.length === 2) {
-      fn = a as PromiseMaker;
+      if (Array.isArray(a)) {
+        dependencies = a as string[];
+        fn = b || (() => {/**/}) as PromiseMaker;
+      } else {
+        fn = a as PromiseMaker;
+      }
     }
     this.tasks[name] = new Task(dependencies.map(x => this.tasks[x]), fn);
   }

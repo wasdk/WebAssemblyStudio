@@ -85,7 +85,7 @@ See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/w
         "type": "html",
       }]
     }, {
-      "name": "build.js",
+      "name": "gulpfile.js",
       "type": "javascript",
     }, {
       "name": "setup.js",

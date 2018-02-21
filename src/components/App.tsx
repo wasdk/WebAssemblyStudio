@@ -522,7 +522,6 @@ export class App extends React.Component<AppProps, AppState> {
               logLn("Template doesn't contain a project definition.", "error");
             } else {
               await openProjectFiles(template.project);
-              runTask("project:load", true);
             }
             this.setState({ newProjectDialog: false });
           }}

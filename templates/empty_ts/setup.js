@@ -5,6 +5,7 @@ require.config({
     "assemblyscript/bin/asc": "https://rawgit.com/AssemblyScript/assemblyscript/master/dist/asc"
   }
 });
+logLn("Loading AssemblyScript compiler ...");
 require(["assemblyscript/bin/asc"], asc => {
   monaco.languages.typescript.typescriptDefaults.addExtraLib(asc.definitionFiles.assembly);
   asc.main = (main => (args, options, fn) => {
@@ -27,4 +28,5 @@ require(["assemblyscript/bin/asc"], asc => {
       listFiles: (dirname) => []
     }, fn);
   })(asc.main);
+  logLn("AssemblyScript compiler is ready!");
 });
