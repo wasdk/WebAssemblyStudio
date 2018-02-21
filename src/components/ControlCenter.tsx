@@ -29,8 +29,11 @@ import { FileType, getIconForFileType, Problem, ModelRef } from "../model";
 import { Project, File, Directory, shallowCompare } from "../model";
 import { Problems } from "./Problems";
 import appStore from "../stores/AppStore";
+import { layout } from "../util";
 
-export class ControlCenter extends React.Component<{}, {
+export class ControlCenter extends React.Component<{
+  onToggle: Function;
+}, {
     /**
      * Split state.
      */
@@ -108,12 +111,7 @@ export class ControlCenter extends React.Component<{}, {
             icon={<GoThreeBars />}
             title="View Console"
             onClick={() => {
-            // TODO: Figure out how the UX should work when toggling the console.
-            // let consoleSplits = this.state.consoleSplits;
-            // let second = consoleSplits[1];
-            // second.value = second.value == 40 ? 128 : 40;
-            // this.setState({ consoleSplits });
-            // layout();
+              return this.props.onToggle && this.props.onToggle();
             }}
           />
         </div>
@@ -146,7 +144,7 @@ export class ControlCenter extends React.Component<{}, {
           splits={this.state.splits}
           onChange={(splits) => {
             this.setState({ splits });
-            // layout();
+            layout();
           }}
         >
           {this.createPane()}
