@@ -87,6 +87,23 @@ export class Sandbox extends React.Component<{}, {}>  {
       logger.logLn(Array.prototype.join.call(arguments), "error");
       error.apply(contentWindow.console, arguments);
     })(contentWindow.console.error);
+    // Hijack fetch
+    contentWindow.fetch = (input: string, init?: RequestInit) => {
+      const url = new URL(input, "http://example.org/src/main.html");
+      const file = project.getFile(url.pathname.substr(1));
+      if (file) {
+        return Promise.resolve(
+          new Response(file.getData(), {
+            status: 200,
+            statusText: "OK",
+            headers: {
+              "Content-Type": mimeTypeForFileType(file.type)
+            }
+          })
+        );
+      }
+      return fetch(input, init);
+    };
     contentWindow.getFileURL = (path: string) => {
       const file = project.getFile(path);
       if (!file) {

@@ -1,4 +1,4 @@
-let x = getFileURL('out/main.wasm');
+let x = '../out/main.wasm';
 
 let instance = null;
 let memoryStates = new WeakMap();
@@ -60,5 +60,5 @@ fetch(x).then(response =>
   ).then(results => {
     instance = results.instance;
     document.getElementById("container").innerText = instance.exports.main();
-    
+
   });

@@ -1,4 +1,4 @@
-WebAssembly.instantiateStreaming(fetch(getFileURL("out/main.wasm")), {
+WebAssembly.instantiateStreaming(fetch("../out/main.wasm"), {
   env: {
     sayHello: function() {
       console.log("Hello from WebAssembly!");
