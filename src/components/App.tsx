@@ -141,6 +141,10 @@ export interface AppState {
 
 export interface AppProps {
   embed: boolean;
+  /**
+   * If true, the Update button is visible.
+   */
+  update: boolean;
   fiddle: string;
 }
 
@@ -369,15 +373,19 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         />);
     } else {
+      if (this.props.update) {
+        toolbarButtons.push(
+          <Button
+            icon={<GoPencil />}
+            label="Update"
+            title="Update Project"
+            onClick={() => {
+              this.update();
+            }}
+          />
+        );
+      }
       toolbarButtons.push(
-        <Button
-          icon={<GoPencil />}
-          label="Update"
-          title="Update Project"
-          onClick={() => {
-            this.update();
-          }}
-        />,
         <Button
           icon={<GoRepoForked />}
           label="Fork"
