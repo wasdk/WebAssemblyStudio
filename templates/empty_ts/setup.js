@@ -1,3 +1,4 @@
+// WebAssembly Studio only
 require.config({
   paths: {
     "binaryen": "https://rawgit.com/AssemblyScript/binaryen.js/master/index",

@@ -79,11 +79,17 @@ See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/w
     "name": "Project",
     "directory": "empty_ts",
     "children": [{
-      "name": "src",
+      "name": "assembly",
       "children": [{
         "name": "main.ts",
         "type": "typescript"
       }, {
+        "name": "tsconfig.json",
+        "type": "json"
+      }]
+    }, {
+      "name": "src",
+      "children": [{
         "name": "main.js",
         "type": "javascript",
       }, {
