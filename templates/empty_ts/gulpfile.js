@@ -4,7 +4,7 @@ gulp.task("build", callback => {
   const asc = require("assemblyscript/bin/asc");
   asc.main([
     "main.ts",
-    "--baseDir", "src",
+    "--baseDir", "assembly",
     "--binaryFile", "../out/main.wasm",
     "--sourceMap",
     "--measure"
@@ -13,7 +13,7 @@ gulp.task("build", callback => {
 
 gulp.task("default", ["build"]);
 
-gulp.task("project:load", () => {
+gulp.task("project:load", () => { // WebAssembly Studio only
   const utils = require("@wasm/studio-utils");
   eval(utils.project.getFile("setup.js").getData());
 });
