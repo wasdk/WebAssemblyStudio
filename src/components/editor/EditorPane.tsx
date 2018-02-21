@@ -28,22 +28,15 @@ import "monaco-editor";
 import { Markdown } from ".././Markdown";
 import { Button } from "../shared/Button";
 import { GoBook, GoClippy, GoFile, GoKebabHorizontal } from "../shared/Icons";
-
-export class View {
-  constructor(
-    public file: File,
-    public state: monaco.editor.ICodeEditorViewState) {
-    // ...
-  }
-}
+import { View, ViewMode } from "./View";
 
 export class EditorPaneProps {
-  file: File;
-  files: File[];
-  preview: File;
-  onClickFile?: (file: File) => void;
-  onDoubleClickFile?: (file: File) => void;
-  onClose?: (file: File) => void;
+  view: View;
+  views: View[];
+  preview: View;
+  onClickView?: (view: View) => void;
+  onDoubleClickView?: (view: View) => void;
+  onClose?: (view: View) => void;
   onNewFile?: () => void;
   onFocus?: () => void;
   hasFocus?: boolean;
@@ -57,39 +50,23 @@ function diff(a: any[], b: any[]): { ab: any[], ba: any[] } {
   };
 }
 
-export class EditorPane extends React.Component<EditorPaneProps, {
-  views: Map<File, View>;
-}> {
+export class EditorPane extends React.Component<EditorPaneProps> {
   constructor(props: any) {
     super(props);
-    const views = new Map<File, View>();
-    props.files.forEach((file: File) => {
-      views.set(file, new View(file, null));
-    });
-    this.state = { views };
   }
 
   private onUpdate = () => {
     this.forceUpdate();
   }
 
-  componentWillReceiveProps(nextProps: EditorPaneProps) {
-    const views = this.state.views;
-    nextProps.files.forEach((file: File) => {
-      if (!views.has(file)) {
-        views.set(file, new View(file, null));
-      }
-    });
-  }
-
   render() {
-    const { onClickFile, onDoubleClickFile, onClose, file, preview, hasFocus } = this.props;
-    const { views } = this.state;
-    let view;
-    if (file) {
-      view = views.get(file);
-      assert(view);
+    const { onClickView, onDoubleClickView, onClose, view, views, preview, hasFocus } = this.props;
+    if (!view) {
+      return <div />;
     }
+
+    const { file } = view;
+
     let viewer;
     if (file) {
       viewer = <Editor view={view} options={{ readOnly: file.isBufferReadOnly }} />;
@@ -118,24 +95,24 @@ export class EditorPane extends React.Component<EditorPaneProps, {
             icon={<GoClippy />}
             label="Save"
             title="Save: CtrlCmd + S"
-            isDisabled={!this.props.file.isDirty}
-            onClick={() => {
-              this.props.file.save();
-            }}
+            isDisabled={!file.isDirty}
+            onClick={() => file.save()}
           />
         ]}
       >
-        {this.props.files.map(x => {
+        {views.map(view => {
+          const { file: x } = view;
+
           return <Tab
             key={x.key}
             label={x.name}
-            value={x}
+            value={view}
             icon={getIconForFileType(x.type)}
             isMarked={x.isDirty}
             isActive={x === file}
-            isItalic={x === preview}
-            onClick={onClickFile}
-            onDoubleClick={onDoubleClickFile}
+            isItalic={view === preview}
+            onClick={onClickView}
+            onDoubleClick={onDoubleClickView}
             onClose={onClose}
           />;
         })}

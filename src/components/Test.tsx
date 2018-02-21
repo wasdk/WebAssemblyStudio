@@ -108,50 +108,50 @@ class TabBasicScrollTest extends React.Component<{
 
 class EditorPaneTest extends React.Component<{
 }, {
-    file: File,
-    files: File[]
+    view: View,
+    views: View[]
   }> {
   constructor(props: any) {
     super(props);
-    const a = new File("A", FileType.JavaScript);
-    const b = new File("B", FileType.JavaScript);
-    const c = new File("C", FileType.JavaScript);
+    const a = new View({ file: new File("A", FileType.JavaScript) });
+    const b = new View({ file: new File("B", FileType.JavaScript) });
+    const c = new View({ file: new File("C", FileType.JavaScript) });
 
-    a.onDidChangeData.register(() => this.forceUpdate());
-    b.onDidChangeData.register(() => this.forceUpdate());
-    c.onDidChangeData.register(() => this.forceUpdate());
+    a.file.onDidChangeData.register(() => this.forceUpdate());
+    b.file.onDidChangeData.register(() => this.forceUpdate());
+    c.file.onDidChangeData.register(() => this.forceUpdate());
 
     this.state = {
-      file: a,
-      files: [a, b, c]
+      view: a,
+      views: [a, b, c]
     };
   }
   render() {
     return <div style={{ height: 128 }}>
       <EditorPane
-        preview={this.state.file}
-        file={this.state.file}
-        files={this.state.files}
+        preview={this.state.view}
+        view={this.state.view}
+        views={this.state.views}
         onNewFile={
           () => {
-            const { files } = this.state;
-            const f = new File("X", FileType.JavaScript);
-            files.push(f);
+            const { views } = this.state;
+            const f = new View({ file: new File("X", FileType.JavaScript) });
+            views.push(f);
             // files.splice(i, 1);
-            this.setState({ files, file: files[files.length - 1] });
+            this.setState({ views, view: views[views.length - 1] });
           }
         }
-        onClickFile={
+        onClickView={
           (x) => {
-            this.setState({ file: x });
+            this.setState({ view: x });
           }
         }
         onClose={
           (x) => {
-            const { files } = this.state;
-            const i = files.indexOf(x);
-            files.splice(i, 1);
-            this.setState({ files, file: files[0] });
+            const { views } = this.state;
+            const i = views.indexOf(x);
+            views.splice(i, 1);
+            this.setState({ views, view: views[0] });
           }
         }
       />
@@ -177,7 +177,7 @@ export class Test extends React.Component<{
     layout();
   }
   render() {
-    const view = new View(new File("X", FileType.JavaScript), null);
+    const view = new View({ file: new File("X", FileType.JavaScript) });
     view.file.buffer.setValue(`
     render() {
       let { splits } = this.state;

@@ -19,7 +19,32 @@
  * SOFTWARE.
  */
 
-export { Editor } from "./Editor";
-export { EditorPane } from "./EditorPane";
-export { View } from "./View";
-export { Tab, Tabs } from "./Tabs";
+import { File } from "../../model";
+
+export enum ViewMode {
+  EDITOR,
+  PREVIEW,
+  READONLY
+}
+
+export interface ViewProps {
+  file: File;
+  mode?: ViewMode;
+  onClose?: Function;
+  preview?: boolean;
+}
+
+export class View {
+  public file: File;
+  public mode: ViewMode;
+  public onClose?: Function;
+  public state: monaco.editor.ICodeEditorViewState;
+  public preview: boolean;
+
+  constructor({ file, mode, onClose, preview }: ViewProps) {
+    this.file = file;
+    this.mode = mode || ViewMode.EDITOR;
+    this.preview = preview;
+    this.onClose = onClose;
+  }
+}

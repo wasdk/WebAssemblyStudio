@@ -32,14 +32,17 @@ import {
   LoadProjectAction,
   LogLnAction,
   OpenProjectFilesAction,
-  OpenFileAction,
-  CloseFileAction,
   FocusTabGroupAction,
   SetStatusAction,
-  SandboxRunAction
+  SandboxRunAction,
+  OpenViewAction,
+  CloseViewAction,
+  OpenFileAction
 } from "../actions/AppActions";
 import Group from "../utils/group";
+import { assert } from "../util";
 import { ProjectTemplate } from "../components/NewProjectDialog";
+import { ViewMode, View } from "../components/editor/View";
 
 export class AppStore {
   private project: Project;
@@ -66,7 +69,7 @@ export class AppStore {
 
   private initStore() {
     this.project = new Project();
-    this.activeTabGroup = new Group(null, null, []);
+    this.activeTabGroup = new Group(null, []);
     this.tabGroups = [this.activeTabGroup];
     this.bindProject();
     this.output = new File("output", FileType.Log);
@@ -168,29 +171,38 @@ export class AppStore {
   }
 
   private splitGroup() {
-    const groups = this.tabGroups;
-    const lastGroup = groups[groups.length - 1];
-    if (lastGroup.files.length === 0) {
+    const { tabGroups, activeTabGroup } = this;
+    if (activeTabGroup.views.length === 0) {
       return;
     }
-    const group = new Group(lastGroup.file, null, [lastGroup.file]);
-    this.tabGroups.push(group);
+    const activeGroupIndex = tabGroups.findIndex(group => group === activeTabGroup);
+
+    // Create a new group from the last file of currently active group
+    const group = new Group(activeTabGroup.currentView, [activeTabGroup.currentView]);
+    this.tabGroups.splice(activeGroupIndex + 1, 0, group);
     this.activeTabGroup = group;
     this.onTabsChange.dispatch();
   }
 
   private openFile(file: File, preview: boolean) {
-    this.activeTabGroup.open(file, preview);
+    this.activeTabGroup.openFile(file, preview);
     this.onTabsChange.dispatch();
   }
 
-  private closeFile(file: File) {
+  private openView(view: View, preview: boolean) {
+    this.activeTabGroup.open(view, preview);
+    this.onTabsChange.dispatch();
+  }
+
+  private closeView(view: View) {
     const { activeTabGroup, tabGroups } = this;
-    activeTabGroup.close(file);
-    if (activeTabGroup.files.length === 0 && tabGroups.length > 1) {
+    let numGroups = tabGroups.length;
+    activeTabGroup.close(view);
+    if (activeTabGroup.views.length === 0 && numGroups > 1) {
       const i = tabGroups.indexOf(activeTabGroup);
       tabGroups.splice(i, 1);
-      const g = tabGroups.length ? tabGroups[Math.min(tabGroups.length - 1, i)] : null;
+      numGroups = tabGroups.length;
+      const g = numGroups ? tabGroups[Math.min(numGroups - 1, i)] : null;
       this.activeTabGroup = g;
       this.tabGroups = tabGroups;
     }
@@ -199,10 +211,12 @@ export class AppStore {
 
   private openProjectFiles(openedFiles: [string[]]) {
     const groups = openedFiles.map((paths: string[]) => {
-      const files = paths.map(file => {
-        return this.getFileByName(file).getModel();
+      const views = paths.map(file => {
+        const newFile = this.getFileByName(file).getModel();
+        return new View({ file: newFile });
       });
-      return new Group(files[0], null, files);
+      assert(views.length > 0);
+      return new Group(views[0], views);
     });
     this.activeTabGroup = groups[0];
     this.tabGroups = groups;
@@ -226,15 +240,20 @@ export class AppStore {
 
   public handleActions(action: AppAction ) {
     switch (action.type) {
+      case AppActionType.OPEN_VIEW: {
+        const { view, preview } = action as OpenViewAction;
+        this.openView(view, preview);
+        break;
+      }
+      case AppActionType.CLOSE_VIEW: {
+        const { view } = action as CloseViewAction;
+        this.closeView(view);
+        break;
+      }
       case AppActionType.FOCUS_TAB_GROUP: {
         const { group } = action as FocusTabGroupAction;
         this.activeTabGroup = group;
         this.onTabsChange.dispatch();
-        break;
-      }
-      case AppActionType.CLOSE_FILE: {
-        const { file } = action as CloseFileAction;
-        this.closeFile(file);
         break;
       }
       case AppActionType.OPEN_FILE: {
