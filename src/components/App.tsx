@@ -119,9 +119,9 @@ export interface AppState {
   workspaceSplits: SplitInfo[];
 
   /**
-   * Secondary console split state.
+   * Secondary control center split state.
    */
-  consoleSplits: SplitInfo[];
+  controlCenterSplits: SplitInfo[];
 
   /**
    * Editor split state.
@@ -171,7 +171,7 @@ export class App extends React.Component<AppProps, AppState> {
           min: 256
         }
       ],
-      consoleSplits: [
+      controlCenterSplits: [
         { min: 100 },
         { min: 40, value: 256 }
       ],
@@ -652,14 +652,21 @@ export class App extends React.Component<AppProps, AppState> {
               <Split
                 name="Console"
                 orientation={SplitOrientation.Horizontal}
-                splits={this.state.consoleSplits}
+                splits={this.state.controlCenterSplits}
                 onChange={(splits) => {
-                  this.setState({ consoleSplits: splits });
+                  this.setState({ controlCenterSplits: splits });
                   layout();
                 }}
               >
                 {editorPanes}
-                <ControlCenter />
+                <ControlCenter
+                  onToggle={() => {
+                    const splits = this.state.controlCenterSplits;
+                    splits[1].value = splits[1].value === 40 ? 256 : 40;
+                    this.setState({ controlCenterSplits: splits });
+                    layout();
+                  }}
+                />
               </Split>
             </div>
           </div>
