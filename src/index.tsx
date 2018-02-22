@@ -22,7 +22,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Workspace } from "./components/Workspace";
-import { Editor, ViewTabs, Tab, Tabs } from "./components/editor";
+import { EditorView, ViewTabs, Tab, Tabs } from "./components/editor";
 import { Project } from "./model";
 import { Header } from "./components/Header";
 import { Split } from "./components/Split";

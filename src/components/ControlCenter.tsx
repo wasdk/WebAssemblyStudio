@@ -21,7 +21,7 @@
 
 import * as React from "react";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
-import { Editor, View, Tab, Tabs } from "./editor";
+import { EditorView, View, Tab, Tabs } from "./editor";
 import { Sandbox } from "./Sandbox";
 import { GoThreeBars, GoFile } from "./shared/Icons";
 import { Button } from "./shared/Button";
@@ -32,7 +32,7 @@ import appStore from "../stores/AppStore";
 import { layout } from "../util";
 
 export class ControlCenter extends React.Component<{
-  onToggle: Function;
+  onToggle?: Function;
 }, {
     /**
      * Split state.
@@ -69,8 +69,8 @@ export class ControlCenter extends React.Component<{
   refs: {
     container: HTMLDivElement;
   };
-  outputViewEditor: Editor;
-  setOutputViewEditor(editor: Editor) {
+  outputViewEditor: EditorView;
+  setOutputViewEditor(editor: EditorView) {
     this.outputViewEditor = editor;
   }
   updateOutputViewTimeout: any;
@@ -89,7 +89,7 @@ export class ControlCenter extends React.Component<{
   createPane() {
     switch (this.state.visible) {
       case "output":
-        return <Editor
+        return <EditorView
           ref={(ref) => this.setOutputViewEditor(ref)}
           view={this.outputView}
         />;

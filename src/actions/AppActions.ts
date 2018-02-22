@@ -23,7 +23,7 @@ import dispatcher from "../dispatcher";
 import { File, Directory, Project, filetypeForExtension } from "../model";
 import { App } from "../components/App";
 import { ProjectTemplate } from "../components/NewProjectDialog";
-import { View } from "../components/editor/View";
+import { View, ViewType } from "../components/editor/View";
 import appStore from "../stores/AppStore";
 import { Service, Language } from "../service";
 import Group from "../utils/group";
@@ -38,7 +38,7 @@ export enum AppActionType {
   UPDATE_FILE_NAME_AND_DESCRIPTION = "UPDATE_FILE_NAME_AND_DESCRIPTION",
   DELETE_FILE = "DELETE_FILE",
   SPLIT_GROUP = "SPLIT_GROUP",
-  SHOW_PREVIEW = "SHOW_PREVIEW",
+  SET_VIEW_TYPE = "SET_VIEW_TYPE",
   OPEN_FILE = "OPEN_FILE",
   OPEN_PROJECT_FILES = "OPEN_PROJECT_FILES",
   FOCUS_TAB_GROUP = "FOCUS_TAB_GROUP",
@@ -327,14 +327,16 @@ export async function build() {
   clearStatus();
 }
 
-export interface ShowPreview extends AppAction {
-  type: AppActionType.SHOW_PREVIEW;
+export interface SetViewType extends AppAction {
+  type: AppActionType.SET_VIEW_TYPE;
   view: View;
+  viewType: ViewType;
 }
 
-export function showPreview(view: View) {
+export function setViewType(view: View, type: ViewType) {
   dispatcher.dispatch({
-    type: AppActionType.SHOW_PREVIEW,
-    view
-  } as ShowPreview);
+    type: AppActionType.SET_VIEW_TYPE,
+    view,
+    viewType: type
+  } as SetViewType);
 }

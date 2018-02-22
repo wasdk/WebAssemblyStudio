@@ -30,7 +30,7 @@ import {
   DeleteFileAction,
   UpdateFileNameAndDescriptionAction,
   LoadProjectAction,
-  ShowPreview,
+  SetViewType,
   LogLnAction,
   OpenProjectFilesAction,
   FocusTabGroupAction,
@@ -179,7 +179,8 @@ export class AppStore {
     const activeGroupIndex = tabGroups.findIndex(group => group === activeTabGroup);
 
     // Create a new group from the last file of currently active group
-    const group = new Group(activeTabGroup.currentView, [activeTabGroup.currentView]);
+    const view = activeTabGroup.currentView.clone();
+    const group = new Group(view, [view]);
     this.tabGroups.splice(activeGroupIndex + 1, 0, group);
     this.activeTabGroup = group;
     this.onTabsChange.dispatch();
@@ -224,14 +225,14 @@ export class AppStore {
     this.onTabsChange.dispatch();
   }
 
-  private showPreview(view: View) {
-    const { file } = view;
-    const newView = new View(file, ViewType.Markdown);
+  private setViewType(view: View, type: ViewType) {
+    // const { file } = view;
+    // const newView = new View(file, type);
 
-    const previewGroup = new Group(newView, [newView]);
-    this.tabGroups.push(previewGroup);
-    this.activeTabGroup = previewGroup;
-
+    // const previewGroup = new Group(newView, [newView]);
+    // this.tabGroups.push(previewGroup);
+    // this.activeTabGroup = previewGroup;
+    view.type = type;
     this.onTabsChange.dispatch();
   }
 
@@ -306,9 +307,9 @@ export class AppStore {
         this.initStore();
         break;
       }
-      case AppActionType.SHOW_PREVIEW: {
-        const { view } = action as ShowPreview;
-        this.showPreview(view);
+      case AppActionType.SET_VIEW_TYPE: {
+        const { view, viewType } = action as SetViewType;
+        this.setViewType(view, viewType);
         break;
       }
       case AppActionType.LOG_LN: {
