@@ -20,6 +20,6 @@
  */
 
 export { Editor } from "./Editor";
-export { EditorPane } from "./EditorPane";
+export { ViewTabs } from "./ViewTabs";
 export { View } from "./View";
 export { Tab, Tabs } from "./Tabs";

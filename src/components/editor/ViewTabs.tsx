@@ -30,9 +30,18 @@ import { Button } from "../shared/Button";
 import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye } from "../shared/Icons";
 import { View, ViewType } from "./View";
 
-export class EditorPaneProps {
+export class ViewTabsProps {
+  /**
+   * Currently active view tab.
+   */
   view: View;
+  /**
+   * View tabs.
+   */
   views: View[];
+  /**
+   * View tab that is marked as a preview tab.
+   */
   preview?: View;
   onClickView?: (view: View) => void;
   onDoubleClickView?: (view: View) => void;
@@ -41,7 +50,7 @@ export class EditorPaneProps {
   onNewFile?: () => void;
   onFocus?: () => void;
   hasFocus?: boolean;
-  onSplitEditor?: () => void;
+  onSplitViews?: () => void;
 }
 
 function diff(a: any[], b: any[]): { ab: any[], ba: any[] } {
@@ -51,9 +60,8 @@ function diff(a: any[], b: any[]): { ab: any[], ba: any[] } {
   };
 }
 
-export class EditorPane extends React.Component<EditorPaneProps> {
-
-  static defaultProps: EditorPaneProps = {
+export class ViewTabs extends React.Component<ViewTabsProps> {
+  static defaultProps: ViewTabsProps = {
     view: null,
     views: [],
     // tslint:disable-next-line
@@ -71,7 +79,7 @@ export class EditorPane extends React.Component<EditorPaneProps> {
   }
 
   renderViewCommands() {
-    const { view, onSplitEditor } = this.props;
+    const { view, onSplitViews } = this.props;
     const { file } = view;
 
     const commands = [
@@ -80,7 +88,7 @@ export class EditorPane extends React.Component<EditorPaneProps> {
         icon={<GoBook />}
         title="Split Editor"
         onClick={() => {
-          return onSplitEditor && onSplitEditor();
+          return onSplitViews && onSplitViews();
         }}
       />
     ];

@@ -24,7 +24,7 @@ import * as ReactDOM from "react-dom";
 import * as ReactModal from "react-modal";
 
 import { Workspace } from "./Workspace";
-import { Editor, EditorPane, View, Tab, Tabs } from "./editor";
+import { Editor, ViewTabs, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 import { ViewType } from "./editor/View";
@@ -443,11 +443,11 @@ export class App extends React.Component<AppProps, AppState> {
       }
       return groups.map(group => {
         // tslint:disable-next-line:jsx-key
-        return <EditorPane
+        return <ViewTabs
           views={group.views.slice(0)}
           view={group.currentView}
           preview={group.preview}
-          onSplitEditor={() => splitGroup()}
+          onSplitViews={() => splitGroup()}
           hasFocus={activeGroup === group}
           onFocus={() => {
             // TODO: Should be taken care of in shouldComponentUpdate instead.
@@ -465,8 +465,7 @@ export class App extends React.Component<AppProps, AppState> {
           onClose={(view: View) => {
             focusTabGroup(group);
             closeView(view);
-            }
-          }
+          }}
         />;
       });
     }
