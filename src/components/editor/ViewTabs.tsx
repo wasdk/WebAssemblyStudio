@@ -22,12 +22,12 @@
 import * as React from "react";
 import { assert } from "../../util";
 import { Tabs, Tab, TabProps } from "./Tabs";
-import { Editor } from "./Editor";
+import { EditorView } from "./Editor";
 import { Project, File, getIconForFileType, FileType } from "../../model";
 import "monaco-editor";
-import { Markdown } from ".././Markdown";
+import { Markdown, MarkdownView } from ".././Markdown";
 import { Button } from "../shared/Button";
-import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye } from "../shared/Icons";
+import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye, GoCode } from "../shared/Icons";
 import { View, ViewType } from "./View";
 
 export class ViewTabsProps {
@@ -43,13 +43,34 @@ export class ViewTabsProps {
    * View tab that is marked as a preview tab.
    */
   preview?: View;
+  /**
+   * Called when a view tab is clicked.
+   */
   onClickView?: (view: View) => void;
+  /**
+   * Called when a view tab is double clicked.
+   */
   onDoubleClickView?: (view: View) => void;
+  /**
+   * Called when a view tab is closed.
+   */
   onClose?: (view: View) => void;
+  /**
+   * Called when a view tab's view type is changed.
+   */
   onChangeViewType?: (view: View, type: ViewType) => void;
+  /**
+   * Called when the creation of a new view is requeted.
+   */
   onNewFile?: () => void;
+  /**
+   * Called when the view tabs receive focus.
+   */
   onFocus?: () => void;
   hasFocus?: boolean;
+  /**
+   * Called when view tabs are split.
+   */
   onSplitViews?: () => void;
 }
 
@@ -67,46 +88,40 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
     // tslint:disable-next-line
     onChangeViewType: (view: View, type: ViewType) => {},
     // tslint:disable-next-line
-    onNewFile: () => {}
+    onNewFile: () => {},
+    // tslint:disable-next-line
+    onSplitViews: () => {}
   };
 
   constructor(props: any) {
     super(props);
   }
 
-  private onUpdate = () => {
-    this.forceUpdate();
-  }
-
   renderViewCommands() {
-    const { view, onSplitViews } = this.props;
-    const { file } = view;
-
+    const { view } = this.props;
     const commands = [
       <Button
         key="split"
         icon={<GoBook />}
         title="Split Editor"
         onClick={() => {
-          return onSplitViews && onSplitViews();
+          return this.props.onSplitViews();
         }}
       />
     ];
-
-    if (file.type === FileType.Markdown) {
+    if (view.file.type === FileType.Markdown) {
       const markdown = view.type === ViewType.Markdown;
       commands.unshift(
         <Button
           key="toggle"
-          icon={<GoEye />}
-          title={"Toggle " + (markdown ? "Editor" : "Markdown")}
+          icon={markdown ? <GoCode /> : <GoEye />}
+          title={markdown ? "Edit Markdown" : "Preview Markdown"}
           onClick={() =>
             this.props.onChangeViewType(view, markdown ? ViewType.Editor : ViewType.Markdown)
           }
         />
       );
     }
-
     return commands;
   }
 
@@ -116,12 +131,11 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
       return <div />;
     }
     const { file } = view;
-
     let viewer;
     if (file && file.type === FileType.Markdown && view.type === ViewType.Markdown) {
-      viewer = <Markdown src={file.buffer.getValue()} />;
+      viewer = <MarkdownView view={view} />;
     } else if (file) {
-      viewer = <Editor view={view} options={{ readOnly: file.isBufferReadOnly }} />;
+      viewer = <EditorView view={view} options={{ readOnly: file.isBufferReadOnly }} />;
     } else {
       return <div className="editor-pane-container empty"/>;
     }

@@ -21,6 +21,7 @@
 
 import * as React from "react";
 import { Service } from "../service";
+import { View } from "./editor";
 
 export interface MarkdownProps {
   src: string;
@@ -29,7 +30,7 @@ export interface MarkdownProps {
 export class Markdown extends React.Component<MarkdownProps, {
   html: string
 }> {
-  constructor(props: any) {
+  constructor(props: MarkdownProps) {
     super(props);
     this.state = {
       html: "Loading ..."
@@ -47,5 +48,22 @@ export class Markdown extends React.Component<MarkdownProps, {
   }
   render() {
     return <div style={{padding: "8px"}} className="md" dangerouslySetInnerHTML={{__html: this.state.html}}/>;
+  }
+}
+
+export class MarkdownView extends React.Component<{
+  view: View
+}> {
+  onDidChangeBuffer = () => {
+    this.forceUpdate();
+  }
+  componentDidMount() {
+    this.props.view.file.onDidChangeBuffer.register(this.onDidChangeBuffer);
+  }
+  componentWillUnmount() {
+    this.props.view.file.onDidChangeBuffer.unregister(this.onDidChangeBuffer);
+  }
+  render() {
+    return <Markdown src={this.props.view.file.buffer.getValue()}/>;
   }
 }

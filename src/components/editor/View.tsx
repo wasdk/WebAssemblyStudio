@@ -35,4 +35,7 @@ export class View {
     this.file = file;
     this.type = type;
   }
+  clone(): View {
+    return new View(this.file, this.type);
+  }
 }

@@ -59,14 +59,14 @@ export class Monaco extends React.Component<MonacoProps, {}> {
     document.addEventListener("layout", this.onLayout);
   }
 
-  componentWillReceiveProps(nextProps: EditorProps) {
+  componentWillReceiveProps(nextProps: EditorViewProps) {
     if (this.props.view !== nextProps.view) {
       // We're about to switch to a new file, save the view state.
       this.props.view.state = this.editor.saveViewState();
     }
   }
 
-  shouldComponentUpdate(nextProps: EditorProps, nextState: any) {
+  shouldComponentUpdate(nextProps: EditorViewProps, nextState: any) {
     if (this.props.view === nextProps.view) {
       return false;
     }
@@ -148,12 +148,12 @@ export class Monaco extends React.Component<MonacoProps, {}> {
   }
 }
 
-export interface EditorProps {
+export interface EditorViewProps {
   view: View;
   options?: monaco.editor.IEditorConstructionOptions;
 }
 
-export class Editor extends React.Component<EditorProps, {}> {
+export class EditorView extends React.Component<EditorViewProps, {}> {
   monaco: Monaco;
   setMonaco(monaco: Monaco) {
     this.monaco = monaco;

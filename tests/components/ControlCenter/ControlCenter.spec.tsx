@@ -17,17 +17,16 @@ describe("Tests for ControlCenter component", () => {
   });
   it("ControlCenter initially renders correctly", () => {
     const cc = setup();
-    expect(cc.find("Editor").exists()).toBeTruthy();
+    expect(cc.find("EditorView").exists()).toBeTruthy();
     expect(cc.find("Problems").exists()).toBeFalsy();
   });
   it("ControlCenter renders correctly after tabs clicking", () => {
     const cc = setup();
     cc.find("Tab").first().simulate("click");
-    expect(cc.find("Editor").exists()).toBeTruthy();
+    expect(cc.find("EditorView").exists()).toBeTruthy();
     expect(cc.find("Problems").exists()).toBeFalsy();
     cc.find("Tab").last().simulate("click");
-    expect(cc.find("Editor").exists()).toBeFalsy();
+    expect(cc.find("EditorView").exists()).toBeFalsy();
     expect(cc.find("Problems").exists()).toBeTruthy();
   });
 });
- 

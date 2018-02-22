@@ -24,7 +24,7 @@ import * as ReactDOM from "react-dom";
 import * as ReactModal from "react-modal";
 
 import { Workspace } from "./Workspace";
-import { Editor, ViewTabs, View, Tab, Tabs } from "./editor";
+import { EditorView, ViewTabs, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 import { ViewType } from "./editor/View";
@@ -44,7 +44,7 @@ import {
   closeView,
   saveProject,
   focusTabGroup,
-  showPreview,
+  setViewType,
   logLn,
 } from "../actions/AppActions";
 import { Project, File, FileType, Directory, shallowCompare, ModelRef, filetypeForExtension } from "../model";
@@ -453,7 +453,7 @@ export class App extends React.Component<AppProps, AppState> {
             // TODO: Should be taken care of in shouldComponentUpdate instead.
             focusTabGroup(group);
           }}
-          onChangeViewType={() => showPreview(group.currentView)}
+          onChangeViewType={(view, type) => setViewType(view, type)}
           onClickView={(view: View) => {
             focusTabGroup(group);
             openView(view);
