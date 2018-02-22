@@ -27,7 +27,7 @@ import { Workspace } from "./Workspace";
 import { Editor, EditorPane, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
-import { ViewMode } from "./editor/View";
+import { ViewType } from "./editor/View";
 import { build, run, runTask, editInWebAssemblyStudio } from "../actions/AppActions";
 
 import appStore from "../stores/AppStore";
@@ -453,7 +453,7 @@ export class App extends React.Component<AppProps, AppState> {
             // TODO: Should be taken care of in shouldComponentUpdate instead.
             focusTabGroup(group);
           }}
-          onPreview={() => showPreview(group.currentView)}
+          onChangeViewType={() => showPreview(group.currentView)}
           onClickView={(view: View) => {
             focusTabGroup(group);
             openView(view);

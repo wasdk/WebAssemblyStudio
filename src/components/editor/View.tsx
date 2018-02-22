@@ -21,30 +21,18 @@
 
 import { File } from "../../model";
 
-export enum ViewMode {
-  EDITOR,
-  PREVIEW,
-  READONLY
-}
-
-export interface ViewProps {
-  file: File;
-  mode?: ViewMode;
-  onClose?: Function;
-  preview?: boolean;
+export enum ViewType {
+  Editor,
+  Markdown
 }
 
 export class View {
   public file: File;
-  public mode: ViewMode;
-  public onClose?: Function;
+  public type: ViewType;
   public state: monaco.editor.ICodeEditorViewState;
-  public preview: boolean;
 
-  constructor({ file, mode, onClose, preview }: ViewProps) {
+  constructor(file: File, type = ViewType.Editor) {
     this.file = file;
-    this.mode = mode || ViewMode.EDITOR;
-    this.preview = preview;
-    this.onClose = onClose;
+    this.type = type;
   }
 }

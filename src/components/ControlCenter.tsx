@@ -54,7 +54,7 @@ export class ControlCenter extends React.Component<{
       ]
     };
     const outputFile = appStore.getOutput().getModel();
-    this.outputView = new View({ file: outputFile });
+    this.outputView = new View(outputFile);
   }
   onOutputChanged = () => {
     this.updateOutputView();

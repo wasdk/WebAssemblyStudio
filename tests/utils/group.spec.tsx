@@ -1,3 +1,6 @@
+/* Any copyright is dedicated to the Public Domain.
+ * http://creativecommons.org/publicdomain/zero/1.0/ */
+
 import Group from "../../src/utils/group";
 import { View } from "../../src/components/editor/View";
 import { File, FileType } from "../../src/model";
@@ -13,8 +16,8 @@ function generateFiles() {
 describe("Tab Group tests", () => {
     it("should open a file", () => {
         const files = generateFiles();
-        const a = new View({ file: files.a });
-        const b = new View({ file: files.b });
+        const a = new View(files.a);
+        const b = new View(files.b);
         const group = new Group(a, [a, b]);
 
         group.openFile(files.c);
@@ -24,8 +27,8 @@ describe("Tab Group tests", () => {
     });
     it("should switch between views", () => {
         const files = generateFiles();
-        const a = new View({ file: files.a });
-        const b = new View({ file: files.b });
+        const a = new View(files.a);
+        const b = new View(files.b);
         const group = new Group(a, [a, b]);
 
         group.openFile(files.c);
@@ -38,8 +41,8 @@ describe("Tab Group tests", () => {
     });
     it("should close a view", () => {
         const files = generateFiles();
-        const a = new View({ file: files.a });
-        const b = new View({ file: files.b });
+        const a = new View(files.a);
+        const b = new View(files.b);
         const group = new Group(a, [a, b]);
 
         group.openFile(files.c);

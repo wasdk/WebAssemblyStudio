@@ -28,7 +28,7 @@ import "monaco-editor";
 import { Markdown } from ".././Markdown";
 import { Button } from "../shared/Button";
 import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye } from "../shared/Icons";
-import { View, ViewMode } from "./View";
+import { View, ViewType } from "./View";
 
 export class EditorPaneProps {
   view: View;
@@ -37,7 +37,7 @@ export class EditorPaneProps {
   onClickView?: (view: View) => void;
   onDoubleClickView?: (view: View) => void;
   onClose?: (view: View) => void;
-  onPreview?: (view: View) => void;
+  onChangeViewType?: (view: View, type: ViewType) => void;
   onNewFile?: () => void;
   onFocus?: () => void;
   hasFocus?: boolean;
@@ -52,6 +52,16 @@ function diff(a: any[], b: any[]): { ab: any[], ba: any[] } {
 }
 
 export class EditorPane extends React.Component<EditorPaneProps> {
+
+  static defaultProps: EditorPaneProps = {
+    view: null,
+    views: [],
+    // tslint:disable-next-line
+    onChangeViewType: (view: View, type: ViewType) => {},
+    // tslint:disable-next-line
+    onNewFile: () => {}
+  };
+
   constructor(props: any) {
     super(props);
   }
@@ -60,7 +70,7 @@ export class EditorPane extends React.Component<EditorPaneProps> {
     this.forceUpdate();
   }
 
-  renderCommands() {
+  renderViewCommands() {
     const { view, onSplitEditor } = this.props;
     const { file } = view;
 
@@ -75,13 +85,16 @@ export class EditorPane extends React.Component<EditorPaneProps> {
       />
     ];
 
-    if (file.type === FileType.Markdown && view.mode !== ViewMode.PREVIEW) {
+    if (file.type === FileType.Markdown) {
+      const markdown = view.type === ViewType.Markdown;
       commands.unshift(
         <Button
-          key="preview"
+          key="toggle"
           icon={<GoEye />}
-          title="Preview"
-          onClick={() => this.props.onPreview && this.props.onPreview(view)}
+          title={"Toggle " + (markdown ? "Editor" : "Markdown")}
+          onClick={() =>
+            this.props.onChangeViewType(view, markdown ? ViewType.Editor : ViewType.Markdown)
+          }
         />
       );
     }
@@ -97,7 +110,7 @@ export class EditorPane extends React.Component<EditorPaneProps> {
     const { file } = view;
 
     let viewer;
-    if (file && file.type === FileType.Markdown && view.mode === ViewMode.PREVIEW) {
+    if (file && file.type === FileType.Markdown && view.type === ViewType.Markdown) {
       viewer = <Markdown src={file.buffer.getValue()} />;
     } else if (file) {
       viewer = <Editor view={view} options={{ readOnly: file.isBufferReadOnly }} />;
@@ -109,10 +122,10 @@ export class EditorPane extends React.Component<EditorPaneProps> {
     return <div className={className} onClick={this.props.onFocus}>
       <Tabs
         onDoubleClick={() => {
-          return this.props.onNewFile && this.props.onNewFile();
+          return this.props.onNewFile();
         }
       }
-        commands={this.renderCommands()}
+        commands={this.renderViewCommands()}
       >
         {views.map(view => {
           const { file: x } = view;

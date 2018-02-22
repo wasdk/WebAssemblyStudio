@@ -20,7 +20,7 @@
  */
 
 import { assert } from "../util";
-import { View, ViewMode } from "../components/editor/View";
+import { View, ViewType } from "../components/editor/View";
 import { File } from "../model";
 
 export default class Group {
@@ -60,9 +60,9 @@ export default class Group {
       this.preview = null;
     }
   }
-  openFile(file: File, preview = true, mode: ViewMode = ViewMode.EDITOR) {
+  openFile(file: File, preview = true, mode: ViewType = ViewType.Editor) {
     const index =  this.views.findIndex(view => view.file === file);
-    const view = (index >= 0) ? this.views[index] : new View({ file, mode, preview });
+    const view = (index >= 0) ? this.views[index] : new View(file, mode);
 
     this.open(view, preview);
   }
@@ -74,9 +74,9 @@ export default class Group {
     }
 
     this.views.splice(i, 1);
-    if (this.currentView.onClose) {
-      this.currentView.onClose();
-    }
+    // if (this.currentView.onClose) {
+    //   this.currentView.onClose();
+    // }
 
     const numViews = this.views.length;
     this.currentView = numViews ? this.views[Math.min(numViews - 1, i)] : null;

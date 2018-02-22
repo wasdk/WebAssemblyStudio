@@ -43,7 +43,7 @@ import {
 import Group from "../utils/group";
 import { assert } from "../util";
 import { ProjectTemplate } from "../components/NewProjectDialog";
-import { ViewMode, View } from "../components/editor/View";
+import { ViewType, View } from "../components/editor/View";
 
 export class AppStore {
   private project: Project;
@@ -214,7 +214,7 @@ export class AppStore {
     const groups = openedFiles.map((paths: string[]) => {
       const views = paths.map(file => {
         const newFile = this.getFileByName(file).getModel();
-        return new View({ file: newFile });
+        return new View(newFile);
       });
       assert(views.length > 0);
       return new Group(views[0], views);
@@ -226,10 +226,7 @@ export class AppStore {
 
   private showPreview(view: View) {
     const { file } = view;
-    const newView = new View({
-      file,
-      mode: ViewMode.PREVIEW
-    });
+    const newView = new View(file, ViewType.Markdown);
 
     const previewGroup = new Group(newView, [newView]);
     this.tabGroups.push(previewGroup);
