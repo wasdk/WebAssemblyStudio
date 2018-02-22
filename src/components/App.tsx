@@ -28,7 +28,7 @@ import { EditorView, ViewTabs, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 import { ViewType, defaultViewTypeForFileType } from "./editor/View";
-import { build, run, runTask, editInWebAssemblyStudio } from "../actions/AppActions";
+import { build, run, runTask, editInWebAssemblyStudio, openFiles } from "../actions/AppActions";
 
 import appStore from "../stores/AppStore";
 import {
@@ -201,6 +201,9 @@ export class App extends React.Component<AppProps, AppState> {
     // TODO openProjectFiles ?
     this.logLn("Project Loaded ...");
     loadProject(newProject);
+    if (newProject.getFile("README.md")) {
+      openFiles([["README.md"]]);
+    }
   }
   bindAppStoreEvents() {
     appStore.onLoadProject.register(() => {
@@ -260,10 +263,9 @@ export class App extends React.Component<AppProps, AppState> {
   componentDidMount() {
     layout();
     this.registerShortcuts();
-    if (!this.props.embed) {
-      this.loadReleaseNotes();
-    }
-
+    // if (!this.props.embed) {
+    //   this.loadReleaseNotes();
+    // }
     window.addEventListener("resize", () => {
       console.log("App.forceUpdate because of window resize.");
       this.forceUpdate();

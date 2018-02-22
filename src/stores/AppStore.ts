@@ -32,7 +32,7 @@ import {
   LoadProjectAction,
   SetViewType,
   LogLnAction,
-  OpenProjectFilesAction,
+  OpenFilesAction,
   FocusTabGroupAction,
   SetStatusAction,
   SandboxRunAction,
@@ -43,7 +43,7 @@ import {
 import Group from "../utils/group";
 import { assert } from "../util";
 import { ProjectTemplate } from "../components/NewProjectDialog";
-import { ViewType, View } from "../components/editor/View";
+import { ViewType, View, defaultViewTypeForFileType } from "../components/editor/View";
 
 export class AppStore {
   private project: Project;
@@ -211,11 +211,11 @@ export class AppStore {
     this.onTabsChange.dispatch();
   }
 
-  private openProjectFiles(openedFiles: [string[]]) {
-    const groups = openedFiles.map((paths: string[]) => {
+  private openFiles(files: string[][]) {
+    const groups = files.map((paths: string[]) => {
       const views = paths.map(file => {
         const newFile = this.getFileByName(file).getModel();
-        return new View(newFile);
+        return new View(newFile, defaultViewTypeForFileType(newFile.type));
       });
       assert(views.length > 0);
       return new Group(views[0], views);
@@ -274,9 +274,9 @@ export class AppStore {
         this.openFile(file, viewType, preview);
         break;
       }
-      case AppActionType.OPEN_PROJECT_FILES: {
-        const { openedFiles } = action as OpenProjectFilesAction;
-        this.openProjectFiles(openedFiles);
+      case AppActionType.OPEN_FILES: {
+        const { files } = action as OpenFilesAction;
+        this.openFiles(files);
         break;
       }
       case AppActionType.SPLIT_GROUP: {
