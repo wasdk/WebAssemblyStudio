@@ -166,14 +166,16 @@ export function closeView(view: View) {
 export interface OpenFileAction extends AppAction {
   type: AppActionType.OPEN_FILE;
   file: File;
+  viewType: ViewType;
   preview: boolean;
   // TODO: Add the location where the file should open.
 }
 
-export function openFile(file: File, preview = true) {
+export function openFile(file: File, type: ViewType = ViewType.Editor, preview = true) {
   dispatcher.dispatch({
     type: AppActionType.OPEN_FILE,
     file,
+    viewType: type,
     preview
   } as OpenFileAction);
 }

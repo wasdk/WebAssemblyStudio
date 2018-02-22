@@ -27,7 +27,7 @@ import { Workspace } from "./Workspace";
 import { EditorView, ViewTabs, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
-import { ViewType } from "./editor/View";
+import { ViewType, defaultViewTypeForFileType } from "./editor/View";
 import { build, run, runTask, editInWebAssemblyStudio } from "../actions/AppActions";
 
 import appStore from "../stores/AppStore";
@@ -240,7 +240,7 @@ export class App extends React.Component<AppProps, AppState> {
     const src = await response.text();
     const notes = new File("Release Notes", FileType.Markdown);
     notes.setData(src);
-    openFile(notes);
+    openFile(notes, defaultViewTypeForFileType(notes.type));
   }
 
   registerShortcuts() {
@@ -598,13 +598,13 @@ export class App extends React.Component<AppProps, AppState> {
               }
             }}
             onClickFile={(file: File) => {
-              openFile(file);
+              openFile(file, defaultViewTypeForFileType(file.type));
             }}
             onDoubleClickFile={(file: File) => {
               if (file instanceof Directory) {
                 return;
               }
-              openFile(file, false);
+              openFile(file, defaultViewTypeForFileType(file.type), false);
             }}
             onMoveFile={(file: File, directory: Directory) => {
               addFileTo(file, directory);
