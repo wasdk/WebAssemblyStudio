@@ -280,6 +280,7 @@ export class File {
   type: FileType;
   data: string | ArrayBuffer;
   parent: Directory;
+  onClose?: Function;
   /**
    * True if the buffer is out of sync with the data.
    */
@@ -320,11 +321,9 @@ export class File {
       if (e.isFlush) {
         return;
       }
-      const dispatch = !this.isDirty;
+
       this.isDirty = true;
-      if (dispatch) {
-        this.notifyDidChangeBuffer();
-      }
+      this.notifyDidChangeBuffer();
       monaco.editor.setModelMarkers(this.buffer, "compiler", []);
     });
     this.parent = null;

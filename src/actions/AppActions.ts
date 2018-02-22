@@ -38,9 +38,8 @@ export enum AppActionType {
   UPDATE_FILE_NAME_AND_DESCRIPTION = "UPDATE_FILE_NAME_AND_DESCRIPTION",
   DELETE_FILE = "DELETE_FILE",
   SPLIT_GROUP = "SPLIT_GROUP",
+  SHOW_PREVIEW = "SHOW_PREVIEW",
   OPEN_FILE = "OPEN_FILE",
-  CLOSE_FILE = "CLOSE_FILE",
-  SAVE_PROJECT = "SAVE_PROJECT",
   OPEN_PROJECT_FILES = "OPEN_PROJECT_FILES",
   FOCUS_TAB_GROUP = "FOCUS_TAB_GROUP",
   LOG_LN = "LOG_LN",
@@ -326,4 +325,16 @@ export async function build() {
   setStatus("Building Project ...");
   await runTask("default");
   clearStatus();
+}
+
+export interface ShowPreview extends AppAction {
+  type: AppActionType.SHOW_PREVIEW;
+  view: View;
+}
+
+export function showPreview(view: View) {
+  dispatcher.dispatch({
+    type: AppActionType.SHOW_PREVIEW,
+    view
+  } as ShowPreview);
 }

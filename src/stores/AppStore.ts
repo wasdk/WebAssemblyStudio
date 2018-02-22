@@ -30,6 +30,7 @@ import {
   DeleteFileAction,
   UpdateFileNameAndDescriptionAction,
   LoadProjectAction,
+  ShowPreview,
   LogLnAction,
   OpenProjectFilesAction,
   FocusTabGroupAction,
@@ -223,6 +224,20 @@ export class AppStore {
     this.onTabsChange.dispatch();
   }
 
+  private showPreview(view: View) {
+    const { file } = view;
+    const newView = new View({
+      file,
+      mode: ViewMode.PREVIEW
+    });
+
+    const previewGroup = new Group(newView, [newView]);
+    this.tabGroups.push(previewGroup);
+    this.activeTabGroup = previewGroup;
+
+    this.onTabsChange.dispatch();
+  }
+
   private setStatus(status: string) {
     if (status) {
       this.project.setStatus(status);
@@ -292,6 +307,11 @@ export class AppStore {
       }
       case AppActionType.INIT_STORE: {
         this.initStore();
+        break;
+      }
+      case AppActionType.SHOW_PREVIEW: {
+        const { view } = action as ShowPreview;
+        this.showPreview(view);
         break;
       }
       case AppActionType.LOG_LN: {
