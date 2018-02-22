@@ -28,6 +28,7 @@ import { ITree, ContextMenuEvent } from "../monaco-extra";
 import { FileTemplate } from "./DirectoryTree";
 import { MonacoUtils } from "../monaco-utils";
 import { openFile } from "../actions/AppActions";
+import { ViewType } from "./editor/View";
 
 export interface ProblemsProps {
 }
@@ -197,7 +198,7 @@ export class Problems extends React.Component<ProblemsProps, {
     if (problem instanceof File) {
       return;
     }
-    openFile(problem.file, true);
+    openFile(problem.file, ViewType.Editor, true);
   }
   componentDidMount() {
     this.ensureTree();

@@ -186,8 +186,8 @@ export class AppStore {
     this.onTabsChange.dispatch();
   }
 
-  private openFile(file: File, preview: boolean) {
-    this.activeTabGroup.openFile(file, preview);
+  private openFile(file: File, type: ViewType, preview: boolean) {
+    this.activeTabGroup.openFile(file, type, preview);
     this.onTabsChange.dispatch();
   }
 
@@ -270,8 +270,8 @@ export class AppStore {
         break;
       }
       case AppActionType.OPEN_FILE: {
-        const { file, preview } = action as OpenFileAction;
-        this.openFile(file, preview);
+        const { file, viewType, preview } = action as OpenFileAction;
+        this.openFile(file, viewType, preview);
         break;
       }
       case AppActionType.OPEN_PROJECT_FILES: {

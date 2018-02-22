@@ -19,11 +19,20 @@
  * SOFTWARE.
  */
 
-import { File } from "../../model";
+import { File, FileType } from "../../model";
 
 export enum ViewType {
   Editor,
   Markdown
+}
+
+export function defaultViewTypeForFileType(type: FileType) {
+  switch (type) {
+    case FileType.Markdown:
+      return ViewType.Markdown;
+    default:
+      return ViewType.Editor;
+  }
 }
 
 export class View {
