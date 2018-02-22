@@ -21,7 +21,7 @@
 
 import * as React from "react";
 import { Project, File, Directory, FileType, languageForFileType } from "../../model";
-import { EditorPane } from "./EditorPane";
+import { ViewTabs } from "./ViewTabs";
 import { View } from "./View";
 import { build, run } from "../../actions/AppActions";
 import "monaco-editor";
