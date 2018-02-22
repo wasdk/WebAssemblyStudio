@@ -40,7 +40,7 @@ export enum AppActionType {
   SPLIT_GROUP = "SPLIT_GROUP",
   SET_VIEW_TYPE = "SET_VIEW_TYPE",
   OPEN_FILE = "OPEN_FILE",
-  OPEN_PROJECT_FILES = "OPEN_PROJECT_FILES",
+  OPEN_FILES = "OPEN_PROJECT_FILES",
   FOCUS_TAB_GROUP = "FOCUS_TAB_GROUP",
   LOG_LN = "LOG_LN",
   SET_STATUS = "SET_STATUS",
@@ -180,25 +180,26 @@ export function openFile(file: File, type: ViewType = ViewType.Editor, preview =
   } as OpenFileAction);
 }
 
-export interface OpenProjectFilesAction extends AppAction {
-  type: AppActionType.OPEN_PROJECT_FILES;
-  openedFiles: [string[]];
+export function openFiles(files: string[][]) {
+  dispatcher.dispatch({
+    type: AppActionType.OPEN_FILES,
+    files
+  } as OpenFilesAction);
+}
+
+export interface OpenFilesAction extends AppAction {
+  type: AppActionType.OPEN_FILES;
+  files: string[][];
 }
 
 export async function openProjectFiles(json: ProjectTemplate) {
   const newProject = new Project();
   await Service.loadProject(json, newProject);
-  const { openedFiles } = json;
-
   dispatcher.dispatch({
     type: AppActionType.LOAD_PROJECT,
     project: newProject
   } as LoadProjectAction);
-
-  dispatcher.dispatch({
-    type: AppActionType.OPEN_PROJECT_FILES,
-    openedFiles
-  } as OpenProjectFilesAction);
+  openFiles(json.openedFiles);
 }
 
 export async function saveProject(fiddle: string) {

@@ -33,7 +33,7 @@ export interface ProjectTemplate {
   name: string;
   directory?: string;
   children: ProjectTemplate[];
-  openedFiles: [string[]];
+  openedFiles: string[][];
 }
 
 export interface Template {
