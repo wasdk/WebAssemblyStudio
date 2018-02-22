@@ -43,7 +43,7 @@ export enum FileType {
   C          = "c",
   Cpp        = "cpp",
   Rust       = "rust",
-  Wat       = "wat",
+  Wat        = "wat",
   Wasm       = "wasm",
   Directory  = "directory",
   Log        = "log",
@@ -106,9 +106,9 @@ export function nameForFileType(type: FileType): string {
   } else if (type === FileType.Cpp) {
     return "C++";
   } else if (type === FileType.Wat) {
-    return "Wat";
+    return "WebAssembly Text";
   } else if (type === FileType.Wasm) {
-    return "Wasm";
+    return "WebAssembly";
   } else if (type === FileType.Markdown) {
     return "Markdown";
   } else if (type === FileType.Rust) {
@@ -194,27 +194,31 @@ export function mimeTypeForFileType(type: FileType): string {
 
 export function getIconForFileType(fileType: FileType): string {
   if (fileType === FileType.JavaScript) {
-    return "file_type_js";
+    return "javascript-lang-file-icon";
   } else if (fileType === FileType.TypeScript) {
-    return "file_type_typescript";
+    return "typescript-lang-file-icon";
   } else if (fileType === FileType.C) {
-    return "file_type_c";
+    return "c-lang-file-icon";
   } else if (fileType === FileType.Cpp) {
-    return "file_type_cpp";
+    return "cpp-lang-file-icon";
   } else if (fileType === FileType.Rust) {
-    return "file_type_rust";
+    return "rust-lang-file-icon";
   } else if (fileType === FileType.Markdown) {
-    return "file_type_markdown";
+    return "markdown-lang-file-icon";
   } else if (fileType === FileType.HTML) {
-    return "file_type_html";
+    return "html-lang-file-icon";
   } else if (fileType === FileType.CSS) {
-    return "file_type_css";
+    return "css-lang-file-icon";
   } else if (fileType === FileType.Directory) {
-    return "default_folder";
+    return "folder-icon";
   } else if (fileType === FileType.JSON) {
-    return "file_type_json";
+    return "json-lang-file-icon";
+  } else if (fileType === FileType.Wasm) {
+    return "wasm-lang-file-icon";
+  } else if (fileType === FileType.Wat) {
+    return "wat-lang-file-icon";
   }
-  return "default_file";
+  return "txt-ext-file-icon";
 }
 
 export class EventDispatcher {

@@ -25,7 +25,7 @@ import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoGear, GoFile, GoX, Icon } from "./shared/Icons";
 import appStore from "../stores/AppStore";
-import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef } from "../model";
+import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef, getIconForFileType } from "../model";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
 
@@ -78,7 +78,7 @@ export class NewFileDialog extends React.Component<{
     return <ReactModal
       isOpen={this.props.isOpen}
       contentLabel="Create New File"
-      className="modal"
+      className="modal show-file-icons"
       overlayClassName="overlay"
       ariaHideApp={false}
     >
@@ -98,24 +98,24 @@ export class NewFileDialog extends React.Component<{
                     case FileType.C: description = "Creates a file containing C source code."; break;
                     case FileType.Cpp: description = "Creates a file containing C++ source code."; break;
                     case FileType.Cretonne: description = "Cretonne intermediate language (IL) source code."; break;
-                    default: description = "N/A"; break;
+                    default: description = "Creates a " + nameForFileType(fileType) + " file."; break;
                   }
                   this.setState({ fileType, description });
                 }}
               >
-                <ListItem value={FileType.C} label={"C File (.c)"} icon={<Icon src="svg/file_type_c.svg" />} />
-                <ListItem value={FileType.Cpp} label={"C++ File (.cpp)"} icon={<Icon src="svg/file_type_cpp.svg" />} />
-                <ListItem value={FileType.Rust} label={"Rust File (.rs)"} icon={<Icon src="svg/file_type_rust.svg" />} />
+                <ListItem value={FileType.C} label={"C File (.c)"} icon={getIconForFileType(FileType.C)} />
+                <ListItem value={FileType.Cpp} label={"C++ File (.cpp)"} icon={getIconForFileType(FileType.Cpp)} />
+                <ListItem value={FileType.Rust} label={"Rust File (.rs)"} icon={getIconForFileType(FileType.Rust)} />
 
-                <ListItem value={FileType.Cretonne} label={"Cretonne (.cton)"} icon={<Icon src="svg/default_file.svg" />} />
-                <ListItem value={FileType.Wat} label={"Wat (.wat)"} icon={<Icon src="svg/default_file.svg" />} />
+                <ListItem value={FileType.Cretonne} label={"Cretonne (.cton)"} icon={getIconForFileType(FileType.Cretonne)} />
+                <ListItem value={FileType.Wat} label={"Wat (.wat)"} icon={getIconForFileType(FileType.Wat)} />
 
-                <ListItem value={FileType.JavaScript} label={"JavaScript (.js)"} icon={<Icon src="svg/file_type_js.svg" />} />
-                <ListItem value={FileType.TypeScript} label={"TypeScript (.ts)"} icon={<Icon src="svg/file_type_typescript.svg" />} />
-                <ListItem value={FileType.HTML} label={"HTML (.html)"} icon={<Icon src="svg/file_type_html.svg" />} />
-                <ListItem value={FileType.CSS} label={"CSS (.css)"} icon={<Icon src="svg/file_type_css.svg" />} />
-                <ListItem value={FileType.Markdown} label={"Markdown (.md)"} icon={<Icon src="svg/file_type_markdown.svg" />} />
-                <ListItem value={FileType.JSON} label={"JSON (.json)"} icon={<Icon src="svg/file_type_json.svg" />} />
+                <ListItem value={FileType.JavaScript} label={"JavaScript (.js)"} icon={getIconForFileType(FileType.JavaScript)} />
+                <ListItem value={FileType.TypeScript} label={"TypeScript (.ts)"} icon={getIconForFileType(FileType.TypeScript)} />
+                <ListItem value={FileType.HTML} label={"HTML (.html)"} icon={getIconForFileType(FileType.HTML)} />
+                <ListItem value={FileType.CSS} label={"CSS (.css)"} icon={getIconForFileType(FileType.CSS)} />
+                <ListItem value={FileType.Markdown} label={"Markdown (.md)"} icon={getIconForFileType(FileType.Markdown)} />
+                <ListItem value={FileType.JSON} label={"JSON (.json)"} icon={getIconForFileType(FileType.JSON)} />
               </ListBox>
             </div>
             <div className="new-file-dialog-description">

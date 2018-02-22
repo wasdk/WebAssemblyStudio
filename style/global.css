@@ -283,7 +283,7 @@ a {
 }
 .tab {
   display: flex;
-  width: 120px;
+  max-width: 150px;
   min-width: fit-content;
   cursor: pointer;
   padding-left: 10px;
@@ -297,9 +297,10 @@ a {
   border-right: 1px solid #1f2325;
 }
 
-.tab>.icon {
-  width: 16px;
-  height: 16px;
+.tab>.file-icon {
+  font-size: 90%;
+  min-width: 20px;
+  max-height: 20px;
 }
 
 .tab>.label {

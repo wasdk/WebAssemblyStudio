@@ -2,7 +2,7 @@
   "name": "Empty C Project",
   "description": `# Empty C Project
 `,
-  "icon": "svg/file_type_c.svg",
+  "icon": "c-lang-file-icon",
   "project": {
     "name": "Project",
     "directory": "empty_c",
@@ -76,7 +76,7 @@ Topics: Low-Level, Memory, Linux, System Calls
   "name": "Empty Rust Project",
   "description": `# Empty Rust Project
 `,
-  "icon": "svg/file_type_rust.svg",
+  "icon": "rust-lang-file-icon",
   "project": {
     "name": "Project",
     "directory": "empty_rust",
@@ -114,7 +114,7 @@ Topics: Low-Level, Memory, Linux, System Calls
 
 See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/wiki) for further instructions and documentation.
 `,
-  "icon": "svg/file_type_typescript.svg",
+  "icon": "typescript-lang-file-icon",
   "project": {
     "name": "Project",
     "directory": "empty_ts",
@@ -158,7 +158,7 @@ See the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/w
   "name": "Empty Wat Project",
   "description": `# Empty Wat Project
 `,
-  "icon": "",
+  "icon": "wat-lang-file-icon",
   "project": {
     "name": "Project",
     "directory": "empty_wat",
