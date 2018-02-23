@@ -33,6 +33,46 @@
     ]
   }
 }, {
+  "name": "Hello World in C",
+  "description": `# Hello World in C
+
+Print \`"Hello World"\` using a minimal POSIX API.
+
+Level: *Advanced*
+Topics: Low-Level, Memory, Linux, System Calls
+`,
+  "icon": "svg/file_type_c.svg",
+  "project": {
+    "name": "Project",
+    "directory": "hello_world_c",
+    "children": [{
+      "name": "src",
+      "children": [{
+        "name": "main.c",
+        "type": "c"
+      }, {
+        "name": "main.js",
+        "type": "javascript",
+      }, {
+        "name": "main.html",
+        "type": "html",
+      }]
+    }, {
+      "name": "build.ts",
+      "type": "typescript",
+    }, {
+      "name": "package.json",
+      "type": "json",
+    }, {
+      "name": "README.md",
+      "type": "markdown",
+    }],
+    "openedFiles": [
+      ["README.md"]
+    ]
+  }
+},
+{
   "name": "Empty Rust Project",
   "description": `# Empty Rust Project
 `,
