@@ -268,20 +268,14 @@ export class Service {
     output.setData(result);
   }
 
-  static createGist(json: object): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.addEventListener("load", function() {
-        const jsonURI = JSON.parse(this.response).html_url;
-        resolve(jsonURI);
-      });
-      xhr.addEventListener("error", function() {
-        reject();
-      });
-      xhr.open("POST", "https://api.github.com/gists", true);
-      xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-      xhr.send(JSON.stringify(json));
+  static async createGist(json: object): Promise<string> {
+    const url = "https://api.github.com/gists";
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(json),
+      headers: new Headers({ "Content-type": "application/json; charset=utf-8" })
     });
+    return JSON.parse(await response.text()).html_url;
   }
 
   static async loadJSON(uri: string): Promise<{}> {
@@ -292,30 +286,28 @@ export class Service {
     return JSON.parse(await response.text());
   }
 
-  static saveJSON(json: object, uri: string): Promise<string> {
+  static async saveJSON(json: object, uri: string): Promise<string> {
     const update = !!uri;
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.addEventListener("load", function() {
-        if (update) {
-          resolve(uri);
-        } else {
-          let jsonURI = JSON.parse(this.response).uri;
-          jsonURI = jsonURI.substring(jsonURI.lastIndexOf("/") + 1);
-          resolve(jsonURI);
-        }
+    if (update) {
+      const url = "//api.myjson.com/bins/" + uri;
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: new Headers({ "Content-type": "application/json; charset=utf-8" }),
+        body: JSON.stringify(json)
       });
-      xhr.addEventListener("error", function() {
-        reject();
+      const result = JSON.parse(await response.text());
+      return uri;
+    } else {
+      const url = "//api.myjson.com/bins/";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: new Headers({ "Content-type": "application/json; charset=utf-8" }),
+        body: JSON.stringify(json)
       });
-      if (update) {
-        xhr.open("PUT", "//api.myjson.com/bins/" + uri, true);
-      } else {
-        xhr.open("POST", "//api.myjson.com/bins", true);
-      }
-      xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-      xhr.send(JSON.stringify(json));
-    });
+      let jsonURI = JSON.parse(await response.text()).uri;
+      jsonURI = jsonURI.substring(jsonURI.lastIndexOf("/") + 1);
+      return jsonURI;
+    }
   }
 
   static parseFiddleURI(): string {
