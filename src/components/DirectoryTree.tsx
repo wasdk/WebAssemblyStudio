@@ -192,7 +192,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
             Service.openBinaryExplorer(file);
           }));
           actions.push(new MonacoUtils.Action("x", "View as Binary", "octicon-file-binary", true, () => {
-            openFile(file, ViewType.Binary);
+            openFile(file, ViewType.Binary, false);
           }));
         } else if (file.type === FileType.C || file.type === FileType.Cpp) {
           actions.push(new MonacoUtils.Action("x", "Clang-Format", "octicon-quote ruler", true, () => {
