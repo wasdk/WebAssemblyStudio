@@ -955,6 +955,7 @@ a {
   font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
   font-weight: normal;
   padding: 8px;
+  height: 100%;
   overflow: scroll;
 }
 .binary .row {
