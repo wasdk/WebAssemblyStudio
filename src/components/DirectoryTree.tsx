@@ -25,6 +25,9 @@ import { Service } from "../service";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
 import { ITree, ContextMenuEvent, IDragAndDrop, DragMouseEvent, IDragAndDropData, IDragOverReaction, DragOverEffect, DragOverBubble } from "../monaco-extra";
 import { MonacoUtils } from "../monaco-utils";
+import { ViewTabs } from "./editor";
+import { ViewType } from "./editor/View";
+import { openFile } from "../actions/AppActions";
 
 export interface DirectoryTreeProps {
   directory: ModelRef<Directory>;
@@ -185,6 +188,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           }));
           actions.push(new MonacoUtils.Action("x", "Binary Explorer", "octicon-file-binary", true, () => {
             Service.openBinaryExplorer(file);
+          }));
+          actions.push(new MonacoUtils.Action("x", "View as Binary", "octicon-file-binary", true, () => {
+            openFile(file, ViewType.Binary);
           }));
         } else if (file.type === FileType.C || file.type === FileType.Cpp) {
           actions.push(new MonacoUtils.Action("x", "Clang-Format", "octicon-quote ruler", true, () => {

@@ -949,3 +949,27 @@ a {
 .browser-not-supported-description a {
   color: #c0b9f0;
 }
+
+.binary {
+  font-size: 12px;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  font-weight: normal;
+  padding: 8px;
+  overflow: scroll;
+}
+.binary .row {
+  padding: 2px;
+  min-width: 500px;
+}
+.binary .address {
+  color: gray;
+  display: inline-block;
+  width: 90px;
+}
+.binary .bytes {
+  width: 280px;
+  display: inline-block;
+}
+.binary .byte {
+  margin-right: 2px;
+}

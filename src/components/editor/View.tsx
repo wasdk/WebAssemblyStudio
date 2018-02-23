@@ -23,7 +23,8 @@ import { File, FileType } from "../../model";
 
 export enum ViewType {
   Editor,
-  Markdown
+  Markdown,
+  Binary
 }
 
 export function defaultViewTypeForFileType(type: FileType) {
