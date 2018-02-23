@@ -29,6 +29,7 @@ import { Markdown, MarkdownView } from ".././Markdown";
 import { Button } from "../shared/Button";
 import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye, GoCode } from "../shared/Icons";
 import { View, ViewType } from "./View";
+import { BinaryView } from "../Binary";
 
 export class ViewTabsProps {
   /**
@@ -134,6 +135,8 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
     let viewer;
     if (file && file.type === FileType.Markdown && view.type === ViewType.Markdown) {
       viewer = <MarkdownView view={view} />;
+    } else if (view.type === ViewType.Binary) {
+      viewer = <BinaryView view={view} />;
     } else if (file) {
       viewer = <EditorView view={view} options={{ readOnly: file.isBufferReadOnly }} />;
     } else {
@@ -149,16 +152,22 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
       }
         commands={this.renderViewCommands()}
       >
-        {views.map(view => {
-          const { file: x } = view;
+        {views.map(v => {
+          const { file: x } = v;
+          let name = x.name;
+          if (v.type === ViewType.Binary) {
+            name = "Binary " + name;
+          } else if (v.type === ViewType.Markdown) {
+            name = "Preview " + name;
+          }
           return <Tab
             key={x.key}
-            label={x.name}
-            value={view}
+            label={name}
+            value={v}
             icon={getIconForFileType(x.type)}
             isMarked={x.isDirty}
-            isActive={x === file}
-            isItalic={view === preview}
+            isActive={v === view}
+            isItalic={v === preview}
             onClick={onClickView}
             onDoubleClick={onDoubleClickView}
             onClose={onClose}
