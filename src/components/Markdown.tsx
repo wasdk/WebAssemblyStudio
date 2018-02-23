@@ -47,7 +47,7 @@ export class Markdown extends React.Component<MarkdownProps, {
     }
   }
   render() {
-    return <div style={{padding: "8px"}} className="md" dangerouslySetInnerHTML={{__html: this.state.html}}/>;
+    return <div style={{padding: "8px", height: "100%", overflow: "scroll"}} className="md" dangerouslySetInnerHTML={{__html: this.state.html}}/>;
   }
 }
 
