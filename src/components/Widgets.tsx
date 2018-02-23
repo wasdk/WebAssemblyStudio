@@ -95,7 +95,7 @@ export class FileUploadInput extends React.Component<{
 export class ListItem extends React.Component<{
   label: string;
   onClick?: Function;
-  icon?: JSX.Element;
+  icon?: string;
   selected?: boolean;
   value: any;
   error?: string;
@@ -116,8 +116,8 @@ export class ListItem extends React.Component<{
         </div>;
     }
     return <div className={className} onClick={this.props.onClick as any}>
-      <div className="icon">{this.props.icon}</div>
-        {content}
+      <div className={"monaco-icon-label file-icon " + this.props.icon} />
+      {content}
     </div>;
   }
 }

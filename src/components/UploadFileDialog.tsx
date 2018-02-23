@@ -25,7 +25,7 @@ import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoGear, GoFile, GoX, Icon, GoPencil, GoCheck } from "./shared/Icons";
 import appStore from "../stores/AppStore";
-import {File, FileType, Directory, extensionForFileType, nameForFileType, filetypeForExtension, ModelRef } from "../model";
+import {File, FileType, Directory, extensionForFileType, nameForFileType, filetypeForExtension, ModelRef, getIconForFileType } from "../model";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, FileUploadInput } from "./Widgets";
 
@@ -107,7 +107,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
     return <ReactModal
       isOpen={this.props.isOpen}
       contentLabel="Upload File"
-      className="modal"
+      className="modal show-file-icons"
       overlayClassName="overlay"
       ariaHideApp={false}
     >
@@ -122,7 +122,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
           <div className="column">
             <ListBox height={290}>
               {this.state.files.map( (file: any, key: number) => {
-                return <ListItem key={key} value={file.fileType} label={file.name} error={file.error} icon={<Icon src="svg/default_file.svg"/>} />;
+                return <ListItem key={key} value={file.fileType} label={file.name} error={file.error} icon={getIconForFileType(file.fileType)} />;
                 })}
             </ListBox>
           </div>

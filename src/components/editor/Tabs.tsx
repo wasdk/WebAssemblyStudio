@@ -150,13 +150,7 @@ export class Tab extends PureComponent<TabProps, {}> {
         onClick={this.onClick}
         onDoubleClick={this.onDoubleClick}
       >
-        {icon && <div
-          className="icon"
-          style={{
-            backgroundImage: `url(svg/${icon}.svg)`
-          }}
-        />
-        }
+        <div className={"monaco-icon-label file-icon " + icon} />
         <div className="label">{label}</div>
         <div
           className="close"

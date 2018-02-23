@@ -85,7 +85,7 @@ export class NewProjectDialog extends React.Component<{
     return <ReactModal
       isOpen={this.props.isOpen}
       contentLabel="Create New Project"
-      className="modal"
+      className="modal show-file-icons"
       overlayClassName="overlay"
       ariaHideApp={false}
     >
@@ -109,7 +109,7 @@ export class NewProjectDialog extends React.Component<{
                     key={template.name}
                     value={template}
                     label={template.name}
-                    icon={<Icon src={template.icon}/>}
+                    icon={template.icon}
                   />;
                 })
               }
