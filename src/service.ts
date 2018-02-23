@@ -593,7 +593,7 @@ export class Service {
     if (typeof showdown === "undefined") {
       await Service.lazyLoad("lib/showdown.min.js");
     }
-    const converter = new showdown.Converter({ tables: true });
+    const converter = new showdown.Converter({ tables: true, ghCodeBlocks: true });
     showdown.setFlavor("github");
     return converter.makeHtml(src);
   }
