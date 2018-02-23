@@ -41,7 +41,7 @@ Print \`"Hello World"\` using a minimal POSIX API.
 Level: *Advanced*
 Topics: Low-Level, Memory, Linux, System Calls
 `,
-  "icon": "svg/file_type_c.svg",
+  "icon": "c-lang-file-icon",
   "project": {
     "name": "Project",
     "directory": "hello_world_c",
