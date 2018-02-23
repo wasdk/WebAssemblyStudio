@@ -4,12 +4,13 @@
   "description": "Learn, Teach, Work and Play in the WebAssembly Studio",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config webpack.config.js",
-    "build-watch": "webpack --watch --config webpack.config.js",
-    "dev-server": "webpack-dev-server --config webpack.config.js",
-    "test": "./node_modules/.bin/jest && npm run tslint",
+    "build": "webpack --env.prod",
+    "build-watch": "webpack --watch",
+    "dev-server": "webpack-dev-server",
+    "test": "webpack --env.prod && ./bin/check-bundle-size.js && npm run jest && npm run tslint",
+    "jest": "jest",
     "clean": "rm -r dist/*",
-    "tslint": "./node_modules/.bin/tslint -p ."
+    "tslint": "tslint -p ."
   },
   "jest": {
     "setupFiles": [
@@ -73,6 +74,7 @@
     "source-map-loader": "^0.2.3",
     "tslint": "^5.9.1",
     "typescript": "^2.7.1",
+    "uglifyjs-webpack-plugin": "^1.2.2",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.0"
   }
