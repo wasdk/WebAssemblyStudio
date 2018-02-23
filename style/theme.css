@@ -1,4 +1,6 @@
-@font-face { src: url('../icons/seti.woff') format('woff'); font-family: 'seti'; font-weigth: normal; font-style: normal; }
+@import url(../fonts/seti.css);
+@import url(../fonts/seti-extra.css);
+
 .show-file-icons .file-icon::before, .show-file-icons .folder-icon::before, .show-file-icons .rootfolder-icon::before { font-family: 'seti'; font-size: 150%; font-style: normal; }
 .show-file-icons .file-icon::before, .show-file-icons .txt-ext-file-icon.ext-file-icon.file-icon::before {  color: #d4d7d6; content: '\E01A'; }
 .show-file-icons .bat-lang-file-icon.file-icon::before {  color: #519aba; content: '\E07E'; }
@@ -220,6 +222,5 @@
 .vs .show-file-icons .procfile-name-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E037'; }
 .vs .show-file-icons .npm-debug\.log-name-file-icon.log-ext-file-icon.ext-file-icon.file-icon::before {  color: #3b4b52; content: '\E056'; }
 
-@font-face { src: url('../icons/seti-extra.woff') format('woff'); font-family: 'seti-extra'; font-weigth: normal; font-style: normal; }
 .show-file-icons .wasm-lang-file-icon.file-icon::before { font-family: 'seti-extra'; color: #796dd2; content: '\E001'; }
 .show-file-icons .wat-lang-file-icon.file-icon::before { font-family: 'seti-extra'; color: #796dd2; content: '\E002'; }

@@ -1,3 +1,7 @@
+@import url(../fonts/octicons.css);
+@import url(../fonts/roboto.css);
+@import url(../fonts/zilla.css);
+
 :root {
    --grey-50: #FAFAFA;
   --grey-100: #F5F5F5;
