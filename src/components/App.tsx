@@ -89,11 +89,13 @@ import { Errors } from "../errors";
 import { ControlCenter } from "./ControlCenter";
 import Group from "../utils/group";
 import { StatusBar } from "./StatusBar";
+import fetchTemplates from "../utils/fetchTemplates";
 
 export interface AppState {
   project: ModelRef<Project>;
   file: ModelRef<File>;
   fiddle: string;
+  template?: string;
 
   /**
    * If not null, the the new file dialog is open and files are created in this
@@ -149,6 +151,7 @@ export interface AppProps {
    */
   update: boolean;
   fiddle: string;
+  template?: string;
 }
 
 export class App extends React.Component<AppProps, AppState> {
@@ -158,11 +161,12 @@ export class App extends React.Component<AppProps, AppState> {
     super(props);
     this.state = {
       fiddle: props.fiddle,
+      template: props.template,
       project: null,
       file: null,
       newFileDialogDirectory: null,
       editFileDialogFile: null,
-      newProjectDialog: !props.fiddle,
+      newProjectDialog: !(props.fiddle || props.template),
       shareDialog: false,
       workspaceSplits: [
         {
@@ -192,18 +196,37 @@ export class App extends React.Component<AppProps, AppState> {
     this.bindAppStoreEvents();
     if (this.state.fiddle) {
       this.loadProjectFromFiddle();
+    } else if (this.state.template) {
+      this.loadProjectFromTemplate();
     }
   }
   async loadProjectFromFiddle() {
     const newProject = new Project();
-    let json = await Service.loadJSON(this.state.fiddle);
-    json = await Service.loadProject(json, newProject);
-    // TODO openProjectFiles ?
-    this.logLn("Project Loaded ...");
-    loadProject(newProject);
-    if (newProject.getFile("README.md")) {
-      openFiles([["README.md"]]);
+    try {
+      let json = await Service.loadJSON(this.state.fiddle);
+      json = await Service.loadProject(json, newProject);
+      // TODO openProjectFiles ?
+      loadProject(newProject);
+      if (newProject.getFile("README.md")) {
+        openFiles([["README.md"]]);
+      }
+    } catch (e) {
+      this.logLn(`Fiddle '${this.state.fiddle}' does not exist`, "error");
+      this.setState({ newProjectDialog: true });
     }
+  }
+  async loadProjectFromTemplate() {
+    const templates: Template[] = await fetchTemplates();
+    for (let i = 0; i < templates.length; ++i) {
+      const template = templates[i];
+      const project = template.project;
+      if (template.name === this.state.template || project.directory === this.state.template) {
+        await openProjectFiles(project);
+        return;
+      }
+    }
+    this.logLn(`Template '${this.state.template}' does not exist`, "error");
+    this.setState({ newProjectDialog: true });
   }
   bindAppStoreEvents() {
     appStore.onLoadProject.register(() => {

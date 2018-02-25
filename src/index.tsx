@@ -65,6 +65,7 @@ const parameters = getUrlParameters();
 const embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed"], 10);
 const update = parameters["update"] === true ? true : !!parseInt(parameters["update"], 10);
 const fiddle = parameters["fiddle"] || parameters["f"];
+const template = parameters["template"] || parameters["t"];
 
 (window["require"])(["vs/editor/editor.main", "require"], (_: any, require: any) => {
   MonacoUtils.initialize(require);
@@ -75,7 +76,7 @@ const fiddle = parameters["fiddle"] || parameters["f"];
     );
   } else {
     ReactDOM.render(
-      <App embed={embed} update={update} fiddle={fiddle}/>,
+      <App embed={embed} update={update} fiddle={fiddle} template={template}/>,
       document.getElementById("app")
     );
   }
