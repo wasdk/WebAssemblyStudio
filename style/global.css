@@ -478,6 +478,10 @@ a {
   padding-right: 4px;
 }
 
+.help {
+  float: right;
+}
+
 .issue {
   background-color: #a73535;
   float: right;
