@@ -30,6 +30,7 @@ import { Button } from "../shared/Button";
 import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye, GoCode } from "../shared/Icons";
 import { View, ViewType } from "./View";
 import { BinaryView } from "../Binary";
+import { VizView } from "../Viz";
 
 export class ViewTabsProps {
   /**
@@ -122,6 +123,18 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
           }
         />
       );
+    } else if (view.file.type === FileType.DOT) {
+      const viz = view.type === ViewType.Viz;
+      commands.unshift(
+        <Button
+          key="toggle"
+          icon={viz ? <GoCode /> : <GoEye />}
+          title={viz ? "Edit GraphViz DOT File" : "Preview GraphViz DOT File"}
+          onClick={() =>
+            this.props.onChangeViewType(view, viz ? ViewType.Editor : ViewType.Viz)
+          }
+        />
+      );
     }
     return commands;
   }
@@ -135,6 +148,8 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
     let viewer;
     if (file && file.type === FileType.Markdown && view.type === ViewType.Markdown) {
       viewer = <MarkdownView view={view} />;
+    } else if (file && file.type === FileType.DOT && view.type === ViewType.Viz) {
+      viewer = <VizView view={view} />;
     } else if (view.type === ViewType.Binary) {
       viewer = <BinaryView view={view} />;
     } else if (file) {
@@ -157,7 +172,7 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
           let name = x.name;
           if (v.type === ViewType.Binary) {
             name = "Binary " + name;
-          } else if (v.type === ViewType.Markdown) {
+          } else if (v.type === ViewType.Markdown || v.type === ViewType.Viz) {
             name = "Preview " + name;
           }
           return <Tab
