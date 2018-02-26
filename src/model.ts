@@ -51,6 +51,7 @@ export enum FileType {
   Markdown   = "markdown",
   Cretonne   = "cretonne",
   JSON       = "json",
+  DOT        = "dot",
   Unknown    = "unknown"
 }
 
@@ -88,6 +89,8 @@ export function languageForFileType(type: FileType): string {
     return "cton";
   } else if (type === FileType.JSON) {
     return "json";
+  } else if (type === FileType.DOT) {
+    return "dot";
   }
   return "";
 }
@@ -117,6 +120,8 @@ export function nameForFileType(type: FileType): string {
     return "Cretonne";
   } else if (type === FileType.JSON) {
     return "JSON";
+  } else if (type === FileType.DOT) {
+    return "DOT";
   }
   return "";
 }
@@ -146,6 +151,8 @@ export function extensionForFileType(type: FileType): string {
     return "cton";
   } else if (type === FileType.JSON) {
     return "json";
+  } else if (type === FileType.DOT) {
+    return "dot";
   }
   return "";
 }
@@ -175,6 +182,8 @@ export function filetypeForExtension(extension: string): FileType {
     return FileType.Cretonne;
   } else if (extension === "json" || extension === "map") {
     return FileType.JSON;
+  } else if (extension === "dot") {
+    return FileType.DOT;
   }
   return null;
 }
@@ -188,6 +197,8 @@ export function mimeTypeForFileType(type: FileType): string {
     return "application/wasm";
   } else if (type === FileType.JSON) {
     return "application/json";
+  } else if (type === FileType.DOT) {
+    return "text/plain";
   }
   return "";
 }
