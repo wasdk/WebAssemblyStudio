@@ -55,9 +55,13 @@ export class VizView extends React.Component<VizViewProps> {
   }
   render() {
     if (typeof Viz === "undefined") {
-      return <div>Loading GraphViz ...</div>;
+      return <div>Loading GraphViz, please wait ...</div>;
     }
-    const svg = Viz(this.props.view.file.buffer.getValue());
-    return <div style={{width: "100%", height: "100%", overflow: "scroll"}} dangerouslySetInnerHTML={{__html: svg}}/>;
+    try {
+      const svg = Viz(this.props.view.file.buffer.getValue());
+      return <div style={{width: "100%", height: "100%", overflow: "scroll"}} dangerouslySetInnerHTML={{__html: svg}}/>;
+    } catch (e) {
+      return <div>GraphViz Error</div>;
+    }
   }
 }
