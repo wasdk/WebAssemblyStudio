@@ -24,13 +24,16 @@ import { File, FileType } from "../../model";
 export enum ViewType {
   Editor,
   Markdown,
-  Binary
+  Binary,
+  Viz
 }
 
 export function defaultViewTypeForFileType(type: FileType) {
   switch (type) {
     case FileType.Markdown:
       return ViewType.Markdown;
+    case FileType.DOT:
+      return ViewType.Viz;
     default:
       return ViewType.Editor;
   }
