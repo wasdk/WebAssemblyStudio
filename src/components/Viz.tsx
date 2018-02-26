@@ -29,9 +29,17 @@ export interface VizViewProps {
   view: View;
 }
 
+const updateThrottleDuration = 500;
 export class VizView extends React.Component<VizViewProps> {
+  updateTimeout = 0;
   onDidChangeBuffer = () => {
-    this.forceUpdate();
+    if (this.updateTimeout) {
+      window.clearTimeout(this.updateTimeout);
+    }
+    this.updateTimeout = window.setTimeout(() => {
+      this.updateTimeout = 0;
+      this.forceUpdate();
+    }, updateThrottleDuration);
   }
   async componentWillMount() {
     if (typeof Viz === "undefined") {
