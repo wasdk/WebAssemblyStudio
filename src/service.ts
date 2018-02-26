@@ -406,11 +406,15 @@ export class Service {
     });
   }
 
-  static async optimizeWasmWithBinaryen(file: File) {
-    gaEvent("optimize", "Service", "binaryen");
+  static async loadBinaryen() {
     if (typeof Binaryen === "undefined") {
       await Service.lazyLoad("lib/binaryen.js");
     }
+  }
+  
+  static async optimizeWasmWithBinaryen(file: File) {
+    gaEvent("optimize", "Service", "binaryen");
+    await Service.loadBinaryen();
     let data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
     module.optimize();
@@ -421,9 +425,7 @@ export class Service {
 
   static async validateWasmWithBinaryen(file: File) {
     gaEvent("validate", "Service", "binaryen");
-    if (typeof Binaryen === "undefined") {
-      await Service.lazyLoad("lib/binaryen.js");
-    }
+    await Service.loadBinaryen();
     const data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
     alert(module.validate() ? "Module is valid" : "Module is not valid");
@@ -431,9 +433,7 @@ export class Service {
 
   static async validateWatWithBinaryen(file: File) {
     gaEvent("optimize", "Service", "binaryen (wat)");
-    if (typeof Binaryen === "undefined") {
-      await Service.lazyLoad("lib/binaryen.js");
-    }
+    await Service.loadBinaryen();
     const data = file.getData() as string;
     const module = Binaryen.parseText(data);
     alert(module.validate());
@@ -441,9 +441,7 @@ export class Service {
 
   static async disassembleWasmWithBinaryen(file: File) {
     gaEvent("disassemble", "Service", "binaryen");
-    if (typeof Binaryen === "undefined") {
-      await Service.lazyLoad("lib/binaryen.js");
-    }
+    Service.loadBinaryen();
     const data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
     const output = file.parent.newFile(file.name + ".wat", FileType.Wat);
@@ -453,9 +451,7 @@ export class Service {
 
   static async convertWasmToAsmWithBinaryen(file: File) {
     gaEvent("disassemble", "Service", "binaryen");
-    if (typeof Binaryen === "undefined") {
-      await Service.lazyLoad("lib/binaryen.js");
-    }
+    await Service.loadBinaryen();
     const data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
     const result = module.emitAsmjs();
