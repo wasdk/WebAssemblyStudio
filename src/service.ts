@@ -33,11 +33,14 @@ declare interface BinaryenModule {
   emitBinary(): ArrayBuffer;
   emitText(): string;
   emitAsmjs(): string;
+  runPasses(passes: string []): any;
 }
 
 declare var Binaryen: {
   readBinary(data: ArrayBuffer): BinaryenModule;
   parseText(data: string): BinaryenModule;
+  print(s: string): void;
+  printErr(s: string): void;
 };
 
 declare var capstone: {
@@ -411,7 +414,7 @@ export class Service {
       await Service.lazyLoad("lib/binaryen.js");
     }
   }
-  
+
   static async optimizeWasmWithBinaryen(file: File) {
     gaEvent("optimize", "Service", "binaryen");
     await Service.loadBinaryen();
@@ -429,6 +432,21 @@ export class Service {
     const data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
     alert(module.validate() ? "Module is valid" : "Module is not valid");
+  }
+
+  static async getWasmCallGraphWithBinaryen(file: File) {
+    gaEvent("validate", "Service", "binaryen");
+    await Service.loadBinaryen();
+    const data = file.getData() as ArrayBuffer;
+    const module = Binaryen.readBinary(data);
+    const old = Binaryen.print;
+    let ret = "";
+    Binaryen.print = (x: string) => { ret += x + "\n"; };
+    const foo = module.runPasses(["print-call-graph"]);
+    Binaryen.print = old;
+    const output = file.parent.newFile(file.name + ".dot", FileType.DOT);
+    output.description = "Call graph created from " + file.name + " using Binaryen's print-call-graph pass.";
+    output.setData(ret);
   }
 
   static async validateWatWithBinaryen(file: File) {

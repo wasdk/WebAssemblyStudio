@@ -182,6 +182,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           actions.push(new MonacoUtils.Action("x", "To asm.js", "octicon-file-code", true, () => {
             Service.convertWasmToAsmWithBinaryen(file);
           }));
+          actions.push(new MonacoUtils.Action("x", "Generate Call Graph", "octicon-gear", true, () => {
+            Service.getWasmCallGraphWithBinaryen(file);
+          }));
           actions.push(new MonacoUtils.Action("x", "To Firefox x86", "octicon-file-binary", true, () => {
             Service.disassembleX86(file);
           }));
