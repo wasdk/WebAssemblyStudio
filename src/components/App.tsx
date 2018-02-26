@@ -73,7 +73,8 @@ import {
   GoBeaker,
   GoThreeBars,
   GoGist,
-  GoOpenIssue
+  GoOpenIssue,
+  GoQuestion
 } from "./shared/Icons";
 import { Button } from "./shared/Button";
 
@@ -244,6 +245,14 @@ export class App extends React.Component<AppProps, AppState> {
     const notes = new File("Release Notes", FileType.Markdown);
     notes.setData(src);
     openFile(notes, defaultViewTypeForFileType(notes.type));
+  }
+
+  async loadHelp() {
+    const response = await fetch("notes/help.md");
+    const src = await response.text();
+    const help = new File("Help", FileType.Markdown);
+    help.setData(src);
+    openFile(help, defaultViewTypeForFileType(help.type));
   }
 
   registerShortcuts() {
@@ -427,6 +436,15 @@ export class App extends React.Component<AppProps, AppState> {
           customClassName="issue"
           onClick={() => {
             window.open("https://github.com/wasdk/WebAssemblyStudio", "_blank");
+          }}
+        />,
+        <Button
+          icon={<GoQuestion />}
+          label="Help & Privacy"
+          title="Help & Privacy"
+          customClassName="help"
+          onClick={() => {
+            this.loadHelp();
           }}
         />
       );
