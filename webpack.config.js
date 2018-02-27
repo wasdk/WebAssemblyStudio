@@ -2,7 +2,7 @@ const path = require("path");
 const Uglify = require("uglifyjs-webpack-plugin");
 
 module.exports = env => {
-  const isProduction = env.prod;
+  const isProduction = env && env.prod;
 
   const config = {
     entry: "./src/index.tsx",
