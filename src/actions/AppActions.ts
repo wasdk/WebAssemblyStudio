@@ -307,12 +307,18 @@ export async function runTask(name: string, optional: boolean = false) {
 }
 
 export async function run() {
-  const file = appStore.getFileByName("src/main.html");
+  const mainFileName = "src/main.html";
+  const file = appStore.getFileByName(mainFileName);
   let src = appStore.getFileSource(file);
 
-  src = src.replace(/src\s*=\s*"(.+?)"/, (a: string, b: any) => {
-    const bFile = appStore.getFileByName(b);
-    const src = appStore.getFileBuffer(bFile).getValue();
+  src = src.replace(/src\s*=\s*"(.+?)"/, (all: string, path?: string) => {
+    const fullPath = new URL(path, "http://example.org/" + mainFileName).pathname;
+    const file = appStore.getFileByName(fullPath.substr(1));
+    if (!file) {
+      logLn(`Cannot find file '${path}' mentioned in ${mainFileName}`);
+      return all;
+    }
+    const src = appStore.getFileBuffer(file).getValue();
     const blob = new Blob([src], { type: "text/javascript" });
     return `src="${window.URL.createObjectURL(blob)}"`;
   });
