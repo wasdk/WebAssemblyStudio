@@ -468,6 +468,16 @@ export class File {
   toString() {
     return "File [" + this.name + "]";
   }
+  isDescendantOf(element: File): boolean {
+    let parent = this.parent;
+    while (parent) {
+      if (parent === element) {
+        return true;
+      }
+      parent = parent.parent;
+    }
+    return false;
+  }
 }
 
 export class Directory extends File {
