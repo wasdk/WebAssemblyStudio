@@ -259,7 +259,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
       onDragOver(tree: ITree, data: IDragAndDropData, targetElement: File, originalEvent: DragMouseEvent): IDragOverReaction {
         const file: File = (data.getData() as any)[0];
         return {
-          accept: targetElement instanceof Directory,
+          accept: targetElement instanceof Directory && targetElement !== file && !targetElement.isDescendantOf(file),
           bubble: DragOverBubble.BUBBLE_DOWN,
           autoExpand: true
         };
