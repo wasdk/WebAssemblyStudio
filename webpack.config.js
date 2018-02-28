@@ -45,7 +45,7 @@ module.exports = env => {
 
   if (isProduction) {
       console.log("Using production build");
-      config.plugins.push(new Uglify());
+      config.plugins.push(new Uglify({ sourceMap: true }));
   }
 
   return config;
