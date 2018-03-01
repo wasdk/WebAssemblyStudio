@@ -21,6 +21,7 @@
 
 export interface IConfig {
   serviceUrl: string;
+  clang: string;
   rustc: string;
 }
 
