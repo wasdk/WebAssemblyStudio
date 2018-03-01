@@ -105,13 +105,27 @@ export interface IServiceRequest {
 
 export enum ServiceTypes {
   Rustc,
+  Clang,
   Service
+}
+
+async function getServiceURL(to: ServiceTypes): Promise<string> {
+  const config = await getConfig();
+  switch (to) {
+    case ServiceTypes.Rustc:
+      return config.rustc;
+    case ServiceTypes.Clang:
+      return config.clang;
+    case ServiceTypes.Service:
+      return config.serviceUrl;
+    default:
+      throw new Error(`Invalid ServiceType: ${to}`);
+  }
 }
 
 export class Service {
   static async sendRequestJSON(content: Object, to: ServiceTypes): Promise<IServiceRequest> {
-    const config = await getConfig();
-    const url = to === ServiceTypes.Rustc ? config.rustc : config.serviceUrl;
+    const url = await getServiceURL(to);
     const response = await fetch(url, {
       method: "POST",
       body: JSON.stringify(content),
@@ -122,9 +136,7 @@ export class Service {
   }
 
   static async sendRequest(content: string, to: ServiceTypes): Promise<IServiceRequest> {
-    const config = await getConfig();
-    const url = to === ServiceTypes.Rustc ? config.rustc : config.serviceUrl;
-
+    const url = await getServiceURL(to);
     const response = await fetch(url, {
       method: "POST",
       body: content,
@@ -221,8 +233,7 @@ export class Service {
           }
         ]
       };
-      const input = encodeURIComponent(JSON.stringify(project)).replace("%20", "+");
-      return this.sendRequest("input=" + input + "&action=build", ServiceTypes.Service);
+      return this.sendRequestJSON(project, ServiceTypes.Clang);
     } else if (from === Language.Wasm && to === Language.x86) {
       const input = encodeURIComponent(base64js.fromByteArray(src as ArrayBuffer));
       return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options), ServiceTypes.Service);
