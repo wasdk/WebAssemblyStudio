@@ -197,8 +197,8 @@ export class App extends React.Component<AppProps, AppState> {
   }
   async loadProjectFromFiddle() {
     const newProject = new Project();
-    let json = await Service.loadJSON(this.state.fiddle);
-    json = await Service.loadProject(json, newProject);
+    const fiddle = await Service.loadJSON(this.state.fiddle);
+    await Service.loadFilesIntoProject(fiddle.files, newProject);
     // TODO openProjectFiles ?
     this.logLn("Project Loaded ...");
     loadProject(newProject);
