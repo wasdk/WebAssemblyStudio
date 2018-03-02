@@ -67,6 +67,28 @@ declare var wabt: {
   parseWat: Function;
 };
 
+export interface IFiddleFile {
+  name: string;
+  data?: string;
+  type?: "binary" | "text";
+}
+
+export interface ICreateFiddleRequest {
+  files: IFiddleFile [];
+}
+
+export interface ILoadFiddleResponse {
+  files: IFiddleFile [];
+  id: string;
+  message: string;
+  success: boolean;
+}
+
+interface ICreateFiddleResponse {
+  id: string;
+  success: boolean;
+}
+
 export enum Language {
   C = "c",
   Cpp = "cpp",
@@ -292,33 +314,25 @@ export class Service {
     return JSON.parse(await response.text()).html_url;
   }
 
-  static async loadJSON(uri: string): Promise<{}> {
-    const url = "https://api.myjson.com/bins/" + uri;
+  static async loadJSON(uri: string): Promise<ILoadFiddleResponse> {
+    const url = "https://webassembly-studio-fiddles.herokuapp.com/fiddle/" + uri;
     const response = await fetch(url, {
       headers: new Headers({ "Content-type": "application/json; charset=utf-8" })
     });
-    return JSON.parse(await response.text());
+    return await response.json();
   }
 
-  static async saveJSON(json: object, uri: string): Promise<string> {
+  static async saveJSON(json: ICreateFiddleRequest, uri: string): Promise<string> {
     const update = !!uri;
     if (update) {
-      const url = "//api.myjson.com/bins/" + uri;
-      const response = await fetch(url, {
-        method: "PUT",
-        headers: new Headers({ "Content-type": "application/json; charset=utf-8" }),
-        body: JSON.stringify(json)
-      });
-      const result = JSON.parse(await response.text());
-      return uri;
+      throw new Error("NYI");
     } else {
-      const url = "//api.myjson.com/bins/";
-      const response = await fetch(url, {
+      const response = await fetch("https://webassembly-studio-fiddles.herokuapp.com/set-fiddle", {
         method: "POST",
         headers: new Headers({ "Content-type": "application/json; charset=utf-8" }),
         body: JSON.stringify(json)
       });
-      let jsonURI = JSON.parse(await response.text()).uri;
+      let jsonURI = (await response.json()).id;
       jsonURI = jsonURI.substring(jsonURI.lastIndexOf("/") + 1);
       return jsonURI;
     }
@@ -354,55 +368,32 @@ export class Service {
   }
 
   static async saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {
-    function serialize(file: File): any {
-      assert(!file.isTransient);
-      if (file instanceof Directory) {
-        return {
-          name: file.name,
-          children: file.mapEachFile((file: File) => serialize(file), true)
-        };
-      } else {
-        return {
-          name: file.name,
-          type: file.type,
-          data: file.data
-        };
-      }
-    }
-    const json = serialize(project);
-    json.openedFiles = openedFiles;
-    return await this.saveJSON(json, uri);
+    const files: IFiddleFile [] = [];
+    project.forEachFile((file: File) => {
+      assert(!isBinaryFileType(file.type)); // TODO: handle binary case here.
+      files.push({
+        name: file.getPath(),
+        data: file.data as string
+      });
+    }, true, true);
+    return await this.saveJSON({
+      files
+    }, uri);
   }
 
-  static async loadProject(json: any, project: Project): Promise<any> {
-    async function deserialize(json: IFile | IFile[], basePath: string): Promise<any> {
-      if (Array.isArray(json)) {
-        return Promise.all(json.map((x: any) => deserialize(x, basePath)));
-      }
-      if (json.children) {
-        const directory = new Directory(json.name);
-        (await deserialize(json.children, basePath + "/" + json.name)).forEach((file: File) => {
-          directory.addFile(file);
-        });
-        return directory;
-      }
-      const file = new File(json.name, json.type as FileType);
-      file.description = json.description;
-      if (json.data) {
-        file.setData(json.data);
-      } else if (json.data === null) {
+  static async loadFilesIntoProject(files: IFiddleFile [], project: Project, basePath: string = ""): Promise<any> {
+    files.forEach(async f => {
+      const type = fileTypeFromFileName(f.name);
+      const file = project.newFile(f.name, type, false);
+      if (f.data) {
+        file.setData(f.data);
+      } else if (f.data === null) {
         file.setData("");
       } else {
-        const request = await fetch(basePath + "/" + json.name);
+        const request = await fetch(basePath + "/" + f.name);
         file.setData(await request.text());
       }
-      return file;
-    }
-    project.name = json.name;
-    (await deserialize(json.children, "templates/" + json.directory)).forEach((file: File) => {
-      project.addFile(file);
     });
-    return json;
   }
 
   static lazyLoad(uri: string): Promise<any> {

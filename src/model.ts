@@ -157,6 +157,10 @@ export function extensionForFileType(type: FileType): string {
   return "";
 }
 
+export function fileTypeFromFileName(name: string): FileType {
+  return fileTypeForExtension(name.split(".").pop());
+}
+
 export function fileTypeForExtension(extension: string): FileType {
   if (extension === "html") {
     return FileType.HTML;
