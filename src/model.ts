@@ -506,7 +506,7 @@ export class Directory extends File {
           return false;
         }
         if (file instanceof Directory) {
-          file.forEachFile(fn, recurse);
+          file.forEachFile(fn, excludeTransientFiles, recurse);
         } else {
           fn(file);
         }
