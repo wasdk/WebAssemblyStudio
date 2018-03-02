@@ -21,7 +21,7 @@
 
 import { File, Project, Directory, FileType, Problem, isBinaryFileType, fileTypeForExtension, fileTypeFromFileName } from "./model";
 import "monaco-editor";
-import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes } from "./util";
+import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes, base64EncodeBytes } from "./util";
 import { assert } from "./util";
 import getConfig from "./config";
 import { isZlibData, decompressZlib } from "./utils/zlib";
@@ -369,12 +369,22 @@ export class Service {
 
   static async saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {
     const files: IFiddleFile [] = [];
-    project.forEachFile((file: File) => {
-      assert(!isBinaryFileType(file.type)); // TODO: handle binary case here.
-      files.push({
-        name: file.getPath(),
-        data: file.data as string
-      });
+    project.forEachFile((f: File) => {
+      let data: string;
+      let type: "binary" | "text";
+      if (isBinaryFileType(f.type)) {
+        data = base64EncodeBytes(new Uint8Array(f.data as ArrayBuffer));
+        type = "binary";
+      } else {
+        data = f.data as string;
+        type = "text";
+      }
+      const file = {
+        name: f.getPath(),
+        data,
+        type
+      };
+      files.push(file);
     }, true, true);
     return await this.saveJSON({
       files
@@ -385,10 +395,14 @@ export class Service {
     files.forEach(async f => {
       const type = fileTypeFromFileName(f.name);
       const file = project.newFile(f.name, type, false);
-      if (f.data) {
-        file.setData(f.data);
-      } else if (f.data === null) {
-        file.setData("");
+      let data: string | ArrayBuffer;
+      if (f.type === "binary") {
+        data = decodeRestrictedBase64ToBytes(f.data).buffer as ArrayBuffer;
+      } else {
+        data = f.data;
+      }
+      if (data) {
+        file.setData(data);
       } else {
         const request = await fetch(basePath + "/" + f.name);
         file.setData(await request.text());
