@@ -47,7 +47,7 @@ import {
   setViewType,
   logLn,
 } from "../actions/AppActions";
-import { Project, File, FileType, Directory, shallowCompare, ModelRef, filetypeForExtension } from "../model";
+import { Project, File, FileType, Directory, shallowCompare, ModelRef, fileTypeForExtension } from "../model";
 import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 

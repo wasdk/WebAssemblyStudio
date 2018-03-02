@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { File, Project, Directory, FileType, Problem } from "./model";
+import { File, Project, Directory, FileType, Problem, isBinaryFileType, fileTypeForExtension, fileTypeFromFileName } from "./model";
 import "monaco-editor";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes } from "./util";
 import { assert } from "./util";

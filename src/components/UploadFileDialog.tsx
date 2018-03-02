@@ -25,7 +25,7 @@ import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoGear, GoFile, GoX, Icon, GoPencil, GoCheck } from "./shared/Icons";
 import appStore from "../stores/AppStore";
-import {File, FileType, Directory, extensionForFileType, nameForFileType, filetypeForExtension, ModelRef, getIconForFileType } from "../model";
+import {File, FileType, Directory, extensionForFileType, nameForFileType, fileTypeForExtension, ModelRef, getIconForFileType } from "../model";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, FileUploadInput } from "./Widgets";
 
@@ -68,7 +68,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
     this.setState({files: [], hasError: false});
     Array.from(files).forEach(async (file: any) => {
       const name: string = file.name;
-      const fileType: string = filetypeForExtension(name.split(".").pop());
+      const fileType: string = fileTypeForExtension(name.split(".").pop());
       let data: any;
       try {
         data = await this._readUploadedFileAsText(file);
