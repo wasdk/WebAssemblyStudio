@@ -20,7 +20,7 @@
  */
 
 import dispatcher from "../dispatcher";
-import { File, Directory, Project, filetypeForExtension } from "../model";
+import { File, Directory, Project, fileTypeForExtension } from "../model";
 import { App } from "../components/App";
 import { ProjectTemplate } from "../components/NewProjectDialog";
 import { View, ViewType } from "../components/editor/View";
@@ -268,7 +268,7 @@ export async function runTask(name: string, optional: boolean = false) {
       Service,
       project,
       logLn,
-      filetypeForExtension
+      fileTypeForExtension
     }, {
       // modules
       "gulp": gulp,
@@ -276,7 +276,7 @@ export async function runTask(name: string, optional: boolean = false) {
         Service,
         project,
         logLn,
-        filetypeForExtension
+        fileTypeForExtension
       }
     })();
     if (gulp.hasTask(name)) {
