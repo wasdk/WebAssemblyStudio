@@ -65,6 +65,84 @@ const base64DecodeMap = [ // starts at 0x2B
 const base64DecodeMapOffset = 0x2B;
 const base64EOF = 0x3D;
 
+const _concat3array = new Array(3);
+const _concat4array = new Array(4);
+const _concat9array = new Array(9);
+
+/**
+ * The concatN() functions concatenate multiple strings in a way that
+ * avoids creating intermediate strings, unlike String.prototype.concat().
+ *
+ * Note that these functions don't have identical behaviour to using '+',
+ * because they will ignore any arguments that are |undefined| or |null|.
+ * This usually doesn't matter.
+ */
+
+export function concat3(s0: any, s1: any, s2: any) {
+    _concat3array[0] = s0;
+    _concat3array[1] = s1;
+    _concat3array[2] = s2;
+    return _concat3array.join("");
+}
+
+export function concat4(s0: any, s1: any, s2: any, s3: any) {
+    _concat4array[0] = s0;
+    _concat4array[1] = s1;
+    _concat4array[2] = s2;
+    _concat4array[3] = s3;
+    return _concat4array.join("");
+}
+
+// https://gist.github.com/958841
+export function base64EncodeBytes(bytes: Uint8Array) {
+  let base64 = "";
+  const encodings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+  const byteLength = bytes.byteLength;
+  const byteRemainder = byteLength % 3;
+  const mainLength = byteLength - byteRemainder;
+
+  let a;
+  let b;
+  let c;
+  let d;
+  let chunk;
+
+  // Main loop deals with bytes in chunks of 3
+  for (let i = 0; i < mainLength; i = i + 3) {
+    // Combine the three bytes into a single integer
+    chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
+
+    // Use bitmasks to extract 6-bit segments from the triplet
+    a = (chunk & 16515072) >> 18; // 16515072 = (2^6 - 1) << 18
+    b = (chunk & 258048) >> 12; // 258048 = (2^6 - 1) << 12
+    c = (chunk & 4032) >> 6; // 4032 = (2^6 - 1) << 6
+    d = chunk & 63; // 63 = 2^6 - 1
+    // Convert the raw binary segments to the appropriate ASCII encoding
+    base64 += concat4(encodings[a], encodings[b], encodings[c],
+                      encodings[d]);
+  }
+
+  // Deal with the remaining bytes and padding
+  if (byteRemainder === 1) {
+    chunk = bytes[mainLength];
+
+    a = (chunk & 252) >> 2; // 252 = (2^6 - 1) << 2
+    // Set the 4 least significant bits to zero
+    b = (chunk & 3) << 4; // 3 = 2^2 - 1
+    base64 += concat3(encodings[a], encodings[b], "===");
+  } else if (byteRemainder === 2) {
+    chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1];
+
+    a = (chunk & 64512) >> 10; // 64512 = (2^6 - 1) << 10
+    b = (chunk & 1008) >> 4; // 1008 = (2^6 - 1) << 4
+    // Set the 2 least significant bits to zero
+    c = (chunk & 15) << 2; // 15 = 2^4 - 1
+    base64 += concat4(encodings[a], encodings[b], encodings[c], "=");
+  }
+  return base64;
+}
+
 export function decodeRestrictedBase64ToBytes(encoded: string) {
   let ch: any;
   let code: any;
