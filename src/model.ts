@@ -439,10 +439,7 @@ export class File {
   getPath(): string {
     const path = [];
     let parent = this.parent;
-    if (!parent) {
-      return "";
-    }
-    while (parent.parent) {
+    while (parent) {
       path.unshift(parent.name);
       parent = parent.parent;
     }
