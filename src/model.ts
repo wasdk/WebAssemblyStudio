@@ -495,13 +495,17 @@ export class Directory extends File {
       directory = directory.parent;
     }
   }
-  forEachFile(fn: (file: File) => void, recurse = false) {
+  forEachFile(fn: (file: File) => void, excludeTransientFiles = false, recurse = false) {
     if (recurse) {
       this.children.forEach((file: File) => {
+        if (excludeTransientFiles && file.isTransient) {
+          return false;
+        }
         if (file instanceof Directory) {
           file.forEachFile(fn, recurse);
+        } else {
+          fn(file);
         }
-        fn(file);
       });
     } else {
       this.children.forEach(fn);
