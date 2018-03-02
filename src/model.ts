@@ -157,7 +157,7 @@ export function extensionForFileType(type: FileType): string {
   return "";
 }
 
-export function filetypeForExtension(extension: string): FileType {
+export function fileTypeForExtension(extension: string): FileType {
   if (extension === "html") {
     return FileType.HTML;
   } else if (extension === "css") {
