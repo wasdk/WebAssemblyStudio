@@ -1,9 +1,6 @@
 const path = require("path");
-const Uglify = require("uglifyjs-webpack-plugin");
 
 module.exports = env => {
-  const isProduction = env && env.prod;
-
   const config = {
     entry: {
         main: "./src/index.tsx",
@@ -45,11 +42,6 @@ module.exports = env => {
     },
     plugins: []
   };
-
-  if (isProduction) {
-      console.log("Using production build");
-      config.plugins.push(new Uglify({ sourceMap: true }));
-  }
 
   return config;
 };
