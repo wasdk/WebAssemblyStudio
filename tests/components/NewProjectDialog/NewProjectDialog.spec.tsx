@@ -68,7 +68,7 @@ describe("Tests for NewProjectDialog component", () => {
       const createButton = dialog.find("Button").at(createButtonIndex);
       expect(createButton.prop("isDisabled")).toBeFalsy();
       createButton.simulate("click");
-      expect(chosenTemplate).toBeTruthy();  
+      expect(chosenTemplate).toBeTruthy();
     }
   });
 
