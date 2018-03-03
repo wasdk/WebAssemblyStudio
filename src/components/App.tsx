@@ -28,7 +28,7 @@ import { EditorView, ViewTabs, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 import { ViewType, defaultViewTypeForFileType } from "./editor/View";
-import { build, run, runTask, editInWebAssemblyStudio, openFiles } from "../actions/AppActions";
+import { build, run, runTask, editInWebAssemblyStudio, openFiles, setStatus, clearStatus } from "../actions/AppActions";
 
 import appStore from "../stores/AppStore";
 import {
@@ -187,22 +187,22 @@ export class App extends React.Component<AppProps, AppState> {
     };
     registerLanguages();
   }
-  async initializeProject() {
+  private async initializeProject() {
     initStore();
     this.setState({ project: appStore.getProject() });
     this.bindAppStoreEvents();
     if (this.state.fiddle) {
-      this.loadProjectFromFiddle();
+      this.loadProjectFromFiddle(this.state.fiddle);
     }
   }
-  async loadProjectFromFiddle() {
-    const newProject = new Project();
-    const fiddle = await Service.loadJSON(this.state.fiddle);
-    await Service.loadFilesIntoProject(fiddle.files, newProject);
-    // TODO openProjectFiles ?
-    this.logLn("Project Loaded ...");
-    loadProject(newProject);
-    if (newProject.getFile("README.md")) {
+  private async loadProjectFromFiddle(uri: string) {
+    const project = new Project();
+    setStatus("Downloading Project " + uri);
+    const fiddle = await Service.loadJSON(uri);
+    clearStatus();
+    await Service.loadFilesIntoProject(fiddle.files, project);
+    loadProject(project);
+    if (project.getFile("README.md")) {
       openFiles([["README.md"]]);
     }
   }

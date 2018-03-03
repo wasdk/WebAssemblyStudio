@@ -401,12 +401,7 @@ export class Service {
       } else {
         data = f.data;
       }
-      if (data) {
-        file.setData(data);
-      } else {
-        const request = await fetch(basePath + "/" + f.name);
-        file.setData(await request.text());
-      }
+      file.setData(data);
     });
   }
 
