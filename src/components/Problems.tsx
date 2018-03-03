@@ -153,7 +153,7 @@ export class Problems extends React.Component<ProblemsProps, {
               if (file.problems.length) {
                 children.push(file);
               }
-            }, true);
+            }, false, true);
             return monaco.Promise.as(children);
           } else if (element instanceof File) {
             return monaco.Promise.as(element.problems);
