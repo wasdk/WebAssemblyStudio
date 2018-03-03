@@ -630,7 +630,10 @@ export class Project extends Directory {
     return this.status.length > 1;
   }
   getStatus() {
-    return this.status.join(" / ");
+    if (this.hasStatus()) {
+      return this.status[this.status.length - 1];
+    }
+    return "";
   }
   pushStatus(status: string) {
     this.status.push(status);
