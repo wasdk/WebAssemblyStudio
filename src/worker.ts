@@ -37,9 +37,22 @@ declare var Binaryen: {
   printErr(s: string): void;
 };
 
+declare var wabt: {
+  ready: Promise<any>
+  readWasm: Function;
+  parseWat: Function;
+};
+
 async function loadBinaryen() {
   if (typeof Binaryen === "undefined") {
     importScripts("../lib/binaryen.js");
+  }
+}
+
+async function loadWabt() {
+  if (typeof wabt === "undefined") {
+    (self as any).global = self; // Wabt installs itself on the global object.
+    importScripts("../lib/libwabt.js");
   }
 }
 
@@ -72,6 +85,18 @@ onmessage = (e) => {
     case "disassembleWasmWithBinaryen":
       postMessage({
         payload: disassembleWasmWithBinaryen(e.data.payload),
+        id: e.data.id
+      }, undefined);
+      break;
+    case "disassembleWasmWithWabt":
+      postMessage({
+        payload: disassembleWasmWithWabt(e.data.payload),
+        id: e.data.id
+      }, undefined);
+      break;
+    case "assembleWatWithWabt":
+      postMessage({
+        payload: assembleWatWithWabt(e.data.payload),
         id: e.data.id
       }, undefined);
       break;
@@ -113,4 +138,20 @@ function disassembleWasmWithBinaryen(data: ArrayBuffer): string {
   loadBinaryen();
   const module = Binaryen.readBinary(data);
   return module.emitText();
+}
+
+function disassembleWasmWithWabt(data: ArrayBuffer): string {
+  loadWabt();
+  const module = wabt.readWasm(data, { readDebugNames: true });
+  module.generateNames();
+  module.applyNames();
+  return module.toText({ foldExprs: false, inlineExport: true });
+}
+
+function assembleWatWithWabt(data: string): ArrayBuffer {
+  loadWabt();
+  const module = wabt.parseWat("test.wat", data);
+  module.resolveNames();
+  module.validate();
+  return module.toBinary({ log: true, write_debug_names: true }).buffer;
 }
