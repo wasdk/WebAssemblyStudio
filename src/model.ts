@@ -436,10 +436,13 @@ export class File {
     }
     return depth;
   }
-  getPath(): string {
+  /**
+   * Gets the path up to the base, if specified.
+   */
+  getPath(base: Directory = null): string {
     const path = [];
     let parent = this.parent;
-    while (parent) {
+    while (parent && parent !== base) {
       path.unshift(parent.name);
       parent = parent.parent;
     }

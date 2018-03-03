@@ -380,7 +380,7 @@ export class Service {
         type = "text";
       }
       const file = {
-        name: f.getPath(),
+        name: f.getPath(project),
         data,
         type
       };
