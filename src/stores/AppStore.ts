@@ -42,7 +42,6 @@ import {
 } from "../actions/AppActions";
 import Group from "../utils/group";
 import { assert } from "../util";
-import { ProjectTemplate } from "../components/NewProjectDialog";
 import { ViewType, View, defaultViewTypeForFileType } from "../components/editor/View";
 
 export class AppStore {

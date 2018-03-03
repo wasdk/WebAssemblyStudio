@@ -10,5 +10,10 @@
         "gulp": "~3.9.1",
         "ts-node": "~5.0.0",
         "typescript": "~2.7.2"
+    },
+    "wasmStudio": {
+        "name": "Hello World in C",
+        "description": "# Hello World in C\n\nPrint \\`Hello World\\` using a minimal POSIX API.\nLevel: *Advanced*\nTopics: Low-Level, Memory, Linux, System Calls",
+        "icon": "c-lang-file-icon"
     }
 }

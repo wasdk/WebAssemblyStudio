@@ -514,11 +514,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.setState({ newProjectDialog: null });
           }}
           onCreate={async (template: Template) => {
-            if (!template.project) {
-              logLn("Template doesn't contain a project definition.", "error");
-            } else {
-              await openProjectFiles(template.project);
-            }
+            await openProjectFiles(template.files);
             this.setState({ newProjectDialog: false });
           }}
         />

@@ -20,7 +20,7 @@
  */
 
 import * as React from "react";
-import { Service } from "../service";
+import { Service, IFiddleFile } from "../service";
 import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoGear, GoFile, GoX, Icon } from "./shared/Icons";
@@ -29,17 +29,10 @@ import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
 import fetchTemplates from "../utils/fetchTemplates";
 
-export interface ProjectTemplate {
-  name: string;
-  directory?: string;
-  children: ProjectTemplate[];
-  openedFiles: string[][];
-}
-
 export interface Template {
   name: string;
   description: string;
-  project: ProjectTemplate;
+  files: IFiddleFile [];
   icon: string;
 }
 
@@ -73,7 +66,32 @@ export class NewProjectDialog extends React.Component<{
     return "Create";
   }
   async componentDidMount() {
-    const templates = await fetchTemplates();
+    const json = await fetchTemplates();
+    const templates: Template [] = [];
+    // tslint:disable-next-line:forin
+    for (const key in json) {
+      let name = key;
+      let description = "";
+      let icon = "";
+      const packageFile = json[key].files.find((file: any) => file.name === "package.json");
+      if (packageFile) {
+        const pkg = JSON.parse(packageFile.data);
+        name = pkg.name;
+        description = pkg.description;
+        if (pkg.wasmStudio) {
+          name = pkg.wasmStudio.name || name;
+          description = pkg.wasmStudio.description || description;
+          icon = pkg.wasmStudio.icon || icon;
+        }
+      }
+      templates.push({
+        name,
+        description,
+        icon,
+        files: json[key].files
+      });
+    }
+
     this.setState({templates});
     this.setTemplate(templates[0]);
   }
