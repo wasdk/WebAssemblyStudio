@@ -88,6 +88,12 @@ onmessage = (e) => {
         id: e.data.id
       }, undefined);
       break;
+    case "assembleWatWithBinaryen":
+      postMessage({
+        payload: assembleWatWithBinaryen(e.data.payload),
+        id: e.data.id
+      }, undefined);
+      break;
     case "disassembleWasmWithWabt":
       postMessage({
         payload: disassembleWasmWithWabt(e.data.payload),
@@ -138,6 +144,12 @@ function disassembleWasmWithBinaryen(data: ArrayBuffer): string {
   loadBinaryen();
   const module = Binaryen.readBinary(data);
   return module.emitText();
+}
+
+function assembleWatWithBinaryen(data: string): ArrayBuffer {
+  loadBinaryen();
+  const module = Binaryen.parseText(data);
+  return module.emitBinary();
 }
 
 function disassembleWasmWithWabt(data: ArrayBuffer): string {

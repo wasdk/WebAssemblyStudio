@@ -213,6 +213,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           actions.push(new MonacoUtils.Action("x", "Assemble", "octicon-file-binary ruler", true, () => {
             Service.assembleWatWithWabt(file, self.status);
           }));
+          actions.push(new MonacoUtils.Action("x", "Assemble w/ Binaryen", "octicon-file-binary", true, () => {
+            Service.assembleWatWithBinaryen(file, self.status);
+          }));
         }
         self.contextMenuService.showContextMenu({
           getAnchor: () => anchor,
