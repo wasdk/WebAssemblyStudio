@@ -631,13 +631,17 @@ export class Project extends Directory {
     super("Project");
   }
 
-  status: string = "";
-  setStatus(status: string) {
-    this.status = status;
+  private status: string [] = ["Idle"];
+  getStatus() {
+    return this.status.join(" > ");
+  }
+  pushStatus(status: string) {
+    this.status.push(status);
     this.onDidChangeStatus.dispatch();
   }
-  clearStatus() {
-    this.setStatus("");
+  popStatus() {
+    assert(this.status.length);
+    this.status.pop();
   }
 }
 
