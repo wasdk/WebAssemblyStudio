@@ -27,22 +27,6 @@ import getConfig from "./config";
 import { isZlibData, decompressZlib } from "./utils/zlib";
 import { gaEvent } from "./utils/ga";
 
-declare interface BinaryenModule {
-  optimize(): any;
-  validate(): any;
-  emitBinary(): ArrayBuffer;
-  emitText(): string;
-  emitAsmjs(): string;
-  runPasses(passes: string []): any;
-}
-
-declare var Binaryen: {
-  readBinary(data: ArrayBuffer): BinaryenModule;
-  parseText(data: string): BinaryenModule;
-  print(s: string): void;
-  printErr(s: string): void;
-};
-
 declare var capstone: {
   ARCH_X86: any;
   MODE_64: any;
@@ -156,7 +140,67 @@ async function getServiceURL(to: ServiceTypes): Promise<string> {
   }
 }
 
+class ServiceWorker {
+  worker: Worker;
+
+  workerCallbacks: Function [] = [];
+  nextId = 0;
+  getNextId() {
+    return String(this.nextId++);
+  }
+
+  constructor() {
+    this.worker = new Worker("dist/worker.bundle.js");
+    this.worker.addEventListener("message", (e) => {
+      if (!e.data.id) {
+        return;
+      }
+      this.workerCallbacks[e.data.id](e);
+      this.workerCallbacks[e.data.id] = null;
+    });
+  }
+
+  setWorkerCallback(id: string, fn: (e: any) => void) {
+    assert(!this.workerCallbacks[id as any]);
+    this.workerCallbacks[id as any] = fn;
+  }
+
+  async postMessage(command: string, payload: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const id = this.getNextId();
+      this.setWorkerCallback(id, (e) => {
+        resolve(e.data.payload);
+      });
+      this.worker.postMessage({
+        id, command, payload
+      }, undefined);
+    });
+  }
+
+  async optimizeWasmWithBinaryen(data: ArrayBuffer): Promise<ArrayBuffer> {
+    return await this.postMessage("optimizeWasmWithBinaryen", data);
+  }
+
+  async validateWasmWithBinaryen(data: ArrayBuffer): Promise<number> {
+    return await this.postMessage("validateWasmWithBinaryen", data);
+  }
+
+  async createWasmCallGraphWithBinaryen(data: ArrayBuffer): Promise<string> {
+    return await this.postMessage("createWasmCallGraphWithBinaryen", data);
+  }
+
+  async convertWasmToAsmWithBinaryen(data: ArrayBuffer): Promise<string> {
+    return await this.postMessage("convertWasmToAsmWithBinaryen", data);
+  }
+
+  async disassembleWasmWithBinaryen(data: ArrayBuffer): Promise<string> {
+    return await this.postMessage("disassembleWasmWithBinaryen", data);
+  }
+}
+
 export class Service {
+  private static worker = new ServiceWorker();
+
   static async sendRequestJSON(content: Object, to: ServiceTypes): Promise<IServiceRequest> {
     const url = await getServiceURL(to);
     const response = await fetch(url, {
@@ -436,70 +480,54 @@ export class Service {
     });
   }
 
-  static async loadBinaryen(status?: IStatusProvider) {
-    if (typeof Binaryen === "undefined") {
-      await Service.lazyLoad("lib/binaryen.js", status);
-    }
-  }
-
   static async optimizeWasmWithBinaryen(file: File, status?: IStatusProvider) {
+    assert(this.worker);
     gaEvent("optimize", "Service", "binaryen");
-    await Service.loadBinaryen(status);
     let data = file.getData() as ArrayBuffer;
-    const module = Binaryen.readBinary(data);
-    module.optimize();
-    data = module.emitBinary();
+    status && status.push("Optimizing with Binaryen");
+    data = await this.worker.optimizeWasmWithBinaryen(data);
+    status && status.pop();
     file.setData(data);
     file.buffer.setValue(await Service.disassembleWasm(data, status));
   }
 
   static async validateWasmWithBinaryen(file: File, status?: IStatusProvider) {
     gaEvent("validate", "Service", "binaryen");
-    await Service.loadBinaryen(status);
     const data = file.getData() as ArrayBuffer;
-    const module = Binaryen.readBinary(data);
-    alert(module.validate() ? "Module is valid" : "Module is not valid");
+    status && status.push("Validating with Binaryen");
+    const result = await this.worker.validateWasmWithBinaryen(data);
+    status && status.pop();
+    alert(result ? "Module is valid" : "Module is not valid");
   }
 
   static async getWasmCallGraphWithBinaryen(file: File, status?: IStatusProvider) {
-    gaEvent("validate", "Service", "binaryen");
-    await Service.loadBinaryen(status);
+    gaEvent("call-graph", "Service", "binaryen");
     const data = file.getData() as ArrayBuffer;
-    const module = Binaryen.readBinary(data);
-    const old = Binaryen.print;
-    let ret = "";
-    Binaryen.print = (x: string) => { ret += x + "\n"; };
-    const foo = module.runPasses(["print-call-graph"]);
-    Binaryen.print = old;
+    status && status.push("Creating Call Graph with Binaryen");
+    const result = await this.worker.createWasmCallGraphWithBinaryen(data);
+    status && status.pop();
     const output = file.parent.newFile(file.name + ".dot", FileType.DOT);
     output.description = "Call graph created from " + file.name + " using Binaryen's print-call-graph pass.";
-    output.setData(ret);
-  }
-
-  static async validateWatWithBinaryen(file: File, status?: IStatusProvider) {
-    gaEvent("optimize", "Service", "binaryen (wat)");
-    await Service.loadBinaryen(status);
-    const data = file.getData() as string;
-    const module = Binaryen.parseText(data);
-    alert(module.validate());
+    output.setData(result);
   }
 
   static async disassembleWasmWithBinaryen(file: File, status?: IStatusProvider) {
     gaEvent("disassemble", "Service", "binaryen");
-    Service.loadBinaryen(status);
     const data = file.getData() as ArrayBuffer;
-    const module = Binaryen.readBinary(data);
+    status && status.push("Disassembling with Binaryen");
+    const result = await this.worker.disassembleWasmWithBinaryen(data);
+    status && status.pop();
     const output = file.parent.newFile(file.name + ".wat", FileType.Wat);
     output.description = "Disassembled from " + file.name + " using Binaryen.";
-    output.setData(module.emitText());
+    output.setData(result);
   }
 
   static async convertWasmToAsmWithBinaryen(file: File, status?: IStatusProvider) {
-    gaEvent("disassemble", "Service", "binaryen");
-    await Service.loadBinaryen(status);
+    gaEvent("asm.js", "Service", "binaryen");
     const data = file.getData() as ArrayBuffer;
-    const module = Binaryen.readBinary(data);
-    const result = module.emitAsmjs();
+    status && status.push("Creating Call Graph with Binaryen");
+    const result = await this.worker.convertWasmToAsmWithBinaryen(data);
+    status && status.pop();
     const output = file.parent.newFile(file.name + ".asm.js", FileType.JavaScript);
     output.description = "Converted from " + file.name + " using Binaryen.";
     output.setData(result);

@@ -5,7 +5,10 @@ module.exports = env => {
   const isProduction = env && env.prod;
 
   const config = {
-    entry: "./src/index.tsx",
+    entry: {
+        main: "./src/index.tsx",
+        worker: "./src/worker.ts"
+    },
     output: {
         filename: "[name].bundle.js",
         chunkFilename: "[name].bundle.js",
