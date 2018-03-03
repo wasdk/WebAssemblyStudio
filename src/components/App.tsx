@@ -289,10 +289,10 @@ export class App extends React.Component<AppProps, AppState> {
     saveProject(this.state.fiddle);
   }
   async fork() {
-    this.logLn("Forking Project ...");
     const projectModel = this.state.project.getModel();
+    pushStatus("Forking Project");
     const fiddle = await Service.saveProject(projectModel, []);
-    this.logLn("Forked Project OK " + fiddle);
+    popStatus();
     const search = window.location.search;
     if (this.state.fiddle) {
       assert(search.indexOf(this.state.fiddle) >= 0);
@@ -303,10 +303,10 @@ export class App extends React.Component<AppProps, AppState> {
     this.setState({ fiddle });
   }
   async gist(fileOrDirectory?: File) {
-    this.logLn("Exporting Project ...");
+    pushStatus("Exporting Project");
     const target: File = fileOrDirectory || this.state.project.getModel();
     const gistURI = await Service.exportToGist(target, this.state.fiddle);
-    this.logLn("Project Gist CREATED ");
+    popStatus();
     if (gistURI) {
       if (this.toastContainer) {
         this.toastContainer.showToast(<span>"Gist Created!" <a href={gistURI} target="_blank" className="toast-span">Open in new tab.</a></span>);

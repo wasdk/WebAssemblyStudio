@@ -26,6 +26,7 @@ import { assert } from "./util";
 import getConfig from "./config";
 import { isZlibData, decompressZlib } from "./utils/zlib";
 import { gaEvent } from "./utils/ga";
+import { pushStatus, popStatus } from "./actions/AppActions";
 
 declare interface BinaryenModule {
   optimize(): any;

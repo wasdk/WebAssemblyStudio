@@ -36,7 +36,11 @@ export class StatusBar extends React.Component<{}> {
     appStore.onDidChangeStatus.unregister(this.onDidChangeStatus);
   }
   render() {
-    return <div className="status-bar">
+    let className = "status-bar";
+    if (appStore.hasStatus()) {
+      className += " active";
+    }
+    return <div className={className}>
       <div className="status-bar-item">
         {appStore.getStatus()}
       </div>
