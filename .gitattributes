@@ -1,0 +1,2 @@
+bin/bundle-templates.js text eol=lf
+bin/check-bundle-size.js text eol=lf
