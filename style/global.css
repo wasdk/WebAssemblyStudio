@@ -369,6 +369,26 @@ a {
   display: flex;
 }
 
+.status-bar.active {
+  animation-name: pulse-status-bar;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes pulse-status-bar {
+  0% {
+    background-color: #222;
+  }
+  50% {
+    background-color: var(--title);
+  }
+  100% {
+    background-color: #222;
+  }
+}
+
+
+
 .status-bar-item {
   line-height: 22px;
   height: 100%;
