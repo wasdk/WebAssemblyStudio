@@ -574,8 +574,9 @@ export class App extends React.Component<AppProps, AppState> {
           directory={this.state.uploadFileDialogDirectory}
           onCancel={() => {
             this.setState({ uploadFileDialogDirectory: null });
-           }}
+          }}
           onUpload={(files: File[]) => {
+            // TODO: Handle file collisions.
             files.map((file: File) => {
               addFileTo(file, this.state.uploadFileDialogDirectory.getModel());
             });
