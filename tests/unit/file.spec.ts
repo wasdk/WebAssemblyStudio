@@ -18,5 +18,7 @@ describe("File tests", () => {
     expect(b.getPath()).toBe("test/b");
     expect(c.getPath()).toBe("test/c");
     expect(cd.getPath()).toBe("test/c/d");
+    expect(cd.getPath(c)).toBe("d");
+    expect(cd.getPath(a)).toBe("c/d");
   });
 });
