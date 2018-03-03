@@ -632,8 +632,11 @@ export class Project extends Directory {
   }
 
   private status: string [] = ["Idle"];
+  hasStatus() {
+    return this.status.length > 1;
+  }
   getStatus() {
-    return this.status.join(" > ");
+    return this.status.join(" / ");
   }
   pushStatus(status: string) {
     this.status.push(status);
@@ -642,6 +645,7 @@ export class Project extends Directory {
   popStatus() {
     assert(this.status.length);
     this.status.pop();
+    this.onDidChangeStatus.dispatch();
   }
 }
 

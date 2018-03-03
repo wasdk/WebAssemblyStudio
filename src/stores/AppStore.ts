@@ -156,6 +156,10 @@ export class AppStore {
     return this.project.getStatus();
   }
 
+  public hasStatus() {
+    return this.project.hasStatus();
+  }
+
   private logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
     message = message + "\n";
     if (kind) {
