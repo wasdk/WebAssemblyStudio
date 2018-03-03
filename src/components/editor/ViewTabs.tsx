@@ -109,6 +109,16 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
         onClick={() => {
           return this.props.onSplitViews();
         }}
+      />,
+      <Button
+        key="save"
+        icon={<GoClippy />}
+        label="Save"
+        title="Save: CtrlCmd + S"
+        isDisabled={this.props.view && (!this.props.view.file.isDirty)}
+        onClick={() => {
+          this.props.view.file.save();
+        }}
       />
     ];
     if (view.file.type === FileType.Markdown) {
