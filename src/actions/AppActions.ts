@@ -338,7 +338,7 @@ export async function run() {
 }
 
 export async function build() {
-  pushStatus("Building Project ...");
+  pushStatus("Building Project");
   await runTask("default");
   popStatus();
 }

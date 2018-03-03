@@ -236,14 +236,6 @@ export class AppStore {
     this.onTabsChange.dispatch();
   }
 
-  private pushStatus(status: string) {
-    if (status) {
-      this.project.pushStatus(status);
-    } else {
-      this.project.popStatus();
-    }
-  }
-
   private sendSandboxRun(src: string) {
     this.onSandboxRun.dispatch({
       project: this.project,
@@ -319,7 +311,11 @@ export class AppStore {
       }
       case AppActionType.PUSH_STATUS: {
         const { status } = action as PushStatusAction;
-        this.pushStatus(status);
+        this.project.pushStatus(status);
+        break;
+      }
+      case AppActionType.POP_STATUS: {
+        this.project.popStatus();
         break;
       }
       case AppActionType.SANDBOX_RUN: {
