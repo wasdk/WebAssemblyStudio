@@ -42,7 +42,8 @@
       "jsx-no-lambda": false,
       "jsx-boolean-value": false,
       "file-header": [true, "(Mozilla Foundation|the Public Domain)"],
-      "no-namespace": false
+      "no-namespace": false,
+      "no-unused-expression": false
     },
     "rulesDirectory": []
 }

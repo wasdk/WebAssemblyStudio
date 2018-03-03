@@ -20,14 +20,14 @@
  */
 
 import * as React from "react";
-import { Project, File, Directory, FileType, getIconForFileType, ModelRef, isBinaryFileType } from "../model";
+import { Project, File, Directory, FileType, getIconForFileType, ModelRef, isBinaryFileType, IStatusProvider } from "../model";
 import { Service } from "../service";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
 import { ITree, ContextMenuEvent, IDragAndDrop, DragMouseEvent, IDragAndDropData, IDragOverReaction, DragOverEffect, DragOverBubble } from "../monaco-extra";
 import { MonacoUtils } from "../monaco-utils";
 import { ViewTabs } from "./editor";
 import { ViewType } from "./editor/View";
-import { openFile } from "../actions/AppActions";
+import { openFile, pushStatus, popStatus } from "../actions/AppActions";
 
 export interface DirectoryTreeProps {
   directory: ModelRef<Directory>;
@@ -112,8 +112,13 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
     this.contextViewService = new MonacoUtils.ContextViewService(document.documentElement);
     this.contextMenuService = new MonacoUtils.ContextMenuService(document.documentElement, null, null, this.contextViewService);
     this.state = { directory: this.props.directory };
+    this.status = {
+      push: pushStatus,
+      pop: popStatus
+    };
   }
 
+  status: IStatusProvider;
   tree: ITree;
   contextViewService: any;
   contextMenuService: any;
@@ -171,25 +176,25 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
         // File-type specific separated with a ruler
         if (file.type === FileType.Wasm) {
           actions.push(new MonacoUtils.Action("x", "Validate", "octicon-check ruler", true, () => {
-            Service.validateWasmWithBinaryen(file);
+            Service.validateWasmWithBinaryen(file, self.status);
           }));
           actions.push(new MonacoUtils.Action("x", "Optimize", "octicon-gear", true, () => {
-            Service.optimizeWasmWithBinaryen(file);
+            Service.optimizeWasmWithBinaryen(file, self.status);
           }));
           actions.push(new MonacoUtils.Action("x", "Disassemble", "octicon-file-code", true, () => {
-            Service.disassembleWasmWithWabt(file);
+            Service.disassembleWasmWithWabt(file, self.status);
           }));
           actions.push(new MonacoUtils.Action("x", "To asm.js", "octicon-file-code", true, () => {
-            Service.convertWasmToAsmWithBinaryen(file);
+            Service.convertWasmToAsmWithBinaryen(file, self.status);
           }));
           actions.push(new MonacoUtils.Action("x", "Generate Call Graph", "octicon-gear", true, () => {
-            Service.getWasmCallGraphWithBinaryen(file);
+            Service.getWasmCallGraphWithBinaryen(file, self.status);
           }));
           actions.push(new MonacoUtils.Action("x", "To Firefox x86", "octicon-file-binary", true, () => {
-            Service.disassembleX86(file);
+            Service.disassembleX86(file, self.status);
           }));
           actions.push(new MonacoUtils.Action("x", "To Firefox x86 Baseline", "octicon-file-binary", true, () => {
-            Service.disassembleX86(file, "--wasm-always-baseline");
+            Service.disassembleX86(file, self.status, "--wasm-always-baseline");
           }));
           actions.push(new MonacoUtils.Action("x", "Binary Explorer", "octicon-file-binary", true, () => {
             Service.openBinaryExplorer(file);
@@ -199,11 +204,11 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           }));
         } else if (file.type === FileType.C || file.type === FileType.Cpp) {
           actions.push(new MonacoUtils.Action("x", "Clang-Format", "octicon-quote ruler", true, () => {
-            Service.clangFormat(file);
+            Service.clangFormat(file, self.status);
           }));
         } else if (file.type === FileType.Wat) {
           actions.push(new MonacoUtils.Action("x", "Assemble", "octicon-file-binary ruler", true, () => {
-            Service.assembleWatWithWabt(file);
+            Service.assembleWatWithWabt(file, self.status);
           }));
         }
         self.contextMenuService.showContextMenu({

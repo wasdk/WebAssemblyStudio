@@ -20,10 +20,10 @@
  */
 
 import * as React from "react";
-import { Project, File, Directory, FileType, languageForFileType } from "../../model";
+import { Project, File, Directory, FileType, languageForFileType, IStatusProvider } from "../../model";
 import { ViewTabs } from "./ViewTabs";
 import { View } from "./View";
-import { build, run } from "../../actions/AppActions";
+import { build, run, pushStatus, popStatus } from "../../actions/AppActions";
 import "monaco-editor";
 
 declare var window: any;
@@ -39,7 +39,15 @@ export interface MonacoProps {
 export class Monaco extends React.Component<MonacoProps, {}> {
   editor: monaco.editor.IStandaloneCodeEditor;
   container: HTMLDivElement;
+  status: IStatusProvider;
 
+  constructor(props: MonacoProps) {
+    super(props);
+    this.status = {
+      push: pushStatus,
+      pop: popStatus
+    };
+  }
   revealLastLine() {
     this.editor.revealLine(this.editor.getModel().getLineCount());
   }
@@ -106,7 +114,7 @@ export class Monaco extends React.Component<MonacoProps, {}> {
       run: function() {
         const view = self.props.view;
         if (view && !view.file.isBufferReadOnly) {
-          view.file.save();
+          view.file.save(self.status);
         }
         return null;
       }
