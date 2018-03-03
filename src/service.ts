@@ -19,14 +19,13 @@
  * SOFTWARE.
  */
 
-import { File, Project, Directory, FileType, Problem, isBinaryFileType, fileTypeForExtension, fileTypeFromFileName } from "./model";
+import { File, Project, Directory, FileType, Problem, isBinaryFileType, fileTypeForExtension, fileTypeFromFileName, IStatusProvider } from "./model";
 import "monaco-editor";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes, base64EncodeBytes } from "./util";
 import { assert } from "./util";
 import getConfig from "./config";
 import { isZlibData, decompressZlib } from "./utils/zlib";
 import { gaEvent } from "./utils/ga";
-import { pushStatus, popStatus } from "./actions/AppActions";
 
 declare interface BinaryenModule {
   optimize(): any;
@@ -130,6 +129,17 @@ export enum ServiceTypes {
   Rustc,
   Clang,
   Service
+}
+
+/**
+ * Turn blocking operations into promises.
+ */
+async function defer(fn: Function): Promise<any> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(fn());
+    });
+  });
 }
 
 async function getServiceURL(to: ServiceTypes): Promise<string> {
@@ -266,10 +276,10 @@ export class Service {
     }
   }
 
-  static async disassembleWasm(buffer: ArrayBuffer): Promise<string> {
+  static async disassembleWasm(buffer: ArrayBuffer, status: IStatusProvider): Promise<string> {
     gaEvent("disassemble", "Service", "wabt");
     if (typeof wabt === "undefined") {
-      await Service.lazyLoad("lib/libwabt.js");
+      await Service.lazyLoad("lib/libwabt.js", status);
     }
     const module = wabt.readWasm(buffer, { readDebugNames: true });
     if (true) {
@@ -279,27 +289,29 @@ export class Service {
     return module.toText({ foldExprs: false, inlineExport: true });
   }
 
-  static async disassembleWasmWithWabt(file: File) {
-    const result = await Service.disassembleWasm(file.getData() as ArrayBuffer);
+  static async disassembleWasmWithWabt(file: File, status?: IStatusProvider) {
+    const result = await Service.disassembleWasm(file.getData() as ArrayBuffer, status);
     const output = file.parent.newFile(file.name + ".wat", FileType.Wat);
     output.description = "Disassembled from " + file.name + " using Wabt.";
     output.setData(result);
   }
 
-  static async assembleWat(wat: string): Promise<ArrayBuffer> {
+  static async assembleWat(wat: string, status?: IStatusProvider): Promise<ArrayBuffer> {
     gaEvent("assemble", "Service", "wabt");
     if (typeof wabt === "undefined") {
-      await Service.lazyLoad("lib/libwabt.js");
+      await Service.lazyLoad("lib/libwabt.js", status);
     }
+    status && status.push("Assembling Wat");
     const module = wabt.parseWat("test.wat", wat);
     module.resolveNames();
     module.validate();
     const binary = module.toBinary({ log: true, write_debug_names: true });
+    status && status.pop();
     return binary.buffer;
   }
 
-  static async assembleWatWithWabt(file: File) {
-    const result = await Service.assembleWat(file.getData() as string);
+  static async assembleWatWithWabt(file: File, status?: IStatusProvider) {
+    const result = await Service.assembleWat(file.getData() as string, status);
     const output = file.parent.newFile(file.name + ".wasm", FileType.Wasm);
     output.description = "Assembled from " + file.name + " using Wabt.";
     output.setData(result);
@@ -406,8 +418,9 @@ export class Service {
     });
   }
 
-  static lazyLoad(uri: string): Promise<any> {
+  static lazyLoad(uri: string, status?: IStatusProvider): Promise<any> {
     return new Promise((resolve, reject) => {
+      status && status.push("Loading " + uri);
       const self = this;
       const d = window.document;
       const b = d.body;
@@ -416,39 +429,41 @@ export class Service {
       e.src = uri;
       b.appendChild(e);
       e.onload = function() {
+        status && status.pop();
         resolve(this);
       };
+      // TODO: What about fail?
     });
   }
 
-  static async loadBinaryen() {
+  static async loadBinaryen(status?: IStatusProvider) {
     if (typeof Binaryen === "undefined") {
-      await Service.lazyLoad("lib/binaryen.js");
+      await Service.lazyLoad("lib/binaryen.js", status);
     }
   }
 
-  static async optimizeWasmWithBinaryen(file: File) {
+  static async optimizeWasmWithBinaryen(file: File, status?: IStatusProvider) {
     gaEvent("optimize", "Service", "binaryen");
-    await Service.loadBinaryen();
+    await Service.loadBinaryen(status);
     let data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
     module.optimize();
     data = module.emitBinary();
     file.setData(data);
-    file.buffer.setValue(await Service.disassembleWasm(data));
+    file.buffer.setValue(await Service.disassembleWasm(data, status));
   }
 
-  static async validateWasmWithBinaryen(file: File) {
+  static async validateWasmWithBinaryen(file: File, status?: IStatusProvider) {
     gaEvent("validate", "Service", "binaryen");
-    await Service.loadBinaryen();
+    await Service.loadBinaryen(status);
     const data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
     alert(module.validate() ? "Module is valid" : "Module is not valid");
   }
 
-  static async getWasmCallGraphWithBinaryen(file: File) {
+  static async getWasmCallGraphWithBinaryen(file: File, status?: IStatusProvider) {
     gaEvent("validate", "Service", "binaryen");
-    await Service.loadBinaryen();
+    await Service.loadBinaryen(status);
     const data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
     const old = Binaryen.print;
@@ -461,17 +476,17 @@ export class Service {
     output.setData(ret);
   }
 
-  static async validateWatWithBinaryen(file: File) {
+  static async validateWatWithBinaryen(file: File, status?: IStatusProvider) {
     gaEvent("optimize", "Service", "binaryen (wat)");
-    await Service.loadBinaryen();
+    await Service.loadBinaryen(status);
     const data = file.getData() as string;
     const module = Binaryen.parseText(data);
     alert(module.validate());
   }
 
-  static async disassembleWasmWithBinaryen(file: File) {
+  static async disassembleWasmWithBinaryen(file: File, status?: IStatusProvider) {
     gaEvent("disassemble", "Service", "binaryen");
-    Service.loadBinaryen();
+    Service.loadBinaryen(status);
     const data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
     const output = file.parent.newFile(file.name + ".wat", FileType.Wat);
@@ -479,9 +494,9 @@ export class Service {
     output.setData(module.emitText());
   }
 
-  static async convertWasmToAsmWithBinaryen(file: File) {
+  static async convertWasmToAsmWithBinaryen(file: File, status?: IStatusProvider) {
     gaEvent("disassemble", "Service", "binaryen");
-    await Service.loadBinaryen();
+    await Service.loadBinaryen(status);
     const data = file.getData() as ArrayBuffer;
     const module = Binaryen.readBinary(data);
     const result = module.emitAsmjs();
@@ -507,7 +522,7 @@ export class Service {
 
   static clangFormatModule: any = null;
   // Kudos to https://github.com/tbfleming/cib
-  static async clangFormat(file: File) {
+  static async clangFormat(file: File, status?: IStatusProvider) {
     gaEvent("format", "Service", "clang-format");
     function format() {
       const result = Service.clangFormatModule.ccall("formatCode", "string", ["string"], [file.buffer.getValue()]);
@@ -517,7 +532,7 @@ export class Service {
     if (Service.clangFormatModule) {
       format();
     } else {
-      await Service.lazyLoad("lib/clang-format.js");
+      await Service.lazyLoad("lib/clang-format.js", status);
       const response = await fetch("lib/clang-format.wasm");
       const wasmBinary = await response.arrayBuffer();
       const module: any = {
@@ -530,10 +545,10 @@ export class Service {
     }
   }
 
-  static async disassembleX86(file: File, options = "") {
+  static async disassembleX86(file: File, status?: IStatusProvider, options = "") {
     gaEvent("disassemble", "Service", "capstone.x86");
     if (typeof capstone === "undefined") {
-      await Service.lazyLoad("lib/capstone.x86.min.js");
+      await Service.lazyLoad("lib/capstone.x86.min.js", status);
     }
     const output = file.parent.newFile(file.name + ".x86", FileType.x86);
 

@@ -361,15 +361,9 @@ export class File {
       file = file.parent;
     }
   }
-  async ensureBufferIsLoaded() {
-    if (this.bufferType !== FileType.Unknown) {
-      return;
-    }
-    this.updateBuffer();
-  }
-  private async updateBuffer() {
+  private async updateBuffer(status?: IStatusProvider) {
     if (this.type === FileType.Wasm) {
-      const result = await Service.disassembleWasm(this.data as ArrayBuffer);
+      const result = await Service.disassembleWasm(this.data as ArrayBuffer, status);
       this.buffer.setValue(result);
       this.isDirty = false;
       this.bufferType = FileType.Wat;
@@ -400,11 +394,11 @@ export class File {
     const client = await worker(model.uri);
     return client.getEmitOutput(model.uri.toString());
   }
-  setData(data: string | ArrayBuffer) {
+  setData(data: string | ArrayBuffer, status?: IStatusProvider) {
     assert(data != null);
     this.data = data;
     this.notifyDidChangeData();
-    this.updateBuffer();
+    this.updateBuffer(status);
   }
   getData(): string | ArrayBuffer {
     if (this.isDirty && !this.isBufferReadOnly) {
@@ -449,14 +443,14 @@ export class File {
     path.push(this.name);
     return path.join("/");
   }
-  async save() {
+  async save(status?: IStatusProvider) {
     if (!this.isDirty) {
       return;
     }
     if (this.bufferType !== this.type) {
       if (this.bufferType === FileType.Wat && this.type === FileType.Wasm) {
         try {
-          const data = await Service.assembleWat(this.buffer.getValue());
+          const data = await Service.assembleWat(this.buffer.getValue(), status);
           this.isDirty = false;
           this.data = data;
         } catch (e) {
@@ -672,4 +666,9 @@ export class ModelRef<T> {
 export interface SandboxRun {
   project: Project;
   src: string;
+}
+
+export interface IStatusProvider {
+  push(status: string): void;
+  pop(): void;
 }
