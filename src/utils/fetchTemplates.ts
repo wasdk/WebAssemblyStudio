@@ -22,7 +22,7 @@
 const templatesLocation = "templates/templates.js";
 
 export default async function fetchTemplates() {
-  const response = await fetch("templates/templates.js");
+  const response = await fetch("dist/templates.js");
   const js = await response.text();
   const templates = (new Function(`return ${js};`)).call(null);
   return templates;
