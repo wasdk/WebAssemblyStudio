@@ -45,12 +45,6 @@ declare var showdown: {
   setFlavor: Function;
 };
 
-declare var wabt: {
-  ready: Promise<any>
-  readWasm: Function;
-  parseWat: Function;
-};
-
 export interface IFiddleFile {
   name: string;
   data?: string;
@@ -196,6 +190,14 @@ class ServiceWorker {
   async disassembleWasmWithBinaryen(data: ArrayBuffer): Promise<string> {
     return await this.postMessage("disassembleWasmWithBinaryen", data);
   }
+
+  async disassembleWasmWithWabt(data: ArrayBuffer): Promise<string> {
+    return await this.postMessage("disassembleWasmWithWabt", data);
+  }
+
+  async assembleWatWithWabt(data: string): Promise<ArrayBuffer> {
+    return await this.postMessage("assembleWatWithWabt", data);
+  }
 }
 
 export class Service {
@@ -322,15 +324,10 @@ export class Service {
 
   static async disassembleWasm(buffer: ArrayBuffer, status: IStatusProvider): Promise<string> {
     gaEvent("disassemble", "Service", "wabt");
-    if (typeof wabt === "undefined") {
-      await Service.lazyLoad("lib/libwabt.js", status);
-    }
-    const module = wabt.readWasm(buffer, { readDebugNames: true });
-    if (true) {
-      module.generateNames();
-      module.applyNames();
-    }
-    return module.toText({ foldExprs: false, inlineExport: true });
+    status && status.push("Disassembling with Wabt");
+    const result = await this.worker.disassembleWasmWithWabt(buffer);
+    status && status.pop();
+    return result;
   }
 
   static async disassembleWasmWithWabt(file: File, status?: IStatusProvider) {
@@ -342,16 +339,10 @@ export class Service {
 
   static async assembleWat(wat: string, status?: IStatusProvider): Promise<ArrayBuffer> {
     gaEvent("assemble", "Service", "wabt");
-    if (typeof wabt === "undefined") {
-      await Service.lazyLoad("lib/libwabt.js", status);
-    }
-    status && status.push("Assembling Wat");
-    const module = wabt.parseWat("test.wat", wat);
-    module.resolveNames();
-    module.validate();
-    const binary = module.toBinary({ log: true, write_debug_names: true });
+    status && status.push("Assembling Wat with Wabt");
+    const result = await this.worker.assembleWatWithWabt(wat);
     status && status.pop();
-    return binary.buffer;
+    return result;
   }
 
   static async assembleWatWithWabt(file: File, status?: IStatusProvider) {
