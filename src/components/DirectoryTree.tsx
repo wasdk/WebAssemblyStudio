@@ -40,7 +40,7 @@ export interface DirectoryTreeProps {
   onClickFile?: (file: File) => void;
   onDoubleClickFile?: (file: File) => void;
   onUploadFile?: (directory: Directory) => void;
-  onCreateGist: (fileOrDirectory: File) => void;
+  onCreateGist?: (fileOrDirectory: File) => void;
 }
 
 export class FileTemplate {
@@ -142,24 +142,24 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
 
         // Directory options
         if (file instanceof Directory) {
-          actions.push(new MonacoUtils.Action("x", "New File", "octicon-file-add", true, () => {
-            return self.props.onNewFile && self.props.onNewFile(file as Directory);
+          self.props.onNewFile && actions.push(new MonacoUtils.Action("x", "New File", "octicon-file-add", true, () => {
+            return self.props.onNewFile(file as Directory);
           }));
-          actions.push(new MonacoUtils.Action("x", "New Directory", "octicon-file-add", true, () => {
-            return self.props.onNewDirectory && self.props.onNewDirectory(file as Directory);
+          self.props.onNewDirectory && actions.push(new MonacoUtils.Action("x", "New Directory", "octicon-file-add", true, () => {
+            return self.props.onNewDirectory(file as Directory);
           }));
-          actions.push(new MonacoUtils.Action("x", "Upload File", "octicon-cloud-upload", true, () => {
-             return self.props.onUploadFile && self.props.onUploadFile(file as Directory);
+          self.props.onUploadFile && actions.push(new MonacoUtils.Action("x", "Upload Files", "octicon-cloud-upload", true, () => {
+             return self.props.onUploadFile(file as Directory);
           }));
         }
 
         // Common file options
         if (!(file instanceof Project)) {
-          actions.push(new MonacoUtils.Action("x", "Edit", "octicon-pencil", true, () => {
-            return self.props.onEditFile && self.props.onEditFile(file as Directory);
+          self.props.onEditFile && actions.push(new MonacoUtils.Action("x", "Edit", "octicon-pencil", true, () => {
+            return self.props.onEditFile(file as Directory);
           }));
-          actions.push(new MonacoUtils.Action("x", "Delete", "octicon-x", true, () => {
-            return self.props.onDeleteFile && self.props.onDeleteFile(file as Directory);
+          self.props.onDeleteFile && actions.push(new MonacoUtils.Action("x", "Delete", "octicon-x", true, () => {
+            return self.props.onDeleteFile(file as Directory);
           }));
           actions.push(new MonacoUtils.Action("x", "Download", "octicon-cloud-download", true, () => {
             Service.download(file);
@@ -168,8 +168,8 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
 
         // Create a gist from everything but binary
         if (!isBinaryFileType(file.type)) {
-          actions.push(new MonacoUtils.Action("x", "Create Gist", "octicon-gist", true, () => {
-            return self.props.onCreateGist && self.props.onCreateGist(file as Directory);
+          self.props.onCreateGist && actions.push(new MonacoUtils.Action("x", "Create Gist", "octicon-gist", true, () => {
+            return self.props.onCreateGist(file as Directory);
           }));
         }
 

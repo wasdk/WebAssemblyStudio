@@ -25,9 +25,11 @@ import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoGear, GoFile, GoX, Icon, GoPencil, GoCheck } from "./shared/Icons";
 import appStore from "../stores/AppStore";
-import {File, FileType, Directory, extensionForFileType, nameForFileType, fileTypeForExtension, ModelRef, getIconForFileType } from "../model";
+import {File, FileType, Directory, extensionForFileType, nameForFileType, fileTypeForExtension, ModelRef, getIconForFileType, isBinaryFileType } from "../model";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, FileUploadInput } from "./Widgets";
+import { DirectoryTree } from "./DirectoryTree";
+import { assert } from "../util";
 
 export interface UploadFileDialogProps {
   isOpen: boolean;
@@ -37,54 +39,37 @@ export interface UploadFileDialogProps {
 }
 export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
     files: Object[];
-    hasError: boolean;
   }> {
+  root: ModelRef<Directory>;
   fileUploadInput: FileUploadInput;
   constructor(props: any) {
     super(props);
     this.state = {
       files: [],
-      hasError: false
     };
+    this.root = ModelRef.getRef(new Directory("root"));
+    this.root.getModel().onDidChangeChildren.register(() => {
+      this.forceUpdate();
+    });
   }
-  _checkErrorForFile(file: any) {
-    const directory = this.props.directory;
-    let errorStr: string = "";
-    if (file.fileType == null) {
-      errorStr += `File '${file.name}' is not supported.`;
-    }
-    if (file.name) {
-      if (!this._isFilenameValid(file.name)) {
-        errorStr += "Illegal characters in file name.";
-      } else if (!file.name.endsWith(extensionForFileType(file.fileType))) {
-        errorStr +=  nameForFileType(file.fileType) + " file extension is missing.";
-      } else if (directory && appStore.getImmediateChild(directory, file.name)) {
-        errorStr += `File '${file.name}' already exists.`;
-      }
-    }
-    return errorStr;
-  }
-  async _handleUpload(files: FileList) {
-    this.setState({files: [], hasError: false});
+  private async handleUpload(files: FileList) {
+    this.setState({files: []});
     Array.from(files).forEach(async (file: any) => {
       const name: string = file.name;
-      const fileType: string = fileTypeForExtension(name.split(".").pop());
+      const fileType = fileTypeForExtension(name.split(".").pop());
       let data: any;
       try {
-        data = await this._readUploadedFileAsText(file);
-        const error = this._checkErrorForFile({name, fileType});
-        if (error) {
-          this._setHasError();
-        }
-        this.setState(prevState => ({
-          files: [...prevState.files, {name, fileType, data, error}]
-        }));
+        data = await this.readUploadedFile(file, isBinaryFileType(fileType) ? "arrayBuffer" : "text");
+        const newFile = new File(file.name, fileType);
+        newFile.setData(data);
+        this.root.getModel().addFile(newFile);
+        this.forceUpdate();
       } catch (e) {
         console.log("Unable to read the file!");
       }
     });
   }
-  _readUploadedFileAsText(inputFile: any) {
+  private readUploadedFile(inputFile: any, readAs: "text" | "arrayBuffer") {
     const temporaryFileReader = new FileReader();
     return new Promise((resolve, reject) => {
       temporaryFileReader.onerror = () => {
@@ -94,37 +79,38 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
       temporaryFileReader.onload = () => {
         resolve(temporaryFileReader.result);
       };
-      temporaryFileReader.readAsText(inputFile);
+      if (readAs === "text") {
+        temporaryFileReader.readAsText(inputFile);
+      } else if (readAs === "arrayBuffer") {
+        temporaryFileReader.readAsArrayBuffer(inputFile);
+      } else {
+        assert(false, "NYI");
+      }
     });
-  }
-  _setHasError() {
-      this.setState({hasError: true});
-  }
-  _isFilenameValid(name: string) {
-      return /^[a-z0-9\.\-\_]+$/i.test(name);
   }
   render() {
     return <ReactModal
       isOpen={this.props.isOpen}
-      contentLabel="Upload File"
+      contentLabel="Upload Files"
       className="modal show-file-icons"
       overlayClassName="overlay"
       ariaHideApp={false}
     >
       <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <div className="modal-title-bar">
-          Upload File
+          Upload Files
         </div>
         <div className="row">
           <div className="column">
-            <FileUploadInput label="Upload:" ref={(ref) => this.fileUploadInput = ref} onChange={(e) => this._handleUpload(e.target.files)}/>
+            <FileUploadInput label="Upload:" ref={(ref) => this.fileUploadInput = ref} onChange={(e) => this.handleUpload(e.target.files)}/>
           </div>
-          <div className="column">
-            <ListBox height={290}>
-              {this.state.files.map( (file: any, key: number) => {
-                return <ListItem key={key} value={file.fileType} label={file.name} error={file.error} icon={getIconForFileType(file.fileType)} />;
-                })}
-            </ListBox>
+          <div className="column" style={{height: "290px"}}>
+            <DirectoryTree
+              directory={this.root}
+              onDeleteFile={(file: File) => {
+                file.parent.removeFile(file);
+              }}
+            />
           </div>
         </div>
         <div>
@@ -138,8 +124,8 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
           />
           <Button
             icon={<GoFile />}
-            label="Upload"
-            title="Upload files"
+            label="Select Files"
+            title="Select Files"
             onClick={() => {
               this.fileUploadInput.open();
             }}
@@ -148,15 +134,9 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
             icon={<GoCheck />}
             label="Done"
             title="Done"
-            isDisabled={!this.state.files.length || this.state.hasError}
+            isDisabled={!this.root.getModel().children.length}
             onClick={() => {
-              const newFiles: File[] = [];
-              this.state.files.map((file: any) => {
-                const newFile = new File(file.name, file.fileType);
-                newFile.setData(file.data);
-                newFiles.push(newFile);
-              });
-              return this.props.onUpload && this.props.onUpload(newFiles);
+              return this.props.onUpload && this.props.onUpload(this.root.getModel().children);
             }}
           />
         </div>
