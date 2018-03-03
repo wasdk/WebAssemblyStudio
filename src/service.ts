@@ -191,6 +191,10 @@ class ServiceWorker {
     return await this.postMessage("disassembleWasmWithBinaryen", data);
   }
 
+  async assembleWatWithBinaryen(data: string): Promise<ArrayBuffer> {
+    return await this.postMessage("assembleWatWithBinaryen", data);
+  }
+
   async disassembleWasmWithWabt(data: ArrayBuffer): Promise<string> {
     return await this.postMessage("disassembleWasmWithWabt", data);
   }
@@ -520,6 +524,17 @@ export class Service {
     const result = await this.worker.convertWasmToAsmWithBinaryen(data);
     status && status.pop();
     const output = file.parent.newFile(file.name + ".asm.js", FileType.JavaScript);
+    output.description = "Converted from " + file.name + " using Binaryen.";
+    output.setData(result);
+  }
+
+  static async assembleWatWithBinaryen(file: File, status?: IStatusProvider) {
+    gaEvent("assemble", "Service", "binaryen");
+    const data = file.getData() as string;
+    status && status.push("Assembling with Binaryen");
+    const result = await this.worker.assembleWatWithBinaryen(data);
+    status && status.pop();
+    const output = file.parent.newFile(file.name + ".wasm", FileType.Wasm);
     output.description = "Converted from " + file.name + " using Binaryen.";
     output.setData(result);
   }
