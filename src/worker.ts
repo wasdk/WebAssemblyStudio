@@ -31,7 +31,7 @@ declare interface BinaryenModule {
 }
 
 declare var Binaryen: {
-  readBinary(data: ArrayBuffer): BinaryenModule;
+  readBinary(data: Uint8Array): BinaryenModule;
   parseText(data: string): BinaryenModule;
   print(s: string): void;
   printErr(s: string): void;
@@ -111,20 +111,20 @@ onmessage = (e) => {
 
 function optimizeWasmWithBinaryen(data: ArrayBuffer): ArrayBuffer {
   loadBinaryen();
-  const module = Binaryen.readBinary(data);
+  const module = Binaryen.readBinary(new Uint8Array(data));
   module.optimize();
   return module.emitBinary();
 }
 
 function validateWasmWithBinaryen(data: ArrayBuffer): number {
   loadBinaryen();
-  const module = Binaryen.readBinary(data);
+  const module = Binaryen.readBinary(new Uint8Array(data));
   return module.validate();
 }
 
 function createWasmCallGraphWithBinaryen(data: ArrayBuffer): string {
   loadBinaryen();
-  const module = Binaryen.readBinary(data);
+  const module = Binaryen.readBinary(new Uint8Array(data));
   const old = Binaryen.print;
   let ret = "";
   Binaryen.print = (x: string) => { ret += x + "\n"; };
@@ -135,14 +135,14 @@ function createWasmCallGraphWithBinaryen(data: ArrayBuffer): string {
 
 function convertWasmToAsmWithBinaryen(data: ArrayBuffer): string {
   loadBinaryen();
-  const module = Binaryen.readBinary(data);
+  const module = Binaryen.readBinary(new Uint8Array(data));
   module.optimize();
   return module.emitAsmjs();
 }
 
 function disassembleWasmWithBinaryen(data: ArrayBuffer): string {
   loadBinaryen();
-  const module = Binaryen.readBinary(data);
+  const module = Binaryen.readBinary(new Uint8Array(data));
   return module.emitText();
 }
 
