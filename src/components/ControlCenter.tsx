@@ -103,7 +103,7 @@ export class ControlCenter extends React.Component<{
     let problemCount = 0;
     appStore.getProject().getModel().forEachFile((file: File) => {
       problemCount += file.problems.length;
-    }, true);
+    }, false, true);
     return <div className="fill">
       <div className="tabs" style={{ display: "flex" }}>
         <div>
