@@ -228,6 +228,9 @@ export class App extends React.Component<AppProps, AppState> {
       this.forceUpdate();
       layout();
     });
+    appStore.onDidChangeStatus.register(() => {
+      this.forceUpdate();
+    });
   }
 
   // TODO: Optimize
@@ -328,6 +331,10 @@ export class App extends React.Component<AppProps, AppState> {
    */
   private workspaceSplit: SplitInfo = null;
 
+  toolbarButtonsAreDisabled() {
+    return this.state.project.getModel().hasStatus();
+  }
+
   makeToolbarButtons() {
     const toolbarButtons = [
       <Button
@@ -368,6 +375,7 @@ export class App extends React.Component<AppProps, AppState> {
             icon={<GoPencil />}
             label="Update"
             title="Update Project"
+            isDisabled={this.toolbarButtonsAreDisabled()}
             onClick={() => {
               this.update();
             }}
@@ -379,6 +387,7 @@ export class App extends React.Component<AppProps, AppState> {
           icon={<GoRepoForked />}
           label="Fork"
           title="Fork Project"
+          isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
             this.fork();
           }}
@@ -387,6 +396,7 @@ export class App extends React.Component<AppProps, AppState> {
           icon={<GoGist />}
           label="Create Gist"
           title="Create GitHub Gist from Project"
+          isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
             this.gist();
           }}
@@ -395,6 +405,7 @@ export class App extends React.Component<AppProps, AppState> {
           icon={<GoDesktopDownload />}
           label="Download"
           title="Download Project"
+          isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
             this.download();
           }}
@@ -403,7 +414,7 @@ export class App extends React.Component<AppProps, AppState> {
           icon={<GoRocket />}
           label="Share"
           title={this.state.fiddle ? "Share Project" : "Cannot share a project that has not been forked yet."}
-          isDisabled={!this.state.fiddle}
+          isDisabled={this.toolbarButtonsAreDisabled() || !this.state.fiddle}
           onClick={() => {
             this.share();
           }}
@@ -414,6 +425,7 @@ export class App extends React.Component<AppProps, AppState> {
         icon={<GoBeaker />}
         label="Build"
         title="Build Project: CtrlCmd + B"
+        isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
           build();
         }}
@@ -422,6 +434,7 @@ export class App extends React.Component<AppProps, AppState> {
         icon={<GoGear />}
         label="Run"
         title="Run Project: CtrlCmd + Enter"
+        isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
           run();
         }}
