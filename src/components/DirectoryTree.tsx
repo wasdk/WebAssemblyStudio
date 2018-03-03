@@ -184,6 +184,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           actions.push(new MonacoUtils.Action("x", "Disassemble", "octicon-file-code", true, () => {
             Service.disassembleWasmWithWabt(file, self.status);
           }));
+          actions.push(new MonacoUtils.Action("x", "Disassemble w/ Binaren", "octicon-file-code", true, () => {
+            Service.disassembleWasmWithBinaryen(file, self.status);
+          }));
           actions.push(new MonacoUtils.Action("x", "To asm.js", "octicon-file-code", true, () => {
             Service.convertWasmToAsmWithBinaryen(file, self.status);
           }));
