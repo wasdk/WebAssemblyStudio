@@ -34,7 +34,8 @@ import {
   LogLnAction,
   OpenFilesAction,
   FocusTabGroupAction,
-  SetStatusAction,
+  PushStatusAction,
+  PopStatusAction,
   SandboxRunAction,
   OpenViewAction,
   CloseViewAction,
@@ -152,7 +153,7 @@ export class AppStore {
   }
 
   public getStatus(): string {
-    return this.project.status;
+    return this.project.getStatus();
   }
 
   private logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
@@ -235,11 +236,11 @@ export class AppStore {
     this.onTabsChange.dispatch();
   }
 
-  private setStatus(status: string) {
+  private pushStatus(status: string) {
     if (status) {
-      this.project.setStatus(status);
+      this.project.pushStatus(status);
     } else {
-      this.project.clearStatus();
+      this.project.popStatus();
     }
   }
 
@@ -316,9 +317,9 @@ export class AppStore {
         this.logLn(message, kind);
         break;
       }
-      case AppActionType.SET_STATUS: {
-        const { status } = action as SetStatusAction;
-        this.setStatus(status);
+      case AppActionType.PUSH_STATUS: {
+        const { status } = action as PushStatusAction;
+        this.pushStatus(status);
         break;
       }
       case AppActionType.SANDBOX_RUN: {

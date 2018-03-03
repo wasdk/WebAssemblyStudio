@@ -43,7 +43,8 @@ export enum AppActionType {
   OPEN_FILES = "OPEN_PROJECT_FILES",
   FOCUS_TAB_GROUP = "FOCUS_TAB_GROUP",
   LOG_LN = "LOG_LN",
-  SET_STATUS = "SET_STATUS",
+  PUSH_STATUS = "PUSH_STATUS",
+  POP_STATUS = "POP_STATUS",
   SANDBOX_RUN = "SANDBOX_RUN",
   CLOSE_VIEW = "CLOSE_VIEW",
   OPEN_VIEW = "OPEN_VIEW",
@@ -233,22 +234,26 @@ export function focusTabGroup(group: Group) {
   } as FocusTabGroupAction);
 }
 
-export interface SetStatusAction extends AppAction {
-  type: AppActionType.SET_STATUS;
-  status?: string;
+export interface PushStatusAction extends AppAction {
+  type: AppActionType.PUSH_STATUS;
+  status: string;
 }
 
-export function setStatus(status: string) {
+export interface PopStatusAction extends AppAction {
+  type: AppActionType.POP_STATUS;
+}
+
+export function pushStatus(status: string) {
   dispatcher.dispatch({
-    type: AppActionType.SET_STATUS,
+    type: AppActionType.PUSH_STATUS,
     status,
-  } as SetStatusAction);
+  } as PushStatusAction);
 }
 
-export function clearStatus() {
+export function popStatus() {
   dispatcher.dispatch({
-    type: AppActionType.SET_STATUS,
-  } as SetStatusAction);
+    type: AppActionType.POP_STATUS,
+  } as PopStatusAction);
 }
 
 export interface SandboxRunAction extends AppAction {
@@ -333,9 +338,9 @@ export async function run() {
 }
 
 export async function build() {
-  setStatus("Building Project ...");
+  pushStatus("Building Project ...");
   await runTask("default");
-  clearStatus();
+  popStatus();
 }
 
 export interface SetViewType extends AppAction {
