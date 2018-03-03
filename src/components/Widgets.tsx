@@ -74,21 +74,32 @@ export class TextInputBox extends React.Component<{
   }
 }
 
-export class FileUploadInput extends React.Component<{
-  label: string;
+export class UploadInput extends React.Component<{
   onChange?: ChangeEventHandler<any>;
 }, {
 
 }> {
-  inputElement: any;
+  inputElement: HTMLInputElement;
+  setInputElement(ref: HTMLInputElement) {
+    this.inputElement = ref;
+  }
   constructor(props: any) {
     super(props);
   }
-  open() {
+  open(upload: "files" | "directory") {
+    if (this.inputElement && upload === "directory") {
+      this.inputElement.setAttribute("directory", "true");
+      this.inputElement.setAttribute("webkitdirectory", "true");
+      this.inputElement.setAttribute("allowdirs", "true");
+    } else {
+      this.inputElement.removeAttribute("directory");
+      this.inputElement.removeAttribute("webkitdirectory");
+      this.inputElement.removeAttribute("allowdirs");
+    }
     this.inputElement.click();
   }
   render() {
-    return <input id="file-upload-input"  ref={input => this.inputElement = input} type="file" onChange={this.props.onChange} multiple hidden/>;
+    return <input id="file-upload-input" ref={ref => this.setInputElement(ref)} type="file" onChange={this.props.onChange} multiple hidden/>;
   }
 }
 

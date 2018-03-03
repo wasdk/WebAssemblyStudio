@@ -23,11 +23,10 @@ import * as React from "react";
 import { Service } from "../service";
 import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
-import { GoGear, GoFile, GoX, Icon, GoPencil, GoCheck } from "./shared/Icons";
+import { GoGear, GoFile, GoX, Icon, GoPencil, GoCheck, GoCloudUpload, GoFileDirectory } from "./shared/Icons";
 import appStore from "../stores/AppStore";
 import {File, FileType, Directory, extensionForFileType, nameForFileType, fileTypeForExtension, ModelRef, getIconForFileType, isBinaryFileType } from "../model";
-import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
-import { ListBox, ListItem, FileUploadInput } from "./Widgets";
+import { UploadInput } from "./Widgets";
 import { DirectoryTree } from "./DirectoryTree";
 import { assert } from "../util";
 
@@ -38,36 +37,33 @@ export interface UploadFileDialogProps {
   onCancel: () => void;
 }
 export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
-    files: Object[];
   }> {
   root: ModelRef<Directory>;
-  fileUploadInput: FileUploadInput;
+  uploadInput: UploadInput;
   constructor(props: any) {
     super(props);
-    this.state = {
-      files: [],
-    };
     this.root = ModelRef.getRef(new Directory("root"));
     this.root.getModel().onDidChangeChildren.register(() => {
       this.forceUpdate();
     });
   }
   private async handleUpload(files: FileList) {
+    const root = this.root.getModel();
     this.setState({files: []});
     Array.from(files).forEach(async (file: any) => {
       const name: string = file.name;
+      const path: string = file.webkitRelativePath || name; // This works in FF also.
       const fileType = fileTypeForExtension(name.split(".").pop());
       let data: any;
       try {
         data = await this.readUploadedFile(file, isBinaryFileType(fileType) ? "arrayBuffer" : "text");
-        const newFile = new File(file.name, fileType);
+        const newFile = root.newFile(path, fileType);
         newFile.setData(data);
-        this.root.getModel().addFile(newFile);
-        this.forceUpdate();
       } catch (e) {
         console.log("Unable to read the file!");
       }
     });
+    this.forceUpdate();
   }
   private readUploadedFile(inputFile: any, readAs: "text" | "arrayBuffer") {
     const temporaryFileReader = new FileReader();
@@ -88,21 +84,23 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
       }
     });
   }
+
   render() {
+    const root = this.root.getModel();
     return <ReactModal
       isOpen={this.props.isOpen}
-      contentLabel="Upload Files"
+      contentLabel="Upload"
       className="modal show-file-icons"
       overlayClassName="overlay"
       ariaHideApp={false}
     >
       <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <div className="modal-title-bar">
-          Upload Files
+          Upload Files & Directories to {this.props.directory.getModel().getPath()}
         </div>
         <div className="row">
           <div className="column">
-            <FileUploadInput label="Upload:" ref={(ref) => this.fileUploadInput = ref} onChange={(e) => this.handleUpload(e.target.files)}/>
+            <UploadInput ref={(ref) => this.uploadInput = ref} onChange={(e) => this.handleUpload(e.target.files)}/>
           </div>
           <div className="column" style={{height: "290px"}}>
             <DirectoryTree
@@ -124,21 +122,39 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
           />
           <Button
             icon={<GoFile />}
-            label="Select Files"
+            label="Files"
             title="Select Files"
             onClick={() => {
-              this.fileUploadInput.open();
+              this.uploadInput.open("files");
             }}
           />
           <Button
-            icon={<GoCheck />}
-            label="Done"
-            title="Done"
-            isDisabled={!this.root.getModel().children.length}
+            icon={<GoFileDirectory />}
+            label="Directory"
+            title="Select Directory"
             onClick={() => {
-              return this.props.onUpload && this.props.onUpload(this.root.getModel().children);
+              this.uploadInput.open("directory");
             }}
           />
+          <Button
+            icon={<GoCloudUpload />}
+            label="Upload"
+            title="Upload"
+            isDisabled={!root.children.length}
+            onClick={() => {
+              return this.props.onUpload && this.props.onUpload(root.children.slice(0));
+            }}
+          />
+          {
+            root.children.length === 1 && root.children[0] instanceof Directory && <Button
+              icon={<GoCloudUpload />}
+              label={"Upload Root Contents"}
+              title={"Upload contents of " + root.children[0].name}
+              onClick={() => {
+                return this.props.onUpload && this.props.onUpload((root.children[0] as Directory).children.slice(0));
+              }}
+            />
+          }
         </div>
       </div>
     </ReactModal>;
