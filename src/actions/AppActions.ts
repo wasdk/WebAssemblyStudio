@@ -22,10 +22,10 @@
 import dispatcher from "../dispatcher";
 import { File, Directory, Project, fileTypeForExtension } from "../model";
 import { App } from "../components/App";
-import { ProjectTemplate } from "../components/NewProjectDialog";
+import { Template } from "../components/NewProjectDialog";
 import { View, ViewType } from "../components/editor/View";
 import appStore from "../stores/AppStore";
-import { Service, Language } from "../service";
+import { Service, Language, IFiddleFile } from "../service";
 import Group from "../utils/group";
 import { Gulpy } from "../gulpy";
 import { Errors } from "../errors";
@@ -192,14 +192,16 @@ export interface OpenFilesAction extends AppAction {
   files: string[][];
 }
 
-export async function openProjectFiles(json: ProjectTemplate) {
+export async function openProjectFiles(files: IFiddleFile []) {
   const newProject = new Project();
-  await Service.loadProject(json, newProject);
+  await Service.loadFilesIntoProject(files, newProject);
   dispatcher.dispatch({
     type: AppActionType.LOAD_PROJECT,
     project: newProject
   } as LoadProjectAction);
-  openFiles(json.openedFiles);
+  if (newProject.getFile("README.md")) {
+    openFiles([["README.md"]]);
+  }
 }
 
 export async function saveProject(fiddle: string) {

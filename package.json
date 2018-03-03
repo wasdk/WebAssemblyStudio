@@ -4,13 +4,14 @@
   "description": "Learn, Teach, Work and Play in the WebAssembly Studio",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --env.prod",
+    "build": "webpack --env.prod && npm run templates",
     "build-watch": "webpack --watch",
     "dev-server": "webpack-dev-server",
     "test": "webpack --env.prod && ./bin/check-bundle-size.js && npm run jest && npm run tslint",
     "jest": "jest",
     "clean": "rm -r dist/*",
-    "tslint": "tslint -p ."
+    "tslint": "tslint -p .",
+    "templates": "./bin/bundle-templates.js > dist/templates.js"
   },
   "jest": {
     "setupFiles": [
