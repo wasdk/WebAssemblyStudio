@@ -42,6 +42,7 @@ import {
   openFile,
   openView,
   closeView,
+  closeTabs,
   saveProject,
   focusTabGroup,
   setViewType,
@@ -624,6 +625,7 @@ export class App extends React.Component<AppProps, AppState> {
                 message = `Are you sure you want to delete '${file.name}'?`;
               }
               if (confirm(message)) {
+                closeTabs(file);
                 deleteFile(file);
               }
             }}
