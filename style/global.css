@@ -861,17 +861,14 @@ a {
 }
 
 .monaco-icon-label.dirty::after {
-  content: "M";
-  font-size: 10px;
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' height='16' width='16'%3E%3Ccircle fill='%23C5C5C5' cx='8' cy='8' r='4'/%3E%3C/svg%3E") 50% no-repeat;
+  content:"";
+  font-size:10px;
+  padding-right:24px;
 }
 
 .monaco-icon-label.transient::after {
   content: "T";
-  font-size: 10px;
-}
-
-.monaco-icon-label.dirty.transient::after {
-  content: "M T";
   font-size: 10px;
 }
 
