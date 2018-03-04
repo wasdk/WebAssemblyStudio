@@ -39,6 +39,7 @@ import {
   SandboxRunAction,
   OpenViewAction,
   CloseViewAction,
+  CloseTabsAction,
   OpenFileAction
 } from "../actions/AppActions";
 import Group from "../utils/group";
@@ -201,18 +202,46 @@ export class AppStore {
   }
 
   private closeView(view: View) {
-    const { activeTabGroup, tabGroups } = this;
-    let numGroups = tabGroups.length;
+    const { activeTabGroup } = this;
     activeTabGroup.close(view);
-    if (activeTabGroup.views.length === 0 && numGroups > 1) {
-      const i = tabGroups.indexOf(activeTabGroup);
-      tabGroups.splice(i, 1);
-      numGroups = tabGroups.length;
-      const g = numGroups ? tabGroups[Math.min(numGroups - 1, i)] : null;
-      this.activeTabGroup = g;
-      this.tabGroups = tabGroups;
+    if (activeTabGroup.views.length === 0) {
+      this.closeGroup(activeTabGroup);
     }
     this.onTabsChange.dispatch();
+  }
+
+  private closeTabs(file: File) {
+    const { tabGroups } = this;
+    const groupsToClose: Group[] = [];
+
+    tabGroups.forEach(group => {
+      const viewFileDeleted = group.views.find(view => view.file === file);
+      group.close(viewFileDeleted);
+      if (group.views.length === 0) {
+        groupsToClose.push(group);
+      }
+    });
+    groupsToClose.forEach(group => {
+      this.closeGroup(group);
+    });
+    this.onTabsChange.dispatch();
+  }
+
+  private closeGroup(group: Group) {
+    const { activeTabGroup, tabGroups } = this;
+    const i = this.tabGroups.indexOf(group);
+
+    if (group.views.length > 0 || tabGroups.length === 1) {
+      return;
+    }
+
+    tabGroups.splice(i, 1);
+
+    if (activeTabGroup === group) {
+      const numGroups = tabGroups.length;
+      const g = numGroups ? tabGroups[Math.min(numGroups - 1, i)] : null;
+      this.activeTabGroup = g;
+    }
   }
 
   private openFiles(files: string[][]) {
@@ -257,6 +286,11 @@ export class AppStore {
       case AppActionType.CLOSE_VIEW: {
         const { view } = action as CloseViewAction;
         this.closeView(view);
+        break;
+      }
+      case AppActionType.CLOSE_TABS: {
+        const { file } = action as CloseTabsAction;
+        this.closeTabs(file);
         break;
       }
       case AppActionType.FOCUS_TAB_GROUP: {
