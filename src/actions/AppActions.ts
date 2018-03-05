@@ -47,6 +47,7 @@ export enum AppActionType {
   POP_STATUS = "POP_STATUS",
   SANDBOX_RUN = "SANDBOX_RUN",
   CLOSE_VIEW = "CLOSE_VIEW",
+  CLOSE_TABS = "CLOSE_TABS",
   OPEN_VIEW = "OPEN_VIEW",
 }
 
@@ -162,6 +163,18 @@ export function closeView(view: View) {
     type: AppActionType.CLOSE_VIEW,
     view
   } as CloseViewAction);
+}
+
+export interface CloseTabsAction extends AppAction {
+  type: AppActionType.CLOSE_TABS;
+  file: File;
+}
+
+export function closeTabs(file: File) {
+  dispatcher.dispatch({
+    type: AppActionType.CLOSE_TABS,
+    file
+  } as CloseTabsAction);
 }
 
 export interface OpenFileAction extends AppAction {
