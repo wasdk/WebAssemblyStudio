@@ -25,7 +25,8 @@ export enum ViewType {
   Editor,
   Markdown,
   Binary,
-  Viz
+  Viz,
+  Flow
 }
 
 export function defaultViewTypeForFileType(type: FileType) {

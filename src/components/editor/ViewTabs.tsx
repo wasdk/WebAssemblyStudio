@@ -31,6 +31,7 @@ import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye, GoCode } from "../s
 import { View, ViewType } from "./View";
 import { BinaryView } from "../Binary";
 import { VizView } from "../Viz";
+import { FlowView } from "../flow/Node";
 
 export class ViewTabsProps {
   /**
@@ -145,6 +146,18 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
           }
         />
       );
+    } else if (view.file.type === FileType.Flow) {
+      const viz = view.type === ViewType.Flow;
+      commands.unshift(
+        <Button
+          key="toggle"
+          icon={viz ? <GoCode /> : <GoEye />}
+          title={viz ? "Edit Flow JSON File" : "Edit Flow Node"}
+          onClick={() =>
+            this.props.onChangeViewType(view, viz ? ViewType.Editor : ViewType.Flow)
+          }
+        />
+      );
     }
     return commands;
   }
@@ -162,6 +175,8 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
       viewer = <VizView view={view} />;
     } else if (view.type === ViewType.Binary) {
       viewer = <BinaryView view={view} />;
+    } else if (view.type === ViewType.Flow) {
+      viewer = <FlowView view={view} />;
     } else if (file) {
       viewer = <EditorView view={view} options={{ readOnly: file.isBufferReadOnly }} />;
     } else {
