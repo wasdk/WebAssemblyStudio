@@ -295,6 +295,7 @@ export class App extends React.Component<AppProps, AppState> {
   async fork() {
     const projectModel = this.state.project.getModel();
     pushStatus("Forking Project");
+    this.toastContainer.showToast(<span>"Fork a formatted code for better readability"</span>);
     const fiddle = await Service.saveProject(projectModel, []);
     popStatus();
     const search = window.location.search;
