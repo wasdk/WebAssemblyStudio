@@ -52,6 +52,7 @@ export enum FileType {
   Cretonne   = "cretonne",
   JSON       = "json",
   DOT        = "dot",
+  Flow       = "flow",
   Unknown    = "unknown"
 }
 
@@ -89,6 +90,8 @@ export function languageForFileType(type: FileType): string {
     return "cton";
   } else if (type === FileType.JSON) {
     return "json";
+  } else if (type === FileType.Flow) {
+    return "json";
   } else if (type === FileType.DOT) {
     return "dot";
   }
@@ -120,6 +123,8 @@ export function nameForFileType(type: FileType): string {
     return "Cretonne";
   } else if (type === FileType.JSON) {
     return "JSON";
+  } else if (type === FileType.Flow) {
+    return "Flow";
   } else if (type === FileType.DOT) {
     return "DOT";
   }
@@ -151,6 +156,8 @@ export function extensionForFileType(type: FileType): string {
     return "cton";
   } else if (type === FileType.JSON) {
     return "json";
+  } else if (type === FileType.Flow) {
+    return "flow";
   } else if (type === FileType.DOT) {
     return "dot";
   }
@@ -186,6 +193,8 @@ export function fileTypeForExtension(extension: string): FileType {
     return FileType.Cretonne;
   } else if (extension === "json" || extension === "map") {
     return FileType.JSON;
+  } else if (extension === "flow") {
+    return FileType.Flow;
   } else if (extension === "dot") {
     return FileType.DOT;
   }
@@ -226,7 +235,7 @@ export function getIconForFileType(fileType: FileType): string {
     return "css-lang-file-icon";
   } else if (fileType === FileType.Directory) {
     return "folder-icon";
-  } else if (fileType === FileType.JSON) {
+  } else if (fileType === FileType.JSON || fileType === FileType.Flow) {
     return "json-lang-file-icon";
   } else if (fileType === FileType.Wasm) {
     return "wasm-lang-file-icon";

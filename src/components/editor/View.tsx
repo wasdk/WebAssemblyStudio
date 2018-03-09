@@ -34,6 +34,8 @@ export function defaultViewTypeForFileType(type: FileType) {
       return ViewType.Markdown;
     case FileType.DOT:
       return ViewType.Viz;
+    case FileType.Flow:
+      return ViewType.Flow;
     default:
       return ViewType.Editor;
   }
