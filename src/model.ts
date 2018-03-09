@@ -403,6 +403,17 @@ export class File {
     const client = await worker(model.uri);
     return client.getEmitOutput(model.uri.toString());
   }
+  getBuffer() {
+    assert(!isBinaryFileType(this.type));
+    return this.buffer.getValue();
+  }
+  setBuffer(data: string, notify = true) {
+    this.buffer.setValue(data);
+    this.isDirty = true;
+    if (notify) {
+      this.notifyDidChangeBuffer();
+    }
+  }
   setData(data: string | ArrayBuffer, status?: IStatusProvider) {
     assert(data != null);
     this.data = data;
