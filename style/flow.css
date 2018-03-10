@@ -1,7 +1,25 @@
+/*
+ --grey-700: #616161;
+ --grey-800: #424242;
+ --grey-850: #323232;
+ --grey-890: #222222;
+ --grey-900: #212121;
+ --grey-950: #1d1d1d;
+--grey-1000: #1a1a1a;
+*/
+
+.flow {
+  background-color: var(--grey-1000);
+}
+
+.flow.pan {
+  cursor: -webkit-grabbing;
+}
 
 .flow-edge {
   fill: none;
   stroke-width: 3;
+  stroke-linejoin: round;
   transition: stroke 0.2s ease-in-out;
 }
 
@@ -10,14 +28,20 @@
   stroke: red;
 }
 
-.flow-node rect {
-  fill: #333333FA;
-  stroke: #3E3E3E;
-  /* transition: fill 0.2s ease-in-out; */
-  z-index: 100;
-  stroke-width: 2;
-  -webkit-filter: drop-shadow(12px 12px 7px rgba(0,0,0,0.5));      
-  filter: drop-shadow(12px 12px 7px rgba(0,0,0,0.5));  
+.flow-node .node-fill {
+  fill: var(--grey-850);
+  pointer-events: all;
+}
+
+.flow-node .node-stroke {
+  stroke-width: 1;
+  stroke: #222222;
+  fill: transparent;
+}
+
+.flow-node .node-header {
+  fill: var(--grey-800);
+  pointer-events: all;
 }
 
 .flow-node text {
@@ -32,21 +56,41 @@
   font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
 
-.flow-port .name {
+.flow-port .port-name {
   font-size: 10px;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
-  color: #fff;
+  font-family: system-ui;
+}
+
+.flow-port.not-connected .port-name {
+  fill: var(--grey-500);
+}
+
+.flow-port .port-capture {
+  fill: transparent;
+  /* visibility: hidden; */
 }
 
 .flow-port foreignObject {
   user-select: none;
 }
 
-.flow-port-bump {
-  fill: #fff;
+.flow-port .port-bump {
+  stroke: #ffffff;
+  fill: transparent;
+  stroke-width: 1px;
+  pointer-events: none;
 }
 
-.flow-port-bump:hover {
+.flow-port.not-connected .port-bump {
+  stroke: var(--grey-500);
+}
+
+.flow-port .port-bump-fill {
+  fill: #ffffff;
+  pointer-events: none;
+}
+
+.flow-port .port-bump:hover {
   fill: #CCCCCC;
   cursor: cell;
 }
@@ -57,7 +101,9 @@
 
   height: 24px;
   box-sizing: border-box;
-  pointer-events: none;
+  margin-left: 10px;
+  margin-right: 10px;
+  /* pointer-events: none; */
 }
 
 .name-edit-container .name {
@@ -94,11 +140,11 @@
 .name-edit-container .edit select {
   -webkit-appearance: none;
   color: #ffffff;
-  background: #0000001a;
-  border: 1px solid #222222;
+  background: #00000012;
+  border: 1px solid #636363;
   font-weight: bold;
   outline: none;
-  border-radius: 0;
+  border-radius: 5px;
   padding: 0 2px 0 2px;
 
   width: 38px;
@@ -110,11 +156,11 @@
 .name-edit-container .edit input {
   -webkit-appearance: none;
   color: #ffffff;
-  background: #0000001a;
-  border: 1px solid #222222;
+  background: #00000012;
+  border: 1px solid #636363;
   font-weight: bold;
   outline: none;
-  border-radius: 0;
+  border-radius: 5px;
   padding: 0 2px 0 4px;
 
   width: 38px;

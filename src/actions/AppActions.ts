@@ -122,11 +122,17 @@ export interface LogLnAction extends AppAction {
 }
 
 export function logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
-  dispatcher.dispatch({
-    type: AppActionType.LOG_LN,
-    message,
-    kind,
-  } as LogLnAction);
+  if (dispatcher.isDispatching()) {
+    setTimeout(() => {
+      logLn(message, kind);
+    });
+  } else {
+    dispatcher.dispatch({
+      type: AppActionType.LOG_LN,
+      message,
+      kind,
+    } as LogLnAction);
+  }
 }
 
 export interface SplitGroupAction extends AppAction {
