@@ -39,7 +39,7 @@ export default class Group {
     if (index >= 0) {
       // Switch to the view if it's already open.
       this.currentView = view;
-      if (!shouldPreview && this.preview ===  view) {
+      if (!shouldPreview && this.preview === view) {
         this.preview = null;
       }
       return;
