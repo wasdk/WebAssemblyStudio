@@ -20,9 +20,10 @@
  */
 
 import * as React from "react";
-import { Node, Port, IPoint, PORT_HEIGHT, PortKind, IGraph, serializeGraph, deserializeGraph, Point } from "./flows";
+import { Node, Port, IPoint, PORT_HEIGHT, PortKind, IGraph, serializeGraph, deserializeGraph, Point, Line } from "./flows";
 import { EdgeView } from "./Edge";
 import { NodeView } from "./Node";
+import { SliceTool, ZoomTool } from "../shared/Icons";
 
 export class FlowViewDragState {
   constructor(
@@ -36,6 +37,22 @@ export class FlowViewPanState {
   constructor(
     public origin: Point,
     public matrix: SVGMatrix) {
+    // Nop;
+  }
+}
+
+export class FlowViewSliceEdgeState {
+  constructor(
+    public from: Point,
+    public to: Point) {
+    // Nop;
+  }
+}
+
+export class FlowViewsSelectNodeState {
+  constructor(
+    public from: Point,
+    public to: Point) {
     // Nop;
   }
 }
@@ -56,6 +73,8 @@ export class Flow extends React.Component<FlowProps, {
   toPortOrPoint: Port | IPoint;
   matrix: SVGMatrix;
   panState: FlowViewPanState;
+  sliceEdgeState: FlowViewSliceEdgeState;
+  selectNodeState: FlowViewsSelectNodeState;
 }> {
   static defaultProps: FlowProps = {
     graph: null,
@@ -77,7 +96,9 @@ export class Flow extends React.Component<FlowProps, {
       fromPort: null,
       toPortOrPoint: {x: 0, y: 0},
       matrix: tmpSVG.createSVGMatrix(),
-      panState: null
+      panState: null,
+      sliceEdgeState: null,
+      selectNodeState: null
     };
   }
   componentWillReceiveProps(props: FlowProps) {
@@ -119,7 +140,16 @@ export class Flow extends React.Component<FlowProps, {
   }
 
   onMouseMove = (e: MouseEvent) => {
-    const { panState } = this.state;
+    const { panState, sliceEdgeState, selectNodeState } = this.state;
+    if (sliceEdgeState) {
+      sliceEdgeState.to = new Point(e.clientX, e.clientY);
+      this.forceUpdate();
+      return;
+    } else if (selectNodeState) {
+      selectNodeState.to = new Point(e.clientX, e.clientY);
+      this.forceUpdate();
+    }
+
     if (panState) {
       const offset = new Point(e.clientX, e.clientY).sub(panState.origin);
       offset.x /= panState.matrix.a;
@@ -130,17 +160,74 @@ export class Flow extends React.Component<FlowProps, {
   }
 
   onMouseUp = (e: MouseEvent) => {
+    const { sliceEdgeState } = this.state;
+    if (sliceEdgeState && sliceEdgeState.from && sliceEdgeState.to) {
+      const sliceEdgeLine = new Line(
+        this.clientToWorld(sliceEdgeState.from),
+        this.clientToWorld(sliceEdgeState.to)
+      );
+      this.roots.forEach((root) => {
+        root.visit(null, (edge) => {
+          const from = edge.from.getPosition(false, "edge");
+          const to = edge.to.getPosition(false, "edge");
+          if (sliceEdgeLine.intersects(new Line(from, to))) {
+            edge.delete();
+          }
+        }, null);
+      });
+    }
+
     this.setState({
       panState: null
     });
   }
 
   onMouseDown = (e: MouseEvent) => {
+    if (this.state.sliceEdgeState) {
+      this.state.sliceEdgeState.from = new Point(e.clientX, e.clientY);
+      this.forceUpdate();
+      return;
+    } else if (this.state.selectNodeState) {
+      this.state.selectNodeState.from = new Point(e.clientX, e.clientY);
+      this.forceUpdate();
+      return;
+    }
     this.setState({
       panState: new FlowViewPanState(new Point(e.clientX, e.clientY), this.state.matrix)
     });
     return;
   }
+
+  onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "c") {
+      if (this.state.sliceEdgeState) {
+        return;
+      }
+      this.setState({
+        sliceEdgeState: new FlowViewSliceEdgeState(null, null)
+      });
+    } else if (e.key === "s") {
+      if (this.state.selectNodeState) {
+        return;
+      }
+      this.setState({
+        selectNodeState: new FlowViewsSelectNodeState(null, null)
+      });
+    } else {
+      this.setState({
+        sliceEdgeState: null,
+        selectNodeState: null
+      });
+    }
+  }
+
+  onKeyUp  = (e: KeyboardEvent) => {
+    this.setState({
+      sliceEdgeState: null,
+      selectNodeState: null
+    });
+  }
+
   setSVGGroup(ref: SVGSVGElement) {
     this.svgGroup = ref;
   }
@@ -162,6 +249,11 @@ export class Flow extends React.Component<FlowProps, {
     const point = this.svgPoint.matrixTransform(this.svgGroup.getScreenCTM().inverse());
     return new Point(point.x, point.y);
   }
+
+  clientToOffset(p: Point): Point {
+    const bounds = this.svg.getBoundingClientRect();
+    return p.sub(new Point(bounds.left, bounds.top));
+  }
   clientToSVGPoint(pt: IPoint): Point {
     this.svgPoint.x = pt.x;
     this.svgPoint.y = pt.y;
@@ -171,12 +263,60 @@ export class Flow extends React.Component<FlowProps, {
   componentDidMount() {
     document.addEventListener("mousemove", this.onMouseMove as any);
     document.addEventListener("mouseup", this.onMouseUp);
+
+    document.addEventListener("keydown", this.onKeyDown);
+    document.addEventListener("keyup", this.onKeyUp);
   }
   componentWillUnmount() {
     document.removeEventListener("mousemove", this.onMouseMove as any);
     document.removeEventListener("mouseup", this.onMouseUp);
+
+    document.removeEventListener("keydown", this.onKeyDown);
+    document.removeEventListener("keyup", this.onKeyUp);
+  }
+  renderSliceEdgeTool() {
+    const { sliceEdgeState } = this.state;
+    if (sliceEdgeState && sliceEdgeState.from && sliceEdgeState.to) {
+      const from = this.clientToOffset(sliceEdgeState.from);
+      const to = this.clientToOffset(sliceEdgeState.to);
+      const dx = (to.x - from.x) >= 0 ? -20 : 0;
+      const dy = -20; // (to.y - from.y) >= 0 ? -20 : 0;
+      return <g>
+        <g transform={`translate(${from.x + dx}, ${from.y + dy})`}>
+          <SliceTool/>
+        </g>
+        <path
+          className="slice-edge-tool"
+          d={`M${from.x} ${from.y} L ${to.x} ${to.y}`}
+        />;
+      </g>;
+    }
+    return null;
+  }
+  renderSelectNodeTool() {
+    const { selectNodeState } = this.state;
+    if (selectNodeState && selectNodeState.from && selectNodeState.to) {
+      const from = this.clientToOffset(selectNodeState.from);
+      const to = this.clientToOffset(selectNodeState.to);
+      console.log(from, to);
+      return <g>
+        <path
+          className="select-node-tool"
+          d={`M${from.x} ${from.y} H ${to.x} V ${to.y} H ${from.x} L${from.x} ${from.y}`}
+        />
+      </g>;
+    }
+    return null;
   }
   render() {
+    const { sliceEdgeState } = this.state;
+    let sliceEdgeLine: Line = null;
+    if (sliceEdgeState && sliceEdgeState.from && sliceEdgeState.to) {
+      sliceEdgeLine = new Line(
+        this.clientToWorld(sliceEdgeState.from),
+        this.clientToWorld(sliceEdgeState.to)
+      );
+    }
     const transformProvider: TransformProvider = {
       clientToWorld: this.clientToWorld.bind(this)
     };
@@ -193,10 +333,13 @@ export class Flow extends React.Component<FlowProps, {
     this.roots.forEach((root) => {
       root.visit(null,
         (edge) => {
+          const from = edge.from.getPosition(false, "edge");
+          const to = edge.to.getPosition(false, "edge");
           edges.push(<EdgeView
             forward={edge.from.kind === PortKind.Out}
-            from={edge.from.getPosition(false, "edge")}
-            to={edge.to.getPosition(false, "edge")}
+            highlightCut={sliceEdgeLine && sliceEdgeLine.intersects(new Line(from, to))}
+            from={from}
+            to={to}
           />);
         },
         (node) => {
@@ -244,6 +387,7 @@ export class Flow extends React.Component<FlowProps, {
     if (this.state.panState) {
       className += " pan";
     }
+
     return <div className={className} style={{width: "100%", height: "100%"}}>
       <svg ref={(ref) => this.setSVG(ref)} width={"100%"} height={"100%"} onMouseDown={this.onMouseDown as any}>
         <g ref={(ref) => this.setSVGGroup(ref as any)} transform={svgMatrixToString(matrix)}>
@@ -251,6 +395,8 @@ export class Flow extends React.Component<FlowProps, {
           {edge}
           {nodes}
         </g>
+        {this.renderSliceEdgeTool()}
+        {this.renderSelectNodeTool()}
       </svg>
     </div>;
   }

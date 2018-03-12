@@ -54,7 +54,7 @@ export class Node {
       fnPort && fnPort(port);
       port.outs.forEach((edge) => {
         fnEdge && fnEdge(edge);
-        if (!visited.has(edge.to.node)) {
+        if (edge.to && !visited.has(edge.to.node)) {
           edge.to.node.visit(fnPort, fnEdge, fnNode, visited);
         }
       });
@@ -76,16 +76,17 @@ export class Node {
     return this.ins.find((port) => port.id === id);
   }
   isRoot() {
-    if (this.ins.length === 0) {
-      return true;
-    }
-    let hasInEdges = false;
-    this.ins.forEach((port) => {
-      if (port.ins.length) {
-        hasInEdges = true;
-      }
-    });
-    return !hasInEdges;
+    return true; // All roots for now.
+    // if (this.ins.length === 0) {
+    //   return true;
+    // }
+    // let hasInEdges = false;
+    // this.ins.forEach((port) => {
+    //   if (port.ins.length) {
+    //     hasInEdges = true;
+    //   }
+    // });
+    // return !hasInEdges;
   }
 }
 
@@ -100,12 +101,12 @@ export class Edge {
       assert(i >= 0);
       this.from.outs.splice(i, 1);
       this.from = null;
-    } else if (this.to) {
-        const i = this.to.ins.indexOf(this);
-        assert(i >= 0);
-        this.to.ins.splice(i, 1);
-        this.to = null;
-      }
+    }
+    if (this.to) {
+      const i = this.to.ins.indexOf(this);
+      assert(i >= 0);
+      this.to.ins.splice(i, 1);
+      this.to = null;
     }
   }
 }
@@ -132,6 +133,35 @@ export class Point implements IPoint {
   }
   toString() {
     return `(${this.x}, ${this.y})`;
+  }
+}
+
+export class Line {
+  constructor(public from: Point, public to: Point) {
+    // ...
+  }
+  intersects(line: Line): boolean {
+    const a = this.from.x;
+    const b = this.from.y;
+    const c = this.to.x;
+    const d = this.to.y;
+
+    const p = line.from.x;
+    const q = line.from.y;
+    const r = line.to.x;
+    const s = line.to.y;
+
+    let det = 0;
+    let gamma = 0;
+    let lambda = 0;
+    det = (c - a) * (s - q) - (r - p) * (d - b);
+    if (det === 0) {
+      return false;
+    } else {
+      lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
+      gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
+      return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
+    }
   }
 }
 
@@ -196,7 +226,7 @@ export class Port {
     }
     port.ins.push(e);
   }
-  getPosition(relative = false, anchor: "inside" | "edge" = "edge"): IPoint {
+  getPosition(relative = false, anchor: "inside" | "edge" = "edge"): Point {
     let x = relative ? 0 : this.node.x;
     let y = relative ? 0 : this.node.y;
     const headerHeight = 40;
@@ -212,7 +242,7 @@ export class Port {
     if (anchor === "inside") {
       x += this.kind === PortKind.In ? 10 : -10;
     }
-    return {x, y};
+    return new Point(x, y);
   }
 }
 

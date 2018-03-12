@@ -12,6 +12,19 @@
   background-color: var(--grey-1000);
 }
 
+.flow .slice-edge-tool {
+  stroke: white;
+  stroke-width: 1px;
+  stroke-dasharray: 5, 2;
+}
+
+.flow .select-node-tool {
+  stroke: white;
+  fill: transparent;
+  stroke-width: 1px;
+  stroke-dasharray: 5, 2;
+}
+
 .flow.pan {
   cursor: -webkit-grabbing;
 }
@@ -20,12 +33,16 @@
   fill: none;
   stroke-width: 3;
   stroke-linejoin: round;
-  transition: stroke 0.2s ease-in-out;
+  /* transition: stroke 0.2s ease-in-out; */
+}
+
+.flow-edge.highlight-cut {
+  /* stroke: red; */
 }
 
 .flow-edge:hover {
   stroke-width: 3;
-  stroke: red;
+  /* stroke: red; */
 }
 
 .flow-node .node-fill {

@@ -24,6 +24,7 @@ import { IPoint } from "./flows";
 
 export interface EdgeViewProps {
   forward: boolean;
+  highlightCut?: boolean;
   from: IPoint;
   to: IPoint;
 }
@@ -40,12 +41,26 @@ export class EdgeView extends React.Component<EdgeViewProps, {
     if (!forward) {
       offset *= -1;
     }
+    let className = "flow-edge";
+    if (this.props.highlightCut) {
+      className += " highlight-cut";
+    }
     return <path
-      className="flow-edge"
+      className={className}
       // d={`M${x0} ${y0} h ${offset} C ${x0 + force} ${y0}, ${x1 - offset - force} ${y1}, ${x1 - offset} ${y1} h ${offset}`}
       d={`M${from.x} ${from.y} h ${offset} L ${to.x - offset} ${to.y} h ${offset}`}
       stroke="white"
       fill="transparent"
-    />;
+    >
+      {this.props.highlightCut &&
+        <animate
+          attributeType="XML"
+          attributeName="stroke"
+          values="#FFF;#F00;#FFF"
+          dur="1s"
+          repeatCount="indefinite"
+        />
+      }
+    </path>;
   }
 }

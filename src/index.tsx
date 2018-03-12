@@ -75,15 +75,15 @@ const fiddle = parameters["fiddle"] || parameters["f"];
   );
   return;
 
-  if (typeof WebAssembly !== "object") {
-    ReactDOM.render(
-      <BrowserNotSupported/>,
-      document.getElementById("app")
-    );
-  } else {
-    ReactDOM.render(
-      <App embed={embed} update={update} fiddle={fiddle}/>,
-      document.getElementById("app")
-    );
-  }
+  // if (typeof WebAssembly !== "object") {
+  //   ReactDOM.render(
+  //     <BrowserNotSupported/>,
+  //     document.getElementById("app")
+  //   );
+  // } else {
+  //   ReactDOM.render(
+  //     <App embed={embed} update={update} fiddle={fiddle}/>,
+  //     document.getElementById("app")
+  //   );
+  // }
 });
