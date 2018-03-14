@@ -59,7 +59,7 @@ export class ToastContainer extends React.Component<{}, {
   }
 }
 
-class Toast extends React.Component<{
+export class Toast extends React.Component<{
   message: JSX.Element;
   onDismiss: Function;
 }, {}> {
