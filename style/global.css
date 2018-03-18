@@ -860,19 +860,28 @@ a {
   color: inherit !important; /* first label is dark-blue otherwise? */
 }
 
-.monaco-icon-label.dirty::after {
-  content: "M";
-  font-size: 10px;
+.monaco-icon-label > .label-icon {
+  opacity: 0.75;
+  font-size: 90%;
+  font-weight: 600;
+  padding: 0px;
+  text-align: center;
+  margin-left: auto;
 }
 
-.monaco-icon-label.transient::after {
+.monaco-icon-label > .label-icon ~ .label-icon {
+  margin-left: inherit;
+  padding: 0 12px 0 5px;
+}
+
+.monaco-icon-label > .label-icon.dirty {
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' height='16' width='16'%3E%3Ccircle fill='%23C5C5C5' cx='8' cy='8' r='4'/%3E%3C/svg%3E") 50% no-repeat;
+}
+
+.monaco-icon-label > .label-icon.transient::after {
   content: "T";
   font-size: 10px;
-}
-
-.monaco-icon-label.dirty.transient::after {
-  content: "M T";
-  font-size: 10px;
+  float: right;
 }
 
 /* Menu Item Styles */
