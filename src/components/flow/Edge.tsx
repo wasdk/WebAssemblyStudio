@@ -19,39 +19,48 @@
  * SOFTWARE.
  */
 
-import { File, FileType } from "../../model";
+import * as React from "react";
+import { IPoint } from "./flows";
 
-export enum ViewType {
-  Editor,
-  Markdown,
-  Binary,
-  Viz,
-  Flow
+export interface EdgeViewProps {
+  forward: boolean;
+  highlightCut?: boolean;
+  from: IPoint;
+  to: IPoint;
 }
 
-export function defaultViewTypeForFileType(type: FileType) {
-  switch (type) {
-    case FileType.Markdown:
-      return ViewType.Markdown;
-    case FileType.DOT:
-      return ViewType.Viz;
-    case FileType.Flow:
-      return ViewType.Flow;
-    default:
-      return ViewType.Editor;
+export class EdgeView extends React.Component<EdgeViewProps, {
+}> {
+  constructor(props: EdgeViewProps) {
+    super(props);
   }
-}
-
-export class View {
-  public file: File;
-  public type: ViewType;
-  public state: monaco.editor.ICodeEditorViewState;
-
-  constructor(file: File, type = ViewType.Editor) {
-    this.file = file;
-    this.type = type;
-  }
-  clone(): View {
-    return new View(this.file, this.type);
+  render() {
+    const { forward, from, to } = this.props;
+    const force = Math.abs(to.x - from.x) / 1.6;
+    let offset = 10;
+    if (!forward) {
+      offset *= -1;
+    }
+    let className = "flow-edge";
+    if (this.props.highlightCut) {
+      className += " highlight-cut";
+    }
+    return <path
+      className={className}
+      // d={`M${x0} ${y0} h ${offset} C ${x0 + force} ${y0}, ${x1 - offset - force} ${y1}, ${x1 - offset} ${y1} h ${offset}`}
+      d={`M${from.x} ${from.y} h ${offset} L ${to.x - offset} ${to.y} h ${offset}`}
+      stroke="white"
+      fill="transparent"
+    >
+      {this.props.highlightCut &&
+        <animate
+          attributeType="XML"
+          attributeName="stroke"
+          values="#FFF;#F00;#FFF"
+          dur="1s"
+          repeatCount="indefinite"
+        />
+      }
+    </path>;
   }
 }

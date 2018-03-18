@@ -1,0 +1,194 @@
+/*
+ --grey-700: #616161;
+ --grey-800: #424242;
+ --grey-850: #323232;
+ --grey-890: #222222;
+ --grey-900: #212121;
+ --grey-950: #1d1d1d;
+--grey-1000: #1a1a1a;
+*/
+
+.flow {
+  background-color: var(--grey-1000);
+}
+
+.flow .slice-edge-tool {
+  stroke: white;
+  stroke-width: 1px;
+  stroke-dasharray: 5, 2;
+}
+
+.flow .select-node-tool {
+  stroke: white;
+  fill: transparent;
+  stroke-width: 1px;
+  stroke-dasharray: 5, 2;
+}
+
+.flow.pan {
+  cursor: -webkit-grabbing;
+}
+
+.flow-edge {
+  fill: none;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  /* transition: stroke 0.2s ease-in-out; */
+}
+
+.flow-edge.highlight-cut {
+  /* stroke: red; */
+}
+
+.flow-edge:hover {
+  stroke-width: 3;
+  /* stroke: red; */
+}
+
+.flow-node .node-fill {
+  fill: var(--grey-850);
+  pointer-events: all;
+}
+
+.flow-node .node-stroke {
+  stroke-width: 1;
+  stroke: #222222;
+  fill: transparent;
+}
+
+.flow-node .node-header {
+  fill: var(--grey-800);
+  pointer-events: all;
+}
+
+.flow-node text {
+  font-size: 12px;
+  font-weight: bold;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  fill: #fff;
+}
+
+.flow-port text {
+  font-size: 10px;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+}
+
+.flow-port .port-name {
+  font-size: 10px;
+  font-family: system-ui;
+}
+
+.flow-port.not-connected .port-name {
+  fill: var(--grey-500);
+}
+
+.flow-port .port-capture {
+  fill: transparent;
+  /* visibility: hidden; */
+}
+
+.flow-port foreignObject {
+  user-select: none;
+}
+
+.flow-port .port-bump {
+  stroke: #ffffff;
+  fill: transparent;
+  stroke-width: 1px;
+  pointer-events: none;
+}
+
+.flow-port.not-connected .port-bump {
+  stroke: var(--grey-500);
+}
+
+.flow-port .port-bump-fill {
+  fill: #ffffff;
+  pointer-events: none;
+}
+
+.flow-port .port-bump:hover {
+  fill: #CCCCCC;
+  cursor: cell;
+}
+
+.name-edit-container {
+  display: flex;
+  flex-direction: row;
+
+  height: 24px;
+  box-sizing: border-box;
+  margin-left: 10px;
+  margin-right: 10px;
+  /* pointer-events: none; */
+}
+
+.name-edit-container .name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  font-family: system-ui;
+
+  height: 24px;
+  box-sizing: border-box;
+}
+
+.name-edit-container.in .name {
+  text-align: left;
+  margin-right: 4px;
+}
+
+.name-edit-container.out {
+  text-align: right;
+}
+
+.name-edit-container.out .name {
+  text-align: right;
+}
+
+.name-edit-container .edit {
+  margin-left: 2px;
+  margin-right: 2px;
+
+  flex: 1;
+}
+
+.name-edit-container .edit select {
+  -webkit-appearance: none;
+  color: #ffffff;
+  background: #00000012;
+  border: 1px solid #636363;
+  font-weight: bold;
+  outline: none;
+  border-radius: 5px;
+  padding: 0 2px 0 2px;
+
+  width: 38px;
+  height: 24px;
+  box-sizing: border-box;
+  pointer-events: all;
+}
+
+.name-edit-container .edit input {
+  -webkit-appearance: none;
+  color: #ffffff;
+  background: #00000012;
+  border: 1px solid #636363;
+  font-weight: bold;
+  outline: none;
+  border-radius: 5px;
+  padding: 0 2px 0 4px;
+
+  width: 38px;
+  height: 24px;
+  box-sizing: border-box;
+  pointer-events: all;
+}
+
+
+svg text {
+  pointer-events: none;
+  user-select: none;
+  color: #fff;
+}

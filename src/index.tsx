@@ -33,6 +33,7 @@ import { Service } from "./service";
 import { layout } from "./util";
 import { MonacoUtils } from "./monaco-utils";
 import { BrowserNotSupported } from "./components/BrowserNotSupported";
+import { FlowTest } from "./components/flow/Node";
 
 declare var window: any;
 declare var WebAssembly: any;
@@ -68,15 +69,21 @@ const fiddle = parameters["fiddle"] || parameters["f"];
 
 (window["require"])(["vs/editor/editor.main", "require"], (_: any, require: any) => {
   MonacoUtils.initialize(require);
-  if (typeof WebAssembly !== "object") {
-    ReactDOM.render(
-      <BrowserNotSupported/>,
-      document.getElementById("app")
-    );
-  } else {
-    ReactDOM.render(
-      <App embed={embed} update={update} fiddle={fiddle}/>,
-      document.getElementById("app")
-    );
-  }
+  ReactDOM.render(
+    <FlowTest/>,
+    document.getElementById("app")
+  );
+  return;
+
+  // if (typeof WebAssembly !== "object") {
+  //   ReactDOM.render(
+  //     <BrowserNotSupported/>,
+  //     document.getElementById("app")
+  //   );
+  // } else {
+  //   ReactDOM.render(
+  //     <App embed={embed} update={update} fiddle={fiddle}/>,
+  //     document.getElementById("app")
+  //   );
+  // }
 });
