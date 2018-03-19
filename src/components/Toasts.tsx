@@ -23,49 +23,64 @@ import * as React from "react";
 import { Button } from "./shared/Button";
 import { GoX } from "./shared/Icons";
 
+export declare type ToastKind = "info" | "error" | "warning";
+
 export class ToastContainer extends React.Component<{}, {
-    toasts: JSX.Element[]
+  toasts: Array<{message: JSX.Element, kind: ToastKind}>
 }> {
   constructor(props?: any) {
     super(props);
     this.state = {
-        toasts: []
+      toasts: []
     };
   }
 
-  showToast(message: JSX.Element) {
-    this.setState((prevState: any) => ({
-      toasts: [...prevState.toasts, message]
-    }));
+  showToast(message: JSX.Element, kind: ToastKind = "info") {
+    const { toasts } = this.state;
+    toasts.push({message, kind});
+    this.setState({toasts});
   }
 
-  _onToastDismiss(index: number) {
+  private onDismiss(index: number) {
     this.setState((prevState: any) => ({
       toasts: prevState.toasts.filter((key: number, value: number) => value !== index )
     }));
   }
 
   render() {
-    return  this.state.toasts.length > 0 &&
-      <div className="toast-container">
-        {this.state.toasts.map((toast: JSX.Element, key: number) =>
-          <Toast
-            onDismiss={this._onToastDismiss.bind(this, key)}
-            key={key}
-            message={toast}
-          />
-        )}
-      </div>;
+    if (this.state.toasts.length === 0) {
+      return null;
+    }
+    return <div className="toast-container">
+      {this.state.toasts.map((toast, key: number) =>
+        <Toast
+          onDismiss={this.onDismiss.bind(this, key)}
+          key={key}
+          message={toast.message}
+          kind={toast.kind}
+        />
+      )}
+    </div>;
   }
 }
 
-export class Toast extends React.Component<{
+export interface ToastProps {
   message: JSX.Element;
+  kind?: ToastKind;
   onDismiss: Function;
-}, {}> {
+}
+
+export class Toast extends React.Component<ToastProps, {}> {
+  static defaultProps: ToastProps = {
+    message: null,
+    kind: "info",
+    // tslint:disable-next-line
+    onDismiss: () => {}
+  };
   render() {
     const {message, onDismiss} = this.props;
-    return <div className="toast">
+    const className = "toast " + this.props.kind;
+    return <div className={className}>
       <div className="toast-header">
         {message}
       <Button icon={<GoX />} customClassName={"button-toast"} label="Dismiss" title="Dismiss" onClick={onDismiss} />
