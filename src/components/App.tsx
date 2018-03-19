@@ -201,10 +201,16 @@ export class App extends React.Component<AppProps, AppState> {
     pushStatus("Downloading Project");
     const fiddle = await Service.loadJSON(uri);
     popStatus();
-    await Service.loadFilesIntoProject(fiddle.files, project);
-    loadProject(project);
-    if (project.getFile("README.md")) {
-      openFiles([["README.md"]]);
+    if (fiddle.success) {
+      await Service.loadFilesIntoProject(fiddle.files, project);
+      loadProject(project);
+      if (project.getFile("README.md")) {
+        openFiles([["README.md"]]);
+      }
+    } else {
+      if (this.toastContainer) {
+        this.toastContainer.showToast(<span>Project {uri} was not found.</span>, "error");
+      }
     }
   }
   bindAppStoreEvents() {
