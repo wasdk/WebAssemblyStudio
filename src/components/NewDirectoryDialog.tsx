@@ -79,7 +79,7 @@ export class NewDirectoryDialog extends React.Component<{
           <Button
             icon={<GoX />}
             label="Cancel"
-            title="Create New Directory"
+            title="Cancel"
             onClick={() => {
               this.props.onCancel();
             }}
