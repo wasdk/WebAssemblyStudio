@@ -350,8 +350,14 @@ export class Service {
   static async assembleWat(wat: string, status?: IStatusProvider): Promise<ArrayBuffer> {
     gaEvent("assemble", "Service", "wabt");
     status && status.push("Assembling Wat with Wabt");
-    const result = await this.worker.assembleWatWithWabt(wat);
-    status && status.pop();
+    let result = null;
+    try {
+      result = await this.worker.assembleWatWithWabt(wat);
+    } catch (e) {
+      throw e;
+    } finally {
+      status && status.pop();
+    }
     return result;
   }
 
