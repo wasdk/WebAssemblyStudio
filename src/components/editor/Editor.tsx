@@ -23,7 +23,7 @@ import * as React from "react";
 import { Project, File, Directory, FileType, languageForFileType, IStatusProvider } from "../../model";
 import { ViewTabs } from "./ViewTabs";
 import { View } from "./View";
-import { build, run, pushStatus, popStatus } from "../../actions/AppActions";
+import { build, run, pushStatus, popStatus, logLn } from "../../actions/AppActions";
 import "monaco-editor";
 
 declare var window: any;
@@ -45,7 +45,8 @@ export class Monaco extends React.Component<MonacoProps, {}> {
     super(props);
     this.status = {
       push: pushStatus,
-      pop: popStatus
+      pop: popStatus,
+      logLn: logLn
     };
   }
   revealLastLine() {

@@ -27,7 +27,7 @@ import { ITree, ContextMenuEvent, IDragAndDrop, DragMouseEvent, IDragAndDropData
 import { MonacoUtils } from "../monaco-utils";
 import { ViewTabs } from "./editor";
 import { ViewType } from "./editor/View";
-import { openFile, pushStatus, popStatus } from "../actions/AppActions";
+import { openFile, pushStatus, popStatus, logLn } from "../actions/AppActions";
 
 export interface DirectoryTreeProps {
   directory: ModelRef<Directory>;
@@ -114,7 +114,8 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
     this.state = { directory: this.props.directory };
     this.status = {
       push: pushStatus,
-      pop: popStatus
+      pop: popStatus,
+      logLn: logLn
     };
   }
 
