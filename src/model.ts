@@ -454,7 +454,7 @@ export class File {
           this.isDirty = false;
           this.data = data;
         } catch (e) {
-          alert(e);
+          alert(e.message);
         }
       }
     } else {
