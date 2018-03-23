@@ -23,7 +23,7 @@ import * as React from "react";
 import { assert } from "../../util";
 import { Tabs, Tab, TabProps } from "./Tabs";
 import { EditorView } from "./Editor";
-import { Project, File, getIconForFileType, FileType } from "../../model";
+import { Project, File, getIconForFileType, FileType, IStatusProvider } from "../../model";
 import "monaco-editor";
 import { Markdown, MarkdownView } from ".././Markdown";
 import { Button } from "../shared/Button";
@@ -31,6 +31,7 @@ import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye, GoCode } from "../s
 import { View, ViewType } from "./View";
 import { BinaryView } from "../Binary";
 import { VizView } from "../Viz";
+import { pushStatus, popStatus, logLn } from "../../actions/AppActions";
 
 export class ViewTabsProps {
   /**
@@ -95,8 +96,15 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
     onSplitViews: () => {}
   };
 
+  status: IStatusProvider;
+
   constructor(props: any) {
     super(props);
+    this.status = {
+      push: pushStatus,
+      pop: popStatus,
+      logLn: logLn
+    };
   }
 
   renderViewCommands() {
@@ -117,7 +125,7 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
         title="Save: CtrlCmd + S"
         isDisabled={this.props.view && (!this.props.view.file.isDirty)}
         onClick={() => {
-          this.props.view.file.save();
+          this.props.view.file.save(this.status);
         }}
       />
     ];
