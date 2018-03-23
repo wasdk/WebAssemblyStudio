@@ -1,5 +1,3 @@
-import { IWorkerRequest, WorkerCommand, IWorkerResponse } from "./message";
-
 /* Copyright 2018 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,6 +18,8 @@ import { IWorkerRequest, WorkerCommand, IWorkerResponse } from "./message";
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+import { IWorkerRequest, WorkerCommand, IWorkerResponse } from "./message";
 
 declare var importScripts: Function;
 
