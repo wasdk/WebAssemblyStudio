@@ -92,6 +92,7 @@ export class ControlCenter extends React.Component<{
         return <EditorView
           ref={(ref) => this.setOutputViewEditor(ref)}
           view={this.outputView}
+          options={{renderIndentGuides: false}}
         />;
       case "problems":
         return <Problems />;
