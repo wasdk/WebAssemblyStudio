@@ -1,3 +1,5 @@
+import { IWorkerRequest, WorkerCommand, IWorkerResponse } from "./message";
+
 /* Copyright 2018 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,6 +22,12 @@
  */
 
 declare var importScripts: Function;
+
+function assert(c: any, message?: string) {
+  if (!c) {
+    throw new Error(message);
+  }
+}
 
 declare interface BinaryenModule {
   optimize(): any;
@@ -56,58 +64,37 @@ async function loadWabt() {
   }
 }
 
-onmessage = (e) => {
-  switch (e.data.command) {
-    case "optimizeWasmWithBinaryen":
-      postMessage({
-        payload: optimizeWasmWithBinaryen(e.data.payload),
-        id: e.data.id
-      }, undefined);
-      break;
-    case "validateWasmWithBinaryen":
-      postMessage({
-        payload: validateWasmWithBinaryen(e.data.payload),
-        id: e.data.id
-      }, undefined);
-      break;
-    case "createWasmCallGraphWithBinaryen":
-      postMessage({
-        payload: createWasmCallGraphWithBinaryen(e.data.payload),
-        id: e.data.id
-      }, undefined);
-      break;
-    case "convertWasmToAsmWithBinaryen":
-      postMessage({
-        payload: convertWasmToAsmWithBinaryen(e.data.payload),
-        id: e.data.id
-      }, undefined);
-      break;
-    case "disassembleWasmWithBinaryen":
-      postMessage({
-        payload: disassembleWasmWithBinaryen(e.data.payload),
-        id: e.data.id
-      }, undefined);
-      break;
-    case "assembleWatWithBinaryen":
-      postMessage({
-        payload: assembleWatWithBinaryen(e.data.payload),
-        id: e.data.id
-      }, undefined);
-      break;
-    case "disassembleWasmWithWabt":
-      postMessage({
-        payload: disassembleWasmWithWabt(e.data.payload),
-        id: e.data.id
-      }, undefined);
-      break;
-    case "assembleWatWithWabt":
-      postMessage({
-        payload: assembleWatWithWabt(e.data.payload),
-        id: e.data.id
-      }, undefined);
-      break;
-  }
+onmessage = (e: {data: IWorkerRequest}) => {
+  const fn = {
+    [WorkerCommand.OptimizeWasmWithBinaryen]: optimizeWasmWithBinaryen,
+    [WorkerCommand.ValidateWasmWithBinaryen]: validateWasmWithBinaryen,
+    [WorkerCommand.CreateWasmCallGraphWithBinaryen]: createWasmCallGraphWithBinaryen,
+    [WorkerCommand.ConvertWasmToAsmWithBinaryen]: convertWasmToAsmWithBinaryen,
+    [WorkerCommand.DisassembleWasmWithBinaryen]: disassembleWasmWithBinaryen,
+    [WorkerCommand.AssembleWatWithBinaryen]: assembleWatWithBinaryen,
+    [WorkerCommand.DisassembleWasmWithWabt]: disassembleWasmWithWabt,
+    [WorkerCommand.AssembleWatWithWabt]: assembleWatWithWabt
+  }[e.data.command];
+  assert(fn, `Command ${e.data.command} not found.`);
+  processMessage(e.data, fn);
 };
+
+function processMessage(request: IWorkerRequest, fn: Function) {
+  const response: IWorkerResponse = {
+    id: request.id,
+    payload: null,
+    success: true
+  };
+  try {
+    response.payload = fn(request.payload);
+  } catch (e) {
+    response.payload = {
+      message: e.message
+    };
+    response.success = false;
+  }
+  postMessage(response, undefined);
+}
 
 function optimizeWasmWithBinaryen(data: ArrayBuffer): ArrayBuffer {
   loadBinaryen();

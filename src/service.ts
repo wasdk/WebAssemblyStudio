@@ -26,6 +26,7 @@ import { assert } from "./util";
 import getConfig from "./config";
 import { isZlibData, decompressZlib } from "./utils/zlib";
 import { gaEvent } from "./utils/ga";
+import { WorkerCommand, IWorkerResponse, IWorkerRequest } from "./message";
 
 declare var capstone: {
   ARCH_X86: any;
@@ -136,34 +137,39 @@ async function getServiceURL(to: ServiceTypes): Promise<string> {
 
 class ServiceWorker {
   worker: Worker;
-
-  workerCallbacks: Function [] = [];
+  workerCallbacks: Array<{fn: Function, ex: Function}> = [];
   nextId = 0;
-  getNextId() {
+  private getNextId() {
     return String(this.nextId++);
   }
-
   constructor() {
     this.worker = new Worker("dist/worker.bundle.js");
-    this.worker.addEventListener("message", (e) => {
+    this.worker.addEventListener("message", (e: {data: IWorkerResponse}) => {
       if (!e.data.id) {
         return;
       }
-      this.workerCallbacks[e.data.id](e);
+      const cb = this.workerCallbacks[e.data.id];
+      if (e.data.success) {
+        cb.fn(e);
+      } else {
+        cb.ex(e);
+      }
       this.workerCallbacks[e.data.id] = null;
     });
   }
 
-  setWorkerCallback(id: string, fn: (e: any) => void) {
+  setWorkerCallback(id: string, fn: (e: any) => void, ex?: (e: any) => void) {
     assert(!this.workerCallbacks[id as any]);
-    this.workerCallbacks[id as any] = fn;
+    this.workerCallbacks[id as any] = {fn, ex};
   }
 
-  async postMessage(command: string, payload: any): Promise<any> {
+  async postMessage(command: WorkerCommand, payload: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const id = this.getNextId();
-      this.setWorkerCallback(id, (e) => {
+      this.setWorkerCallback(id, (e: {data: IWorkerResponse}) => {
         resolve(e.data.payload);
+      }, (e) => {
+        reject(e.data.payload);
       });
       this.worker.postMessage({
         id, command, payload
@@ -172,35 +178,35 @@ class ServiceWorker {
   }
 
   async optimizeWasmWithBinaryen(data: ArrayBuffer): Promise<ArrayBuffer> {
-    return await this.postMessage("optimizeWasmWithBinaryen", data);
+    return await this.postMessage(WorkerCommand.OptimizeWasmWithBinaryen, data);
   }
 
   async validateWasmWithBinaryen(data: ArrayBuffer): Promise<number> {
-    return await this.postMessage("validateWasmWithBinaryen", data);
+    return await this.postMessage(WorkerCommand.ValidateWasmWithBinaryen, data);
   }
 
   async createWasmCallGraphWithBinaryen(data: ArrayBuffer): Promise<string> {
-    return await this.postMessage("createWasmCallGraphWithBinaryen", data);
+    return await this.postMessage(WorkerCommand.CreateWasmCallGraphWithBinaryen, data);
   }
 
   async convertWasmToAsmWithBinaryen(data: ArrayBuffer): Promise<string> {
-    return await this.postMessage("convertWasmToAsmWithBinaryen", data);
+    return await this.postMessage(WorkerCommand.ConvertWasmToAsmWithBinaryen, data);
   }
 
   async disassembleWasmWithBinaryen(data: ArrayBuffer): Promise<string> {
-    return await this.postMessage("disassembleWasmWithBinaryen", data);
+    return await this.postMessage(WorkerCommand.DisassembleWasmWithBinaryen, data);
   }
 
   async assembleWatWithBinaryen(data: string): Promise<ArrayBuffer> {
-    return await this.postMessage("assembleWatWithBinaryen", data);
+    return await this.postMessage(WorkerCommand.AssembleWatWithBinaryen, data);
   }
 
   async disassembleWasmWithWabt(data: ArrayBuffer): Promise<string> {
-    return await this.postMessage("disassembleWasmWithWabt", data);
+    return await this.postMessage(WorkerCommand.DisassembleWasmWithWabt, data);
   }
 
   async assembleWatWithWabt(data: string): Promise<ArrayBuffer> {
-    return await this.postMessage("assembleWatWithWabt", data);
+    return await this.postMessage(WorkerCommand.AssembleWatWithWabt, data);
   }
 }
 
