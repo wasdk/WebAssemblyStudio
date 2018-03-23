@@ -121,7 +121,9 @@ export interface LogLnAction extends AppAction {
   kind: ("" | "info" | "warn" | "error");
 }
 
-export function logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
+export type logKind = "" | "info" | "warn" | "error";
+
+export function logLn(message: string, kind: logKind = "") {
   dispatcher.dispatch({
     type: AppActionType.LOG_LN,
     message,

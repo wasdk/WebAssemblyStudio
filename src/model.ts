@@ -23,6 +23,7 @@ import "monaco-editor";
 import { assert } from "./util";
 import { Minimatch } from "minimatch";
 import { Service } from "./service";
+import { logKind } from "./actions/AppActions";
 
 declare var window: any;
 
@@ -443,7 +444,7 @@ export class File {
     path.push(this.name);
     return path.join("/");
   }
-  async save(status?: IStatusProvider) {
+  async save(status: IStatusProvider) {
     if (!this.isDirty) {
       return;
     }
@@ -454,7 +455,7 @@ export class File {
           this.isDirty = false;
           this.data = data;
         } catch (e) {
-          alert(e.message);
+          status.logLn(e.message, "error");
         }
       }
     } else {
@@ -674,4 +675,5 @@ export interface SandboxRun {
 export interface IStatusProvider {
   push(status: string): void;
   pop(): void;
+  logLn(message: string, kind?: logKind): void;
 }
