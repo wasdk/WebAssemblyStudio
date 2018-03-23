@@ -138,6 +138,8 @@ async function getServiceURL(to: ServiceTypes): Promise<string> {
 class ServiceWorker {
   worker: Worker;
   workerCallbacks: Array<{fn: Function, ex: Function}> = [];
+
+  workerErrorCallback: Function;
   nextId = 0;
   private getNextId() {
     return String(this.nextId++);
@@ -152,9 +154,16 @@ class ServiceWorker {
       if (e.data.success) {
         cb.fn(e);
       } else {
+        this.workerErrorCallback = null;
         cb.ex(e);
       }
       this.workerCallbacks[e.data.id] = null;
+    });
+    this.worker.addEventListener("error", (e) => {
+      if (this.workerErrorCallback) {
+        this.workerErrorCallback(e);
+        this.workerErrorCallback = null;
+      }
     });
   }
 
@@ -171,6 +180,7 @@ class ServiceWorker {
       }, (e) => {
         reject(e.data.payload);
       });
+      this.workerErrorCallback = reject;
       this.worker.postMessage({
         id, command, payload
       }, undefined);
