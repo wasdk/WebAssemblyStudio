@@ -504,6 +504,10 @@ export class App extends React.Component<AppProps, AppState> {
           }}
           onChangeViewType={(view, type) => setViewType(view, type)}
           onClickView={(view: View) => {
+            if (!(appStore.getActiveTabGroup().currentView === view)) {
+              // Avoids the propagation of content selection between tabs.
+              window.getSelection().removeAllRanges();
+            }
             focusTabGroup(group);
             openView(view);
           }}
@@ -645,6 +649,8 @@ export class App extends React.Component<AppProps, AppState> {
               }
             }}
             onClickFile={(file: File) => {
+              // Avoids the propagation of content selection between tabs.
+              window.getSelection().removeAllRanges();
               openFile(file, defaultViewTypeForFileType(file.type));
             }}
             onDoubleClickFile={(file: File) => {
