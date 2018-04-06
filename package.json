@@ -9,6 +9,7 @@
     "dev-server": "npm run templates && webpack-dev-server",
     "test": "webpack --mode production && node bin/check-bundle-size.js && npm run jest && npm run tslint",
     "jest": "jest",
+    "coverage": "jest --coverage",
     "clean": "rm -r dist/*",
     "tslint": "tslint -p .",
     "templates": "node bin/bundle-templates.js > dist/templates.js"
@@ -28,6 +29,9 @@
     },
     "testMatch": [
       "**/tests/**/**/**.spec.(ts|tsx|js)"
+    ],
+    "collectCoverageFrom": [
+      "src/**/**.(ts|tsx|js)"
     ]
   },
   "repository": {
