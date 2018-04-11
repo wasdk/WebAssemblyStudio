@@ -30,7 +30,7 @@ This project prints `"Hello World"` using the well known C `printf` function. Th
 
 6. `brk()` can be stubbed to return `0`, which is the success error code. `brk()` is used to allocate more memory to a process. WebAssembly does handles memory differently, so there's no need to do special here. 
 
-7. `mmap2()` is used to request more memory within the process. In our example, it's implemented as a call to the WebAssembly `memeory.grow()` function.
+7. `mmap2()` is used to request more memory within the process. In our example, it's implemented as a call to the WebAssembly `memory.grow()` function.
 
 8. `writev()` is used to write data to files. Its signature is `writev(int fd, const struct iovec *iov, int iovcnt)`. We can ignore the `fd` file descriptor parameter, and focus on the `iov` structure. The problem here is that on the JavaScript side we have a hard time pulling the `struct iovec` abart. We could figure it out, but a neat hack is to call back into the WebAssembly module and have some C code unpack it for us.
 
