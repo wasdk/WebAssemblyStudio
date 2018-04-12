@@ -102,6 +102,7 @@ export interface IServiceRequest {
   success: boolean;
   tasks: IServiceRequestTask[];
   output: string;
+  wasmBindgenJs: string | undefined;
 }
 
 export enum ServiceTypes {
@@ -285,6 +286,11 @@ export class Service {
   }
 
   static async compileFile(file: File, from: Language, to: Language, options = ""): Promise<any> {
+    const result = await Service.compileFileWithBindings(file, from, to, options);
+    return result.wasm;
+  }
+
+  static async compileFileWithBindings(file: File, from: Language, to: Language, options = ""): Promise<any> {
     const result = await Service.compile(file.getData(), from, to, options);
     if (result.tasks) {
       const markers = Service.getMarkers(result.tasks[0].console);
@@ -300,11 +306,15 @@ export class Service {
     if (!result.success) {
       throw new Error((result as any).message);
     }
-    let data = decodeRestrictedBase64ToBytes(result.output);
-    if (isZlibData(data)) {
-      data = await decompressZlib(data);
+    let wasm = decodeRestrictedBase64ToBytes(result.output);
+    if (isZlibData(wasm)) {
+      wasm = await decompressZlib(wasm);
     }
-    return data;
+    const ret: any = {wasm};
+    if (result.wasmBindgenJs) {
+      ret.wasmBindgenJs = result.wasmBindgenJs;
+    }
+    return ret;
   }
 
   static async compile(src: string | ArrayBuffer, from: Language, to: Language, options = ""): Promise<IServiceRequest> {
@@ -328,7 +338,7 @@ export class Service {
       return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options), ServiceTypes.Service);
     } else if (from === Language.Rust && to === Language.Wasm) {
       // TODO: Temporary until we integrate rustc into the service.
-      return this.sendRequestJSON({ code: src }, ServiceTypes.Rustc);
+      return this.sendRequestJSON({ code: src, options }, ServiceTypes.Rustc);
     }
   }
 
