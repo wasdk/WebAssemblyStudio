@@ -333,7 +333,7 @@ export async function run() {
   const file = appStore.getFileByName(mainFileName);
   let src = appStore.getFileSource(file);
 
-  src = src.replace(/src\s*=\s*"(.+?)"/, (all: string, path?: string) => {
+  src = src.replace(/src\s*=\s*"(.+?)"/g, (all: string, path?: string) => {
     const fullPath = new URL(path, "http://example.org/" + mainFileName).pathname;
     const file = appStore.getFileByName(fullPath.substr(1));
     if (!file) {
