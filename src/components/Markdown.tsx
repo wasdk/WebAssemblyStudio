@@ -55,9 +55,19 @@ export interface MarkdownViewProps {
   view: View;
 }
 
-export class MarkdownView extends React.Component<MarkdownViewProps> {
+export class MarkdownView extends React.Component<MarkdownViewProps, {
+  markdown: string;
+}> {
+  constructor(props: MarkdownViewProps) {
+    super(props);
+    this.state = {
+      markdown: this.props.view.file.buffer.getValue()
+    };
+  }
   onDidChangeBuffer = () => {
-    this.forceUpdate();
+    this.setState({
+      markdown: this.props.view.file.buffer.getValue()
+    });
   }
   componentDidMount() {
     this.props.view.file.onDidChangeBuffer.register(this.onDidChangeBuffer);
@@ -74,6 +84,6 @@ export class MarkdownView extends React.Component<MarkdownViewProps> {
     }
   }
   render() {
-    return <Markdown src={this.props.view.file.buffer.getValue()}/>;
+    return <Markdown src={this.state.markdown}/>;
   }
 }
