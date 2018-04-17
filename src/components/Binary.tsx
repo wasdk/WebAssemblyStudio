@@ -45,9 +45,17 @@ function toHex(n: number, width: number) {
   return s;
 }
 
-export class BinaryView extends React.Component<BinaryViewProps> {
+export class BinaryView extends React.Component<BinaryViewProps, {
+  data: ArrayBuffer;
+}> {
+  constructor(props: BinaryViewProps) {
+    super(props);
+    const data = this.props.view.file.getData() as ArrayBuffer;
+    this.state = { data, };
+  }
   onDidChangeData = () => {
-    this.forceUpdate();
+    const data = this.props.view.file.getData() as ArrayBuffer;
+    this.setState({ data, });
   }
   componentDidMount() {
     this.props.view.file.onDidChangeData.register(this.onDidChangeData);
@@ -64,7 +72,7 @@ export class BinaryView extends React.Component<BinaryViewProps> {
     }
   }
   render() {
-    const data = new Uint8Array(this.props.view.file.getData() as ArrayBuffer);
+    const data = new Uint8Array(this.state.data);
     const perRow = 16;
     const rowCount = Math.max(1, Math.ceil(data.length / perRow));
     const rows = [];
