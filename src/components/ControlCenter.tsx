@@ -43,18 +43,24 @@ export class ControlCenter extends React.Component<{
      * Visible pane.
      */
     visible: "output" | "problems";
+
+    problemCount: number;
+    outputLineCount: number;
   }> {
   constructor(props: any) {
     super(props);
+    const outputFile = appStore.getOutput().getModel();
+    this.outputView = new View(outputFile);
+
     this.state = {
       visible: "output",
       splits: [
         { min: 128, value: 512 },
         { min: 128, value: 256 }
-      ]
+      ],
+      problemCount: this.getProblemCount(),
+      outputLineCount: this.getOutputLineCount()
     };
-    const outputFile = appStore.getOutput().getModel();
-    this.outputView = new View(outputFile);
   }
   onOutputChanged = () => {
     this.updateOutputView();
@@ -77,8 +83,11 @@ export class ControlCenter extends React.Component<{
   updateOutputView() {
     if (!this.updateOutputViewTimeout) {
       this.updateOutputViewTimeout = window.setTimeout(() => {
-        this.forceUpdate();
         this.updateOutputViewTimeout = null;
+        this.setState({
+          problemCount: this.getProblemCount(),
+          outputLineCount: this.getOutputLineCount()
+        });
       });
     }
     if (!this.outputViewEditor) {
@@ -100,11 +109,17 @@ export class ControlCenter extends React.Component<{
         return null;
     }
   }
-  render() {
+  getOutputLineCount() {
+    return this.outputView.file.buffer.getLineCount();
+  }
+  getProblemCount() {
     let problemCount = 0;
     appStore.getProject().getModel().forEachFile((file: File) => {
       problemCount += file.problems.length;
     }, false, true);
+    return problemCount;
+  }
+  render() {
     return <div className="fill">
       <div className="tabs" style={{ display: "flex" }}>
         <div>
@@ -119,14 +134,14 @@ export class ControlCenter extends React.Component<{
         <div>
           <Tabs>
             <Tab
-              label={`Output (${this.outputView.file.buffer.getLineCount()})`}
+              label={`Output (${this.state.outputLineCount})`}
               isActive={this.state.visible === "output"}
               onClick={() => {
                 this.setState({ visible: "output" });
               }}
             />
             <Tab
-              label={`Problems (${problemCount})`}
+              label={`Problems (${this.state.problemCount})`}
               isActive={this.state.visible === "problems"}
               onClick={() => {
                 this.setState({ visible: "problems" });
