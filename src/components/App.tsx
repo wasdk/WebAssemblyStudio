@@ -142,6 +142,10 @@ export interface AppState {
   newDirectoryDialog: ModelRef<Directory>;
   showProblems: boolean;
   showSandbox: boolean;
+  tabGroups: Group[];
+  activeTabGroup: Group;
+  hasStatus: boolean;
+  windowDimensions: string;
 }
 
 export interface AppProps {
@@ -184,17 +188,29 @@ export class App extends React.Component<AppProps, AppState> {
       showProblems: true,
       showSandbox: true,
       uploadFileDialogDirectory: null,
-      newDirectoryDialog: null
+      newDirectoryDialog: null,
+      tabGroups: null,
+      activeTabGroup: null,
+      windowDimensions: App.getWindowDimensions(),
+      hasStatus: false,
     };
     registerLanguages();
   }
   private async initializeProject() {
     initStore();
-    this.setState({ project: appStore.getProject() });
+    this.setState({
+      project: appStore.getProject(),
+      tabGroups: appStore.getTabGroups(),
+      activeTabGroup: appStore.getActiveTabGroup(),
+      hasStatus: appStore.getProject().getModel().hasStatus(),
+    });
     this.bindAppStoreEvents();
     if (this.state.fiddle) {
       this.loadProjectFromFiddle(this.state.fiddle);
     }
+  }
+  private static getWindowDimensions(): string {
+    return `${window.innerWidth}x${window.innerHeight}@${window.devicePixelRatio}`;
   }
   private async loadProjectFromFiddle(uri: string) {
     const project = new Project();
@@ -216,27 +232,22 @@ export class App extends React.Component<AppProps, AppState> {
   bindAppStoreEvents() {
     appStore.onLoadProject.register(() => {
       this.setState({ project: appStore.getProject() });
-      this.forceUpdate();
       runTask("project:load", true);
-    });
-    appStore.onDidChangeBuffer.register(() => {
-      this.forceUpdate();
-    });
-    appStore.onDidChangeData.register(() => {
-      this.forceUpdate();
-    });
-    appStore.onDidChangeChildren.register(() => {
-      this.forceUpdate();
     });
     appStore.onDirtyFileUsed.register((file: File) => {
       this.logLn(`Changes in ${file.getPath()} were ignored, save your changes.`, "warn");
     });
     appStore.onTabsChange.register(() => {
-      this.forceUpdate();
+      this.setState({
+        tabGroups: appStore.getTabGroups(),
+        activeTabGroup: appStore.getActiveTabGroup(),
+      });
       layout();
     });
     appStore.onDidChangeStatus.register(() => {
-      this.forceUpdate();
+      this.setState({
+        hasStatus: appStore.getProject().getModel().hasStatus(),
+      });
     });
   }
 
@@ -282,12 +293,10 @@ export class App extends React.Component<AppProps, AppState> {
   componentDidMount() {
     layout();
     this.registerShortcuts();
-    // if (!this.props.embed) {
-    //   this.loadReleaseNotes();
-    // }
     window.addEventListener("resize", () => {
-      console.log("App.forceUpdate because of window resize.");
-      this.forceUpdate();
+      this.setState({
+        windowDimensions: App.getWindowDimensions(),
+      });
     }, false);
   }
 
@@ -339,7 +348,7 @@ export class App extends React.Component<AppProps, AppState> {
   private workspaceSplit: SplitInfo = null;
 
   toolbarButtonsAreDisabled() {
-    return this.state.project.getModel().hasStatus();
+    return this.state.hasStatus;
   }
 
   makeToolbarButtons() {
@@ -474,14 +483,14 @@ export class App extends React.Component<AppProps, AppState> {
   render() {
     const self = this;
 
-    function makeEditorPanes(): any {
-      const groups = appStore.getTabGroups();
-      const activeGroup = appStore.getActiveTabGroup();
+    const makeEditorPanes = () => {
+      const groups = this.state.tabGroups;
+      const activeGroup = this.state.activeTabGroup;
 
       if (groups.length === 0) {
         return <div>No Groups</div>;
       }
-      return groups.map(group => {
+      return groups.map((group: Group) => {
         // tslint:disable-next-line:jsx-key
         return <ViewTabs
           views={group.views.slice(0)}
@@ -508,7 +517,7 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         />;
       });
-    }
+    };
 
     const editorPanes = <Split
       name="Editors"

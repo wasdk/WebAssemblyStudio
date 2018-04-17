@@ -33,6 +33,8 @@ import { BinaryView } from "../Binary";
 import { VizView } from "../Viz";
 import { pushStatus, popStatus, logLn } from "../../actions/AppActions";
 
+import appStore from "../../stores/AppStore";
+
 export class ViewTabsProps {
   /**
    * Currently active view tab.
@@ -107,6 +109,11 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
     };
   }
 
+  onFileDidChangeDirty = () => {
+    // TODO replace forceUpdate with tracking dirty states of tab files.
+    this.forceUpdate();
+  }
+
   renderViewCommands() {
     const { view } = this.props;
     const commands = [
@@ -155,6 +162,14 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
       );
     }
     return commands;
+  }
+
+  componentDidMount() {
+    appStore.onDidChangeDirty.register(this.onFileDidChangeDirty);
+  }
+
+  componentWillUnmount() {
+    appStore.onDidChangeDirty.unregister(this.onFileDidChangeDirty);
   }
 
   render() {

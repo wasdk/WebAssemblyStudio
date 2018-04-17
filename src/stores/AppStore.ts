@@ -59,6 +59,7 @@ export class AppStore {
   onDirtyFileUsed = new EventDispatcher("AppStore onDirtyFileUsed");
   onDidChangeBuffer = new EventDispatcher("AppStore onDidChangeBuffer");
   onDidChangeData = new EventDispatcher("AppStore onDidChangeData");
+  onDidChangeDirty = new EventDispatcher("AppStore onDidChangeDirty");
   onDidChangeChildren = new EventDispatcher("AppStore onDidChangeChildren");
   onOutputChanged = new EventDispatcher("AppStore onOutputChanged");
   onTabsChange = new EventDispatcher("AppStore onTabsChange");
@@ -90,6 +91,7 @@ export class AppStore {
     this.project.onDirtyFileUsed.register((file: File) => this.onDirtyFileUsed.dispatch(file));
     this.project.onDidChangeBuffer.register(() => this.onDidChangeBuffer.dispatch());
     this.project.onDidChangeData.register(() => this.onDidChangeData.dispatch());
+    this.project.onDidChangeDirty.register((file: File) => this.onDidChangeDirty.dispatch(file));
     this.project.onDidChangeChildren.register(() => this.onDidChangeChildren.dispatch());
   }
 
