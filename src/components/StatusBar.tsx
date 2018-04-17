@@ -22,12 +22,22 @@
 import * as React from "react";
 import appStore from "../stores/AppStore";
 
-export class StatusBar extends React.Component<{}> {
+export class StatusBar extends React.Component<{}, {
+  hasStatus: boolean;
+  status: string;
+}> {
   constructor(props: any) {
     super(props);
+    this.state = {
+      hasStatus: false,
+      status: ""
+    };
   }
   onDidChangeStatus = () => {
-    this.forceUpdate();
+    this.setState({
+      hasStatus: appStore.hasStatus(),
+      status: appStore.getStatus()
+    });
   }
   componentDidMount() {
     appStore.onDidChangeStatus.register(this.onDidChangeStatus);
@@ -37,12 +47,12 @@ export class StatusBar extends React.Component<{}> {
   }
   render() {
     let className = "status-bar";
-    if (appStore.hasStatus()) {
+    if (this.state.hasStatus) {
       className += " active";
     }
     return <div className={className}>
       <div className="status-bar-item">
-        {appStore.getStatus()}
+        {this.state.status}
       </div>
     </div>;
   }
