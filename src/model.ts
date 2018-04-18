@@ -314,6 +314,7 @@ export class File {
   readonly onDidChangeData = new EventDispatcher("File Data Change");
   readonly onDidChangeBuffer = new EventDispatcher("File Buffer Change");
   readonly onDidChangeProblems = new EventDispatcher("File Problems Change");
+  readonly onDidChangeDirty = new EventDispatcher("File Dirty Flag Change");
   readonly key = String(getNextKey());
   readonly buffer?: monaco.editor.IModel;
   /**
@@ -341,8 +342,10 @@ export class File {
       if (e.isFlush) {
         return;
       }
-
-      this.isDirty = true;
+      if (!this.isDirty) {
+        this.isDirty = true;
+        this.notifyDidChangeDirty();
+      }
       this.notifyDidChangeBuffer();
       monaco.editor.setModelMarkers(this.buffer, "compiler", []);
     });
@@ -362,11 +365,24 @@ export class File {
       file = file.parent;
     }
   }
+  notifyDidChangeDirty() {
+    let file: File = this;
+    while (file) {
+      file.onDidChangeDirty.dispatch();
+      file = file.parent;
+    }
+  }
+  private resetDirty() {
+    if (this.isDirty) {
+      this.isDirty = false;
+      this.notifyDidChangeDirty();
+    }
+  }
   private async updateBuffer(status?: IStatusProvider) {
     if (this.type === FileType.Wasm) {
       const result = await Service.disassembleWasm(this.data as ArrayBuffer, status);
       this.buffer.setValue(result);
-      this.isDirty = false;
+      this.resetDirty();
       this.bufferType = FileType.Wat;
       this.notifyDidChangeBuffer();
       monaco.editor.setModelLanguage(this.buffer, languageForFileType(FileType.Wat));
@@ -374,7 +390,7 @@ export class File {
       return;
     } else {
       this.buffer.setValue(this.data as string);
-      this.isDirty = false;
+      this.resetDirty();
       this.notifyDidChangeBuffer();
     }
   }
@@ -452,7 +468,7 @@ export class File {
       if (this.bufferType === FileType.Wat && this.type === FileType.Wasm) {
         try {
           const data = await Service.assembleWat(this.buffer.getValue(), status);
-          this.isDirty = false;
+          this.resetDirty();
           this.data = data;
         } catch (e) {
           status.logLn(e.message, "error");
@@ -460,7 +476,7 @@ export class File {
       }
     } else {
       this.data = this.buffer.getValue();
-      this.isDirty = false;
+      this.resetDirty();
     }
     this.notifyDidChangeData();
   }

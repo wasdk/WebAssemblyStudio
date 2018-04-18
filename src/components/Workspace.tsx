@@ -27,6 +27,8 @@ import { WorkspaceEntry } from "./WorkspaceEntry";
 import { Project, File, Directory, ModelRef } from "../model";
 import { SplitOrientation, SplitInfo, Split } from "./Split";
 
+import appStore from "../stores/AppStore";
+
 export interface WorkspaceProps {
   /**
    * Active file.
@@ -58,6 +60,24 @@ export class Workspace extends React.Component<WorkspaceProps, {
       splits: []
     };
   }
+  onFileDidChangeDirty = () => {
+    // TODO replace forceUpdate with tracking dirty states of workspace files.
+    this.forceUpdate();
+  }
+  onDirectoryDidChangeChildren = () => {
+    // TODO replace forceUpdate with just refreshing the tree
+    this.forceUpdate();
+  }
+
+  componentDidMount() {
+    appStore.onDidChangeDirty.register(this.onFileDidChangeDirty);
+    appStore.onDidChangeChildren.register(this.onDirectoryDidChangeChildren);
+  }
+  componentWillUnmount() {
+    appStore.onDidChangeDirty.unregister(this.onFileDidChangeDirty);
+    appStore.onDidChangeChildren.register(this.onDirectoryDidChangeChildren);
+  }
+
   render() {
     const project = this.props.project;
     return <div className="workspaceContainer">
