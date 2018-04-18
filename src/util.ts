@@ -189,6 +189,10 @@ export function layout() {
   }, layoutThrottleDuration);
 }
 
+export function resetDOMSelection() {
+  window.getSelection().removeAllRanges();
+}
+
 export function assert(c: any, message?: string) {
   if (!c) {
     throw new Error(message);
