@@ -508,13 +508,13 @@ export class Service {
     file.buffer.setValue(await Service.disassembleWasm(data, status));
   }
 
-  static async validateWasmWithBinaryen(file: File, status?: IStatusProvider) {
+  static async validateWasmWithBinaryen(file: File, status?: IStatusProvider): Promise<boolean> {
     gaEvent("validate", "Service", "binaryen");
     const data = file.getData() as ArrayBuffer;
     status && status.push("Validating with Binaryen");
     const result = await this.worker.validateWasmWithBinaryen(data);
     status && status.pop();
-    alert(result ? "Module is valid" : "Module is not valid");
+    return !!result;
   }
 
   static async getWasmCallGraphWithBinaryen(file: File, status?: IStatusProvider) {

@@ -176,8 +176,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
 
         // File-type specific separated with a ruler
         if (file.type === FileType.Wasm) {
-          actions.push(new MonacoUtils.Action("x", "Validate", "octicon-check ruler", true, () => {
-            Service.validateWasmWithBinaryen(file, self.status);
+          actions.push(new MonacoUtils.Action("x", "Validate", "octicon-check ruler", true, async () => {
+            const result = await Service.validateWasmWithBinaryen(file, self.status);
+            window.alert(result ? "Module is valid" : "Module is not valid");
           }));
           actions.push(new MonacoUtils.Action("x", "Optimize", "octicon-gear", true, () => {
             Service.optimizeWasmWithBinaryen(file, self.status);
