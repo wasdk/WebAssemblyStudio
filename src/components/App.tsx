@@ -52,7 +52,7 @@ import { Project, File, FileType, Directory, shallowCompare, ModelRef, fileTypeF
 import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 
-import { layout, assert } from "../util";
+import { layout, assert, resetDOMSelection } from "../util";
 import registerLanguages from "../utils/registerLanguages";
 
 import * as Mousetrap from "mousetrap";
@@ -506,7 +506,7 @@ export class App extends React.Component<AppProps, AppState> {
           onClickView={(view: View) => {
             if (!(appStore.getActiveTabGroup().currentView === view)) {
               // Avoids the propagation of content selection between tabs.
-              window.getSelection().removeAllRanges();
+              resetDOMSelection();
             }
             focusTabGroup(group);
             openView(view);
@@ -650,7 +650,7 @@ export class App extends React.Component<AppProps, AppState> {
             }}
             onClickFile={(file: File) => {
               // Avoids the propagation of content selection between tabs.
-              window.getSelection().removeAllRanges();
+              resetDOMSelection();
               openFile(file, defaultViewTypeForFileType(file.type));
             }}
             onDoubleClickFile={(file: File) => {
