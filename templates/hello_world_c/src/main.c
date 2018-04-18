@@ -9,7 +9,7 @@ int main() {
 }
 
 /* External function that is implemented in JavaScript. */
-extern putc_js(char c);
+extern void putc_js(char c);
 
 /* Basic implementation of the writev sys call. */ 
 WASM_EXPORT
