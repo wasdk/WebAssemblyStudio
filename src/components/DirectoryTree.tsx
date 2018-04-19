@@ -207,6 +207,9 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           actions.push(new MonacoUtils.Action("x", "View as Binary", "octicon-file-binary", true, () => {
             openFile(file, ViewType.Binary, false);
           }));
+          actions.push(new MonacoUtils.Action("x", "Twiggy", "octicon-file-binary", true, () => {
+            Service.twiggyWasm(file, self.status);
+          }));
         } else if (file.type === FileType.C || file.type === FileType.Cpp) {
           actions.push(new MonacoUtils.Action("x", "Clang-Format", "octicon-quote ruler", true, () => {
             Service.clangFormat(file, self.status);

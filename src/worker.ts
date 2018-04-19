@@ -64,6 +64,20 @@ async function loadWabt() {
   }
 }
 
+let Twiggy: any = null;
+declare var wasm_bindgen: any;
+
+async function loadTwiggy() {
+  if (!Twiggy) {
+    importScripts("../lib/twiggy_wasm_api.js");
+    await wasm_bindgen("../lib/twiggy_wasm_api_bg.wasm");
+    Twiggy = {
+      Items: wasm_bindgen.Items,
+      Monos: wasm_bindgen.Monos
+    };
+  }
+}
+
 onmessage = (e: {data: IWorkerRequest}) => {
   const fn = {
     [WorkerCommand.OptimizeWasmWithBinaryen]: optimizeWasmWithBinaryen,
@@ -73,7 +87,8 @@ onmessage = (e: {data: IWorkerRequest}) => {
     [WorkerCommand.DisassembleWasmWithBinaryen]: disassembleWasmWithBinaryen,
     [WorkerCommand.AssembleWatWithBinaryen]: assembleWatWithBinaryen,
     [WorkerCommand.DisassembleWasmWithWabt]: disassembleWasmWithWabt,
-    [WorkerCommand.AssembleWatWithWabt]: assembleWatWithWabt
+    [WorkerCommand.AssembleWatWithWabt]: assembleWatWithWabt,
+    [WorkerCommand.TwiggyWasm]: twiggyWasm
   }[e.data.command];
   assert(fn, `Command ${e.data.command} not found.`);
   processMessage(e.data, fn);
@@ -153,4 +168,22 @@ async function assembleWatWithWabt(data: string): Promise<ArrayBuffer> {
   module.resolveNames();
   module.validate();
   return Promise.resolve(module.toBinary({ log: true, write_debug_names: true }).buffer);
+}
+
+async function twiggyWasm(data: ArrayBuffer): Promise<string> {
+  await loadTwiggy();
+
+  // Parse a binary's data into a collection of items.
+  const items = Twiggy.Items.parse(data);
+
+  // Configure an analysis and its options.
+  const opts = Twiggy.Monos.new();
+  opts.set_max_generics(10);
+  opts.set_max_monos(10);
+
+  // Run the analysis on the parsed items.
+  const monos = JSON.parse(items.monos(opts));
+
+  console.log(monos);
+  return Promise.resolve("hello world");
 }

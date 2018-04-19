@@ -209,6 +209,10 @@ class ServiceWorker {
   async assembleWatWithWabt(data: string): Promise<ArrayBuffer> {
     return await this.postMessage(WorkerCommand.AssembleWatWithWabt, data);
   }
+
+  async twiggyWasm(data: ArrayBuffer): Promise<string> {
+    return await this.postMessage(WorkerCommand.TwiggyWasm, data);
+  }
 }
 
 export class Service {
@@ -685,5 +689,17 @@ export class Service {
     const converter = new showdown.Converter({ tables: true, ghCodeBlocks: true });
     showdown.setFlavor("github");
     return converter.makeHtml(src);
+  }
+
+  static async twiggyWasm(file: File, status: IStatusProvider): Promise<string> {
+    const buffer = file.getData() as ArrayBuffer;
+    gaEvent("disassemble", "Service", "twiggy");
+    status && status.push("Analyze with Twiggy");
+    const result = await this.worker.twiggyWasm(buffer);
+    const output = file.parent.newFile(file.name + ".txt", FileType.Log);
+    output.description = "Analyzed " + file.name + " using Twiggy.";
+    output.setData(result);
+    status && status.pop();
+    return result;
   }
 }
