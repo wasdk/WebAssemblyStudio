@@ -27,7 +27,8 @@ export enum WorkerCommand {
   DisassembleWasmWithBinaryen,
   AssembleWatWithBinaryen,
   DisassembleWasmWithWabt,
-  AssembleWatWithWabt
+  AssembleWatWithWabt,
+  TwiggyWasm
 }
 
 /**
