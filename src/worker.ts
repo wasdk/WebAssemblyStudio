@@ -79,14 +79,14 @@ onmessage = (e: {data: IWorkerRequest}) => {
   processMessage(e.data, fn);
 };
 
-function processMessage(request: IWorkerRequest, fn: Function) {
+async function processMessage(request: IWorkerRequest, fn: Function) {
   const response: IWorkerResponse = {
     id: request.id,
     payload: null,
     success: true
   };
   try {
-    response.payload = fn(request.payload);
+    response.payload = await fn(request.payload);
   } catch (e) {
     response.payload = {
       message: e.message
@@ -96,61 +96,61 @@ function processMessage(request: IWorkerRequest, fn: Function) {
   postMessage(response, undefined);
 }
 
-function optimizeWasmWithBinaryen(data: ArrayBuffer): ArrayBuffer {
-  loadBinaryen();
+async function optimizeWasmWithBinaryen(data: ArrayBuffer): Promise<ArrayBuffer> {
+  await loadBinaryen();
   const module = Binaryen.readBinary(new Uint8Array(data));
   module.optimize();
-  return module.emitBinary();
+  return Promise.resolve(module.emitBinary());
 }
 
-function validateWasmWithBinaryen(data: ArrayBuffer): number {
-  loadBinaryen();
+async function validateWasmWithBinaryen(data: ArrayBuffer): Promise<number> {
+  await loadBinaryen();
   const module = Binaryen.readBinary(new Uint8Array(data));
-  return module.validate();
+  return Promise.resolve(module.validate());
 }
 
-function createWasmCallGraphWithBinaryen(data: ArrayBuffer): string {
-  loadBinaryen();
+async function createWasmCallGraphWithBinaryen(data: ArrayBuffer): Promise<string> {
+  await loadBinaryen();
   const module = Binaryen.readBinary(new Uint8Array(data));
   const old = Binaryen.print;
   let ret = "";
   Binaryen.print = (x: string) => { ret += x + "\n"; };
   module.runPasses(["print-call-graph"]);
   Binaryen.print = old;
-  return ret;
+  return Promise.resolve(ret);
 }
 
-function convertWasmToAsmWithBinaryen(data: ArrayBuffer): string {
-  loadBinaryen();
+async function convertWasmToAsmWithBinaryen(data: ArrayBuffer): Promise<string> {
+  await loadBinaryen();
   const module = Binaryen.readBinary(new Uint8Array(data));
   module.optimize();
-  return module.emitAsmjs();
+  return Promise.resolve(module.emitAsmjs());
 }
 
-function disassembleWasmWithBinaryen(data: ArrayBuffer): string {
-  loadBinaryen();
+async function disassembleWasmWithBinaryen(data: ArrayBuffer): Promise<string> {
+  await loadBinaryen();
   const module = Binaryen.readBinary(new Uint8Array(data));
-  return module.emitText();
+  return Promise.resolve(module.emitText());
 }
 
-function assembleWatWithBinaryen(data: string): ArrayBuffer {
-  loadBinaryen();
+async function assembleWatWithBinaryen(data: string): Promise<ArrayBuffer> {
+  await loadBinaryen();
   const module = Binaryen.parseText(data);
-  return module.emitBinary();
+  return Promise.resolve(module.emitBinary());
 }
 
-function disassembleWasmWithWabt(data: ArrayBuffer): string {
-  loadWabt();
+async function disassembleWasmWithWabt(data: ArrayBuffer): Promise<string> {
+  await loadWabt();
   const module = wabt.readWasm(data, { readDebugNames: true });
   module.generateNames();
   module.applyNames();
-  return module.toText({ foldExprs: false, inlineExport: true });
+  return Promise.resolve(module.toText({ foldExprs: false, inlineExport: true }));
 }
 
-function assembleWatWithWabt(data: string): ArrayBuffer {
-  loadWabt();
+async function assembleWatWithWabt(data: string): Promise<ArrayBuffer> {
+  await loadWabt();
   const module = wabt.parseWat("test.wat", data);
   module.resolveNames();
   module.validate();
-  return module.toBinary({ log: true, write_debug_names: true }).buffer;
+  return Promise.resolve(module.toBinary({ log: true, write_debug_names: true }).buffer);
 }
