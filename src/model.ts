@@ -300,6 +300,7 @@ export class File {
   type: FileType;
   data: string | ArrayBuffer;
   parent: Directory;
+  timestamp: number;
   onClose?: Function;
   /**
    * True if the buffer is out of sync with the data.
@@ -328,6 +329,8 @@ export class File {
     this.name = name;
     this.type = type;
     this.data = null;
+    this.timestamp = 0;
+    this.description = null;
     if (isBinaryFileType(type)) {
       this.bufferType = FileType.Unknown;
       this.buffer = monaco.editor.createModel("");
@@ -354,6 +357,7 @@ export class File {
   notifyDidChangeBuffer() {
     let file: File = this;
     while (file) {
+      this.updateTimestamp();
       file.onDidChangeBuffer.dispatch();
       file = file.parent;
     }
@@ -361,6 +365,7 @@ export class File {
   notifyDidChangeData() {
     let file: File = this;
     while (file) {
+      this.updateTimestamp();
       file.onDidChangeData.dispatch();
       file = file.parent;
     }
@@ -371,6 +376,9 @@ export class File {
       file.onDidChangeDirty.dispatch();
       file = file.parent;
     }
+  }
+  protected updateTimestamp() {
+    this.timestamp = (this.timestamp + 1) | 0;
   }
   private resetDirty() {
     if (this.isDirty) {
@@ -392,6 +400,24 @@ export class File {
       this.buffer.setValue(this.data as string);
       this.resetDirty();
       this.notifyDidChangeBuffer();
+    }
+  }
+  setAttributes({name, description, type}: {name?: string; description?: string, type?: FileType}) {
+    if (name !== undefined) {
+      this.name = name;
+    }
+    if (description !== undefined) {
+      this.description = description;
+    }
+    if (type !== undefined) {
+      this.type = type;
+    }
+    this.updateTimestamp();
+    let ancestor: Directory = this.parent;
+    while (ancestor) {
+      ancestor.updateTimestamp();
+      ancestor.onDidChangeChildren.dispatch();
+      ancestor = ancestor.parent;
     }
   }
   setProblems(problems: Problem []) {
@@ -506,6 +532,7 @@ export class Directory extends File {
   private notifyDidChangeChildren() {
     let directory: Directory = this;
     while (directory) {
+      this.updateTimestamp();
       directory.onDidChangeChildren.dispatch();
       directory = directory.parent;
     }

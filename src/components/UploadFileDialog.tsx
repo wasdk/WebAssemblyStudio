@@ -37,19 +37,32 @@ export interface UploadFileDialogProps {
   onCancel: () => void;
 }
 export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
-  }> {
+  rootTimestamp: number;
+}> {
   root: ModelRef<Directory>;
   uploadInput: UploadInput;
-  constructor(props: any) {
+
+  rootOnDidChangeChildren = () => {
+    this.setState({
+      rootTimestamp: this.root.getModel().timestamp
+    });
+  }
+
+  constructor(props: UploadFileDialogProps) {
     super(props);
     this.root = ModelRef.getRef(new Directory("root"));
-    this.root.getModel().onDidChangeChildren.register(() => {
-      this.forceUpdate();
-    });
+    this.state = {
+      rootTimestamp: this.root.getModel().timestamp
+    };
+  }
+  componentDidMount() {
+    this.root.getModel().onDidChangeChildren.register(this.rootOnDidChangeChildren);
+  }
+  componentWillUnmount() {
+    this.root.getModel().onDidChangeChildren.unregister(this.rootOnDidChangeChildren);
   }
   private async handleUpload(files: FileList) {
     const root = this.root.getModel();
-    this.setState({files: []});
     Array.from(files).forEach(async (file: any) => {
       const name: string = file.name;
       const path: string = file.webkitRelativePath || name; // This works in FF also.
@@ -63,7 +76,9 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
         console.log("Unable to read the file!");
       }
     });
-    this.forceUpdate();
+    this.setState({
+      rootTimestamp: root.timestamp
+    });
   }
   private readUploadedFile(inputFile: any, readAs: "text" | "arrayBuffer") {
     const temporaryFileReader = new FileReader();
