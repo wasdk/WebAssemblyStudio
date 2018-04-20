@@ -41,6 +41,7 @@ body {
   background: var(--grey-1000);
   -ms-overflow-style: -ms-autohiding-scrollbar;
   color: #ffffff;
+  overflow: hidden;
 }
 
 body {
