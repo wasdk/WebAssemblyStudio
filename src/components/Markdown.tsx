@@ -81,6 +81,9 @@ export class MarkdownView extends React.Component<MarkdownViewProps, {
     if (last !== next) {
       last.file.onDidChangeBuffer.unregister(this.onDidChangeBuffer);
       next.file.onDidChangeBuffer.register(this.onDidChangeBuffer);
+      this.setState({
+        markdown: props.view.file.buffer.getValue()
+      });
     }
   }
   render() {
