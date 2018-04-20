@@ -107,8 +107,7 @@ export class AppStore {
   }
 
   private updateFileNameAndDescription(file: File, name: string, description: string) {
-    file.name = name;
-    file.description = description;
+    file.setAttributes({name, description});
   }
 
   public getActiveTabGroup(): Group {
