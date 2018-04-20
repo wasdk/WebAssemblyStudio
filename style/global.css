@@ -898,6 +898,11 @@ a {
   font-size: 10px;
 }
 
+.context-view.monaco-menu-container {
+  max-height: 380px;
+  overflow: scroll;
+}
+
 /* Menu Item Styles */
 
 .action-label.ruler {
