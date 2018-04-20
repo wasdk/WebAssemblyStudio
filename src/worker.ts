@@ -73,7 +73,10 @@ async function loadTwiggy() {
     await wasm_bindgen("../lib/twiggy_wasm_api_bg.wasm");
     Twiggy = {
       Items: wasm_bindgen.Items,
-      Monos: wasm_bindgen.Monos
+      Top: wasm_bindgen.Top,
+      Paths: wasm_bindgen.Paths,
+      Monos: wasm_bindgen.Monos,
+      Dominators: wasm_bindgen.Dominators
     };
   }
 }
@@ -170,20 +173,87 @@ async function assembleWatWithWabt(data: string): Promise<ArrayBuffer> {
   return Promise.resolve(module.toBinary({ log: true, write_debug_names: true }).buffer);
 }
 
+interface IDominator {
+  children: IDominator [];
+  name: string;
+  retained_size: number;
+  retained_size_percent: number;
+  shallow_size: number;
+  shallow_size_percent: number;
+}
+
 async function twiggyWasm(data: ArrayBuffer): Promise<string> {
   await loadTwiggy();
+  let opts;
+  const items = Twiggy.Items.parse(new Uint8Array(data));
 
-  // Parse a binary's data into a collection of items.
-  const items = Twiggy.Items.parse(data);
+  let md = "# Twiggy Analysis\n\nTwiggy is a code size profiler, learn more about it [here](https://github.com/rustwasm/twiggy).\n\n";
 
-  // Configure an analysis and its options.
-  const opts = Twiggy.Monos.new();
-  opts.set_max_generics(10);
-  opts.set_max_monos(10);
+  // Top
+  opts = Twiggy.Top.new();
+  const top: Array<{name: string, shallow_size: number, shallow_size_percent: number}> = JSON.parse(items.top(opts));
 
-  // Run the analysis on the parsed items.
-  const monos = JSON.parse(items.monos(opts));
+  md += "## Top\n\n";
+  md += "| Shallow Bytes | Shallow % | Item |\n";
+  md += "| ------------: | --------: | :--- |\n";
 
-  console.log(monos);
-  return Promise.resolve("hello world");
+  let ignoreCount = 0;
+  const shallowSizePercentIgnoreThreshold = 0.1;
+  top.forEach(entry => {
+    if (entry.shallow_size_percent >= shallowSizePercentIgnoreThreshold) {
+      md += `| ${entry.shallow_size} | ${entry.shallow_size_percent.toFixed(2)} | \`${entry.name}\` |\n`;
+    } else {
+      ignoreCount ++;
+    }
+  });
+
+  if (ignoreCount) {
+    md += `\n### Note:\n${ignoreCount} items had a shallow size percent less than ${shallowSizePercentIgnoreThreshold} and were not listed above.\n`;
+  }
+
+  // Paths
+  // md += "\n\n# Paths\n\n";
+  // opts = Twiggy.Paths.new();
+  // const paths = JSON.parse(items.paths(opts));
+
+  // Monos
+  // md += "\n\n# Monos\n\n";
+  // opts = Twiggy.Monos.new();
+  // opts.set_max_generics(10);
+  // opts.set_max_monos(10);
+  // const monos = JSON.parse(items.monos(opts));
+
+  md += "\n\n## Dominators\n\n";
+  md += "| Retained Bytes | Retained % | Dominator Tree |\n";
+  md += "| ------------: | --------: | :--- |\n";
+
+  // Dominators
+  const retainedSizePercentIgnoreThreshold = 0.1;
+  ignoreCount = 0;
+  opts = Twiggy.Dominators.new();
+  const dominator: IDominator = JSON.parse(items.dominators(opts));
+  function printDominator(dominator: IDominator, depth: number) {
+    let prefix = "";
+    for (let i = 0; i < depth - 1; i++) {
+      prefix += "   ";
+    }
+    if (depth) {
+      prefix += "⤷ ";
+    }
+    md += `| ${dominator.retained_size} | ${dominator.retained_size_percent.toFixed(2)} | \`${prefix + dominator.name}\` |\n`;
+    if (dominator.children) {
+      dominator.children.forEach(child => {
+        if (child.retained_size_percent >= retainedSizePercentIgnoreThreshold) {
+          printDominator(child, depth + 1);
+        } else {
+          ignoreCount ++;
+        }
+      });
+    }
+  }
+  printDominator(dominator, 0);
+  if (ignoreCount) {
+    md += `\n### Note:\n${ignoreCount} items had a retained size percent less than ${retainedSizePercentIgnoreThreshold} and were not listed above.\n`;
+  }
+  return Promise.resolve(md);
 }

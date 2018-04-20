@@ -696,7 +696,7 @@ export class Service {
     gaEvent("disassemble", "Service", "twiggy");
     status && status.push("Analyze with Twiggy");
     const result = await this.worker.twiggyWasm(buffer);
-    const output = file.parent.newFile(file.name + ".txt", FileType.Log);
+    const output = file.parent.newFile(file.name + ".md", FileType.Markdown);
     output.description = "Analyzed " + file.name + " using Twiggy.";
     output.setData(result);
     status && status.pop();
