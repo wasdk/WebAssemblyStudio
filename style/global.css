@@ -810,6 +810,20 @@ a {
   font-weight: normal;
 }
 
+.md table {
+  /* width: 100%; */
+  border-collapse: collapse;
+  margin: 1.75rem 0;
+}
+
+.md td, .md th {
+  padding-left: 8px;
+}
+
+.md th {
+  font-size: 14px;
+}
+
 .tree-view {
   height: 100%;
   overflow-y: auto;
