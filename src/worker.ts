@@ -53,14 +53,14 @@ declare var wabt: {
 
 async function loadBinaryen() {
   if (typeof Binaryen === "undefined") {
-    importScripts("../lib/binaryen.js");
+    importScripts("https://cdn.rawgit.com/AssemblyScript/binaryen.js/v46.0.0/index.js");
   }
 }
 
 async function loadWabt() {
   if (typeof wabt === "undefined") {
     (self as any).global = self; // Wabt installs itself on the global object.
-    importScripts("../lib/libwabt.js");
+    importScripts("https://cdn.rawgit.com/AssemblyScript/wabt.js/v1.0.0-nightly.20180421/index.js");
   }
 }
 
