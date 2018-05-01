@@ -10,13 +10,27 @@ jest.mock("../../../src/utils/fetchTemplates", () => {
         JSON.parse(require('fs').readFileSync(__dirname + "/templates.json").toString()),
   };
 });
+
 jest.mock("../../../src/service", () => {
   return {
     Service: {
       compileMarkdownToHtml(md) { return `<pre>${md}</pre>`; },
     },
   }
-})
+});
+
+jest.mock("../../../src/config", () => {
+  return {
+    "default": async () => {
+      return {
+        serviceUrl: "",
+        clang: "",
+        rustc: "",
+        templates: ""
+      };
+    },
+  }
+});
 
 import { NewProjectDialog, Template } from "../../../src/components/NewProjectDialog";
 

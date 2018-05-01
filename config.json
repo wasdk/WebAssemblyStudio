@@ -1,5 +1,6 @@
 {
   "serviceUrl": "//wasmexplorer-service.herokuapp.com/service.php",
   "clang": "//webassembly-studio-clang.herokuapp.com/build",
-  "rustc": "//webassembly-studio-rust.herokuapp.com/rustc"
+  "rustc": "//webassembly-studio-rust.herokuapp.com/rustc",
+  "templates": "/dist/templates/index.js"
 }

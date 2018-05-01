@@ -23,6 +23,7 @@ export interface IConfig {
   serviceUrl: string;
   clang: string;
   rustc: string;
+  templates: string;
 }
 
 const configUrl = "./config.json";

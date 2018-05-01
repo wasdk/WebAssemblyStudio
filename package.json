@@ -12,7 +12,7 @@
     "coverage": "jest --coverage",
     "clean": "rm -r dist/*",
     "tslint": "tslint -p .",
-    "templates": "node bin/bundle-templates.js > dist/templates.js"
+    "templates": "rm -r dist/templates &> /dev/null ; cp -r templates dist/ && node bin/bundle-templates.js templates dist/templates"
   },
   "jest": {
     "setupFiles": [
@@ -32,7 +32,8 @@
     ],
     "collectCoverageFrom": [
       "src/**/**.(ts|tsx|js)"
-    ]
+    ],
+    "testURL": "https://webassembly.studio/"
   },
   "repository": {
     "type": "git",
