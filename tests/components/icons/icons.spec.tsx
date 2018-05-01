@@ -8,6 +8,7 @@ import {
   GoRepoForked,
   GoBeaker,
   GoGear,
+  GoBeakerGear,
   GoRocket,
   GoPencil,
   GoDelete,
@@ -45,6 +46,9 @@ describe("Tests for Icon component", () => {
   });
   it("GoGear renders correctly", () => {
     shallow(<GoGear/>);
+  });
+  it("GoBeakerGear renders correctly", () => {
+    shallow(<GoBeakerGear/>);
   });
   it("GoRocket renders correctly", () => {
     shallow(<GoRocket/>);
