@@ -72,10 +72,11 @@ import {
   GoRepoForked,
   GoRocket,
   GoBeaker,
+  GoBeakerGear,
   GoThreeBars,
   GoGist,
   GoOpenIssue,
-  GoQuestion
+  GoQuestion,
 } from "./shared/Icons";
 import { Button } from "./shared/Button";
 
@@ -283,6 +284,9 @@ export class App extends React.Component<AppProps, AppState> {
     Mousetrap.bind("command+enter", () => {
       run();
     });
+    Mousetrap.bind("command+alt+enter", () => {
+      build().then(run);
+    });
   }
   logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
     logLn(message, kind);
@@ -453,6 +457,15 @@ export class App extends React.Component<AppProps, AppState> {
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
           run();
+        }}
+      />,
+      <Button
+        icon={<GoBeakerGear />}
+        label="Build & Run"
+        title="Build & Run Project: CtrlCmd + Alt + Enter"
+        isDisabled={this.toolbarButtonsAreDisabled()}
+        onClick={() => {
+          build().then(run);
         }}
       />
     );

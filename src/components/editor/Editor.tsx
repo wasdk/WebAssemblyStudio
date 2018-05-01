@@ -129,6 +129,10 @@ export class Monaco extends React.Component<MonacoProps, {}> {
       run();
     },  null);
 
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.Enter, function() {
+      build().then(run);
+    },  null);
+
   }
   private ensureEditor() {
     if (this.editor) { return; }
