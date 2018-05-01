@@ -53,7 +53,7 @@ declare var wabt: {
 
 async function loadBinaryen() {
   if (typeof Binaryen === "undefined") {
-    importScripts("https://cdn.rawgit.com/AssemblyScript/binaryen.js/v46.0.0/index.js");
+    importScripts("https://cdn.rawgit.com/AssemblyScript/binaryen.js/v47.0.0/index.js");
   }
 }
 
