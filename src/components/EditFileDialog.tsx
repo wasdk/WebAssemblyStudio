@@ -38,13 +38,15 @@ export interface EditFileDialogProps {
 export class EditFileDialog extends React.Component<EditFileDialogProps, {
     description: string;
     name: string;
+    fileType: FileType;
   }> {
   constructor(props: EditFileDialogProps) {
     super(props);
-    const { description, name } = props.file.getModel();
+    const { description, name, type: fileType } = props.file.getModel();
     this.state = {
       description,
       name,
+      fileType,
     };
   }
   onChangeName = (event: ChangeEvent<any>) => {
@@ -53,11 +55,15 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, {
   onChangeDescription = (event: ChangeEvent<any>) => {
     this.setState({ description: event.target.value });
   }
-  error() {
+  getNameError() {
     const directory = appStore.getParent(this.props.file);
     const file = appStore.getImmediateChild(directory, this.state.name);
-    if (file && file !== this.props.file) {
-      return `A file with the same name already exists.`;
+    if (!/^[a-z0-9\.\-\_]+$/i.test(this.state.name)) {
+      return "Illegal characters in file name.";
+    } else if (!this.state.name.endsWith(extensionForFileType(this.state.fileType))) {
+      return nameForFileType(this.state.fileType) + " file extension is missing.";
+    } else if (file && this.props.file !== file) {
+      return `File '${this.state.name}' already exists.`;
     }
     return "";
   }
@@ -76,9 +82,9 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, {
           {`Edit ${fileModel instanceof Directory ? "Directory" : "File"} ${fileModel.name}`}
         </div>
         <div style={{ flex: 1, padding: "8px" }}>
-          <TextInputBox label="Name:" error={this.error()} value={this.state.name} onChange={this.onChangeName}/>
+          <TextInputBox label="Name:" error={this.getNameError()} value={this.state.name} onChange={this.onChangeName}/>
           <Spacer height={8}/>
-          <TextInputBox label="Description:" error={this.error()} value={this.state.description} onChange={this.onChangeDescription}/>
+          <TextInputBox label="Description:" value={this.state.description} onChange={this.onChangeDescription}/>
         </div>
         <div>
           <Button
@@ -93,7 +99,7 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, {
             icon={<GoPencil />}
             label="Edit"
             title="Edit"
-            isDisabled={!this.state.name || !!this.error()}
+            isDisabled={!this.state.name || !!this.getNameError()}
             onClick={() => {
               return this.props.onChange && this.props.onChange(this.state.name, this.state.description);
             }}

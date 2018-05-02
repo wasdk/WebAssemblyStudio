@@ -50,7 +50,7 @@ export class NewFileDialog extends React.Component<{
   onChangeName = (event: ChangeEvent<any>) => {
     this.setState({ name: event.target.value });
   }
-  nameError() {
+  getNameError() {
     const directory = this.props.directory;
     if (this.state.name) {
       if (!/^[a-z0-9\.\-\_]+$/i.test(this.state.name)) {
@@ -125,7 +125,7 @@ export class NewFileDialog extends React.Component<{
           </div>
         </div>
         <div style={{ flex: 1, padding: "8px" }}>
-          <TextInputBox label={"Name: " + (this.props.directory ? appStore.getPath(this.props.directory) + "/" : "")} error={this.nameError()} value={this.state.name} onChange={this.onChangeName}/>
+          <TextInputBox label={"Name: " + (this.props.directory ? appStore.getPath(this.props.directory) + "/" : "")} error={this.getNameError()} value={this.state.name} onChange={this.onChangeName}/>
         </div>
         <div>
           <Button
@@ -140,7 +140,7 @@ export class NewFileDialog extends React.Component<{
             icon={<GoFile />}
             label={this.createButtonLabel()}
             title="Create New File"
-            isDisabled={!this.state.fileType || !this.state.name || !!this.nameError()}
+            isDisabled={!this.state.fileType || !this.state.name || !!this.getNameError()}
             onClick={() => {
               const file = new File(this.fileName(), this.state.fileType);
               return this.props.onCreate && this.props.onCreate(file);
