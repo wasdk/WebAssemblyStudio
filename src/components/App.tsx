@@ -145,6 +145,7 @@ export interface AppState {
   tabGroups: Group[];
   activeTabGroup: Group;
   hasStatus: boolean;
+  isContentModified: boolean;
   windowDimensions: string;
 }
 
@@ -155,6 +156,11 @@ export interface AppProps {
    */
   update: boolean;
   fiddle: string;
+  windowContext: AppWindowContext;
+}
+
+export interface AppWindowContext {
+  promptWhenClosing: boolean;
 }
 
 export class App extends React.Component<AppProps, AppState> {
@@ -193,6 +199,7 @@ export class App extends React.Component<AppProps, AppState> {
       activeTabGroup: null,
       windowDimensions: App.getWindowDimensions(),
       hasStatus: false,
+      isContentModified: false,
     };
     registerLanguages();
   }
@@ -247,6 +254,13 @@ export class App extends React.Component<AppProps, AppState> {
     appStore.onDidChangeStatus.register(() => {
       this.setState({
         hasStatus: appStore.getProject().getModel().hasStatus(),
+      });
+    });
+    appStore.onDidChangeIsContentModified.register(() => {
+      this.props.windowContext.promptWhenClosing = appStore.getIsContentModified();
+
+      this.setState({
+        isContentModified: appStore.getIsContentModified(),
       });
     });
   }

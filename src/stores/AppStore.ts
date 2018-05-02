@@ -49,6 +49,7 @@ import { ViewType, View, defaultViewTypeForFileType } from "../components/editor
 export class AppStore {
   private project: Project;
   private output: File;
+  private isContentModified: boolean;
   private tabGroups: Group[];
   private activeTabGroup: Group;
 
@@ -64,10 +65,12 @@ export class AppStore {
   onOutputChanged = new EventDispatcher("AppStore onOutputChanged");
   onTabsChange = new EventDispatcher("AppStore onTabsChange");
   onSandboxRun = new EventDispatcher("AppStore onSandboxRun");
+  onDidChangeIsContentModified = new EventDispatcher("AppStore onDidChangeIsContentModified");
 
   constructor() {
     this.project = null;
     this.output = null;
+    this.isContentModified = false;
   }
 
   private initStore() {
@@ -75,12 +78,14 @@ export class AppStore {
     this.activeTabGroup = new Group(null, []);
     this.tabGroups = [this.activeTabGroup];
     this.bindProject();
+    this.isContentModified = false;
     this.output = new File("output", FileType.Log);
   }
 
   private loadProject(project: Project) {
     this.project = project;
     this.bindProject();
+    this.isContentModified = false;
     this.onLoadProject.dispatch();
   }
 
@@ -90,9 +95,23 @@ export class AppStore {
     this.project.onChange.register(() => this.onChange.dispatch());
     this.project.onDirtyFileUsed.register((file: File) => this.onDirtyFileUsed.dispatch(file));
     this.project.onDidChangeBuffer.register(() => this.onDidChangeBuffer.dispatch());
-    this.project.onDidChangeData.register(() => this.onDidChangeData.dispatch());
+    this.project.onDidChangeData.register(() => {
+      this.setContentModified(true);
+      this.onDidChangeData.dispatch();
+    });
     this.project.onDidChangeDirty.register((file: File) => this.onDidChangeDirty.dispatch(file));
-    this.project.onDidChangeChildren.register(() => this.onDidChangeChildren.dispatch());
+    this.project.onDidChangeChildren.register(() => {
+      this.setContentModified(true);
+      this.onDidChangeChildren.dispatch();
+    });
+  }
+
+  private setContentModified(modified: boolean) {
+    if (this.isContentModified === modified) {
+      return;
+    }
+    this.isContentModified = modified;
+    this.onDidChangeIsContentModified.dispatch();
   }
 
   private addFileTo(file: File, parent: Directory) {
@@ -107,8 +126,7 @@ export class AppStore {
   }
 
   private updateFileNameAndDescription(file: File, name: string, description: string) {
-    file.name = name;
-    file.description = description;
+    file.setNameAndDescription(name, description);
   }
 
   public getActiveTabGroup(): Group {
@@ -121,6 +139,10 @@ export class AppStore {
 
   public getProject(): ModelRef<Project> {
     return ModelRef.getRef(this.project);
+  }
+
+  public getIsContentModified(): boolean {
+    return this.isContentModified;
   }
 
   public getOutput(): ModelRef<File> {
@@ -333,6 +355,10 @@ export class AppStore {
       case AppActionType.LOAD_PROJECT: {
         const { project } = action as LoadProjectAction;
         this.loadProject(project);
+        break;
+      }
+      case AppActionType.CLEAR_PROJECT_MODIFIED: {
+        this.setContentModified(false);
         break;
       }
       case AppActionType.INIT_STORE: {

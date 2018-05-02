@@ -351,6 +351,13 @@ export class File {
     });
     this.parent = null;
   }
+  setNameAndDescription(name: string, description: string, type?: FileType) {
+    this.name = name;
+    this.description = description;
+    if (this.parent) {
+      this.parent.notifyDidChangeChildren(this);
+    }
+  }
   notifyDidChangeBuffer() {
     let file: File = this;
     while (file) {
@@ -503,7 +510,7 @@ export class Directory extends File {
   constructor(name: string) {
     super(name, FileType.Directory);
   }
-  private notifyDidChangeChildren() {
+  notifyDidChangeChildren(file: File) {
     let directory: Directory = this;
     while (directory) {
       directory.onDidChangeChildren.dispatch();
@@ -539,7 +546,7 @@ export class Directory extends File {
     assert(!this.getImmediateChild(file.name));
     this.children.push(file);
     file.parent = this;
-    this.notifyDidChangeChildren();
+    this.notifyDidChangeChildren(file);
   }
   removeFile(file: File) {
     assert(file.parent === this);
@@ -547,7 +554,7 @@ export class Directory extends File {
     assert(i >= 0);
     this.children.splice(i, 1);
     file.parent = null;
-    this.notifyDidChangeChildren();
+    this.notifyDidChangeChildren(file);
   }
   newDirectory(path: string | string[]): Directory {
     if (typeof path === "string") {

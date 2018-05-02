@@ -34,6 +34,7 @@ import { contextify } from "../util";
 export enum AppActionType {
   ADD_FILE_TO = "ADD_FILE_TO",
   LOAD_PROJECT = "LOAD_PROJECT",
+  CLEAR_PROJECT_MODIFIED = "CLEAR_PROJECT_MODIFIED",
   INIT_STORE = "INIT_STORE",
   UPDATE_FILE_NAME_AND_DESCRIPTION = "UPDATE_FILE_NAME_AND_DESCRIPTION",
   DELETE_FILE = "DELETE_FILE",
@@ -231,6 +232,10 @@ export async function saveProject(fiddle: string) {
 
   await Service.saveProject(projectModel, openedFiles, fiddle);
   logLn("Saved Project OK");
+
+  dispatcher.dispatch({
+    type: AppActionType.CLEAR_PROJECT_MODIFIED,
+  } as AppAction);
 }
 
 export async function editInWebAssemblyStudio(fiddle: string) {

@@ -61,6 +61,20 @@ export function getUrlParameters(): any {
   return params;
 }
 
+const appWindowContext = {
+  promptWhenClosing: false,
+};
+
+function unloadPageHandler(e: {returnValue: string}): any {
+  if (!appWindowContext.promptWhenClosing) {
+    window.removeEventListener("beforeunload", unloadPageHandler, false);
+    return;
+  }
+  e.returnValue = "Project data is not saved.";
+}
+
+window.addEventListener("beforeunload", unloadPageHandler, false);
+
 const parameters = getUrlParameters();
 const embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed"], 10);
 const update = parameters["update"] === true ? true : !!parseInt(parameters["update"], 10);
@@ -75,7 +89,7 @@ const fiddle = parameters["fiddle"] || parameters["f"];
     );
   } else {
     ReactDOM.render(
-      <App embed={embed} update={update} fiddle={fiddle}/>,
+      <App embed={embed} update={update} fiddle={fiddle} windowContext={appWindowContext}/>,
       document.getElementById("app")
     );
   }
