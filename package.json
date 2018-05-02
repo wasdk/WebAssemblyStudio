@@ -10,6 +10,7 @@
     "test": "webpack --mode production && node bin/check-bundle-size.js && npm run jest && npm run tslint",
     "jest": "jest",
     "coverage": "jest --coverage",
+    "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "clean": "rm -r dist/*",
     "tslint": "tslint -p .",
     "templates": "node bin/bundle-templates.js > dist/templates.js"
@@ -72,6 +73,7 @@
     "@types/react": "^16.0.40",
     "@types/react-dom": "^16.0.4",
     "awesome-typescript-loader": "^3.5.0",
+    "coveralls": "^3.0.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "jest": "^22.4.2",
