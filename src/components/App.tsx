@@ -210,7 +210,7 @@ export class App extends React.Component<AppProps, AppState> {
       project: appStore.getProject(),
       tabGroups: appStore.getTabGroups(),
       activeTabGroup: appStore.getActiveTabGroup(),
-      hasStatus: appStore.getProject().getModel().hasStatus(),
+      hasStatus: appStore.hasStatus(),
     });
     this.bindAppStoreEvents();
     if (this.state.fiddle) {
@@ -254,7 +254,7 @@ export class App extends React.Component<AppProps, AppState> {
     });
     appStore.onDidChangeStatus.register(() => {
       this.setState({
-        hasStatus: appStore.getProject().getModel().hasStatus(),
+        hasStatus: appStore.hasStatus(),
       });
     });
     appStore.onDidChangeIsContentModified.register(() => {
