@@ -13,7 +13,8 @@
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "clean": "rm -r dist/*",
     "tslint": "tslint -p .",
-    "templates": "bin/build-templates.sh && bin/build-arc-templates.sh"
+    "templates": "bin/build-templates.sh && bin/build-arc-templates.sh",
+    "mutate": "./node_modules/.bin/stryker run"
   },
   "jest": {
     "setupFiles": [
@@ -80,6 +81,11 @@
     "jest": "^22.4.2",
     "react-test-renderer": "^16.2.0",
     "source-map-loader": "^0.2.3",
+    "stryker": "^0.22.4",
+    "stryker-api": "^0.16.1",
+    "stryker-html-reporter": "^0.13.3",
+    "stryker-jest-runner": "^0.6.0",
+    "stryker-typescript": "^0.10.2",
     "tslint": "^5.9.1",
     "typescript": "^2.7.2",
     "webpack": "^4.0.1",
