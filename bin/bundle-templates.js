@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /* Copyright 2018 Mozilla Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,43 +22,62 @@
 const path = require("path");
 const fs = require("fs");
 
+const templatesDir = process.argv[2];
+const outputPath = process.argv[3];
+
 function walk(base, callback) {
   let files = fs.readdirSync(base);
   files.forEach(file => {
-    let path = base + "/" + file;
-    if (fs.statSync(path).isDirectory()) {
-      walk(path, callback);
+    let fullpath = path.join(base, file);
+    if (fs.statSync(fullpath).isDirectory()) {
+      walk(fullpath, callback);
     } else {
-      callback && callback(path);
+      callback && callback(fullpath);
     }
   });
 }
 
-function bundleTemplate(base) {
+function bundleTemplate(templateName) {
+  let description = "";
+  let icon = "";
+
+  let base = path.join(templatesDir, templateName);
   let files = [];
   walk(base, (path) => {
-    let data = fs.readFileSync(path, "utf8");
-    let name = path.substring(base.length + 1)
+    let name = path.substring(base.length + 1);
+    if (name == "package.json") {
+      const pkg = JSON.parse(fs.readFileSync(path, "utf8"));
+      templateName = pkg.name;
+      description = pkg.description;
+      if (pkg.wasmStudio) {
+        templateName = pkg.wasmStudio.name || name;
+        description = pkg.wasmStudio.description || description;
+        icon = pkg.wasmStudio.icon || icon;
+      }
+    }
     files.push({
-      name: name,
-      data: data
+      name,
     });
   })
-  return files;
+  return {
+    name: templateName,
+    description,
+    icon,
+    files,
+  }
 }
 
-let templateDir = "templates"
-let templates = fs.readdirSync(templateDir);
+let templates = fs.readdirSync(templatesDir);
 
 let output = {};
 templates.forEach((file) => {
-  if (!fs.statSync(templateDir + "/" + file).isDirectory()) {
+  if (!fs.statSync(path.join(templatesDir, file)).isDirectory()) {
     return;
   }
-  let files = bundleTemplate(templateDir + "/" + file);
-  output[file] = {
-    files
-  }
+  let template = bundleTemplate(file);
+  output[file] = template;
 });
 
-process.stdout.write(JSON.stringify(output, null, 2));
+fs.writeFileSync(
+  path.resolve(outputPath, "index.js"),
+  JSON.stringify(output, null, 2));

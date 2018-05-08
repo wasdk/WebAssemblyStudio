@@ -574,7 +574,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.setState({ newProjectDialog: null });
           }}
           onCreate={async (template: Template) => {
-            await openProjectFiles(template.files);
+            await openProjectFiles(template);
             this.setState({ newProjectDialog: false });
           }}
         />

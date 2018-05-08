@@ -19,9 +19,7 @@
  * SOFTWARE.
  */
 
-export default async function fetchTemplates() {
-  const response = await fetch("dist/templates.js");
-  const js = await response.text();
-  const templates = (new Function(`return ${js};`)).call(null);
-  return templates;
+export default async function fetchTemplates(src: string) {
+  const response = await fetch(src);
+  return JSON.parse(await response.text());
 }

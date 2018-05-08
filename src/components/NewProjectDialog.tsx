@@ -28,11 +28,13 @@ import { File, FileType, Directory, extensionForFileType, nameForFileType, Proje
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
 import fetchTemplates from "../utils/fetchTemplates";
+import getConfig from "../config";
 
 export interface Template {
   name: string;
   description: string;
-  files: IFiddleFile [];
+  files: IFiddleFile[];
+  baseUrl: URL;
   icon: string;
 }
 
@@ -66,29 +68,21 @@ export class NewProjectDialog extends React.Component<{
     return "Create";
   }
   async componentDidMount() {
-    const json = await fetchTemplates();
-    const templates: Template [] = [];
-    // tslint:disable-next-line:forin
-    for (const key in json) {
-      let name = key;
-      let description = "";
-      let icon = "";
-      const packageFile = json[key].files.find((file: any) => file.name === "package.json");
-      if (packageFile) {
-        const pkg = JSON.parse(packageFile.data);
-        name = pkg.name;
-        description = pkg.description;
-        if (pkg.wasmStudio) {
-          name = pkg.wasmStudio.name || name;
-          description = pkg.wasmStudio.description || description;
-          icon = pkg.wasmStudio.icon || icon;
-        }
-      }
+    const config = await getConfig();
+    const templatesPath = config.templates;
+    const json = await fetchTemplates(config.templates);
+    const base = new URL(templatesPath, location.href);
+    const templates: Template[] = [];
+    for (const [ key, entry] of Object.entries(json) as any) {
+      const name = entry.name || "";
+      const description = entry.description || "";
+      const icon = entry.icon || "";
       templates.push({
         name,
         description,
         icon,
-        files: json[key].files
+        files: entry.files,
+        baseUrl: new URL(key + "/", base)
       });
     }
 

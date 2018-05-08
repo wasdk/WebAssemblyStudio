@@ -30,6 +30,7 @@ import Group from "../utils/group";
 import { Gulpy } from "../gulpy";
 import { Errors } from "../errors";
 import { contextify } from "../util";
+import getConfig from "../config";
 
 export enum AppActionType {
   ADD_FILE_TO = "ADD_FILE_TO",
@@ -209,9 +210,9 @@ export interface OpenFilesAction extends AppAction {
   files: string[][];
 }
 
-export async function openProjectFiles(files: IFiddleFile []) {
+export async function openProjectFiles(template: Template) {
   const newProject = new Project();
-  await Service.loadFilesIntoProject(files, newProject);
+  await Service.loadFilesIntoProject(template.files, newProject, template.baseUrl);
   dispatcher.dispatch({
     type: AppActionType.LOAD_PROJECT,
     project: newProject

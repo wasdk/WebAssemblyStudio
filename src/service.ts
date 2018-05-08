@@ -469,18 +469,27 @@ export class Service {
     }, uri);
   }
 
-  static async loadFilesIntoProject(files: IFiddleFile [], project: Project, basePath: string = ""): Promise<any> {
-    files.forEach(async f => {
+  static async loadFilesIntoProject(files: IFiddleFile[], project: Project, base: URL = null): Promise<any> {
+    for (const f of files) {
       const type = fileTypeFromFileName(f.name);
       const file = project.newFile(f.name, type, false);
       let data: string | ArrayBuffer;
-      if (f.type === "binary") {
-        data = decodeRestrictedBase64ToBytes(f.data).buffer as ArrayBuffer;
+      if (f.data) {
+        if (f.type === "binary") {
+          data = decodeRestrictedBase64ToBytes(f.data).buffer as ArrayBuffer;
+        } else {
+          data = f.data;
+        }
       } else {
-        data = f.data;
+        const request = await fetch(new URL(f.name, base).toString());
+        if (f.type === "binary") {
+          data = await request.arrayBuffer();
+        } else {
+          data = await request.text();
+        }
       }
       file.setData(data);
-    });
+    }
   }
 
   static lazyLoad(uri: string, status?: IStatusProvider): Promise<any> {

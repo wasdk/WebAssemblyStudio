@@ -13,7 +13,7 @@
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "clean": "rm -r dist/*",
     "tslint": "tslint -p .",
-    "templates": "node bin/bundle-templates.js > dist/templates.js"
+    "templates": "bin/build-templates.sh"
   },
   "jest": {
     "setupFiles": [
@@ -33,7 +33,8 @@
     ],
     "collectCoverageFrom": [
       "src/**/**.(ts|tsx|js)"
-    ]
+    ],
+    "testURL": "https://webassembly.studio/"
   },
   "repository": {
     "type": "git",
