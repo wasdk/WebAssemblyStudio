@@ -31,6 +31,7 @@ import { Gulpy } from "../gulpy";
 import { Errors } from "../errors";
 import { contextify } from "../util";
 import getConfig from "../config";
+import { rewriteHTML, RewriteSourcesContext } from "../utils/rewriteSources";
 
 export enum AppActionType {
   ADD_FILE_TO = "ADD_FILE_TO",
@@ -336,22 +337,20 @@ export async function runTask(name: string, optional: boolean = false) {
 
 export async function run() {
   const mainFileName = "src/main.html";
-  const file = appStore.getFileByName(mainFileName);
-  let src = appStore.getFileSource(file);
-
-  src = src.replace(/src\s*=\s*"(.+?)"/g, (all: string, path?: string) => {
-    const fullPath = new URL(path, "http://example.org/" + mainFileName).pathname;
-    const file = appStore.getFileByName(fullPath.substr(1));
-    if (!file) {
-      logLn(`Cannot find file '${path}' mentioned in ${mainFileName}`);
-      return all;
-    }
-    const src = appStore.getFileBuffer(file).getValue();
-    const blob = new Blob([src], { type: "text/javascript" });
-    return `src="${window.URL.createObjectURL(blob)}"`;
-  });
-
   const projectModel = appStore.getProject().getModel();
+  const context = new RewriteSourcesContext(projectModel);
+  context.logLn = logLn;
+  context.createFile = (src: ArrayBuffer|string, type: string) => {
+    const blob = new Blob([src], { type, });
+    return window.URL.createObjectURL(blob);
+  };
+
+  const src = rewriteHTML(context, mainFileName);
+  if (!src) {
+    logLn(`Cannot translate and open ${mainFileName}`);
+    return;
+  }
+
   dispatcher.dispatch({
     type: AppActionType.SANDBOX_RUN,
     src,
