@@ -80,6 +80,8 @@ const embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed
 const update = parameters["update"] === true ? true : !!parseInt(parameters["update"], 10);
 const fiddle = parameters["fiddle"] || parameters["f"];
 
+const templatesName = parameters["embedding"] === "arc_website" ? "arc" : "default";
+
 (window["require"])(["vs/editor/editor.main", "require"], (_: any, require: any) => {
   MonacoUtils.initialize(require);
   if (typeof WebAssembly !== "object") {
@@ -89,7 +91,7 @@ const fiddle = parameters["fiddle"] || parameters["f"];
     );
   } else {
     ReactDOM.render(
-      <App embed={embed} update={update} fiddle={fiddle} windowContext={appWindowContext}/>,
+      <App embed={embed} update={update} fiddle={fiddle} templatesName={templatesName} windowContext={appWindowContext}/>,
       document.getElementById("app")
     );
   }

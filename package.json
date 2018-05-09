@@ -13,7 +13,7 @@
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "clean": "rm -r dist/*",
     "tslint": "tslint -p .",
-    "templates": "bin/build-templates.sh"
+    "templates": "bin/build-templates.sh && bin/build-arc-templates.sh"
   },
   "jest": {
     "setupFiles": [
