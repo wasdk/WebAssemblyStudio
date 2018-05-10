@@ -32,6 +32,7 @@ import { Errors } from "../errors";
 import { contextify } from "../util";
 import getConfig from "../config";
 import { rewriteHTML, RewriteSourcesContext } from "../utils/rewriteSources";
+import { Arc } from "../arc";
 
 export enum AppActionType {
   ADD_FILE_TO = "ADD_FILE_TO",
@@ -283,7 +284,16 @@ export interface SandboxRunAction extends AppAction {
   src: string;
 }
 
-export async function runTask(name: string, optional: boolean = false) {
+export enum RunTaskExternals {
+  Default,
+  Arc
+}
+
+export async function runTask(
+  name: string,
+  optional: boolean = false,
+  externals: RunTaskExternals = RunTaskExternals.Default
+) {
   // Runs the provided source in our fantasy gulp context
   const run = async (src: string) => {
     const gulp = new Gulpy();
@@ -305,7 +315,8 @@ export async function runTask(name: string, optional: boolean = false) {
         Service,
         project,
         logLn,
-        fileTypeForExtension
+        fileTypeForExtension,
+        Arc: externals === RunTaskExternals.Arc ? Arc : undefined,
       }
     })();
     if (gulp.hasTask(name)) {

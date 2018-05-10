@@ -92,6 +92,7 @@ import { Errors } from "../errors";
 import { ControlCenter } from "./ControlCenter";
 import Group from "../utils/group";
 import { StatusBar } from "./StatusBar";
+import { publishArc } from "../actions/ArcActions";
 
 export interface AppState {
   project: ModelRef<Project>;
@@ -495,6 +496,19 @@ export class App extends React.Component<AppProps, AppState> {
         }}
       />
     );
+    if (this.props.embeddingParams.type === EmbeddingType.Arc) {
+      toolbarButtons.push(
+        <Button
+          icon={<GoRepoForked />}
+          label="Publish"
+          title="Publish Project"
+          isDisabled={this.toolbarButtonsAreDisabled()}
+          onClick={() => {
+            publishArc();
+          }}
+        />
+      );
+    }
     if (this.props.embeddingParams.type === EmbeddingType.None) {
       toolbarButtons.push(
         <Button
