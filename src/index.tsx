@@ -28,7 +28,7 @@ import { Header } from "./components/Header";
 import { Split } from "./components/Split";
 import { Toolbar } from "./components/Toolbar";
 
-import { App } from "./components/App";
+import { App, EmbeddingParams, EmbeddingType } from "./components/App";
 import { Service } from "./service";
 import { layout } from "./util";
 import { MonacoUtils } from "./monaco-utils";
@@ -75,12 +75,32 @@ function unloadPageHandler(e: {returnValue: string}): any {
 
 window.addEventListener("beforeunload", unloadPageHandler, false);
 
+function getEmbeddingParams(parameters: any): EmbeddingParams {
+  const embedding = parameters["embedding"];
+  let type;
+  switch (embedding) {
+    case "default":
+      type = EmbeddingType.Default;
+      break;
+    case "arc_website":
+      type = EmbeddingType.Arc;
+      break;
+    default:
+      const embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed"], 10);
+      type = embed ? EmbeddingType.Default : EmbeddingType.None;
+      break;
+  }
+  const templatesName = parameters["embedding"] === "arc_website" ? "arc" : "default";
+  return {
+    type,
+    templatesName,
+  };
+}
+
 const parameters = getUrlParameters();
-const embed = parameters["embed"] === true ? true : !!parseInt(parameters["embed"], 10);
 const update = parameters["update"] === true ? true : !!parseInt(parameters["update"], 10);
 const fiddle = parameters["fiddle"] || parameters["f"];
-
-const templatesName = parameters["embedding"] === "arc_website" ? "arc" : "default";
+const embeddingParams = getEmbeddingParams(parameters);
 
 (window["require"])(["vs/editor/editor.main", "require"], (_: any, require: any) => {
   MonacoUtils.initialize(require);
@@ -91,7 +111,7 @@ const templatesName = parameters["embedding"] === "arc_website" ? "arc" : "defau
     );
   } else {
     ReactDOM.render(
-      <App embed={embed} update={update} fiddle={fiddle} templatesName={templatesName} windowContext={appWindowContext}/>,
+      <App update={update} fiddle={fiddle} embeddingParams={embeddingParams} windowContext={appWindowContext}/>,
       document.getElementById("app")
     );
   }

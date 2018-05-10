@@ -151,14 +151,24 @@ export interface AppState {
 }
 
 export interface AppProps {
-  embed: boolean;
   /**
    * If true, the Update button is visible.
    */
   update: boolean;
   fiddle: string;
-  templatesName: string;
+  embeddingParams: EmbeddingParams;
   windowContext: AppWindowContext;
+}
+
+export enum EmbeddingType {
+  None,
+  Default,
+  Arc
+}
+
+export interface EmbeddingParams {
+  type: EmbeddingType;
+  templatesName: string;
 }
 
 export interface AppWindowContext {
@@ -392,7 +402,7 @@ export class App extends React.Component<AppProps, AppState> {
         }}
       />
     ];
-    if (this.props.embed) {
+    if (this.props.embeddingParams.type === EmbeddingType.Default) {
       toolbarButtons.push(
         <Button
           icon={<GoPencil />}
@@ -403,7 +413,8 @@ export class App extends React.Component<AppProps, AppState> {
             editInWebAssemblyStudio(this.state.fiddle);
           }}
         />);
-    } else {
+    }
+    if (this.props.embeddingParams.type === EmbeddingType.None) {
       if (this.props.update) {
         toolbarButtons.push(
           <Button
@@ -484,7 +495,7 @@ export class App extends React.Component<AppProps, AppState> {
         }}
       />
     );
-    if (!this.props.embed) {
+    if (this.props.embeddingParams.type === EmbeddingType.None) {
       toolbarButtons.push(
         <Button
           icon={<GoOpenIssue />}
@@ -571,7 +582,7 @@ export class App extends React.Component<AppProps, AppState> {
       {this.state.newProjectDialog &&
         <NewProjectDialog
           isOpen={true}
-          templatesName={this.props.templatesName}
+          templatesName={this.props.embeddingParams.templatesName}
           onCancel={() => {
             this.setState({ newProjectDialog: null });
           }}
