@@ -40,6 +40,7 @@ export interface Template {
 
 export class NewProjectDialog extends React.Component<{
   isOpen: boolean;
+  templatesName: string;
   onCreate: (template: Template) => void;
   onCancel: () => void;
 }, {
@@ -69,8 +70,8 @@ export class NewProjectDialog extends React.Component<{
   }
   async componentDidMount() {
     const config = await getConfig();
-    const templatesPath = config.templates;
-    const json = await fetchTemplates(config.templates);
+    const templatesPath = config.templates[this.props.templatesName];
+    const json = await fetchTemplates(templatesPath);
     const base = new URL(templatesPath, location.href);
     const templates: Template[] = [];
     for (const [ key, entry] of Object.entries(json) as any) {

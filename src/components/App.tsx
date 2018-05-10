@@ -157,6 +157,7 @@ export interface AppProps {
    */
   update: boolean;
   fiddle: string;
+  templatesName: string;
   windowContext: AppWindowContext;
 }
 
@@ -570,6 +571,7 @@ export class App extends React.Component<AppProps, AppState> {
       {this.state.newProjectDialog &&
         <NewProjectDialog
           isOpen={true}
+          templatesName={this.props.templatesName}
           onCancel={() => {
             this.setState({ newProjectDialog: null });
           }}
