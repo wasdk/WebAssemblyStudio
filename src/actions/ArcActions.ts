@@ -19,7 +19,8 @@
  * SOFTWARE.
  */
 
-import { pushStatus, popStatus, runTask, RunTaskExternals } from "./AppActions";
+import { pushStatus, popStatus, runTask } from "./AppActions";
+import { RunTaskExternals } from "../utils/taskRunner";
 
 export async function publishArc() {
   pushStatus("Publishing Arc Project");
