@@ -32,10 +32,9 @@ import { View, ViewType } from "./View";
 import { BinaryView } from "../Binary";
 import { VizView } from "../Viz";
 import { pushStatus, popStatus, logLn } from "../../actions/AppActions";
-
 import appStore from "../../stores/AppStore";
 
-export class ViewTabsProps {
+export interface ViewTabsProps {
   /**
    * Currently active view tab.
    */
@@ -77,13 +76,6 @@ export class ViewTabsProps {
    * Called when view tabs are split.
    */
   onSplitViews?: () => void;
-}
-
-function diff(a: any[], b: any[]): { ab: any[], ba: any[] } {
-  return {
-    ab: a.filter(x => b.indexOf(x) < 0),
-    ba: b.filter(x => a.indexOf(x) < 0)
-  };
 }
 
 export class ViewTabs extends React.Component<ViewTabsProps> {

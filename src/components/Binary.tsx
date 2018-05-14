@@ -87,7 +87,7 @@ export class BinaryView extends React.Component<BinaryViewProps, {
         str += b >= 32 && b < 127 ? String.fromCharCode(b) : ".";
       }
       rows.push(
-        <div className="row">
+        <div className="row" key={"row" + i}>
           <div>
             <span className="address">{"0x" + toHex(rowOffset, 8)}</span>
             <span className="bytes">{cols}</span>

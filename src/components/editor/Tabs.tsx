@@ -40,7 +40,6 @@ export interface TabsState {
 }
 
 export class Tabs extends Component<TabsProps, TabsState> {
-
   static defaultProps: TabsProps = {
     // tslint:disable-next-line
     onDoubleClick: () => {},
@@ -51,6 +50,10 @@ export class Tabs extends Component<TabsProps, TabsState> {
   state = {
     scrollLeft: 0,
   };
+
+  componentDidUpdate() {
+    this.container.scrollLeft = this.state.scrollLeft;
+  }
 
   onWheel = (e: WheelEvent<any>) => {
     const delta = clamp(e.deltaY, -16, 16);
@@ -77,16 +80,11 @@ export class Tabs extends Component<TabsProps, TabsState> {
         >
           {children}
         </div>
-
         <div className="tabs-command-container">
           {commands}
         </div>
       </div>
     );
-  }
-
-  componentDidUpdate() {
-    this.container.scrollLeft = this.state.scrollLeft;
   }
 }
 
@@ -133,7 +131,6 @@ export class Tab extends PureComponent<TabProps, {}> {
     const {
       label,
       icon,
-
       isActive,
       isMarked,
       isItalic,
