@@ -35,7 +35,7 @@ export class RewriteSourcesContext {
 }
 
 function expandURL(path: string, base: string): string {
-  return new URL(path, "http://example.org/" + base).pathname.substr(1);
+  return new URL(path, "https://example.org/" + base).pathname.substr(1);
 }
 
 export function rewriteJS(context: RewriteSourcesContext, jsFileName: string): string {

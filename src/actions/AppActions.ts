@@ -240,7 +240,7 @@ export async function saveProject(fiddle: string) {
 }
 
 export async function editInWebAssemblyStudio(fiddle: string) {
-  window.open(`http://webassembly.studio?f=${fiddle}`, "wasm.studio");
+  window.open(`//webassembly.studio/?f=${fiddle}`, "wasm.studio");
 }
 
 export interface FocusTabGroupAction extends AppAction {

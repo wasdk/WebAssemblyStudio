@@ -106,7 +106,7 @@ window.addEventListener("message", (e) => {
   contentWindow.fetch = (input: string, init?: RequestInit) => {
     let file = null;
     if (currentRunnerInfo && currentRunnerInfo.global === contentWindow) {
-      const url = new URL(input, "http://example.org/src/main.html");
+      const url = new URL(input, "https://example.org/src/main.html");
       file = currentRunnerInfo.project.getFile(url.pathname.substr(1));
     }
     if (file) {
