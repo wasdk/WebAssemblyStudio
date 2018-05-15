@@ -15,5 +15,10 @@ gulp.task("default", ["build"]);
 
 gulp.task("project:load", () => { // WebAssembly Studio only
   const utils = require("@wasm/studio-utils");
-  eval(utils.project.getFile("setup.js").getData());
+  utils.eval(utils.project.getFile("setup.js").getData(), {
+    logLn,
+    project,
+    monaco,
+    fileTypeForExtension,
+  });
 });

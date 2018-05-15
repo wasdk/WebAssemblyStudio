@@ -27,6 +27,8 @@ import getConfig from "./config";
 import { isZlibData, decompressZlib } from "./utils/zlib";
 import { gaEvent } from "./utils/ga";
 import { WorkerCommand, IWorkerResponse, IWorkerRequest } from "./message";
+import { processJSFile, RewriteSourcesContext } from "./utils/rewriteSources";
+import { getCurrentRunnerInfo } from "./utils/taskRunner";
 
 declare var capstone: {
   ARCH_X86: any;
@@ -689,6 +691,33 @@ export class Service {
       }
     };
     window.addEventListener("message", Service.binaryExplorerMessageListener, false);
+  }
+
+  static async import(path: string): Promise<any> {
+    const { project, global } = getCurrentRunnerInfo();
+    const context = new RewriteSourcesContext(project);
+    context.logLn = console.log;
+    context.createFile = (src: ArrayBuffer|string, type: string) => {
+      const blob = new global.Blob([src], { type, });
+      return global.URL.createObjectURL(blob);
+    };
+
+    const url = processJSFile(context, path);
+    // Create script tag to load ES module.
+    const script = global.document.createElement("script");
+    script.setAttribute("type", "module");
+    script.setAttribute("async", "async");
+    const id = `__import__${Math.random().toString(36).substr(2)}`;
+    const scriptReady = new Promise((resolve, reject) => {
+      global[id] = resolve;
+    });
+    script.textContent = `import * as i from '${url}'; ${id}(i);`;
+    global.document.head.appendChild(script);
+    const module = await scriptReady;
+    // Module loaded -- cleaning up
+    script.remove();
+    delete global[id];
+    return module;
   }
 
   static async compileMarkdownToHtml(src: string): Promise<string> {

@@ -1,5 +1,5 @@
 import * as gulp from "gulp";
-import { Arc, project, logLn } from "@wasm/studio-utils";
+import { Service, Arc, project, logLn } from "@wasm/studio-utils";
 
 gulp.task("build", async () => {});
 

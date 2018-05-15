@@ -20,19 +20,17 @@
  */
 
 import dispatcher from "../dispatcher";
-import { File, Directory, Project, fileTypeForExtension } from "../model";
+import { File, Directory, Project } from "../model";
 import { App } from "../components/App";
 import { Template } from "../components/NewProjectDialog";
 import { View, ViewType } from "../components/editor/View";
 import appStore from "../stores/AppStore";
 import { Service, Language, IFiddleFile } from "../service";
 import Group from "../utils/group";
-import { Gulpy } from "../gulpy";
 import { Errors } from "../errors";
-import { contextify } from "../util";
 import getConfig from "../config";
 import { rewriteHTML, RewriteSourcesContext } from "../utils/rewriteSources";
-import { Arc } from "../arc";
+import { runTask as runGulpTask, RunTaskExternals } from "../utils/taskRunner";
 
 export enum AppActionType {
   ADD_FILE_TO = "ADD_FILE_TO",
@@ -284,11 +282,6 @@ export interface SandboxRunAction extends AppAction {
   src: string;
 }
 
-export enum RunTaskExternals {
-  Default,
-  Arc
-}
-
 export async function runTask(
   name: string,
   optional: boolean = false,
@@ -296,38 +289,8 @@ export async function runTask(
 ) {
   // Runs the provided source in our fantasy gulp context
   const run = async (src: string) => {
-    const gulp = new Gulpy();
     const project = appStore.getProject().getModel();
-    contextify(src,
-      // thisArg
-      gulp,
-    {
-      // context for backwards compatibility
-      gulp,
-      Service,
-      project,
-      logLn,
-      fileTypeForExtension
-    }, {
-      // modules
-      "gulp": gulp,
-      "@wasm/studio-utils": {
-        Service,
-        project,
-        logLn,
-        fileTypeForExtension,
-        Arc: externals === RunTaskExternals.Arc ? Arc : undefined,
-      }
-    })();
-    if (gulp.hasTask(name)) {
-      try {
-        await gulp.run(name);
-      } catch (e) {
-        logLn(e.message, "error");
-      }
-    } else if (!optional) {
-      logLn(`Task ${name} is not optional.` , "error");
-    }
+    await runGulpTask(src, name, optional, project, logLn, externals);
   };
   let gulpfile = appStore.getFileByName("gulpfile.js");
   if (gulpfile) {

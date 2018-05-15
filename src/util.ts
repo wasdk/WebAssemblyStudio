@@ -202,38 +202,3 @@ export function assert(c: any, message?: string) {
 export function clamp(x: number, min: number, max: number): number {
   return Math.min(Math.max(min, x), max);
 }
-
-export function contextify(
-  src: string,
-  thisArg: any = window,
-  context: { [key: string]: any } = {},
-  modules: { [key: string]: any } = {}
-): () => any {
-  // Build a require wrapper that looks for provided modules first and falls
-  // back to calling the environment's require otherwise, which supports both
-  // synchronous (CommonJS-style) and asynchronous (AMD-style) arguments.
-  function require(name: string | string[], factory?: any): any {
-    if (typeof name === "string") {
-      if (modules.hasOwnProperty(name)) {
-        return modules[name];
-      }
-      return (window as any).require(name);
-    }
-    return (window as any).require(name, factory);
-  }
-  Object.defineProperty(require, "config", {
-    value: (window as any).require.config
-  });
-
-  // Use provided contextual keys as parameters and wrap the source in an IIFE
-  // so redefining variables using parameter names is allowed...
-  const contextParameters = Object.keys(context)
-    .concat("require", "exports", "return ()=>{" + src + "}");
-  // ...and use provided contextual values as arguments.
-  const contextArguments = Object.values(context)
-    .concat(require, {});
-
-  // Call the function constructor with our variable parameters and arguments.
-  return Function.apply(null, contextParameters)
-    .apply(thisArg, contextArguments);
-}

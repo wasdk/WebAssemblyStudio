@@ -55,7 +55,7 @@ export function rewriteJS(context: RewriteSourcesContext, jsFileName: string): s
   });
 }
 
-function processJSFile(context: RewriteSourcesContext, fullPath: string): string {
+export function processJSFile(context: RewriteSourcesContext, fullPath: string): string {
   if (context.processedFiles[fullPath]) {
     return context.processedFiles[fullPath];
   }
