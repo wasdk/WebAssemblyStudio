@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --mode production && npm run templates",
     "build-watch": "webpack --watch --mode development",
-    "dev-server": "npm run templates && webpack-dev-server -d",
+    "dev-server": "npm run templates && webpack-dev-server -d --https --port 28443",
     "test": "webpack --mode production && node bin/check-bundle-size.js && npm run jest && npm run tslint",
     "jest": "jest",
     "coverage": "jest --coverage",
