@@ -13,6 +13,7 @@ gulp.task("publish", async () => {
     const { transform } = await (await Service.import('src/module.js')).default();
     const buffer = new ArrayBuffer(cols * rows * frameCount * 3);
     transform(buffer, rows, cols, frameCount, fps, true);
+    const animation = Arc.animationBufferToJSON(buffer, rows, cols, frameCount);
 
     const jsModule = project.getFile("src/module.js").getData();
     const watSource = project.getFile("src/module.wat").getData();
@@ -20,12 +21,12 @@ gulp.task("publish", async () => {
     Arc.publish({
         description: "WASM Module Example",
         author: "",
-        image: {
+        animation: {
             rows,
             cols,
             frameCount,
             fps,
-            data: new Uint8Array(buffer),
+            data: animation,
         },
         entry: "src/module.js",
         files: {
