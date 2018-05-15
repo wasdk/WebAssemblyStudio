@@ -22,8 +22,15 @@
 export interface PublishManifest {
   description?: string;
   author?: string;
-  entry: string;
-  files: { [name: string]: (string | Uint8Array); };
+  image: {
+    rows: number;
+    cols: number;
+    frameCount: number;
+    fps: number;
+    data: Uint8Array|number[];
+  };
+  entry?: string;
+  files?: { [name: string]: (string | Uint8Array); };
 }
 
 export class Arc {

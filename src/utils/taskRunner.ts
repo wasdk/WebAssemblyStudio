@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { Project, fileTypeForExtension } from "../model";
+import { Project, fileTypeForExtension, mimeTypeForFileType } from "../model";
 import { Gulpy } from "../gulpy";
 import { Service } from "../service";
 import { Arc } from "../arc";
@@ -80,7 +80,10 @@ async function createSandboxIFrame(): Promise<Window> {
 <script>window.parent.postMessage({type: "taskRunner-sandbox-ready"}, "*");</script>
 </body></html>`;
   const iframe = document.createElement("iframe") as HTMLIFrameElement;
-  iframe.src = URL.createObjectURL(new Blob([src]));
+  // Chrome needs width and height attributes set for iframe.
+  iframe.setAttribute("width", "1");
+  iframe.setAttribute("height", "1");
+  iframe.setAttribute("src", URL.createObjectURL(new Blob([src], { type: "text/html" })));
   const container = document.getElementById("task-runner-content");
   container.textContent = "";
   container.appendChild(iframe);
@@ -95,8 +98,30 @@ window.addEventListener("message", (e) => {
   if (typeof e.data !== "object" || !e.data || e.data.type !== "taskRunner-sandbox-ready") {
     return;
   }
-  const iframe = e.source.frameElement as HTMLIFrameElement;
-  iframeReady.get(iframe)(e.source);
+  const contentWindow = e.source;
+  const iframe = contentWindow.frameElement as HTMLIFrameElement;
+  iframeReady.get(iframe)(contentWindow);
+
+  const originalFetch = window.fetch;
+  contentWindow.fetch = (input: string, init?: RequestInit) => {
+    let file = null;
+    if (currentRunnerInfo && currentRunnerInfo.global === contentWindow) {
+      const url = new URL(input, "http://example.org/src/main.html");
+      file = currentRunnerInfo.project.getFile(url.pathname.substr(1));
+    }
+    if (file) {
+      return Promise.resolve(
+        new Response(file.getData(), {
+          status: 200,
+          statusText: "OK",
+          headers: {
+            "Content-Type": mimeTypeForFileType(file.type)
+          }
+        })
+      );
+    }
+    return originalFetch(input, init);
+  };
 });
 
 export interface RunnerInfo {

@@ -8,12 +8,25 @@ gulp.task("build", async () => {
 });
 
 gulp.task("publish", async () => {
+    // Executing the module to get the frames data.
+    const rows = 30, cols = 40, frameCount = 50, fps = 10;
+    const { transform } = await (await Service.import('src/module.js')).default();
+    const buffer = new ArrayBuffer(cols * rows * frameCount * 3);
+    transform(buffer, rows, cols, frameCount, fps, true);
+
     const jsModule = project.getFile("src/module.js").getData();
     const watSource = project.getFile("src/module.wat").getData();
     const wasmModule = project.getFile("out/module.wasm").getData();
     Arc.publish({
         description: "WASM Module Example",
         author: "",
+        image: {
+            rows,
+            cols,
+            frameCount,
+            fps,
+            data: new Uint8Array(buffer),
+        },
         entry: "src/module.js",
         files: {
             "src/module.js": jsModule,
