@@ -13,7 +13,6 @@ gulp.task("publish", async () => {
             "src/module.js": jsModule,
         }
     });
-    // Old version: Arc.publishJSModule(jsModule);
     logLn("ES Module was published.")
 });
 

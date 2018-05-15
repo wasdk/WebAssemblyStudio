@@ -21,9 +21,14 @@
 
 import { pushStatus, popStatus, runTask } from "./AppActions";
 import { RunTaskExternals } from "../utils/taskRunner";
+import { notifyAboutFork } from "../arc";
 
 export async function publishArc() {
   pushStatus("Publishing Arc Project");
   await runTask("publish", false, RunTaskExternals.Arc);
   popStatus();
+}
+
+export function notifyArcAboutFork(fiddle: string) {
+  notifyAboutFork(fiddle);
 }

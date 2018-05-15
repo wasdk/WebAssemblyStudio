@@ -92,7 +92,7 @@ import { Errors } from "../errors";
 import { ControlCenter } from "./ControlCenter";
 import Group from "../utils/group";
 import { StatusBar } from "./StatusBar";
-import { publishArc } from "../actions/ArcActions";
+import { publishArc, notifyArcAboutFork } from "../actions/ArcActions";
 import { RunTaskExternals } from "../utils/taskRunner";
 
 export interface AppState {
@@ -348,7 +348,8 @@ export class App extends React.Component<AppProps, AppState> {
       assert(search.indexOf(this.state.fiddle) >= 0);
       history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
     } else {
-      history.pushState({}, fiddle, `?f=${fiddle}`);
+      const prefix = search ? search + "&" : "?";
+      history.pushState({}, fiddle, `${prefix}f=${fiddle}`);
     }
     this.setState({ fiddle });
   }
@@ -416,20 +417,22 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         />);
     }
-    if (this.props.embeddingParams.type === EmbeddingType.None) {
-      if (this.props.update) {
-        toolbarButtons.push(
-          <Button
-            icon={<GoPencil />}
-            label="Update"
-            title="Update Project"
-            isDisabled={this.toolbarButtonsAreDisabled()}
-            onClick={() => {
-              this.update();
-            }}
-          />
-        );
-      }
+    if (this.props.embeddingParams.type === EmbeddingType.None &&
+        this.props.update) {
+      toolbarButtons.push(
+        <Button
+          icon={<GoPencil />}
+          label="Update"
+          title="Update Project"
+          isDisabled={this.toolbarButtonsAreDisabled()}
+          onClick={() => {
+            this.update();
+          }}
+        />
+      );
+    }
+    if (this.props.embeddingParams.type === EmbeddingType.None ||
+        this.props.embeddingParams.type === EmbeddingType.Arc) {
       toolbarButtons.push(
         <Button
           icon={<GoRepoForked />}
@@ -438,8 +441,15 @@ export class App extends React.Component<AppProps, AppState> {
           isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
             this.fork();
+            if (this.props.embeddingParams.type === EmbeddingType.Arc) {
+              notifyArcAboutFork(this.state.fiddle);
+            }
           }}
-        />,
+        />
+      );
+    }
+    if (this.props.embeddingParams.type === EmbeddingType.None) {
+      toolbarButtons.push(
         <Button
           icon={<GoGist />}
           label="Create Gist"
@@ -477,30 +487,33 @@ export class App extends React.Component<AppProps, AppState> {
         onClick={() => {
           build();
         }}
-      />,
-      <Button
-        icon={<GoGear />}
-        label="Run"
-        title="Run Project: CtrlCmd + Enter"
-        isDisabled={this.toolbarButtonsAreDisabled()}
-        onClick={() => {
-          run();
-        }}
-      />,
-      <Button
-        icon={<GoBeakerGear />}
-        label="Build & Run"
-        title="Build & Run Project: CtrlCmd + Alt + Enter"
-        isDisabled={this.toolbarButtonsAreDisabled()}
-        onClick={() => {
-          build().then(run);
-        }}
-      />
-    );
+      />);
+    if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
+      toolbarButtons.push(
+        <Button
+          icon={<GoGear />}
+          label="Run"
+          title="Run Project: CtrlCmd + Enter"
+          isDisabled={this.toolbarButtonsAreDisabled()}
+          onClick={() => {
+            run();
+          }}
+        />,
+        <Button
+          icon={<GoBeakerGear />}
+          label="Build &amp; Run"
+          title="Build &amp; Run Project: CtrlCmd + Alt + Enter"
+          isDisabled={this.toolbarButtonsAreDisabled()}
+          onClick={() => {
+            build().then(run);
+          }}
+        />
+      );
+    }
     if (this.props.embeddingParams.type === EmbeddingType.Arc) {
       toolbarButtons.push(
         <Button
-          icon={<GoRepoForked />}
+          icon={<GoGear />}
           label="Publish"
           title="Publish Project"
           isDisabled={this.toolbarButtonsAreDisabled()}

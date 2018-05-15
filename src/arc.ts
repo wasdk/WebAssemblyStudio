@@ -33,17 +33,18 @@ export interface PublishManifest {
   files?: { [name: string]: (string | Uint8Array); };
 }
 
+export function notifyAboutFork(fiddle: string) {
+  window.parent.postMessage({
+    type: "wasm-studio/fork",
+    fiddle,
+  }, "*");
+}
+
 export class Arc {
   public static publish(manifest: PublishManifest) {
     window.parent.postMessage({
       type: "wasm-studio/module-publish",
       manifest,
-    }, "*");
-  }
-
-  public static publishJSModule(javascript: string) {
-    window.parent.postMessage({
-      javascript,
     }, "*");
   }
 }

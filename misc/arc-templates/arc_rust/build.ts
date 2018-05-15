@@ -10,7 +10,7 @@ gulp.task("build", async () => {
 
 gulp.task("publish", async () => {
     const jsModule = project.getFile("src/module.js").getData();
-    const watSource = project.getFile("src/module.wat").getData();
+    const rsSource = project.getFile("src/module.rs").getData();
     const wasmModule = project.getFile("out/module.wasm").getData();
     Arc.publish({
         description: "WASM Module Example",
@@ -18,7 +18,7 @@ gulp.task("publish", async () => {
         entry: "src/module.js",
         files: {
             "src/module.js": jsModule,
-            "src/module.rs": watSource,
+            "src/module.rs": rsSource,
             "out/module.wasm": wasmModule,
         }
     });
