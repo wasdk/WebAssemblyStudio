@@ -93,6 +93,7 @@ import { ControlCenter } from "./ControlCenter";
 import Group from "../utils/group";
 import { StatusBar } from "./StatusBar";
 import { publishArc } from "../actions/ArcActions";
+import { RunTaskExternals } from "../utils/taskRunner";
 
 export interface AppState {
   project: ModelRef<Project>;
@@ -252,7 +253,7 @@ export class App extends React.Component<AppProps, AppState> {
   bindAppStoreEvents() {
     appStore.onLoadProject.register(() => {
       this.setState({ project: appStore.getProject() });
-      runTask("project:load", true);
+      runTask("project:load", true, RunTaskExternals.Setup);
     });
     appStore.onDirtyFileUsed.register((file: File) => {
       this.logLn(`Changes in ${file.getPath()} were ignored, save your changes.`, "warn");
@@ -755,6 +756,7 @@ export class App extends React.Component<AppProps, AppState> {
         </Split>
       </div>
       <StatusBar />
+      <div id="task-runner-content" />
     </div>;
   }
 }

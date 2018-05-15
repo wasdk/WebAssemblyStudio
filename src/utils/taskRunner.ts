@@ -26,11 +26,20 @@ import { Arc } from "../arc";
 
 export enum RunTaskExternals {
   Default,
-  Arc
+  Arc,
+  Setup,
+}
+
+function unsafeEval(code: string, params: any) {
+  const paramKeys = Object.keys(params);
+  const paramValues = Object.values(params);
+  const fn = Function.apply(null, [...paramKeys, code]);
+  return fn.apply(window, paramValues);
 }
 
 function contextify(
   src: string,
+  sandboxGlobal: any = window,
   thisArg: any = window,
   context: { [key: string]: any } = {},
   modules: { [key: string]: any } = {}
@@ -59,9 +68,52 @@ function contextify(
   const contextArguments = Object.values(context)
     .concat(require, {});
 
+  const global = sandboxGlobal || window;
   // Call the function constructor with our variable parameters and arguments.
-  return Function.apply(null, contextParameters)
+  return global.Function.apply(null, contextParameters)
     .apply(thisArg, contextArguments);
+}
+
+async function createSandboxIFrame(): Promise<Window> {
+  const src = `<!DOCTYPE html>
+<html><body>
+<script>window.parent.postMessage({type: "taskRunner-sandbox-ready"}, "*");</script>
+</body></html>`;
+  const iframe = document.createElement("iframe") as HTMLIFrameElement;
+  iframe.src = URL.createObjectURL(new Blob([src]));
+  const container = document.getElementById("task-runner-content");
+  container.textContent = "";
+  container.appendChild(iframe);
+  return new Promise((resolve: (thisArg: Window) => void) => {
+    iframeReady.set(iframe, resolve);
+  });
+}
+
+const iframeReady: WeakMap<HTMLIFrameElement, (thisArg: Window) => void> = new WeakMap();
+
+window.addEventListener("message", (e) => {
+  if (typeof e.data !== "object" || !e.data || e.data.type !== "taskRunner-sandbox-ready") {
+    return;
+  }
+  const iframe = e.source.frameElement as HTMLIFrameElement;
+  iframeReady.get(iframe)(e.source);
+});
+
+export interface RunnerInfo {
+  global: any;
+  project: Project;
+}
+
+let currentRunnerInfo: RunnerInfo = null;
+
+function clearCurrentRunnerInfoAndIframe() {
+  currentRunnerInfo = null;
+  const container = document.getElementById("task-runner-content");
+  container.textContent = "";
+}
+
+export function getCurrentRunnerInfo(): RunnerInfo {
+  return currentRunnerInfo;
 }
 
 export async function runTask(
@@ -72,9 +124,15 @@ export async function runTask(
   logLn: (...args: any[]) => void,
   externals: RunTaskExternals
 ) {
+  const currentRunnerGlobal = await createSandboxIFrame();
+  currentRunnerInfo = {
+    global: currentRunnerGlobal,
+    project,
+  };
   // Runs the provided source in our fantasy gulp context
   const gulp = new Gulpy();
   contextify(src,
+    currentRunnerGlobal,
     // thisArg
     gulp,
   {
@@ -83,7 +141,8 @@ export async function runTask(
     Service,
     project,
     logLn,
-    fileTypeForExtension
+    fileTypeForExtension,
+    monaco: externals === RunTaskExternals.Setup ? monaco : undefined,
   }, {
     // modules
     "gulp": gulp,
@@ -93,6 +152,7 @@ export async function runTask(
       logLn,
       fileTypeForExtension,
       Arc: externals === RunTaskExternals.Arc ? Arc : undefined,
+      eval: externals === RunTaskExternals.Setup ? unsafeEval : undefined,
     }
   })();
   if (gulp.hasTask(name)) {
@@ -104,4 +164,5 @@ export async function runTask(
   } else if (!optional) {
     logLn(`Task ${name} is not optional.` , "error");
   }
+  clearCurrentRunnerInfoAndIframe();
 }

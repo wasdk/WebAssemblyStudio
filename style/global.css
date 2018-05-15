@@ -693,6 +693,13 @@ a {
     color: #ff0000;
 }
 
+#task-runner-content {
+  visibility: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
 .new-file-dialog-description {
   height: 256px;
   padding: 8px;
