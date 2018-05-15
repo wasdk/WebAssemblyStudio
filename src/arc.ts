@@ -47,4 +47,24 @@ export class Arc {
       manifest,
     }, "*");
   }
+  public static animationBufferToJSON(animation: ArrayBuffer, rows: number, cols: number,
+                                      frameCount: number): number[][][][] {
+    const json = [];
+    const frameSize = rows * cols * 3;
+    for (let i = 0; i < frameCount; i++) {
+      const buffer = new Uint8Array(animation, frameSize * i, frameSize);
+      const frame: number[][][] = [];
+      json.push(frame);
+
+      let pos = 0;
+      for (let y = 0; y < rows; y++) {
+        const row: number[][] = [];
+        frame.push(row);
+        for (let x = 0; x < cols; x++) {
+          row.push([buffer[pos++], buffer[pos++], buffer[pos++]]);
+        }
+      }
+    }
+    return json;
+  }
 }
