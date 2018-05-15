@@ -57,7 +57,7 @@ import registerLanguages from "../utils/registerLanguages";
 
 import * as Mousetrap from "mousetrap";
 import { Sandbox } from "./Sandbox";
-import { Gulpy, testGulpy } from "../gulpy";
+import { Gulpy } from "../gulpy";
 import {
   GoDelete,
   GoPencil,

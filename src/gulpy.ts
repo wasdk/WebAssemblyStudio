@@ -106,36 +106,3 @@ export class Gulpy {
     await session.run(this.tasks[name]);
   }
 }
-
-export function testGulpy() {
-  const gulp = new Gulpy();
-
-  gulp.task("b", () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log("Running Task B " + performance.now());
-        resolve();
-      }, 50);
-    });
-  });
-
-  gulp.task("c", [], () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log("Running Task C " + performance.now());
-        resolve();
-      }, 100);
-    });
-  });
-
-  gulp.task("a", ["b", "c"], () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log("Running Task A " + performance.now());
-        resolve();
-      }, 200);
-    });
-  });
-
-  gulp.run("a");
-}
