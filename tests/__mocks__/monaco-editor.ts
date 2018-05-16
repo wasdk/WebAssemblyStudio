@@ -7,6 +7,7 @@ class EditorModel {
     }
     updateOptions() {}
     onDidChangeContent() {}
+    saveViewState() { }
     getLineCount() {
         return this.buffer.length - 1; 
     }
@@ -20,6 +21,8 @@ class EditorModel {
         Array.prototype.splice.apply(this.buffer, [l1, l2 - l1 + 1].concat(lines));
       }, this);
     }
+    setValue() {}
+    getValue() {}
     toString() {
       return this.buffer.join('\n');
     }
@@ -29,9 +32,27 @@ class EditorModel {
   editor: {
     setModelLanguage() { },
     setModelMarkers() { },
+    addAction() { },
+    addCommand() { },
+    setModel() {},
+    getLineCount() {},
+    revealLine() {},
+    restoreViewState() { },
+    saveViewState() { },
+    updateOptions() { },
+    layout() {},
     createModel() {
       return new EditorModel();
     },
+    create() {
+      return this;
+    },
+    getModel() {
+      return this;
+    },
+    IEditorConstructionOptions: {
+      value: String
+    }
   },
   Range: function (l1, c1, l2, c2) {
     this.r = [l1, c1, l2, c2];
@@ -40,6 +61,15 @@ class EditorModel {
     CompletionItemKind: {
       Keyword: 12
     }
+  },
+  KeyMod: {
+    CtrlCmd: 0,
+    Alt: 2
+  },
+  KeyCode: {
+    KEY_S: 83,
+    KEY_B: 66,
+    Enter: 13,
   }
 };
 
@@ -55,5 +85,3 @@ class ContextMenuService {
 }
 
 MonacoUtils.ContextMenuService = ContextMenuService;
-
-
