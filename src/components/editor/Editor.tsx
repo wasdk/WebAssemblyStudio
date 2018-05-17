@@ -24,7 +24,6 @@ import { Project, File, Directory, FileType, languageForFileType, IStatusProvide
 import { ViewTabs } from "./ViewTabs";
 import { View } from "./View";
 import { build, run, pushStatus, popStatus, logLn } from "../../actions/AppActions";
-import "monaco-editor";
 
 declare var window: any;
 

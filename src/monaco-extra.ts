@@ -4,8 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 "use strict";
 
-import "monaco-editor";
-
 // import WinJS = require('vs/base/common/winjs.base');
 // import Touch = require('vs/base/browser/touch');
 // import Mouse = require('vs/base/browser/mouseEvent');

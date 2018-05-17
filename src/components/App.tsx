@@ -53,7 +53,6 @@ import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 
 import { layout, assert, resetDOMSelection } from "../util";
-import registerLanguages from "../utils/registerLanguages";
 
 import * as Mousetrap from "mousetrap";
 import { Sandbox } from "./Sandbox";
@@ -215,7 +214,6 @@ export class App extends React.Component<AppProps, AppState> {
       hasStatus: false,
       isContentModified: false,
     };
-    registerLanguages();
   }
   private async initializeProject() {
     initStore();

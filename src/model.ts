@@ -19,7 +19,6 @@
  * SOFTWARE.
  */
 
-import "monaco-editor";
 import { assert } from "./util";
 import { Minimatch } from "minimatch";
 import { Service } from "./service";
@@ -281,12 +280,11 @@ export class EventDispatcher {
   }
 }
 
-function monacoSeverityToString(severity: monaco.Severity) {
+function monacoSeverityToString(severity: monaco.MarkerSeverity) {
   switch (severity) {
-    case monaco.Severity.Info: return "info";
-    case monaco.Severity.Warning: return "warning";
-    case monaco.Severity.Error: return "error";
-    case monaco.Severity.Ignore: return "ignore";
+    case monaco.MarkerSeverity.Info: return "info";
+    case monaco.MarkerSeverity.Warning: return "warning";
+    case monaco.MarkerSeverity.Error: return "error";
   }
 }
 
