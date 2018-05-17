@@ -908,9 +908,18 @@ a {
 .context-view.monaco-menu-container {
   max-height: 380px;
   overflow: scroll;
+  position: fixed;
 }
 
 /* Menu Item Styles */
+
+.action-label::selection {
+  background: none;
+}
+
+.action-label::-moz-selection {
+  background: none;
+}
 
 .action-label.ruler {
   border-top: 1px solid var(--grey-800);

@@ -30,6 +30,7 @@ class EditorModel {
 
 (<any>global).monaco = {
   editor: {
+    onContextMenu() { },
     setModelLanguage() { },
     setModelMarkers() { },
     addAction() { },
