@@ -480,6 +480,7 @@ a {
   line-height: 24px;
   -moz-user-select: none;
   user-select: none;
+  text-decoration: none;
 }
 
 .button.disabled {
