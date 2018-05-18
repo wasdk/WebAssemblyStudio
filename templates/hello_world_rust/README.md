@@ -9,7 +9,7 @@ bundler so you can poke around all the raw output!
 
 Some files you may be interested in are:
 
-* `main.rs` - this is the main body of Rust code, annotated with
+* `lib.rs` - this is the main body of Rust code, annotated with
   `#[wasm_bindgen]` to have its functionality exported to JS.
 * `main.js` - this is the application's supporting JS, automatically run by
   `main.html`. Here you'll import items implemented in Rust through the
