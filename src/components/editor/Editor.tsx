@@ -149,6 +149,12 @@ export class Monaco extends React.Component<MonacoProps, {}> {
       this.container.removeChild(this.container.lastChild);
     }
     this.editor = monaco.editor.create(this.container, options as any);
+    this.editor.onContextMenu((e: any) => {
+      const anchorOffset = { x: -10, y: -3 };
+      const menu: HTMLElement = document.querySelector(".monaco-editor > .monaco-menu-container");
+      menu.style.top = (parseInt(menu.style.top, 10) + e.event.editorPos.y + anchorOffset.y) + "px";
+      menu.style.left = (parseInt(menu.style.left, 10) + e.event.editorPos.x + anchorOffset.x) + "px";
+    });
     this.registerActions();
     console.info("Created a new Monaco editor.");
   }

@@ -215,4 +215,22 @@ describe("Tests for Editor.tsx/Monaco", () => {
     updateOptionsSpy.mockRestore();
     wrapper.unmount();
   });
+  it("should listen to onContextMenu events on the editor to resolve menu position", () => {
+    const onContextMenuSpy = jest.spyOn(monaco.editor, "onContextMenu");
+    const querySelectorSpy = jest.spyOn(document, "querySelector");
+    querySelectorSpy.mockImplementation(() => element);
+    const {wrapper} = setup();
+    const registeredListenerFn = onContextMenuSpy.mock.calls[0][0];
+    const element: HTMLElement = document.createElement("div");
+    element.style.top = "100px";
+    element.style.left = "100px";
+    registeredListenerFn({ event: { editorPos: { x: 100, y: 100 }}});
+    expect(onContextMenuSpy).toHaveBeenCalled();
+    expect(querySelectorSpy).toHaveBeenCalledWith(".monaco-editor > .monaco-menu-container");
+    expect(element.style.top).toEqual("197px");
+    expect(element.style.left).toEqual("190px");
+    onContextMenuSpy.mockRestore();
+    querySelectorSpy.mockRestore();
+    wrapper.unmount();
+  });
 });
