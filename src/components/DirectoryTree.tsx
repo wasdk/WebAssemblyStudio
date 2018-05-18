@@ -20,7 +20,7 @@
  */
 
 import * as React from "react";
-import { Project, File, Directory, FileType, getIconForFileType, ModelRef, isBinaryFileType, IStatusProvider } from "../model";
+import { Project, File, Directory, FileType, getIconForFileType, ModelRef, isBinaryFileType, IStatusProvider, fileTypeForMimeType } from "../model";
 import { Service } from "../service";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
 import { ITree, ContextMenuEvent, IDragAndDrop, DragMouseEvent, IDragAndDropData, IDragOverReaction, DragOverEffect, DragOverBubble } from "../monaco-extra";
@@ -28,6 +28,7 @@ import { MonacoUtils } from "../monaco-utils";
 import { ViewTabs } from "./editor";
 import { ViewType } from "./editor/View";
 import { openFile, pushStatus, popStatus, logLn } from "../actions/AppActions";
+import { uploadFilesToDirectory } from "../util";
 
 export interface DirectoryTreeProps {
   directory: ModelRef<Directory>;
@@ -273,6 +274,24 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
        * dropped into target or some parent of the target.
        */
       onDragOver(tree: ITree, data: IDragAndDropData, targetElement: File, originalEvent: DragMouseEvent): IDragOverReaction {
+        const items = Array.from(originalEvent.browserEvent.dataTransfer.items);
+        function mimeTypeUploadIsAllowed(type: string) {
+          console.log(type);
+          if (type === "") { // Firefox doesn't show the "application/wasm" mime type.
+            return true;
+          }
+          return fileTypeForMimeType(type) !== FileType.Unknown;
+        }
+        // In Firefox, tree elements get data transfer items with the "text/uri-list" type. This is a
+        // workaround to ignore that behavior.
+        const firefoxWorkaround = !items.find(item => item.type === "text/uri-list");
+        if (items.length && firefoxWorkaround) {
+          return {
+            accept: items.every(item => mimeTypeUploadIsAllowed(item.type)),
+            bubble: DragOverBubble.BUBBLE_DOWN,
+            autoExpand: true
+          };
+        }
         const file: File = (data.getData() as any)[0];
         return {
           accept: targetElement instanceof Directory &&
@@ -287,7 +306,12 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
       /**
        * Handles the action of dropping sources into target.
        */
-      drop(tree: ITree, data: IDragAndDropData, targetElement: File, originalEvent: DragMouseEvent): void {
+      async drop(tree: ITree, data: IDragAndDropData, targetElement: File, originalEvent: DragMouseEvent) {
+        const files = originalEvent.browserEvent.dataTransfer.files;
+        if (files.length) {
+          await uploadFilesToDirectory(files, targetElement as Directory);
+          return;
+        }
         const file: File = (data.getData() as any)[0];
         return self.props.onMoveFile && self.props.onMoveFile(file, targetElement as Directory);
       }

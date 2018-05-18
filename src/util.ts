@@ -19,6 +19,8 @@
  * SOFTWARE.
  */
 
+import { fileTypeForExtension, isBinaryFileType, Directory } from "./model";
+
 export function toAddress(n: number) {
   let s = n.toString(16);
   while (s.length < 6) {
@@ -201,4 +203,40 @@ export function assert(c: any, message?: string) {
 
 export function clamp(x: number, min: number, max: number): number {
   return Math.min(Math.max(min, x), max);
+}
+
+export async function readUploadedFile(inputFile: File, readAs: "text" | "arrayBuffer"): Promise<string | ArrayBuffer> {
+  const temporaryFileReader = new FileReader();
+  return new Promise<string | ArrayBuffer>((resolve, reject) => {
+    temporaryFileReader.onerror = () => {
+      temporaryFileReader.abort();
+      reject(new DOMException("Problem parsing input file."));
+    };
+    temporaryFileReader.onload = () => {
+      resolve(temporaryFileReader.result as any);
+    };
+    if (readAs === "text") {
+      temporaryFileReader.readAsText(inputFile);
+    } else if (readAs === "arrayBuffer") {
+      temporaryFileReader.readAsArrayBuffer(inputFile);
+    } else {
+      assert(false, "NYI");
+    }
+  });
+}
+
+export async function uploadFilesToDirectory(files: FileList, root: Directory) {
+  Array.from(files).forEach(async (file: any) => {
+    const name: string = file.name;
+    const path: string = file.webkitRelativePath || name; // This works in FF also.
+    const fileType = fileTypeForExtension(name.split(".").pop());
+    let data: any;
+    try {
+      data = await readUploadedFile(file, isBinaryFileType(fileType) ? "arrayBuffer" : "text");
+      const newFile = root.newFile(path, fileType);
+      newFile.setData(data);
+    } catch (e) {
+      console.log("Unable to read the file!");
+    }
+  });
 }
