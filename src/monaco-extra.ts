@@ -42,7 +42,7 @@ export interface GestureEvent {
 }
 
 export interface  DragMouseEvent {
-
+  browserEvent: DragEvent
 }
 
 export interface ITree {

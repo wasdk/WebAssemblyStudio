@@ -28,7 +28,7 @@ import appStore from "../stores/AppStore";
 import {File, FileType, Directory, extensionForFileType, nameForFileType, fileTypeForExtension, ModelRef, getIconForFileType, isBinaryFileType } from "../model";
 import { UploadInput } from "./Widgets";
 import { DirectoryTree } from "./DirectoryTree";
-import { assert } from "../util";
+import { assert, readUploadedFile, uploadFilesToDirectory } from "../util";
 
 export interface UploadFileDialogProps {
   isOpen: boolean;
@@ -50,41 +50,9 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
   private async handleUpload(files: FileList) {
     const root = this.root.getModel();
     this.setState({files: []});
-    Array.from(files).forEach(async (file: any) => {
-      const name: string = file.name;
-      const path: string = file.webkitRelativePath || name; // This works in FF also.
-      const fileType = fileTypeForExtension(name.split(".").pop());
-      let data: any;
-      try {
-        data = await this.readUploadedFile(file, isBinaryFileType(fileType) ? "arrayBuffer" : "text");
-        const newFile = root.newFile(path, fileType);
-        newFile.setData(data);
-      } catch (e) {
-        console.log("Unable to read the file!");
-      }
-    });
+    await uploadFilesToDirectory(files, root);
     this.forceUpdate();
   }
-  private readUploadedFile(inputFile: any, readAs: "text" | "arrayBuffer") {
-    const temporaryFileReader = new FileReader();
-    return new Promise((resolve, reject) => {
-      temporaryFileReader.onerror = () => {
-        temporaryFileReader.abort();
-        reject(new DOMException("Problem parsing input file."));
-      };
-      temporaryFileReader.onload = () => {
-        resolve(temporaryFileReader.result);
-      };
-      if (readAs === "text") {
-        temporaryFileReader.readAsText(inputFile);
-      } else if (readAs === "arrayBuffer") {
-        temporaryFileReader.readAsArrayBuffer(inputFile);
-      } else {
-        assert(false, "NYI");
-      }
-    });
-  }
-
   render() {
     const root = this.root.getModel();
     return <ReactModal

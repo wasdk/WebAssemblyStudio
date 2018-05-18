@@ -204,8 +204,25 @@ export function mimeTypeForFileType(type: FileType): string {
     return "application/json";
   } else if (type === FileType.DOT) {
     return "text/plain";
+  } else if (type === FileType.Markdown) {
+    return "text/markdown";
   }
   return "";
+}
+
+export function fileTypeForMimeType(type: string): FileType {
+  if (type === "text/html") {
+    return FileType.HTML;
+  } else if (type === "application/javascript") {
+    return FileType.JavaScript;
+  } else if (type === "application/wasm") {
+    return FileType.Wasm;
+  } else if (type === "text/markdown") {
+    return FileType.Markdown;
+  } else if (type === "application/json") {
+    return FileType.JSON;
+  }
+  return FileType.Unknown;
 }
 
 export function getIconForFileType(fileType: FileType): string {
