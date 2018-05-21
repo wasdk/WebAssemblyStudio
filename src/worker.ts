@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { IWorkerRequest, WorkerCommand, IWorkerResponse } from "./message";
+import { IWorkerRequest, WorkerCommand, BinaryenOptimization, IWorkerResponse } from "./message";
 
 declare var importScripts: Function;
 
@@ -43,6 +43,8 @@ declare var Binaryen: {
   parseText(data: string): BinaryenModule;
   print(s: string): void;
   printErr(s: string): void;
+  setOptimizeLevel(level: number): void;
+  setShrinkLevel(level: number): void;
 };
 
 declare var wabt: {
@@ -84,6 +86,8 @@ async function loadTwiggy() {
 onmessage = (e: {data: IWorkerRequest}) => {
   const fn = {
     [WorkerCommand.OptimizeWasmWithBinaryen]: optimizeWasmWithBinaryen,
+    [WorkerCommand.OptimizeWasmWithBinaryenSpeed]: optimizeWasmWithBinaryenSpeed,
+    [WorkerCommand.OptimizeWasmWithBinaryenSize]: optimizeWasmWithBinaryenSize,
     [WorkerCommand.ValidateWasmWithBinaryen]: validateWasmWithBinaryen,
     [WorkerCommand.CreateWasmCallGraphWithBinaryen]: createWasmCallGraphWithBinaryen,
     [WorkerCommand.ConvertWasmToAsmWithBinaryen]: convertWasmToAsmWithBinaryen,
@@ -114,11 +118,31 @@ async function processMessage(request: IWorkerRequest, fn: Function) {
   postMessage(response, undefined);
 }
 
-async function optimizeWasmWithBinaryen(data: ArrayBuffer): Promise<ArrayBuffer> {
+async function optimizeWasmWithBinaryen(
+  data: ArrayBuffer,
+  type: BinaryenOptimization = BinaryenOptimization.Default
+): Promise<ArrayBuffer> {
   await loadBinaryen();
   const module = Binaryen.readBinary(new Uint8Array(data));
+
+  if (type === BinaryenOptimization.Speed) {
+    Binaryen.setOptimizeLevel(3);
+    Binaryen.setShrinkLevel(0);
+  } else if (type === BinaryenOptimization.Size) {
+    Binaryen.setOptimizeLevel(3);
+    Binaryen.setShrinkLevel(2);
+  }
+
   module.optimize();
   return Promise.resolve(module.emitBinary());
+}
+
+function optimizeWasmWithBinaryenSpeed(data: ArrayBuffer): Promise<ArrayBuffer> {
+  return optimizeWasmWithBinaryen(data, BinaryenOptimization.Speed);
+}
+
+function optimizeWasmWithBinaryenSize(data: ArrayBuffer): Promise<ArrayBuffer> {
+  return optimizeWasmWithBinaryen(data, BinaryenOptimization.Size);
 }
 
 async function validateWasmWithBinaryen(data: ArrayBuffer): Promise<number> {

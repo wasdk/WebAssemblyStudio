@@ -21,6 +21,8 @@
 
 export enum WorkerCommand {
   OptimizeWasmWithBinaryen,
+  OptimizeWasmWithBinaryenSpeed,
+  OptimizeWasmWithBinaryenSize,
   ValidateWasmWithBinaryen,
   CreateWasmCallGraphWithBinaryen,
   ConvertWasmToAsmWithBinaryen,
@@ -29,6 +31,12 @@ export enum WorkerCommand {
   DisassembleWasmWithWabt,
   AssembleWatWithWabt,
   TwiggyWasm
+}
+
+export enum BinaryenOptimization {
+  Default,
+  Speed,
+  Size
 }
 
 /**
