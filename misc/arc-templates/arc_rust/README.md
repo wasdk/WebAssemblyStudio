@@ -1,3 +1,3 @@
-# Arc project: WebAssembly text
+# Arc project: Rust
 
-See `src/module.rs` for source code for the module, and `src/module.js` for the integration stuff.
+See `src/lib.rs` for source code for the module, and `src/module.js` for the integration stuff.
