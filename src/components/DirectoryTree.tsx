@@ -242,6 +242,12 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
         });
 
         super.onContextMenu(tree, file, event);
+
+        // Set the context menus max height to avoid overflow outside window
+        const menu: HTMLElement = document.querySelector(".context-view.monaco-menu-container");
+        const windowPadding = 10;
+        menu.style.maxHeight = Math.min(window.innerHeight - event.posy - windowPadding, 380) + "px";
+
         return true;
       }
     }
