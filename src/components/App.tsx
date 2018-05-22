@@ -28,7 +28,7 @@ import { EditorView, ViewTabs, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
 import { ViewType, defaultViewTypeForFileType } from "./editor/View";
-import { build, run, runTask, editInWebAssemblyStudio, openFiles, pushStatus, popStatus } from "../actions/AppActions";
+import { build, run, runTask, openFiles, pushStatus, popStatus } from "../actions/AppActions";
 
 import appStore from "../stores/AppStore";
 import {
@@ -411,10 +411,10 @@ export class App extends React.Component<AppProps, AppState> {
           icon={<GoPencil />}
           label="Edit in WebAssembly Studio"
           title="Edit Project in WebAssembly Studio"
-          onClick={() => {
-            assert(this.state.fiddle);
-            editInWebAssemblyStudio(this.state.fiddle);
-          }}
+          isDisabled={!this.state.fiddle}
+          href={`//webassembly.studio/?f=${this.state.fiddle}`}
+          target="wasm.studio"
+          rel="noopener noreferrer"
         />);
     }
     if (this.props.embeddingParams.type === EmbeddingType.None &&
@@ -530,9 +530,9 @@ export class App extends React.Component<AppProps, AppState> {
           label="GitHub Issues"
           title="GitHub Issues"
           customClassName="issue"
-          onClick={() => {
-            window.open("https://github.com/wasdk/WebAssemblyStudio", "_blank");
-          }}
+          href="https://github.com/wasdk/WebAssemblyStudio"
+          target="_blank"
+          rel="noopener noreferrer"
         />,
         <Button
           icon={<GoQuestion />}
