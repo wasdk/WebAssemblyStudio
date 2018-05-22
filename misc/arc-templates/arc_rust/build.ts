@@ -16,8 +16,8 @@ gulp.task("publish", async () => {
     const animation = Arc.animationBufferToJSON(buffer, rows, cols, frameCount);
 
     const jsModule = project.getFile("src/module.js").getData();
-    const rsSource = project.getFile("src/module.rs").getData();
-    const wasmModule = project.getFile("out/module.wasm").getData();
+    const rsSource = project.getFile("src/lib.rs").getData();
+    const wasmModule = project.getFile("out/lib.wasm").getData();
     Arc.publish({
         description: "WASM Module Example",
         author: "",
