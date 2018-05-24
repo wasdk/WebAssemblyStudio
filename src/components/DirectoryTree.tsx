@@ -182,6 +182,17 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
             const result = await Service.validateWasmWithBinaryen(file, self.status);
             window.alert(result ? "Module is valid" : "Module is not valid");
           }));
+          /*actions.push(new MonacoUtils.ContextSubMenu("x", [
+            new MonacoUtils.Action("x", "Optimize (Default)", "octicon-gear", true, () => {
+              Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Default);
+            }),
+            new MonacoUtils.Action("x", "Optimize (Speed)", "octicon-gear", true, () => {
+              Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Speed);
+            }),
+            new MonacoUtils.Action("x", "Optimize (Size)", "octicon-gear", true, () => {
+              Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Size);
+            })
+          ]));*/
           actions.push(new MonacoUtils.Action("x", "Optimize (Default)", "octicon-gear", true, () => {
             Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Default);
           }));

@@ -30,10 +30,10 @@ export class MonacoUtils {
   static Action: any;
 
   static initialize(require: (module: string) => any) {
-    MonacoUtils.Tree = require("vs/base/parts/tree/browser/treeImpl").Tree;
-    MonacoUtils.ContextMenuService = require("vs/platform/contextview/browser/contextMenuService").ContextMenuService;
-    MonacoUtils.ContextViewService = require("vs/platform/contextview/browser/contextViewService").ContextViewService;
-    MonacoUtils.TreeDefaults = require("vs/base/parts/tree/browser/treeDefaults");
-    MonacoUtils.Action = require("vs/base/common/actions").Action;
+    this.Tree               = require("vs/base/parts/tree/browser/treeImpl").Tree;
+    this.ContextMenuService = require("vs/platform/contextview/browser/contextMenuService").ContextMenuService;
+    this.ContextViewService = require("vs/platform/contextview/browser/contextViewService").ContextViewService;
+    this.TreeDefaults       = require("vs/base/parts/tree/browser/treeDefaults");
+    this.Action             = require("vs/base/common/actions").Action;
   }
 }
