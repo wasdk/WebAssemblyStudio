@@ -26,15 +26,6 @@ import { Cton } from "../languages/cton";
 import { X86 } from "../languages/x86";
 
 export default async function registerLanguages() {
-  monaco.editor.defineTheme("fiddle-theme", {
-    base: "vs-dark",
-    inherit: true,
-    rules: [
-      { token: "custom-info", foreground: "d4d4d4" },
-      { token: "custom-warn", foreground: "ff9900" },
-      { token: "custom-error", background: "00ff00", foreground: "ff0000", fontStyle: "bold" }
-    ]
-  } as any);
 
   // Wat
 
@@ -42,7 +33,7 @@ export default async function registerLanguages() {
     monaco.languages.setMonarchTokensProvider("wat", Wat.MonarchDefinitions as any);
     monaco.languages.setLanguageConfiguration("wat", Wat.LanguageConfiguration);
     monaco.languages.registerCompletionItemProvider("wat", Wat.CompletionItemProvider);
-    monaco.languages.registerHoverProvider("wat", Wat.HoverProvider);
+    monaco.languages.registerHoverProvider("wat", Wat.HoverProvider as any);
   });
   monaco.languages.register({
     id: "wat"

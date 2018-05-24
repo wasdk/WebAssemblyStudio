@@ -110,7 +110,8 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
 }> {
   constructor(props: DirectoryTreeProps) {
     super(props);
-    this.contextViewService = new MonacoUtils.ContextViewService(document.documentElement);
+    // tslint:disable-next-line
+    this.contextViewService = new MonacoUtils.ContextViewService(document.documentElement, null, {trace: () => {}});
     this.contextMenuService = new MonacoUtils.ContextMenuService(document.documentElement, null, null, this.contextViewService);
     this.state = { directory: this.props.directory };
     this.status = {

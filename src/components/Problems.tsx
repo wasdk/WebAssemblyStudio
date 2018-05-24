@@ -73,7 +73,8 @@ export class Problems extends React.Component<ProblemsProps, {
 }> {
   constructor(props: ProblemsProps) {
     super(props);
-    this.contextViewService = new MonacoUtils.ContextViewService(document.documentElement);
+    // tslint:disable-next-line
+    this.contextViewService = new MonacoUtils.ContextViewService(document.documentElement, null, {trace: () => {}});
     this.contextMenuService = new MonacoUtils.ContextMenuService(document.documentElement, null, null, this.contextViewService);
   }
 

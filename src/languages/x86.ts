@@ -19,8 +19,6 @@
  * SOFTWARE.
  */
 
-import "monaco-editor";
-
 import IRichLanguageConfiguration = monaco.languages.LanguageConfiguration;
 import ILanguage = monaco.languages.IMonarchLanguage;
 import IModel = monaco.editor.IModel;
