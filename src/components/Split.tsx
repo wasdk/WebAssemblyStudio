@@ -23,68 +23,12 @@ import * as React from "react";
 import { MouseEvent } from "react";
 import { EventDispatcher } from "../model";
 import { assert } from "../util";
+import { assignObject, toCSSPx } from "../utils/splitUtils";
 
 const Cassowary = require("cassowary");
 
-// Cassowary.trace = true;
-
 interface CassowaryVar {
   value: number;
-}
-
-function arrayEqual(a: any[], b: any[]) {
-  if (a === b) {
-    return true;
-  }
-  if (a.length !== b.length) {
-    return false;
-  }
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function toCSSPercent(x: number) {
-  return x + "%";
-}
-
-function toCSSPx(x: number) {
-  return (x | 0) + "px";
-}
-
-function isCSSPercentage(x: string) {
-  return x[x.length - 1] === "%";
-}
-
-function parseCSSPercentage(x: string) {
-  return Number(x.substring(0, x.length - 1)) / 100;
-}
-
-function clone(array: any[]): any[] {
-  return array.slice(0);
-}
-
-function sum(array: number[], n?: number) {
-  let x = 0;
-  if (n === undefined) {
-    n = array.length;
-  }
-  for (let i = 0; i < n; i++) {
-    x += array[i];
-  }
-  return x;
-}
-
-function assignObject(to: any, from: any) {
-  for (const x in from) {
-    if (!(x in to)) {
-      to[x] = from[x];
-    }
-  }
-  return to;
 }
 
 export enum SplitOrientation {
@@ -97,22 +41,6 @@ export interface SplitInfo {
   max?: number;
   value?: number;
   resize?: "fixed" | "stretch";
-}
-
-function splitInfoEquals(a: SplitInfo, b: SplitInfo) {
-  return a.min === b.min && a.max === b.max && a.value === b.value && a.resize === b.resize;
-}
-
-function splitInfoArrayEquals(a: SplitInfo[], b: SplitInfo[]) {
-  if (a.length !== b.length) {
-    return false;
-  }
-  for (let i = 0; i < a.length; i++) {
-    if (!splitInfoEquals(a[i], b[i])) {
-      return false;
-    }
-  }
-  return true;
 }
 
 export interface SplitProps {
@@ -128,7 +56,7 @@ export class Split extends React.Component<SplitProps, {
   splits: SplitInfo[];
 }> {
   container: HTMLDivElement;
-  static onGlobalResize = new EventDispatcher("Split Resize");
+  index: number = -1;
   static onResizeBegin = new EventDispatcher("Resize Begin");
   static onResizeEnd = new EventDispatcher("Resize End");
   constructor(props: any) {
@@ -138,7 +66,27 @@ export class Split extends React.Component<SplitProps, {
     };
   }
 
-  index: number = -1;
+  componentDidMount() {
+    document.addEventListener("mousemove", this.onResizerMouseMove as any);
+    document.addEventListener("mouseup", this.onResizerMouseUp);
+    const splits = this.canonicalizeSplits(this.props);
+    this.setupSolver(splits, this.getContainerSize(this.props.orientation));
+    this.querySolver(splits);
+    this.setState({ splits });
+  }
+
+  componentWillReceiveProps(nextProps: SplitProps) {
+    const splits = this.canonicalizeSplits(nextProps);
+    this.setupSolver(splits, this.getContainerSize(nextProps.orientation));
+    this.querySolver(splits);
+    this.setState({ splits });
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("mousemove", this.onResizerMouseMove as any);
+    document.removeEventListener("mouseup", this.onResizerMouseUp);
+  }
+
   onResizerMouseDown(i: number) {
     this.index = i;
     this.solver.addEditVar(this.vars[this.index + 1], Cassowary.Strength.strong).beginEdit();
@@ -183,13 +131,6 @@ export class Split extends React.Component<SplitProps, {
     for (let i = 0; i < splits.length; i++) {
       splits[i].value = vars[i + 1].value - vars[i].value;
     }
-  }
-
-  componentWillReceiveProps(nextProps: SplitProps) {
-    const splits = this.canonicalizeSplits(nextProps);
-    this.setupSolver(splits, this.getContainerSize(nextProps.orientation));
-    this.querySolver(splits);
-    this.setState({ splits });
   }
 
   private getContainerSize(orientation: SplitOrientation): number {
@@ -291,19 +232,6 @@ export class Split extends React.Component<SplitProps, {
         this.solver.resolve();
       }
     }
-  }
-
-  componentDidMount() {
-    document.addEventListener("mousemove", this.onResizerMouseMove as any);
-    document.addEventListener("mouseup", this.onResizerMouseUp);
-    const splits = this.canonicalizeSplits(this.props);
-    this.setupSolver(splits, this.getContainerSize(this.props.orientation));
-    this.querySolver(splits);
-    this.setState({ splits });
-  }
-  componentWillUnmount() {
-    document.removeEventListener("mousemove", this.onResizerMouseMove as any);
-    document.removeEventListener("mouseup", this.onResizerMouseUp);
   }
 
   render() {
