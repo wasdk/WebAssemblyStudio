@@ -183,7 +183,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
             const result = await Service.validateWasmWithBinaryen(file, self.status);
             window.alert(result ? "Module is valid" : "Module is not valid");
           }));
-          /*actions.push(new MonacoUtils.ContextSubMenu("x", [
+          actions.push(new MonacoUtils.ContextSubMenu("Binaryen", [
             new MonacoUtils.Action("x", "Optimize (Default)", "octicon-gear", true, () => {
               Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Default);
             }),
@@ -193,8 +193,8 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
             new MonacoUtils.Action("x", "Optimize (Size)", "octicon-gear", true, () => {
               Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Size);
             })
-          ]));*/
-          actions.push(new MonacoUtils.Action("x", "Optimize (Default)", "octicon-gear", true, () => {
+          ]));
+          /* actions.push(new MonacoUtils.Action("x", "Optimize (Default)", "octicon-gear", true, () => {
             Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Default);
           }));
           actions.push(new MonacoUtils.Action("x", "Optimize (Speed)", "octicon-gear", true, () => {
@@ -202,7 +202,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           }));
           actions.push(new MonacoUtils.Action("x", "Optimize (Size)", "octicon-gear", true, () => {
             Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Size);
-          }));
+          })); */
           actions.push(new MonacoUtils.Action("x", "Disassemble", "octicon-file-code", true, () => {
             Service.disassembleWasmWithWabt(file, self.status);
           }));
@@ -246,7 +246,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           getAnchor: () => anchor,
 
           getActions: () => {
-            return monaco.Promise.as(actions);
+            return monaco.Promise.wrap(actions);
           },
 
           getActionItem: (action: any): any => {
