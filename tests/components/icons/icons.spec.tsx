@@ -2,7 +2,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
 import * as React from "react";
-import {shallow, mount} from "enzyme";
+import {shallow} from "enzyme";
 import {
   Icon,
   GoRepoForked,
@@ -25,77 +25,154 @@ import {
   GoGist,
   GoCheck,
   GoOpenIssue,
+  GoFileDirectory,
+  GoQuestion,
+  GoClippy,
+  GoEye,
+  GoCode,
+  GoCloudUpload
 } from "../../../src/components/shared/Icons";
 
 describe("Tests for Icon component", () => {
-  const setup = () => {
-    const props = {
-      src: ""
-    };
+  const setup = (props?) => {
     return shallow(<Icon {...props}/>);
   };
-
   it("Icon renders correctly", () => {
-    setup();
+    const wrapper = setup({ src: "test" });
+    expect(wrapper.first().prop("style")).toEqual({
+      width: 16,
+      height: 16,
+      backgroundImage: `url("test")`
+    });
   });
   it("GoRepoForked renders correctly", () => {
-    shallow(<GoRepoForked/>);
+    const wrapper = shallow(<GoRepoForked/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-repo-forked")).toEqual(true);
   });
   it("GoBeaker renders correctly", () => {
-    shallow(<GoBeaker/>);
+    const wrapper = shallow(<GoBeaker/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-beaker")).toEqual(true);
   });
   it("GoGear renders correctly", () => {
-    shallow(<GoGear/>);
+    const wrapper = shallow(<GoGear/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-gear")).toEqual(true);
   });
   it("GoBeakerGear renders correctly", () => {
-    shallow(<GoBeakerGear/>);
+    const wrapper = shallow(<GoBeakerGear/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-gear")).toEqual(true);
   });
   it("GoRocket renders correctly", () => {
-    shallow(<GoRocket/>);
+    const wrapper = shallow(<GoRocket/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-rocket")).toEqual(true);
   });
   it("GoPencil renders correctly", () => {
-    shallow(<GoPencil/>);
+    const wrapper = shallow(<GoPencil/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-pencil")).toEqual(true);
   });
   it("GoDelete renders correctly", () => {
-    shallow(<GoDelete/>);
+    const wrapper = shallow(<GoDelete/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-x")).toEqual(true);
   });
   it("GoVerified renders correctly", () => {
-    shallow(<GoVerified/>);
+    const wrapper = shallow(<GoVerified/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-verified")).toEqual(true);
   });
   it("GoFile renders correctly", () => {
-    shallow(<GoFile/>);
+    const wrapper = shallow(<GoFile/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-file")).toEqual(true);
   });
   it("GoFileBinary renders correctly", () => {
-    shallow(<GoFileBinary/>);
+    const wrapper = shallow(<GoFileBinary/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-file-binary")).toEqual(true);
   });
   it("GoFileCode renders correctly", () => {
-    shallow(<GoFileCode/>);
+    const wrapper = shallow(<GoFileCode/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-file-code")).toEqual(true);
   });
   it("GoQuote renders correctly", () => {
-    shallow(<GoQuote/>);
+    const wrapper = shallow(<GoQuote/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-quote")).toEqual(true);
   });
   it("GoDesktopDownload renders correctly", () => {
-    shallow(<GoDesktopDownload/>);
+    const wrapper = shallow(<GoDesktopDownload/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-desktop-download")).toEqual(true);
   });
   it("GoX renders correctly", () => {
-    shallow(<GoX/>);
+    const wrapper = shallow(<GoX/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-x")).toEqual(true);
   });
   it("GoKebabHorizontal renders correctly", () => {
-    shallow(<GoKebabHorizontal/>);
+    const wrapper = shallow(<GoKebabHorizontal/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-kebab-horizontal")).toEqual(true);
   });
   it("GoThreeBars renders correctly", () => {
-    shallow(<GoThreeBars/>);
+    const wrapper = shallow(<GoThreeBars/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-three-bars")).toEqual(true);
   });
   it("GoBook renders correctly", () => {
-    shallow(<GoBook/>);
+    const wrapper = shallow(<GoBook/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-book")).toEqual(true);
   });
   it("GoGist renders correctly", () => {
-    shallow(<GoGist/>);
+    const wrapper = shallow(<GoGist/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-gist")).toEqual(true);
   });
   it("GoCheck renders correctly", () => {
-    shallow(<GoCheck/>);
+    const wrapper = shallow(<GoCheck/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-check")).toEqual(true);
   });
   it("GoOpenIssue renders correctly", () => {
-    shallow(<GoOpenIssue/>);
+    const wrapper = shallow(<GoOpenIssue/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-issue-opened")).toEqual(true);
+  });
+  it("GoFileDirectory renders correctly", () => {
+    const wrapper = shallow(<GoFileDirectory/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-file-directory")).toEqual(true);
+  });
+  it("GoQuestion renders correctly", () => {
+    const wrapper = shallow(<GoQuestion/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-question")).toEqual(true);
+  });
+  it("GoClippy renders correctly", () => {
+    const wrapper = shallow(<GoClippy/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-clippy")).toEqual(true);
+  });
+  it("GoEye renders correctly", () => {
+    const wrapper = shallow(<GoEye/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-eye")).toEqual(true);
+  });
+  it("GoCode renders correctly", () => {
+    const wrapper = shallow(<GoCode/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-code")).toEqual(true);
+  });
+  it("GoCloudUpload renders correctly", () => {
+    const wrapper = shallow(<GoCloudUpload/>);
+    expect(wrapper.first().hasClass("octicon")).toEqual(true);
+    expect(wrapper.first().hasClass("octicon-cloud-upload")).toEqual(true);
   });
 });
