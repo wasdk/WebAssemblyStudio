@@ -28,6 +28,9 @@ export class Button extends React.Component<{
   isDisabled?: boolean;
   onClick?: Function;
   customClassName?: string;
+  href?: string,
+  target?: string,
+  rel?: string
 }, {}> {
   render() {
     let className = "button ";
@@ -36,6 +39,19 @@ export class Button extends React.Component<{
     }
     if (this.props.isDisabled) {
       className += " disabled";
+    }
+    if (this.props.href && !this.props.isDisabled) {
+      return (
+        <a
+          href={this.props.href}
+          target={this.props.target || ""}
+          rel={this.props.rel || ""}
+          className={className}
+          title={this.props.title}
+        >
+          {this.props.icon} {this.props.label}
+        </a>
+      );
     }
     return <div
       className={className}

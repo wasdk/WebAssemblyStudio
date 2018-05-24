@@ -195,7 +195,7 @@ export class AppStore {
     const lastLineLength = model.getLineMaxColumn(lineCount);
     const range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
     model.applyEdits([
-      { forceMoveMarkers: true, identifier: null, range, text: message }
+      { forceMoveMarkers: true, range, text: message }
     ]);
     this.onOutputChanged.dispatch();
   }

@@ -9,7 +9,7 @@ gulp.task("build", async () => {
 
 gulp.task("publish", async () => {
     // Executing the module to get the frames data.
-    const rows = 30, cols = 40, frameCount = 50, fps = 10;
+    const rows = 44, cols = 36, frameCount = 1050, fps = 35;
     const { transform } = await (await Service.import('src/module.js')).default();
     const buffer = new ArrayBuffer(cols * rows * frameCount * 3);
     transform(buffer, rows, cols, frameCount, fps, true);

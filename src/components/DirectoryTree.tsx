@@ -111,7 +111,8 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
 }> {
   constructor(props: DirectoryTreeProps) {
     super(props);
-    this.contextViewService = new MonacoUtils.ContextViewService(document.documentElement);
+    // tslint:disable-next-line
+    this.contextViewService = new MonacoUtils.ContextViewService(document.documentElement, null, {trace: () => {}});
     this.contextMenuService = new MonacoUtils.ContextMenuService(document.documentElement, null, null, this.contextViewService);
     this.state = { directory: this.props.directory };
     this.status = {
@@ -260,6 +261,12 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
         });
 
         super.onContextMenu(tree, file, event);
+
+        // Set the context menus max height to avoid overflow outside window
+        const menu: HTMLElement = document.querySelector(".context-view.monaco-menu-container");
+        const windowPadding = 10;
+        menu.style.maxHeight = Math.min(window.innerHeight - event.posy - windowPadding, 380) + "px";
+
         return true;
       }
     }

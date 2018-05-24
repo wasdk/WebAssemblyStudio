@@ -33,6 +33,8 @@ import { Service } from "./service";
 import { layout } from "./util";
 import { MonacoUtils } from "./monaco-utils";
 import { BrowserNotSupported } from "./components/BrowserNotSupported";
+import registerLanguages from "./utils/registerLanguages";
+import registerTheme from "./utils/registerTheme";
 
 declare var window: any;
 declare var WebAssembly: any;
@@ -102,17 +104,20 @@ const update = parameters["update"] === true ? true : !!parseInt(parameters["upd
 const fiddle = parameters["fiddle"] || parameters["f"];
 const embeddingParams = getEmbeddingParams(parameters);
 
-(window["require"])(["vs/editor/editor.main", "require"], (_: any, require: any) => {
-  MonacoUtils.initialize(require);
-  if (typeof WebAssembly !== "object") {
-    ReactDOM.render(
-      <BrowserNotSupported/>,
-      document.getElementById("app")
-    );
-  } else {
-    ReactDOM.render(
-      <App update={update} fiddle={fiddle} embeddingParams={embeddingParams} windowContext={appWindowContext}/>,
-      document.getElementById("app")
-    );
-  }
-});
+MonacoUtils.initialize()
+  .then(registerTheme)
+  .then(() => {
+    if (typeof WebAssembly !== "object") {
+      ReactDOM.render(
+        <BrowserNotSupported/>,
+        document.getElementById("app")
+      );
+    } else {
+      ReactDOM.render(
+        <App update={update} fiddle={fiddle} embeddingParams={embeddingParams} windowContext={appWindowContext}/>,
+        document.getElementById("app")
+      );
+    }
+  })
+  .then(() => import(/* webpackChunkName: "monaco-languages" */ "monaco-editor"))
+  .then(registerLanguages);

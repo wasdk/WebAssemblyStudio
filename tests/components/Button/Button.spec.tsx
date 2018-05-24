@@ -6,18 +6,19 @@ import {shallow} from "enzyme";
 import {Button} from "../../../src/components/shared/Button";
 
 describe("Tests for button component", () => {
-  const setup = (value: any) => {
-    const props = {
-      isDisabled: value,
-      // tslint:disable-next-line:no-empty
-      onClick: () => {},
-      icon: <button/>,
-      label: "",
-      title: ""
-    };
+  const setup = (props?) => {
     return shallow(<Button {...props}/>);
   };
   it("Button renders correctly", () => {
-    setup(false);
+    setup();
+  });
+  it("should render as a link if passing the href prop", () => {
+    const href = "https://github.com/wasdk/WebAssemblyStudio"
+    const wrapper = setup({ href, target: "_blank", rel: "noopener noreferrer" });
+    const a = wrapper.find("a");
+    expect(a.exists()).toEqual(true);
+    expect(a.prop("href")).toEqual(href);
+    expect(a.prop("target")).toEqual("_blank");
+    expect(a.prop("rel")).toEqual("noopener noreferrer");
   });
 });

@@ -1,27 +1,66 @@
-const imports = {
-  env: {
-    sinf(x) { return Math.sin(x); },
-    cosf(x) { return Math.cos(x); },
-  }
-};
+class ArcModule {
+  constructor(wasm) {
+      this.initialized = false;
 
-export default function () {
-  // Loading wasm modules
-  return WebAssembly.instantiateStreaming(fetch("../out/module.wasm"), imports).then(({instance}) => {
-    return {
-      transform(buffer, rows, cols, frameCount, fps, isFirst) {
-        const size = rows * cols * frameCount * 3;
-        // Allocate memory in the wasm memory (and copy input buffer).
-        const p = instance.exports.alloc(size);
-        const temp = new Uint8Array(instance.exports.memory.buffer, p, size);
-        const out = new Uint8Array(buffer, 0, size);
-        if (!isFirst) temp.set(out);
-        // Transform
-        instance.exports.transform(p, rows, cols, frameCount, fps, isFirst);
-        // Transfer data to the output buffer and release wasm memory
-        out.set(temp);
-        instance.exports.dealloc(p, size);
-      },
-    };
-  })
+      if (typeof wasm === 'string') {
+          this.wasmPromise = WebAssembly.instantiateStreaming(fetch(wasm));
+      } else {
+          this.wasmPromise = WebAssembly.instantiate(wasm);
+      }
+
+      this.wasmPromise = this.wasmPromise.then(result => {
+          this.wasmInstance = result.instance;
+          this.wasmExports = result.instance.exports;
+      });
+  }
+
+  get ready() {
+      return this.wasmPromise;
+  }
+
+  init(rows, cols, frameCount, fps, isFirst) {
+      if (!this.wasmInstance) {
+          throw new Error("Wasm module not loaded");
+      }
+
+      try {
+        this.bufferSize = rows * cols * frameCount * 3;
+        this.wasmExports.init(rows, cols, frameCount, fps, isFirst);
+        this.initialized = true;
+      } catch (e) {
+        console.log(e.stack);
+      }
+  }
+
+  transform(input) {
+      if (!this.initialized) {
+          throw new Error("Wasm module not initialized");
+      }
+
+      let bufferOffset = this.wasmExports.getAnimationBuffer();
+      let animationBuffer = new Uint8Array(this.wasmExports.memory.buffer, bufferOffset, this.bufferSize);
+
+      animationBuffer.set(input);
+      this.wasmExports.apply();
+      return animationBuffer;
+  }
+}
+
+export default async function () {
+  let module = new ArcModule("../out/lib.wasm");
+  await module.ready;
+
+  return {
+    transform(buffer, rows, cols, frameCount, fps, isFirst) {
+      module.init(rows, cols, frameCount, fps, isFirst);
+      let input = new Uint8Array(buffer);
+      let output;
+      try {
+        output = module.transform(input);
+        input.set(output);
+      } catch (e) {
+        console.log(e, '\n', e.stack);
+      }
+    }
+  }
 }

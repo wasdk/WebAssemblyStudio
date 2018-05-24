@@ -25,8 +25,6 @@
 // Derrived and modified from
 // https://github.com/mattgodbolt/compiler-explorer/blob/0a87dcb00abfc5931067a0eaf961b68a1d0a9bac/static/rust-mode.js
 
-import "monaco-editor";
-
 import IRichLanguageConfiguration = monaco.languages.LanguageConfiguration;
 import ILanguage = monaco.languages.IMonarchLanguage;
 import IModel = monaco.editor.IModel;

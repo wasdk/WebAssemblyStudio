@@ -18,9 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 import { File, Project, Directory, FileType, Problem, isBinaryFileType, fileTypeForExtension, fileTypeFromFileName, IStatusProvider } from "./model";
-import "monaco-editor";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes, base64EncodeBytes } from "./util";
 import { assert } from "./util";
 import getConfig from "./config";
@@ -265,11 +263,11 @@ export class Service {
         const startLineNumber = parseInt(m[1], 10);
         const startColumn = parseInt(m[2], 10);
         const message = m[3];
-        let severity = monaco.Severity.Info;
+        let severity = monaco.MarkerSeverity.Info;
         if (message.indexOf("error") >= 0) {
-          severity = monaco.Severity.Error;
+          severity = monaco.MarkerSeverity.Error;
         } else if (message.indexOf("warning") >= 0) {
-          severity = monaco.Severity.Warning;
+          severity = monaco.MarkerSeverity.Warning;
         }
         annotations.push({
           severity, message,
@@ -285,11 +283,11 @@ export class Service {
           re2.lastIndex++;
         }
         const message = m[5];
-        let severity = monaco.Severity.Info;
+        let severity = monaco.MarkerSeverity.Info;
         if (message.indexOf("error") >= 0) {
-          severity = monaco.Severity.Error;
+          severity = monaco.MarkerSeverity.Error;
         } else if (message.indexOf("warning") >= 0) {
-          severity = monaco.Severity.Warning;
+          severity = monaco.MarkerSeverity.Warning;
         }
         annotations.push({
           severity, message,
