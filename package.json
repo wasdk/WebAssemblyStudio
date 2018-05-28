@@ -17,6 +17,7 @@
     "mutate": "./node_modules/.bin/stryker run"
   },
   "jest": {
+    "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
     "setupFiles": [
       "<rootDir>/test-shim.js",
       "<rootDir>/test-setup.js"
@@ -79,6 +80,7 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "jest": "^22.4.2",
+    "jest-enzyme": "^6.0.1",
     "monaco-editor-webpack-plugin": "^1.2.0",
     "react-test-renderer": "^16.2.0",
     "source-map-loader": "^0.2.3",
