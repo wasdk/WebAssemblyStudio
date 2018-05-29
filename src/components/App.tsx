@@ -512,8 +512,8 @@ export class App extends React.Component<AppProps, AppState> {
       toolbarButtons.push(
         <Button
           icon={<GoGear />}
-          label="Publish"
-          title="Publish Project"
+          label="Preview"
+          title="Preview Project"
           isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
             publishArc();
