@@ -205,7 +205,7 @@ export class App extends React.Component<AppProps, AppState> {
       ],
       editorSplits: [],
       showProblems: true,
-      showSandbox: true,
+      showSandbox: props.embeddingParams.type !== EmbeddingType.Arc,
       uploadFileDialogDirectory: null,
       newDirectoryDialog: null,
       tabGroups: null,
@@ -773,6 +773,7 @@ export class App extends React.Component<AppProps, AppState> {
               >
                 {editorPanes}
                 <ControlCenter
+                  showSandbox={this.state.showSandbox}
                   onToggle={() => {
                     const splits = this.state.controlCenterSplits;
                     splits[1].value = splits[1].value === 40 ? 256 : 40;
