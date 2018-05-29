@@ -307,10 +307,18 @@ export class App extends React.Component<AppProps, AppState> {
       build();
     });
     Mousetrap.bind("command+enter", () => {
-      run();
+      if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
+        run();
+      } else {
+        publishArc();
+      }
     });
     Mousetrap.bind("command+alt+enter", () => {
-      build().then(run);
+      if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
+        build().then(run);
+      } else {
+        build().then(publishArc);
+      }
     });
   }
   logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
@@ -513,10 +521,21 @@ export class App extends React.Component<AppProps, AppState> {
         <Button
           icon={<GoGear />}
           label="Preview"
-          title="Preview Project"
+          title="Preview Project: CtrlCmd + Enter"
           isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
             publishArc();
+          }}
+        />
+      );
+      toolbarButtons.push(
+        <Button
+          icon={<GoGear />}
+          label="Build &amp; Preview"
+          title="Build &amp; Preview Project: CtrlCmd + Alt + Enter"
+          isDisabled={this.toolbarButtonsAreDisabled()}
+          onClick={() => {
+            build().then(publishArc);
           }}
         />
       );
