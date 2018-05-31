@@ -21,22 +21,17 @@
 import { File, Project, Directory, FileType, Problem, isBinaryFileType, fileTypeForExtension, fileTypeFromFileName, IStatusProvider } from "./model";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes, base64EncodeBytes } from "./util";
 import { assert } from "./util";
-import getConfig from "./config";
 import { isZlibData, decompressZlib } from "./utils/zlib";
 import { gaEvent } from "./utils/ga";
 import { WorkerCommand, IWorkerResponse, IWorkerRequest } from "./message";
 import { processJSFile, RewriteSourcesContext } from "./utils/rewriteSources";
 import { getCurrentRunnerInfo } from "./utils/taskRunner";
+import { createCompilerService, Language } from "./compilerServices";
 
 declare var capstone: {
   ARCH_X86: any;
   MODE_64: any;
   Cs: any;
-};
-
-declare var base64js: {
-  toByteArray(base64: string): ArrayBuffer;
-  fromByteArray(base64: ArrayBuffer): string;
 };
 
 declare var Module: ({ }) => any;
@@ -68,19 +63,7 @@ interface ICreateFiddleResponse {
   success: boolean;
 }
 
-export enum Language {
-  C = "c",
-  Cpp = "cpp",
-  Wat = "wat",
-  Wasm = "wasm",
-  Rust = "rust",
-  Cretonne = "cton",
-  x86 = "x86",
-  Json = "json",
-  JavaScript = "javascript",
-  TypeScript = "typescript",
-  Text = "text"
-}
+export { Language } from "./compilerServices";
 
 interface IFile {
   name: string;
@@ -88,27 +71,6 @@ interface IFile {
   type?: string;
   data?: string;
   description?: string;
-}
-
-export interface IServiceRequestTask {
-  file: string;
-  name: string;
-  output: string;
-  console: string;
-  success: boolean;
-}
-
-export interface IServiceRequest {
-  success: boolean;
-  tasks: IServiceRequestTask[];
-  output: string;
-  wasmBindgenJs: string | undefined;
-}
-
-export enum ServiceTypes {
-  Rustc,
-  Clang,
-  Service
 }
 
 /**
@@ -120,20 +82,6 @@ async function defer(fn: Function): Promise<any> {
       resolve(fn());
     });
   });
-}
-
-async function getServiceURL(to: ServiceTypes): Promise<string> {
-  const config = await getConfig();
-  switch (to) {
-    case ServiceTypes.Rustc:
-      return config.rustc;
-    case ServiceTypes.Clang:
-      return config.clang;
-    case ServiceTypes.Service:
-      return config.serviceUrl;
-    default:
-      throw new Error(`Invalid ServiceType: ${to}`);
-  }
 }
 
 class ServiceWorker {
@@ -218,27 +166,6 @@ class ServiceWorker {
 export class Service {
   private static worker = new ServiceWorker();
 
-  static async sendRequestJSON(content: Object, to: ServiceTypes): Promise<IServiceRequest> {
-    const url = await getServiceURL(to);
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(content),
-      headers: new Headers({ "Content-Type": "application/json" })
-    });
-
-    return response.json();
-  }
-
-  static async sendRequest(content: string, to: ServiceTypes): Promise<IServiceRequest> {
-    const url = await getServiceURL(to);
-    const response = await fetch(url, {
-      method: "POST",
-      body: content,
-      headers: new Headers({ "Content-Type": "application/x-www-form-urlencoded" })
-    });
-    return response.json();
-  }
-
   static getMarkers(response: string): monaco.editor.IMarkerData[] {
     // Parse and annotate errors if compilation fails.
     const annotations: monaco.editor.IMarkerData[] = [];
@@ -289,61 +216,96 @@ export class Service {
     return annotations;
   }
 
+  static async compileFiles(files: File[], from: Language, to: Language, options = ""): Promise<{ [name: string]: (string|ArrayBuffer); }> {
+    gaEvent("compile", "Service", `${from}->${to}`);
+
+    const service = await createCompilerService(from, to);
+
+    const fileNameMap: {[name: string]: File} = files.reduce((acc: any, f: File) => {
+      acc[f.name] = f;
+      return acc;
+    }, {} as any);
+
+    const input = {
+      files: files.reduce((acc: any, f: File) => {
+        acc[f.name] = {
+          content: f.getData(),
+        };
+        return acc;
+      }, {} as any),
+      options,
+    };
+    const result = await service.compile(input);
+
+    for (const file of files) {
+      file.setProblems([]);
+    }
+
+    const resultItemsIterable = {
+      [Symbol.iterator]: function*() {
+        if (!result.items) {
+          return;
+        }
+        for (const name of Object.keys(result.items)) {
+          yield {name, item: result.items[name]};
+        }
+      }
+    };
+
+    for (const { name, item } of resultItemsIterable) {
+      const { fileRef, console } = item;
+      if (!fileRef || !console) {
+        continue;
+      }
+      const file = fileNameMap[fileRef];
+      if (!file) {
+        continue;
+      }
+      const markers = Service.getMarkers(console);
+      if (markers.length > 0) {
+        monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
+        file.setProblems(markers.map(marker => {
+          return Problem.fromMarker(file, marker);
+        }));
+      }
+    }
+
+    if (!result.success) {
+      throw new Error(result.console);
+    }
+
+    const outputFiles: any = {};
+    for (const { name, item } of resultItemsIterable) {
+      const { content } = item;
+      if (content) {
+        outputFiles[name] = content;
+      }
+    }
+    return outputFiles;
+  }
+
   static async compileFile(file: File, from: Language, to: Language, options = ""): Promise<any> {
     const result = await Service.compileFileWithBindings(file, from, to, options);
     return result.wasm;
   }
 
   static async compileFileWithBindings(file: File, from: Language, to: Language, options = ""): Promise<any> {
-    const result = await Service.compile(file.getData(), from, to, options);
-    if (result.tasks) {
-      const markers = Service.getMarkers(result.tasks[0].console);
-      if (markers.length) {
-        monaco.editor.setModelMarkers(file.buffer, "compiler", markers);
-        file.setProblems(markers.map(marker => {
-          return Problem.fromMarker(file, marker);
-        }));
-      } else {
-        file.setProblems([]);
-      }
+    if (to !== Language.Wasm) {
+      throw new Error(`Only wasm target is supported, but "${to}" was found`);
     }
-    if (!result.success) {
-      throw new Error((result as any).message);
-    }
-    let wasm = decodeRestrictedBase64ToBytes(result.output);
-    if (isZlibData(wasm)) {
-      wasm = await decompressZlib(wasm);
-    }
-    const ret: any = {wasm};
-    if (result.wasmBindgenJs) {
-      ret.wasmBindgenJs = result.wasmBindgenJs;
-    }
-    return ret;
-  }
-
-  static async compile(src: string | ArrayBuffer, from: Language, to: Language, options = ""): Promise<IServiceRequest> {
-    gaEvent("compile", "Service", `${from}->${to}` );
-    if ((from === Language.C || from === Language.Cpp) && to === Language.Wasm) {
-      const project = {
-        output: "wasm",
-        compress: true,
-        files: [
-          {
-            type: from,
-            name: "file." + from,
-            options,
-            src
-          }
-        ]
+    const result = await Service.compileFiles([file], from, to, options);
+    const expectedOutputFilename = "a.wasm";
+    let output: any = {
+      wasm: result[expectedOutputFilename],
+    };
+    const expectedWasmBindgenJsFilename = "wasm_bindgen.js";
+    if (result[expectedWasmBindgenJsFilename]) {
+      output = {
+        ...output,
+        wasmBindgenJs: result[expectedWasmBindgenJsFilename],
       };
-      return this.sendRequestJSON(project, ServiceTypes.Clang);
-    } else if (from === Language.Wasm && to === Language.x86) {
-      const input = encodeURIComponent(base64js.fromByteArray(src as ArrayBuffer));
-      return this.sendRequest("input=" + input + "&action=wasm2assembly&options=" + encodeURIComponent(options), ServiceTypes.Service);
-    } else if (from === Language.Rust && to === Language.Wasm) {
-      // TODO: Temporary until we integrate rustc into the service.
-      return this.sendRequestJSON({ code: src, options }, ServiceTypes.Rustc);
     }
+    return output;
   }
 
   static async disassembleWasm(buffer: ArrayBuffer, status: IStatusProvider): Promise<string> {
@@ -625,8 +587,17 @@ export class Service {
       return a.map(function(x: any) { return padLeft(Number(x).toString(16), 2, "0"); }).join(" ");
     }
 
-    const data = file.getData() as string;
-    const json: any = await Service.compile(data, Language.Wasm, Language.x86, options);
+    const service = await createCompilerService(Language.Wasm, Language.x86);
+    const input = {
+      files: {
+        "in.wasm": {
+          content: file.getData(),
+        },
+      },
+      options,
+    };
+    const result = await service.compile(input);
+    const json: any = result.items["a.json"].content;
     let s = "";
     const cs = new capstone.Cs(capstone.ARCH_X86, capstone.MODE_64);
     const annotations: any[] = [];
