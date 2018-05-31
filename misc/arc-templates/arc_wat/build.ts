@@ -8,13 +8,11 @@ gulp.task("build", async () => {
 });
 
 gulp.task("publish", async () => {
-    // Note: the Arch site interprets cols and rows inverted, so we switch them around
-    // in the data we send.
     const rows = 36, cols = 44, frameCount = 1050, fps = 35;
     const { transform } = await (await Service.import('src/module.js')).default();
     const buffer = new ArrayBuffer(cols * rows * frameCount * 3);
     transform(buffer, rows, cols, frameCount, fps, true);
-    const animation = Arc.animationBufferToJSON(buffer, cols, rows, frameCount);
+    const animation = Arc.animationBufferToJSON(buffer, rows, cols, frameCount);
 
     const jsModule = project.getFile("src/module.js").getData();
     const watSource = project.getFile("src/module.wat").getData();
@@ -23,8 +21,8 @@ gulp.task("publish", async () => {
         description: "WASM Module Example",
         author: "",
         animation: {
-            rows: cols,
-            cols: rows,
+            rows,
+            cols,
             frameCount,
             fps,
             data: animation,
