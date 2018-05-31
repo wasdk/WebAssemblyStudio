@@ -84,6 +84,11 @@ async function defer(fn: Function): Promise<any> {
   });
 }
 
+function getProjectFilePath(file: File): string {
+  const project = file.getProject();
+  return file.getPath(project);
+}
+
 class ServiceWorker {
   worker: Worker;
   workerCallbacks: Array<{fn: Function, ex: Function}> = [];
@@ -222,13 +227,13 @@ export class Service {
     const service = await createCompilerService(from, to);
 
     const fileNameMap: {[name: string]: File} = files.reduce((acc: any, f: File) => {
-      acc[f.name] = f;
+      acc[getProjectFilePath(f)] = f;
       return acc;
     }, {} as any);
 
     const input = {
       files: files.reduce((acc: any, f: File) => {
-        acc[f.name] = {
+        acc[getProjectFilePath(f)] = {
           content: f.getData(),
         };
         return acc;
