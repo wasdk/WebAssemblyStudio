@@ -251,8 +251,8 @@ export class Service {
         if (!result.items) {
           return;
         }
-        for (const name of Object.keys(result.items)) {
-          yield {name, item: result.items[name]};
+        for (const [name, item] of Object.entries(result.items)) {
+          yield {name, item};
         }
       }
     };

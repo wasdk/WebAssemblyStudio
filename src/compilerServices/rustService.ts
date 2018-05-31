@@ -22,17 +22,40 @@ import { CompilerService, ServiceInput, ServiceOutput, Language } from "./types"
 
 import { sendRequestJSON, ServiceTypes } from "./sendRequest";
 import { decodeBinary } from "./utils";
+import * as Tar from "tar-js";
+import { base64EncodeBytes } from "../util";
 
 export class RustService implements CompilerService {
   async compile(input: ServiceInput): Promise<ServiceOutput> {
-    const files = Object.values(input.files);
-    if (files.length !== 1) {
-      throw new Error(`Supporting compilation of a single file, but ${files.length} file(s) found`);
-    }
-    const [ fileRef ] = Object.keys(input.files);
-    const code = files[0].content;
+    let result;
+    let fileRef;
     const options = input.options;
-    const result = await sendRequestJSON({ code, options, }, ServiceTypes.Rustc);
+    const cargo = options["cargo"];
+
+    if (cargo) {
+      const tarBuffer = new Tar();
+
+      const files = input.files;
+      Object.entries(files).forEach(
+        ([name, file]) => {
+          tarBuffer.append(name, file.content, {});
+        }
+      );
+
+      const tar = base64EncodeBytes( tarBuffer.out );
+
+      result = await sendRequestJSON({ tar, options, }, ServiceTypes.Cargo);
+      fileRef = Object.keys(files)[0];
+    } else {
+      const files = Object.values(input.files);
+      if (files.length !== 1) {
+        throw new Error(`Supporting compilation of a single file, but ${files.length} file(s) found`);
+      }
+      const [ fileRef ] = Object.keys(input.files);
+      const code = files[0].content;
+      result = await sendRequestJSON({ code, options, }, ServiceTypes.Rustc);
+    }
+
     const items: any = {};
     let content;
     if (result.success) {

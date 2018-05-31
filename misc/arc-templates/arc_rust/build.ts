@@ -2,10 +2,13 @@ import * as gulp from "gulp";
 import { Service, Arc, project, logLn } from "@wasm/studio-utils";
 
 gulp.task("build", async () => {
-    const options = { lto: true, opt_level: 's', debug: true };
-    const data = await Service.compileFile(project.getFile("src/lib.rs"), "rust", "wasm", options);
+    const options = { debug: true, cargo: true };
+    const data = await Service.compileFiles([
+        project.getFile("src/lib.rs"),
+        project.getFile("Cargo.toml")            
+    ], "rust", "wasm", options);
     const outWasm = project.newFile("out/lib.wasm", "wasm", true);
-    outWasm.setData(data);
+    outWasm.setData(data["a.wasm"]);
 });
 
 gulp.task("publish", async () => {
