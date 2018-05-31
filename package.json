@@ -14,7 +14,8 @@
     "clean": "rm -r dist/*",
     "tslint": "tslint -p .",
     "templates": "bin/build-templates.sh && bin/build-arc-templates.sh",
-    "mutate": "./node_modules/.bin/stryker run"
+    "mutate": "./node_modules/.bin/stryker run",
+    "analyse": "mkdir -p ./stats && webpack --profile --json > ./stats/stats.json && webpack-bundle-analyzer ./stats/stats.json ./dist -r stats/index.html"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
@@ -94,6 +95,7 @@
     "tslint": "^5.9.1",
     "typescript": "^2.7.2",
     "webpack": "^4.0.1",
+    "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^2.0.10",
     "webpack-dev-server": "^3.1.0"
   }
