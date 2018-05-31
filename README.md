@@ -11,7 +11,6 @@ To run a local copy, you will need to install node.js and webpack on your comput
 
 ```
 npm install
-npm install --dev
 ```
 
 To build WebAssembly Studio whenever a file changes run:
