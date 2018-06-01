@@ -37,9 +37,10 @@ export interface IServiceRequestTask {
 
 export interface IServiceRequest {
   success: boolean;
-  tasks: IServiceRequestTask[];
-  output: string;
-  wasmBindgenJs: string | undefined;
+  message?: string;
+  tasks?: IServiceRequestTask[];
+  output?: string;
+  wasmBindgenJs?: string;
 }
 
 async function getServiceURL(to: ServiceTypes): Promise<string> {
@@ -58,6 +59,19 @@ async function getServiceURL(to: ServiceTypes): Promise<string> {
   }
 }
 
+async function parseJSONResponse(response: Response): Promise < IServiceRequest > {
+  const text = await response.text();
+  if (response.status === 200) {
+    try {
+      return JSON.parse(text);
+    } catch (_) { /* fall through for errors */ }
+  }
+  return {
+    success: false,
+    message: text.replace(/(^<pre>)|(<\/pre>$)/gi, ""),
+  };
+}
+
 export async function sendRequestJSON(content: Object, to: ServiceTypes): Promise < IServiceRequest > {
   const url = await getServiceURL(to);
   const response = await fetch(url, {
@@ -66,7 +80,7 @@ export async function sendRequestJSON(content: Object, to: ServiceTypes): Promis
     headers: new Headers({ "Content-Type": "application/json" })
   });
 
-  return response.json();
+  return parseJSONResponse(response);
 }
 
 export async function sendRequest(content: string, to: ServiceTypes): Promise < IServiceRequest > {
@@ -76,5 +90,5 @@ export async function sendRequest(content: string, to: ServiceTypes): Promise < 
     body: content,
     headers: new Headers({ "Content-Type": "application/x-www-form-urlencoded" })
   });
-  return response.json();
+  return parseJSONResponse(response);
 }
