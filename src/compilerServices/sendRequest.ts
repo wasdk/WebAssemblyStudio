@@ -22,6 +22,7 @@ import getConfig from "../config";
 
 export enum ServiceTypes {
   Rustc,
+  Cargo,
   Clang,
   Service
 }
@@ -46,6 +47,8 @@ async function getServiceURL(to: ServiceTypes): Promise<string> {
   switch (to) {
     case ServiceTypes.Rustc:
       return config.rustc;
+    case ServiceTypes.Cargo:
+      return config.cargo;
     case ServiceTypes.Clang:
       return config.clang;
     case ServiceTypes.Service:

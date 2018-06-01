@@ -2,6 +2,7 @@
   "serviceUrl": "//wasmexplorer-service.herokuapp.com/service.php",
   "clang": "//webassembly-studio-clang.herokuapp.com/build",
   "rustc": "//webassembly-studio-rust.herokuapp.com/rustc",
+  "cargo": "//webassembly-studio-rust.herokuapp.com/cargo",
   "templates": {
     "default": "/dist/templates/index.js",
     "arc": "/dist/arc-templates/index.js"

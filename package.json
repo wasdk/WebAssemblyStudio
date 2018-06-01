@@ -69,6 +69,7 @@
     "react-dom": "^16.2.0",
     "react-icons": "^2.2.7",
     "react-modal": "^3.3.1",
+    "tar-js": "^0.3.0",
     "tslint-react": "^3.5.1"
   },
   "devDependencies": {
