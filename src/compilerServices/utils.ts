@@ -20,6 +20,7 @@
  */
 import { decodeRestrictedBase64ToBytes, base64EncodeBytes } from "../util";
 import { isZlibData, decompressZlib } from "../utils/zlib";
+import { fromByteArray } from "base64-js";
 
 export async function decodeBinary(input: string): Promise<ArrayBuffer> {
   let data = decodeRestrictedBase64ToBytes(input);
@@ -29,11 +30,6 @@ export async function decodeBinary(input: string): Promise<ArrayBuffer> {
   return data.buffer as ArrayBuffer;
 }
 
-declare var base64js: {
-  toByteArray(base64: string): Uint8Array;
-  fromByteArray(base64: Uint8Array): string;
-};
-
 export function encodeBinary(input: ArrayBuffer): string {
-  return base64js.fromByteArray(new Uint8Array(input));
+  return fromByteArray(new Uint8Array(input));
 }
