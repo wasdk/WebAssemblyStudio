@@ -54,13 +54,8 @@ export default async function () {
     transform(buffer, rows, cols, frameCount, fps, isFirst) {
       module.init(rows, cols, frameCount, fps, isFirst);
       let input = new Uint8Array(buffer);
-      let output;
-      try {
-        output = module.transform(input);
-        input.set(output);
-      } catch (e) {
-        console.log(e, '\n', e.stack);
-      }
+      let output = module.transform(input);
+      input.set(output);
     }
   }
 }

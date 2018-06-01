@@ -19,7 +19,6 @@ gulp.task("publish", async () => {
     const { transform } = await (await Service.import('src/module.js')).default();
     const buffer = new ArrayBuffer(cols * rows * frameCount * 3);
     transform(buffer, rows, cols, frameCount, fps, true);
-    const animation = Arc.animationBufferToJSON(buffer, rows, cols, frameCount);
 
     const jsModule = project.getFile("src/module.js").getData();
     const rsSource = project.getFile("src/lib.rs").getData();
@@ -32,7 +31,7 @@ gulp.task("publish", async () => {
             cols,
             frameCount,
             fps,
-            data: animation,
+            data: buffer,
         },
         entry: "src/module.js",
         files: {
