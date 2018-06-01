@@ -117,6 +117,7 @@ export class NewFileDialog extends React.Component<{
                 <ListItem value={FileType.Markdown} label={"Markdown (.md)"} icon={getIconForFileType(FileType.Markdown)} />
                 <ListItem value={FileType.JSON} label={"JSON (.json)"} icon={getIconForFileType(FileType.JSON)} />
                 <ListItem value={FileType.DOT} label={"GraphViz DOT (.dot)"} icon={getIconForFileType(FileType.DOT)} />
+                <ListItem value={FileType.TOML} label={"TOML Document (.toml)"} icon={getIconForFileType(FileType.TOML)} />
               </ListBox>
             </div>
             <div className="new-file-dialog-description">

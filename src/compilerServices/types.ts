@@ -29,6 +29,7 @@ export enum Language {
   Json = "json",
   JavaScript = "javascript",
   TypeScript = "typescript",
+  Toml = "toml",
   Text = "text"
 }
 

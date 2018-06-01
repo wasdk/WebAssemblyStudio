@@ -52,6 +52,7 @@ export enum FileType {
   Cretonne   = "cretonne",
   JSON       = "json",
   DOT        = "dot",
+  TOML       = "toml",
   Unknown    = "unknown"
 }
 
@@ -91,6 +92,8 @@ export function languageForFileType(type: FileType): string {
     return "json";
   } else if (type === FileType.DOT) {
     return "dot";
+  } else if (type === FileType.TOML) {
+    return "toml";
   }
   return "";
 }
@@ -122,6 +125,8 @@ export function nameForFileType(type: FileType): string {
     return "JSON";
   } else if (type === FileType.DOT) {
     return "DOT";
+  } else if (type === FileType.TOML) {
+    return "TOML";
   }
   return "";
 }
@@ -153,6 +158,8 @@ export function extensionForFileType(type: FileType): string {
     return "json";
   } else if (type === FileType.DOT) {
     return "dot";
+  } else if (type === FileType.TOML) {
+    return "toml";
   }
   return "";
 }
@@ -188,6 +195,8 @@ export function fileTypeForExtension(extension: string): FileType {
     return FileType.JSON;
   } else if (extension === "dot") {
     return FileType.DOT;
+  } else if (extension === "toml") {
+    return FileType.TOML;
   }
   return null;
 }
