@@ -5,7 +5,7 @@ gulp.task("build", async () => {
     const options = { debug: true, cargo: true };
     const data = await Service.compileFiles([
         project.getFile("src/lib.rs"),
-        project.getFile("src/arc_module.rs")
+        project.getFile("src/arc_module.rs"),
         project.getFile("src/color.rs"),
         project.getFile("src/utils.rs"),
         project.getFile("Cargo.toml")            
