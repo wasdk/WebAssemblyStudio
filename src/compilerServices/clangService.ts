@@ -64,7 +64,7 @@ export class ClangService implements CompilerService {
       items: {
         "a.wasm": { content, fileRef, console, },
       },
-      console: (result as any).message
+      console: result.message
     };
   }
 }

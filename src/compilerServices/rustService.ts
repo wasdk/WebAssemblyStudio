@@ -77,7 +77,7 @@ export class RustService implements CompilerService {
         "a.wasm": { content, fileRef, console, },
         ...extraItems
       },
-      console: (result as any).message
+      console: result.message
     };
   }
 }
