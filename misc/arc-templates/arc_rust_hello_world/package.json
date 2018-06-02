@@ -1,0 +1,15 @@
+{
+  "name": "@wasm/arc_rust",
+  "description": "",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "gulp --gulpfile ./build.ts"
+  },
+  "devDependencies": {
+  },
+  "wasmStudio": {
+    "name": "ARCH Rust Hello World Project",
+    "description": "# ARCH Rust Hello World Project\n\nThis project comes with a small example to get started with rendering text on the ARCH.",
+    "icon": "rust-lang-file-icon"
+  }
+}
