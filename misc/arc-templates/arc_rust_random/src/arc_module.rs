@@ -4,7 +4,7 @@ use module_instance;
 pub struct ArcModule {
   pub rows: usize,
   pub cols: usize,
-  frame_count: usize,
+  pub frame_count: usize,
   fps: usize,
   is_first: bool,
   animation: Vec<Rgb>
