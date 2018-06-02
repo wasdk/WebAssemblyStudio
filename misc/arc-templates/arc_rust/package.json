@@ -8,8 +8,8 @@
   "devDependencies": {
   },
   "wasmStudio": {
-    "name": "Empty Arc Rust Project",
-    "description": "# Empty Arc Rust Project",
+    "name": "ARCH Rust Project",
+    "description": "# ARCH Rust Project\n\nThis project comes with a small example to get started with the ARCH immediately.",
     "icon": "rust-lang-file-icon"
   }
 }

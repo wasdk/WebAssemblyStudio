@@ -8,8 +8,8 @@
   "devDependencies": {
   },
   "wasmStudio": {
-    "name": "Arc Rust: external random() function",
-    "description": "# Empty Arc Rust Project",
+    "name": "ARCH: External random() Function",
+    "description": "# Calling browser functions from Rust\n\nAn example that binds to the browsers `random()` function and implements a Game of Life. Contributed by @finnpauls.",
     "icon": "rust-lang-file-icon"
   }
 }

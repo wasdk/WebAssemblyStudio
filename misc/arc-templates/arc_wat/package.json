@@ -8,8 +8,8 @@
   "devDependencies": {
   },
   "wasmStudio": {
-    "name": "Empty Arc Wat Project",
-    "description": "# Empty Arc Wat Project",
+    "name": "Empty ARCH Wat Project",
+    "description": "# Empty ARCH Wat Project\n\nHigh-level languages are not for you? Write WebAssembly directly!",
     "icon": "wat-lang-file-icon"
   }
 }
