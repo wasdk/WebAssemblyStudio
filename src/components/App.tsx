@@ -358,6 +358,9 @@ export class App extends React.Component<AppProps, AppState> {
       history.pushState({}, fiddle, `${prefix}f=${fiddle}`);
     }
     this.setState({ fiddle });
+    if (this.props.embeddingParams.type === EmbeddingType.Arc) {
+      notifyArcAboutFork(fiddle);
+    }
   }
   async gist(fileOrDirectory?: File) {
     pushStatus("Exporting Project");
@@ -447,9 +450,6 @@ export class App extends React.Component<AppProps, AppState> {
           isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
             this.fork();
-            if (this.props.embeddingParams.type === EmbeddingType.Arc) {
-              notifyArcAboutFork(this.state.fiddle);
-            }
           }}
         />
       );
