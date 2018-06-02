@@ -8,8 +8,8 @@
   "devDependencies": {
   },
   "wasmStudio": {
-    "name": "Arc: Bitmap Font in Rust",
-    "description": "# Empty Arc Rust Project",
+    "name": "ARCH: Bitmap Font in Rust",
+    "description": "# Bitmap Font rendering\n\nA small example, sliding a bitmap font over the screen.",
     "icon": "rust-lang-file-icon"
   }
 }

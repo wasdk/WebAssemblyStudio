@@ -8,8 +8,8 @@
   "devDependencies": {
   },
   "wasmStudio": {
-    "name": "Arc: JSConf Logo in Rust",
-    "description": "# Empty Arc Rust Project",
+    "name": "ARCH: JSConf Logo in Rust",
+    "description": "# JSconf Logo in Rust\n\nA pulsating JSConf logo in Rust.",
     "icon": "rust-lang-file-icon"
   }
 }
