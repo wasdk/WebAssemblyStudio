@@ -3,7 +3,11 @@ class ArcModule {
       this.initialized = false;
 
       if (typeof wasm === 'string') {
+        if (!WebAssembly.instantiateStreaming) {
+          this.wasmPromise = fetchAndInstantiateFallback(wasm);
+        } else {
           this.wasmPromise = WebAssembly.instantiateStreaming(fetch(wasm));
+        }
       } else {
           this.wasmPromise = WebAssembly.instantiate(wasm);
       }
@@ -44,6 +48,12 @@ class ArcModule {
       this.wasmExports.apply();
       return animationBuffer;
   }
+}
+
+async function fetchAndInstantiateFallback(url, imports) {
+  const response = await fetch(url);
+  const buffer = await response.arrayBuffer();
+  return WebAssembly.instantiate(buffer, imports);
 }
 
 export default async function () {
