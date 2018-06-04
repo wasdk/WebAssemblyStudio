@@ -35,7 +35,8 @@
       "**/tests/**/**/**.spec.(ts|tsx|js)"
     ],
     "collectCoverageFrom": [
-      "src/**/**.(ts|tsx|js)"
+      "src/**/**.(ts|tsx|js)",
+      "!src/**/**.d.ts"
     ],
     "testURL": "https://webassembly.studio/"
   },
