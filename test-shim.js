@@ -37,6 +37,7 @@ class EditorModel {
 
 global.monaco = {
   editor: {
+    onDidFocusEditorText() { },
     onDidFocusEditor() { },
     onContextMenu() { },
     setModelLanguage() { },

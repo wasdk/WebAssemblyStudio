@@ -241,16 +241,23 @@ describe("Tests for Editor.tsx/Monaco", () => {
     querySelectorSpy.mockRestore();
     wrapper.unmount();
   });
-  it("should re-enable editor scroll when the editor recives focus again", () => {
-    const updateOptionsSpy = jest.spyOn(monaco.editor, "updateOptions");
+  it("should re-enable editor scroll when the editor receives focus again", () => {
     const onDidFocusEditorSpy = jest.spyOn(monaco.editor, "onDidFocusEditor");
+    const onDidFocusEditorTextSpy = jest.spyOn(monaco.editor, "onDidFocusEditorText");
     const {wrapper} = setup();
-    const registeredListenerFn = onDidFocusEditorSpy.mock.calls[0][0];
-    registeredListenerFn();
+    const updateOptionsSpy = jest.spyOn(monaco.editor, "updateOptions");
+    const onDidFocusEditorListenerFn = onDidFocusEditorSpy.mock.calls[0][0];
+    const onDidFocusEditorTextListenerFn = onDidFocusEditorTextSpy.mock.calls[0][0];
+    onDidFocusEditorListenerFn();
+    onDidFocusEditorTextListenerFn();
     expect(onDidFocusEditorSpy).toHaveBeenCalled();
-    expect(updateOptionsSpy).toHaveBeenCalledWith({ scrollbar: { handleMouseWheel: true }});
+    expect(onDidFocusEditorTextSpy).toHaveBeenCalled();
+    expect(updateOptionsSpy).toHaveBeenCalledTimes(2);
+    expect(updateOptionsSpy.mock.calls[0][0]).toEqual({ scrollbar: { handleMouseWheel: true }});
+    expect(updateOptionsSpy.mock.calls[1][0]).toEqual({ scrollbar: { handleMouseWheel: true }});
     updateOptionsSpy.mockRestore();
     onDidFocusEditorSpy.mockRestore();
+    onDidFocusEditorTextSpy.mockRestore()
     wrapper.unmount();
   });
 });
