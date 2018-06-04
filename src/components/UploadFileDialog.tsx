@@ -20,15 +20,14 @@
  */
 
 import * as React from "react";
-import { Service } from "../service";
 import * as ReactModal from "react-modal";
-import { Button } from "./shared/Button";
-import { GoGear, GoFile, GoX, Icon, GoPencil, GoCheck, GoCloudUpload, GoFileDirectory } from "./shared/Icons";
 import appStore from "../stores/AppStore";
-import {File, FileType, Directory, extensionForFileType, nameForFileType, fileTypeForExtension, ModelRef, getIconForFileType, isBinaryFileType } from "../model";
+import { Button } from "./shared/Button";
+import { GoFile, GoX, GoCloudUpload, GoFileDirectory } from "./shared/Icons";
+import { File, Directory, ModelRef } from "../model";
 import { UploadInput } from "./Widgets";
 import { DirectoryTree } from "./DirectoryTree";
-import { assert, readUploadedFile, uploadFilesToDirectory } from "../util";
+import { uploadFilesToDirectory } from "../util";
 
 export interface UploadFileDialogProps {
   isOpen: boolean;
@@ -36,22 +35,25 @@ export interface UploadFileDialogProps {
   onUpload: (file: File[]) => void;
   onCancel: () => void;
 }
-export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
-  }> {
+
+export interface UploadFileDialogState {
+  hasFilesToUpload: boolean;
+}
+
+export class UploadFileDialog extends React.Component<UploadFileDialogProps, UploadFileDialogState> {
   root: ModelRef<Directory>;
   uploadInput: UploadInput;
   constructor(props: any) {
     super(props);
     this.root = ModelRef.getRef(new Directory("root"));
-    this.root.getModel().onDidChangeChildren.register(() => {
-      this.forceUpdate();
-    });
+    this.root.getModel().onDidChangeChildren.register(() => this.onRootChildrenChange());
+    this.state = { hasFilesToUpload: false };
   }
   private async handleUpload(files: FileList) {
-    const root = this.root.getModel();
-    this.setState({files: []});
-    await uploadFilesToDirectory(files, root);
-    this.forceUpdate();
+    await uploadFilesToDirectory(files, this.root.getModel());
+  }
+  private onRootChildrenChange() {
+    this.setState({ hasFilesToUpload: this.root.getModel().hasChildren() });
   }
   render() {
     const root = this.root.getModel();
@@ -68,7 +70,12 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
         </div>
         <div className="row">
           <div className="column">
-            <UploadInput ref={(ref) => this.uploadInput = ref} onChange={(e) => this.handleUpload(e.target.files)}/>
+            <UploadInput
+              ref={(ref) => this.uploadInput = ref}
+              onChange={(e) => {
+                this.handleUpload(e.target.files);
+              }}
+            />
           </div>
           <div className="column" style={{height: "290px"}}>
             <DirectoryTree
@@ -108,20 +115,21 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, {
             icon={<GoCloudUpload />}
             label="Upload"
             title="Upload"
-            isDisabled={!root.children.length}
+            isDisabled={!this.state.hasFilesToUpload}
             onClick={() => {
               return this.props.onUpload && this.props.onUpload(root.children.slice(0));
             }}
           />
           {
-            root.children.length === 1 && root.children[0] instanceof Directory && <Button
-              icon={<GoCloudUpload />}
-              label={"Upload Root Contents"}
-              title={"Upload contents of " + root.children[0].name}
-              onClick={() => {
-                return this.props.onUpload && this.props.onUpload((root.children[0] as Directory).children.slice(0));
-              }}
-            />
+            root.children.length === 1 && root.children[0] instanceof Directory &&
+              <Button
+                icon={<GoCloudUpload />}
+                label={"Upload Root Contents"}
+                title={"Upload contents of " + root.children[0].name}
+                onClick={() => {
+                  return this.props.onUpload && this.props.onUpload((root.children[0] as Directory).children.slice(0));
+                }}
+              />
           }
         </div>
       </div>
