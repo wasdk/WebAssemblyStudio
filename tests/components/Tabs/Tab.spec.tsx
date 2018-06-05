@@ -1,6 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
+import "jest-enzyme";
 import * as React from "react";
 import {shallow} from "enzyme";
 import {Tab} from "../../../src/components/editor/Tabs";
@@ -11,10 +12,10 @@ describe("Tests for Tabs.tsx/Tab", () => {
   };
   it("should render correctly", () => {
     const wrapper = setup({ label: "test", icon: "test" });
-    expect(wrapper.find(".tab").exists()).toEqual(true);
-    expect(wrapper.find(".monaco-icon-label").hasClass("test")).toEqual(true);
-    expect(wrapper.find(".label").text()).toEqual("test");
-    expect(wrapper.find(".close").exists()).toEqual(true);
+    expect(wrapper.find(".tab")).toExist();
+    expect(wrapper.find(".monaco-icon-label")).toHaveClassName("test");
+    expect(wrapper.find(".label")).toHaveText("test");
+    expect(wrapper.find(".close")).toExist();
   });
   it("should apply active classname if passed isActive prop", () => {
     const wrapper = setup({ isActive: true });
@@ -30,9 +31,9 @@ describe("Tests for Tabs.tsx/Tab", () => {
   });
   it("should ONLY apply active/marked/italic classname on props", () => {
     const wrapper = setup({});
-    expect(wrapper.find(".active").exists()).toEqual(false);
-    expect(wrapper.find(".marked").exists()).toEqual(false);
-    expect(wrapper.find(".italic").exists()).toEqual(false);
+    expect(wrapper.find(".active")).not.toExist();
+    expect(wrapper.find(".marked")).not.toExist();
+    expect(wrapper.find(".italic")).not.toExist();
   });
   it("should invoke onClose with value prop when clicking the close icon", () => {
     const onClose = jest.fn();

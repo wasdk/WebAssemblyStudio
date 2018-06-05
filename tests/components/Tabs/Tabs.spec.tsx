@@ -1,6 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
+import "jest-enzyme";
 import * as React from "react";
 import {shallow, mount} from "enzyme";
 import {Button} from "../../../src/components/shared/Button";
@@ -25,10 +26,10 @@ describe("Tests for Tabs.tsx/Tabs", () => {
     const tabB = <Tab label="tabB" key={2} />;
     const button = <Button label="buttonA" />;
     const wrapper = setup({ children: [tabA, tabB], commands: button });
-    expect(wrapper.find(".tabs-container").exists()).toEqual(true);
-    expect(wrapper.find(".tabs-tab-container").find(Tab).at(0).prop("label")).toEqual("tabA");
-    expect(wrapper.find(".tabs-tab-container").find(Tab).at(1).prop("label")).toEqual("tabB");
-    expect(wrapper.find(".tabs-command-container").find(Button).at(0).prop("label")).toEqual("buttonA");
+    expect(wrapper.find(".tabs-container")).toExist();
+    expect(wrapper.find(".tabs-tab-container").find(Tab).at(0)).toHaveProp("label", "tabA");
+    expect(wrapper.find(".tabs-tab-container").find(Tab).at(1)).toHaveProp("label", "tabB");
+    expect(wrapper.find(".tabs-command-container").find(Button).at(0)).toHaveProp("label", "buttonA");
   });
   it("should invoke onDoubleClick when double clicking the tabs container", () => {
     const onDoubleClick = jest.fn();

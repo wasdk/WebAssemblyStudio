@@ -1,6 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
+import "jest-enzyme";
 import * as React from "react";
 import { shallow } from "enzyme";
 
@@ -55,13 +56,13 @@ describe("Tests for NewProjectDialog component", () => {
   };
   it("NewProjectDialog renders correctly", () => {
     const dialog = setup({});
-    expect(dialog.find("ListBox").exists()).toBeTruthy();
+    expect(dialog.find("ListBox")).toExist();
     const buttons = dialog.find("Button");
     expect(buttons.length).toBe(2);
-    expect(buttons.at(createButtonIndex).prop("label")).toBe("Create");
-    expect(buttons.at(createButtonIndex).prop("title")).toBe("Create");
-    expect(buttons.at(cancelButtonIndex).prop("label")).toBe("Cancel");
-    expect(buttons.at(cancelButtonIndex).prop("title")).toBe("Cancel");
+    expect(buttons.at(createButtonIndex)).toHaveProp("label", "Create");
+    expect(buttons.at(createButtonIndex)).toHaveProp("title", "Create");
+    expect(buttons.at(cancelButtonIndex)).toHaveProp("label", "Cancel");
+    expect(buttons.at(cancelButtonIndex)).toHaveProp("title", "Cancel");
   });
 
   it("NewProjectDialog calls back onCreate", async () => {
@@ -72,7 +73,7 @@ describe("Tests for NewProjectDialog component", () => {
 
     {
       const createButton = dialog.find("Button").at(createButtonIndex);
-      expect(createButton.prop("isDisabled")).toBeTruthy();
+      expect(createButton).toHaveProp("isDisabled", true);
     }
 
     await promiseWait(3); // wait on templates loading and md-to-html
@@ -80,7 +81,7 @@ describe("Tests for NewProjectDialog component", () => {
 
     {
       const createButton = dialog.find("Button").at(createButtonIndex);
-      expect(createButton.prop("isDisabled")).toBeFalsy();
+      expect(createButton).toHaveProp("isDisabled", false);
       createButton.simulate("click");
       expect(chosenTemplate).toBeTruthy();
     }

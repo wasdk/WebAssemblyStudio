@@ -1,6 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
+import "jest-enzyme";
 import * as React from "react";
 import {mount} from "enzyme";
 
@@ -86,32 +87,32 @@ describe("Tests for ViewTabs", () => {
     const saveButtonIndex = 1;
     const buttons = wrapper.find(Button);
     const tabs = wrapper.find(Tab);
-    expect(wrapper.find(".editor-pane-container").exists()).toEqual(true);
-    expect(wrapper.find(".blurred").exists()).toEqual(true);
+    expect(wrapper.find(".editor-pane-container")).toExist();
+    expect(wrapper.find(".blurred")).toExist();
     expect(wrapper.find(Tabs).length).toEqual(1);
     expect(wrapper.find(EditorView).length).toEqual(1);
     expect(buttons.at(splitButtonIndex).key()).toEqual("split");
-    expect(buttons.at(splitButtonIndex).prop("title")).toEqual("Split Editor");
-    expect(buttons.at(splitButtonIndex).find(GoBook).exists()).toEqual(true);
+    expect(buttons.at(splitButtonIndex)).toHaveProp("title", "Split Editor");
+    expect(buttons.at(splitButtonIndex).find(GoBook)).toExist();
     expect(buttons.at(saveButtonIndex).key()).toEqual("save");
-    expect(buttons.at(saveButtonIndex).prop("title")).toEqual("Save: CtrlCmd + S");
-    expect(buttons.at(saveButtonIndex).prop("label")).toEqual("Save");
-    expect(buttons.at(saveButtonIndex).prop("isDisabled")).toEqual(true);
-    expect(buttons.at(saveButtonIndex).find(GoClippy).exists()).toEqual(true);
-    expect(tabs.at(0).prop("isActive")).toEqual(true);
-    expect(tabs.at(0).prop("label")).toEqual("fileA");
-    expect(tabs.at(1).prop("isActive")).toEqual(false);
-    expect(tabs.at(1).prop("label")).toEqual("fileB");
+    expect(buttons.at(saveButtonIndex)).toHaveProp("title", "Save: CtrlCmd + S");
+    expect(buttons.at(saveButtonIndex)).toHaveProp("label", "Save");
+    expect(buttons.at(saveButtonIndex)).toHaveProp("isDisabled", true);
+    expect(buttons.at(saveButtonIndex).find(GoClippy)).toExist();
+    expect(tabs.at(0)).toHaveProp("isActive", true);
+    expect(tabs.at(0)).toHaveProp("label", "fileA");
+    expect(tabs.at(1)).toHaveProp("isActive", false);
+    expect(tabs.at(1)).toHaveProp("label", "fileB");
     wrapper.unmount();
   });
   it("should render correctly when active view does not contain a file", () => {
     const {wrapper} = setup({ simulateNoFile: true });
-    expect(wrapper.find(".editor-pane-container").hasClass("empty")).toEqual(true);
+    expect(wrapper.find(".editor-pane-container")).toHaveClassName("empty");
     wrapper.unmount();
   });
   it("should render empty div when active view is null", () => {
     const {wrapper} = setup({ simulateNoView: true });
-    expect(wrapper.html()).toEqual("<div></div>");
+    expect(wrapper).toHaveHTML("<div></div>");
     wrapper.unmount();
   });
   it("should render correctly when previewing markdown files", () => {
@@ -122,19 +123,19 @@ describe("Tests for ViewTabs", () => {
     const buttons = wrapper.find(Button);
     expect(wrapper.find(MarkdownView).length).toEqual(1);
     expect(buttons.at(toggleButtonIndex).key()).toEqual("toggle");
-    expect(buttons.at(toggleButtonIndex).prop("title")).toEqual("Edit Markdown");
-    expect(buttons.at(toggleButtonIndex).find(GoCode).exists()).toEqual(true);
+    expect(buttons.at(toggleButtonIndex)).toHaveProp("title", "Edit Markdown");
+    expect(buttons.at(toggleButtonIndex).find(GoCode)).toExist();
     expect(buttons.at(splitButtonIndex).key()).toEqual("split");
     expect(buttons.at(saveButtonIndex).key()).toEqual("save");
-    expect(wrapper.find(Tab).at(0).prop("label")).toEqual("Preview fileA");
+    expect(wrapper.find(Tab).at(0)).toHaveProp("label", "Preview fileA");
     wrapper.unmount();
   });
   it("should render correctly when editing markdown files", () => {
     const {wrapper} = setup({ fileType: FileType.Markdown, viewType: ViewType.Editor });
     expect(wrapper.find(EditorView).length).toEqual(1);
-    expect(wrapper.find(Button).at(0).prop("title")).toEqual("Preview Markdown");
-    expect(wrapper.find(Button).at(0).find(GoEye).exists()).toEqual(true);
-    expect(wrapper.find(Tab).at(0).prop("label")).toEqual("fileA");
+    expect(wrapper.find(Button).at(0)).toHaveProp("title", "Preview Markdown");
+    expect(wrapper.find(Button).at(0).find(GoEye)).toExist();
+    expect(wrapper.find(Tab).at(0)).toHaveProp("label", "fileA");
     wrapper.unmount();
   });
   it("should invoke onChangeViewType with new ViewType when clicking the toggle button (Markdown)", () => {
@@ -156,19 +157,19 @@ describe("Tests for ViewTabs", () => {
     const buttons = wrapper.find(Button);
     expect(wrapper.find(VizView).length).toEqual(1);
     expect(buttons.at(toggleButtonIndex).key()).toEqual("toggle");
-    expect(buttons.at(toggleButtonIndex).prop("title")).toEqual("Edit GraphViz DOT File");
-    expect(buttons.at(toggleButtonIndex).find(GoCode).exists()).toEqual(true);
+    expect(buttons.at(toggleButtonIndex)).toHaveProp("title", "Edit GraphViz DOT File");
+    expect(buttons.at(toggleButtonIndex).find(GoCode)).toExist();
     expect(buttons.at(splitButtonIndex).key()).toEqual("split");
     expect(buttons.at(saveButtonIndex).key()).toEqual("save");
-    expect(wrapper.find(Tab).at(0).prop("label")).toEqual("Preview fileA");
+    expect(wrapper.find(Tab).at(0)).toHaveProp("label", "Preview fileA");
     wrapper.unmount();
   });
   it("should render correctly when editing dot files", () => {
     const {wrapper} = setup({ fileType: FileType.DOT, viewType: ViewType.Editor });
     expect(wrapper.find(EditorView).length).toEqual(1);
-    expect(wrapper.find(Button).at(0).prop("title")).toEqual("Preview GraphViz DOT File");
-    expect(wrapper.find(Button).at(0).find(GoEye).exists()).toEqual(true);
-    expect(wrapper.find(Tab).at(0).prop("label")).toEqual("fileA");
+    expect(wrapper.find(Button).at(0)).toHaveProp("title", "Preview GraphViz DOT File");
+    expect(wrapper.find(Button).at(0).find(GoEye)).toExist();
+    expect(wrapper.find(Tab).at(0)).toHaveProp("label", "fileA");
     wrapper.unmount();
   });
   it("should invoke onChangeViewType with new ViewType when clicking the toggle button (DOT)", () => {
@@ -190,17 +191,17 @@ describe("Tests for ViewTabs", () => {
     expect(wrapper.find(BinaryView).length).toEqual(1);
     expect(buttons.at(splitButtonIndex).key()).toEqual("split");
     expect(buttons.at(saveButtonIndex).key()).toEqual("save");
-    expect(wrapper.find(Tab).at(0).prop("label")).toEqual("Binary fileA");
+    expect(wrapper.find(Tab).at(0)).toHaveProp("label", "Binary fileA");
     wrapper.unmount();
   });
   it("should render correctly when a tab is marked as a preview tab", () => {
     const {wrapper} = setup({ preview: true });
-    expect(wrapper.find(Tab).at(0).prop("isItalic")).toEqual(true);
+    expect(wrapper.find(Tab).at(0)).toHaveProp("isItalic", true);
     wrapper.unmount();
   });
   it("should NOT apply blurred classname if passing hasFocus prop", () => {
     const {wrapper} = setup({ hasFocus: true });
-    expect(wrapper.find(".blurred").exists()).toEqual(false);
+    expect(wrapper.find(".blurred")).not.toExist();
     wrapper.unmount();
   });
   it("should invoke onSplitViews when clicking the split button", () => {
@@ -214,7 +215,7 @@ describe("Tests for ViewTabs", () => {
   it("should save the open file when clicking the save button", () => {
     const {wrapper, getFile} = setup({ simulateDirtyFile: true });
     expect(getFile().isDirty).toEqual(true);
-    expect(wrapper.find(Button).at(1).prop("isDisabled")).toEqual(false);
+    expect(wrapper.find(Button).at(1)).toHaveProp("isDisabled", false);
     wrapper.find(Button).at(1).simulate("click");
     expect(getFile().isDirty).toEqual(false);
     wrapper.unmount();
