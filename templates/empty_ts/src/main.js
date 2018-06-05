@@ -10,4 +10,5 @@ WebAssembly.instantiateStreaming(fetch("../out/main.wasm"), {
 }).then(result => {
   const exports = result.instance.exports;
   document.getElementById("container").innerText = "Result: " + exports.add(19, 23);
-});
+}).catch(console.error);
+

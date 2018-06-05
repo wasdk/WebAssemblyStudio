@@ -60,4 +60,4 @@ fetch(x).then(response =>
 ).then(results => {
   instance = results.instance;
   document.getElementById("container").innerText = instance.exports.main();
-});
+}).catch(console.error);

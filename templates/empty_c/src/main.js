@@ -3,4 +3,4 @@ fetch('../out/main.wasm').then(response =>
 ).then(bytes => WebAssembly.instantiate(bytes)).then(results => {
   instance = results.instance;
   document.getElementById("container").innerText = instance.exports.main();
-});
+}).catch(console.error);
