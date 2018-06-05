@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { fileTypeForExtension, isBinaryFileType, Directory } from "./model";
+import { fileTypeForExtension, isBinaryFileType, Directory, FileType, fileTypeForMimeType } from "./model";
 
 export function toAddress(n: number) {
   let s = n.toString(16);
@@ -239,4 +239,11 @@ export async function uploadFilesToDirectory(files: FileList, root: Directory) {
       console.log("Unable to read the file!");
     }
   });
+}
+
+export function isUploadAllowedForMimeType(type: string) {
+  if (type === "") { // Firefox doesn't show the "application/wasm" mime type.
+    return true;
+  }
+  return fileTypeForMimeType(type) !== FileType.Unknown;
 }
