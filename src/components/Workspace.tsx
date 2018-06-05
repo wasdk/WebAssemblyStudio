@@ -20,13 +20,10 @@
  */
 
 import * as React from "react";
-
 import { Header } from "./Header";
 import { DirectoryTree } from "./DirectoryTree";
-import { WorkspaceEntry } from "./WorkspaceEntry";
 import { Project, File, Directory, ModelRef } from "../model";
 import { SplitOrientation, SplitInfo, Split } from "./Split";
-
 import appStore from "../stores/AppStore";
 
 export interface WorkspaceProps {
@@ -47,18 +44,24 @@ export interface WorkspaceProps {
   onCreateGist: (fileOrDirectory: File) => void;
 }
 
-export class Workspace extends React.Component<WorkspaceProps, {
-  showProject: boolean;
-  showFiles: boolean;
+export interface WorkSpaceState {
   splits: SplitInfo[];
-}> {
+}
+
+export class Workspace extends React.Component<WorkspaceProps, WorkSpaceState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      showProject: false,
-      showFiles: true,
       splits: []
     };
+  }
+  componentDidMount() {
+    appStore.onDidChangeDirty.register(this.onFileDidChangeDirty);
+    appStore.onDidChangeChildren.register(this.onDirectoryDidChangeChildren);
+  }
+  componentWillUnmount() {
+    appStore.onDidChangeDirty.unregister(this.onFileDidChangeDirty);
+    appStore.onDidChangeChildren.unregister(this.onDirectoryDidChangeChildren);
   }
   onFileDidChangeDirty = () => {
     // TODO replace forceUpdate with tracking dirty states of workspace files.
@@ -68,16 +71,6 @@ export class Workspace extends React.Component<WorkspaceProps, {
     // TODO replace forceUpdate with just refreshing the tree
     this.forceUpdate();
   }
-
-  componentDidMount() {
-    appStore.onDidChangeDirty.register(this.onFileDidChangeDirty);
-    appStore.onDidChangeChildren.register(this.onDirectoryDidChangeChildren);
-  }
-  componentWillUnmount() {
-    appStore.onDidChangeDirty.unregister(this.onFileDidChangeDirty);
-    appStore.onDidChangeChildren.register(this.onDirectoryDidChangeChildren);
-  }
-
   render() {
     const project = this.props.project;
     return <div className="workspaceContainer">
@@ -101,12 +94,8 @@ export class Workspace extends React.Component<WorkspaceProps, {
             onDeleteFile={this.props.onDeleteFile}
             onUploadFile={this.props.onUploadFile}
             onMoveFile={this.props.onMoveFile}
-            onClickFile={(file: File) => {
-              this.props.onClickFile(file);
-            }}
-            onDoubleClickFile={(file: File) => {
-              this.props.onDoubleClickFile(file);
-            }}
+            onClickFile={this.props.onClickFile}
+            onDoubleClickFile={this.props.onDoubleClickFile}
             onCreateGist={this.props.onCreateGist}
           />
         </Split>
