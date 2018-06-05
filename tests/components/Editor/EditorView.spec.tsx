@@ -1,6 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
+import "jest-enzyme";
 import * as React from "react";
 import {mount} from "enzyme";
 import {EditorView} from "../../../src/components/editor/Editor";
@@ -24,7 +25,7 @@ describe("Tests for Editor.tsx/EditorView", () => {
   });
   it("should render a status bar if the open file has a description", () => {
     const wrapper = setup("test");
-    expect(wrapper.find(".status-bar-item").text()).toEqual("test");
+    expect(wrapper.find(".status-bar-item")).toHaveText("test");
     expect(wrapper.find(".editor-container").length).toEqual(1);
     wrapper.unmount();
   });

@@ -1,6 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
+import "jest-enzyme";
 import * as React from "react";
 import {shallow} from "enzyme";
 import {Button} from '../../../src/components/shared/Button';
@@ -36,27 +37,27 @@ describe("Tests for NewDirectoryDialog", () => {
     const wrapper = setup({});
     const textInputBox = wrapper.find(TextInputBox);
     const buttons = wrapper.find(Button);
-    expect(textInputBox.exists()).toBe(true);
+    expect(textInputBox).toExist();
     expect(buttons.length).toBe(2);
-    expect(buttons.at(cancelButtonIndex).prop("label")).toBe("Cancel");
-    expect(buttons.at(cancelButtonIndex).prop("title")).toBe("Cancel");
-    expect(buttons.at(createButtonIndex).prop("label")).toBe("Create");
-    expect(buttons.at(createButtonIndex).prop("title")).toBe("Create New Directory");
-    expect(buttons.at(createButtonIndex).prop("isDisabled")).toBe(true);
+    expect(buttons.at(cancelButtonIndex)).toHaveProp("label", "Cancel");
+    expect(buttons.at(cancelButtonIndex)).toHaveProp("title", "Cancel");
+    expect(buttons.at(createButtonIndex)).toHaveProp("label", "Create");
+    expect(buttons.at(createButtonIndex)).toHaveProp("title", "Create New Directory");
+    expect(buttons.at(createButtonIndex)).toHaveProp("isDisabled", true);
   });
   it("displays error & disables create button if name already exists", () => {
     const wrapper = setup({});
     const expectedErrorMessage = "Directory 'src' already exists.";
     wrapper.find(TextInputBox).simulate("change", { target: { value: "src" }});
-    expect(wrapper.find(TextInputBox).prop("error")).toBe(expectedErrorMessage);
-    expect(wrapper.find(Button).at(createButtonIndex).prop("isDisabled")).toBe(true);
+    expect(wrapper.find(TextInputBox)).toHaveProp("error", expectedErrorMessage);
+    expect(wrapper.find(Button).at(createButtonIndex)).toHaveProp("isDisabled", true);
   });
   it("displays error & disables create button if name is invalid", () => {
     const wrapper = setup({});
     const expectedErrorMessage = "Illegal characters in directory name.";
     wrapper.find(TextInputBox).simulate("change", { target: { value: "a+b" }});
-    expect(wrapper.find(TextInputBox).prop("error")).toBe(expectedErrorMessage);
-    expect(wrapper.find(Button).at(createButtonIndex).prop("isDisabled")).toBe(true);
+    expect(wrapper.find(TextInputBox)).toHaveProp("error", expectedErrorMessage);
+    expect(wrapper.find(Button).at(createButtonIndex)).toHaveProp("isDisabled", true);
   });
   it("invokes onCancel when clicking cancel button", () => {
     const onCancel = jest.fn();

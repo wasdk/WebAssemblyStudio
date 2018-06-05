@@ -1,6 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
+import "jest-enzyme";
 import * as React from "react";
 import {mount} from "enzyme";
 import {Split, SplitOrientation} from "../../../src/components/Split";
@@ -17,22 +18,22 @@ describe("Tests for Split", () => {
   it("should render correctly (horizontal)", () => {
     const wrapper = setup({ orientation: SplitOrientation.Horizontal });
     const split = wrapper.find(".split");
-    expect(split.prop("style")).toEqual({ flexDirection: "column" });
+    expect(split).toHaveStyle({ flexDirection: "column" });
     expect(split.children().length).toEqual(3);
-    expect(split.childAt(0).hasClass("split-pane")).toEqual(true);
-    expect(split.childAt(0).prop("style")).toEqual({ flexBasis: "0px" });
-    expect(split.childAt(0).childAt(0).hasClass("div0")).toEqual(true);
-    expect(split.childAt(1).prop("className")).toEqual("resizer horizontal");
-    expect(split.childAt(2).hasClass("split-pane")).toEqual(true);
-    expect(split.childAt(2).prop("style")).toEqual({ flex: 1 });
-    expect(split.childAt(2).childAt(0).hasClass("div1")).toEqual(true);
+    expect(split.childAt(0)).toHaveClassName("split-pane");
+    expect(split.childAt(0)).toHaveStyle({ flexBasis: "0px" });
+    expect(split.childAt(0).childAt(0)).toHaveClassName("div0");
+    expect(split.childAt(1)).toHaveProp("className", "resizer horizontal");
+    expect(split.childAt(2)).toHaveClassName("split-pane");
+    expect(split.childAt(2)).toHaveStyle({ flex: 1 });
+    expect(split.childAt(2).childAt(0)).toHaveClassName("div1");
     wrapper.unmount();
   });
   it("should render correctly (vertical)", () => {
     const wrapper = setup({ orientation: SplitOrientation.Vertical });
     const split = wrapper.find(".split");
-    expect(split.prop("style")).toEqual({ flexDirection: "row" });
-    expect(split.childAt(1).prop("className")).toEqual("resizer vertical");
+    expect(split).toHaveStyle({ flexDirection: "row" });
+    expect(split.childAt(1)).toHaveProp("className", "resizer vertical");
     wrapper.unmount();
   });
   it("should add event listeners for mousemove and mouseup events on mount", () => {
