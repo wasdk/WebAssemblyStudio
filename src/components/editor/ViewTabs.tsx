@@ -27,7 +27,7 @@ import { Project, File, getIconForFileType, FileType, IStatusProvider } from "..
 import { Markdown, MarkdownView } from ".././Markdown";
 import { Button } from "../shared/Button";
 import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye, GoCode } from "../shared/Icons";
-import { View, ViewType } from "./View";
+import { View, ViewType, isViewFileDirty } from "./View";
 import { BinaryView } from "../Binary";
 import { VizView } from "../Viz";
 import { pushStatus, popStatus, logLn } from "../../actions/AppActions";
@@ -77,7 +77,11 @@ export interface ViewTabsProps {
   onSplitViews?: () => void;
 }
 
-export class ViewTabs extends React.Component<ViewTabsProps> {
+export interface ViewTabsState {
+  isActiveViewFileDirty: boolean;
+}
+
+export class ViewTabs extends React.Component<ViewTabsProps, ViewTabsState> {
   static defaultProps: ViewTabsProps = {
     view: null,
     views: [],
@@ -98,11 +102,31 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
       pop: popStatus,
       logLn: logLn
     };
+    this.state = {
+      isActiveViewFileDirty: isViewFileDirty(props.view)
+    };
+  }
+
+  componentDidMount() {
+    appStore.onDidChangeDirty.register(this.onFileDidChangeDirty);
+  }
+
+  componentWillUnmount() {
+    appStore.onDidChangeDirty.unregister(this.onFileDidChangeDirty);
+  }
+
+  componentWillReceiveProps(nextProps: ViewTabsProps) {
+    if (this.props.view !== nextProps.view) {
+      this.setState({
+        isActiveViewFileDirty: isViewFileDirty(nextProps.view)
+      });
+    }
   }
 
   onFileDidChangeDirty = () => {
-    // TODO replace forceUpdate with tracking dirty states of tab files.
-    this.forceUpdate();
+    this.setState({
+      isActiveViewFileDirty: isViewFileDirty(this.props.view)
+    });
   }
 
   renderViewCommands() {
@@ -121,7 +145,7 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
         icon={<GoClippy />}
         label="Save"
         title="Save: CtrlCmd + S"
-        isDisabled={this.props.view && (!this.props.view.file.isDirty)}
+        isDisabled={!this.state.isActiveViewFileDirty}
         onClick={() => {
           this.props.view.file.save(this.status);
         }}
@@ -153,14 +177,6 @@ export class ViewTabs extends React.Component<ViewTabsProps> {
       );
     }
     return commands;
-  }
-
-  componentDidMount() {
-    appStore.onDidChangeDirty.register(this.onFileDidChangeDirty);
-  }
-
-  componentWillUnmount() {
-    appStore.onDidChangeDirty.unregister(this.onFileDidChangeDirty);
   }
 
   render() {

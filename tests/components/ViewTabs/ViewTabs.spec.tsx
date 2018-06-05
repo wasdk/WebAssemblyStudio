@@ -4,20 +4,6 @@
 import "jest-enzyme";
 import * as React from "react";
 import {mount} from "enzyme";
-
-const registerMock = jest.fn();
-const unregisterMock = jest.fn();
-jest.mock("../../../src/stores/AppStore", () => {
-  return {
-    default: {
-      onDidChangeDirty: {
-        register: registerMock,
-        unregister: unregisterMock
-      }
-    }
-  };
-});
-
 import {File, FileType} from "../../../src/model";
 import {View, ViewType} from "../../../src/components/editor/View";
 import {Tabs, Tab} from "../../../src/components/editor/Tabs";
@@ -28,6 +14,7 @@ import {GoBook, GoClippy, GoCode, GoEye} from "../../../src/components/shared/Ic
 import {MarkdownView} from "../../../src/components/Markdown";
 import {VizView} from "../../../src/components/Viz";
 import {BinaryView} from "../../../src/components/Binary";
+import appStore from "../../../src/stores/AppStore";
 
 function generateViews(props) {
   const {
@@ -79,7 +66,6 @@ describe("Tests for ViewTabs", () => {
   });
   afterAll(() => {
     jest.restoreAllMocks();
-    jest.unmock("../../../src/stores/AppStore");
   });
   it("should render correctly", () => {
     const {wrapper} = setup({});
@@ -256,15 +242,40 @@ describe("Tests for ViewTabs", () => {
     wrapper.unmount();
   });
   it("should register a listener for appStore.onDidChangeDirty on mount", () => {
-    registerMock.mockClear();
+    const register = jest.spyOn(appStore.onDidChangeDirty, "register");
     const {wrapper} = setup({});
-    expect(registerMock).toHaveBeenCalledTimes(1);
+    expect(register).toHaveBeenCalledTimes(1);
+    register.mockRestore();
     wrapper.unmount();
   });
   it("should unregister the listener for appStore.onDidChangeDirty on unmount", () => {
-    unregisterMock.mockClear();
+    const unregister = jest.spyOn(appStore.onDidChangeDirty, "unregister");
     const {wrapper} = setup({});
     wrapper.unmount();
-    expect(unregisterMock).toHaveBeenCalledTimes(1);
+    expect(unregister).toHaveBeenCalledTimes(1);
+    unregister.mockRestore();
+  });
+  it("should update state on new props", () => {
+    const {wrapper} = setup({ simulateDirtyFile: true });
+    const view = new View(new File("file", FileType.JavaScript));
+    wrapper.setProps({ view });
+    expect(wrapper).toHaveState({ isActiveViewFileDirty: false });
+    wrapper.unmount();
+  });
+  it("should not update state on new props (when view is still the same)", () => {
+    const {wrapper, getView} = setup({ simulateDirtyFile: true });
+    const instance = wrapper.instance() as ViewTabs;
+    const setState = jest.spyOn(instance, "setState");
+    wrapper.setProps({ view: getView() });
+    expect(setState).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+  it("should update state on onDidChangeDirty events from the appStore", () => {
+    const {wrapper, getFile} = setup({});
+    const file = getFile();
+    file.isDirty = true;
+    appStore.onDidChangeDirty.dispatch();
+    expect(wrapper).toHaveState({ isActiveViewFileDirty: true });
+    wrapper.unmount();
   });
 });
