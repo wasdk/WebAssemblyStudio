@@ -28,7 +28,7 @@ import { MonacoUtils } from "../monaco-utils";
 import { ViewTabs } from "./editor";
 import { ViewType } from "./editor/View";
 import { openFile, pushStatus, popStatus, logLn } from "../actions/AppActions";
-import { uploadFilesToDirectory } from "../util";
+import { uploadFilesToDirectory, isUploadAllowedForMimeType } from "../util";
 
 export interface DirectoryTreeProps {
   directory: ModelRef<Directory>;
@@ -281,24 +281,21 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
        * dropped into target or some parent of the target.
        */
       onDragOver(tree: ITree, data: IDragAndDropData, targetElement: File, originalEvent: DragMouseEvent): IDragOverReaction {
-        const items = Array.from(originalEvent.browserEvent.dataTransfer.items);
-        function mimeTypeUploadIsAllowed(type: string) {
-          console.log(type);
-          if (type === "") { // Firefox doesn't show the "application/wasm" mime type.
-            return true;
+        // File being dragged into the browser
+        if (!(data as any).elements) {
+          const items = Array.from(originalEvent.browserEvent.dataTransfer.items);
+          // In Firefox, tree elements get data transfer items with the "text/uri-list" type. This is a
+          // workaround to ignore that behavior.
+          const hasItemsUriListType = !items.some(item => item.type === "text/uri-list");
+          if (items.length && hasItemsUriListType) {
+            return {
+              accept: items.every(item => isUploadAllowedForMimeType(item.type)),
+              bubble: DragOverBubble.BUBBLE_DOWN,
+              autoExpand: true
+            };
           }
-          return fileTypeForMimeType(type) !== FileType.Unknown;
         }
-        // In Firefox, tree elements get data transfer items with the "text/uri-list" type. This is a
-        // workaround to ignore that behavior.
-        const firefoxWorkaround = !items.find(item => item.type === "text/uri-list");
-        if (items.length && firefoxWorkaround) {
-          return {
-            accept: items.every(item => mimeTypeUploadIsAllowed(item.type)),
-            bubble: DragOverBubble.BUBBLE_DOWN,
-            autoExpand: true
-          };
-        }
+        // Regular drag
         const file: File = (data.getData() as any)[0];
         return {
           accept: targetElement instanceof Directory &&
