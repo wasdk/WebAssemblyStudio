@@ -40,20 +40,16 @@ describe("Tests for UploadFileDialog", () => {
       wrapper,
       addFiles() {
         const instance = wrapper.instance() as UploadFileDialog;
-        const root = instance.root.getModel();
-        const fileA = root.newFile("fileA", FileType.JavaScript);
-        const fileB = root.newFile("fileB", FileType.JavaScript);
-        instance.root = ModelRef.getRef(root);
+        const fileA = instance.root.getModel().newFile("fileA", FileType.JavaScript);
+        const fileB = instance.root.getModel().newFile("fileB", FileType.JavaScript);
         wrapper.update();
         return [fileA, fileB];
       },
       addDirectory(name) {
         const instance = wrapper.instance() as UploadFileDialog;
-        const root = instance.root.getModel();
-        const directory = root.newDirectory(name);
+        const directory = instance.root.getModel().newDirectory(name);
         const fileA = directory.newFile("fileA", FileType.JavaScript);
         const fileB = directory.newFile("fileB", FileType.JavaScript);
-        instance.root = ModelRef.getRef(root);
         wrapper.update();
         return { root: instance.root, directory, fileA, fileB };
       }

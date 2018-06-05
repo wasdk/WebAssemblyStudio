@@ -662,6 +662,9 @@ export class Directory extends File {
   globFiles(pattern: string): File[] {
     return this.glob(pattern).map(path => this.getFile(path));
   }
+  hasChildren() {
+    return this.children.length > 0;
+  }
 }
 
 export class Project extends Directory {
