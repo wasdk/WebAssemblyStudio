@@ -286,8 +286,8 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           const items = Array.from(originalEvent.browserEvent.dataTransfer.items);
           // In Firefox, tree elements get data transfer items with the "text/uri-list" type. This is a
           // workaround to ignore that behavior.
-          const hasItemsUriListType = !items.some(item => item.type === "text/uri-list");
-          if (items.length && hasItemsUriListType) {
+          const hasItemsUriListType = items.some(item => item.type === "text/uri-list");
+          if (items.length && !hasItemsUriListType) {
             return {
               accept: items.every(item => isUploadAllowedForMimeType(item.type)),
               bubble: DragOverBubble.BUBBLE_DOWN,
