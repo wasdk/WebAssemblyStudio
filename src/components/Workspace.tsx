@@ -49,6 +49,7 @@ export interface WorkSpaceState {
 }
 
 export class Workspace extends React.Component<WorkspaceProps, WorkSpaceState> {
+  directoryTree: DirectoryTree;
   constructor(props: any) {
     super(props);
     this.state = {
@@ -56,20 +57,15 @@ export class Workspace extends React.Component<WorkspaceProps, WorkSpaceState> {
     };
   }
   componentDidMount() {
-    appStore.onDidChangeDirty.register(this.onFileDidChangeDirty);
-    appStore.onDidChangeChildren.register(this.onDirectoryDidChangeChildren);
+    appStore.onDidChangeDirty.register(this.refreshTree);
+    appStore.onDidChangeChildren.register(this.refreshTree);
   }
   componentWillUnmount() {
-    appStore.onDidChangeDirty.unregister(this.onFileDidChangeDirty);
-    appStore.onDidChangeChildren.unregister(this.onDirectoryDidChangeChildren);
+    appStore.onDidChangeDirty.unregister(this.refreshTree);
+    appStore.onDidChangeChildren.unregister(this.refreshTree);
   }
-  onFileDidChangeDirty = () => {
-    // TODO replace forceUpdate with tracking dirty states of workspace files.
-    this.forceUpdate();
-  }
-  onDirectoryDidChangeChildren = () => {
-    // TODO replace forceUpdate with just refreshing the tree
-    this.forceUpdate();
+  refreshTree = () => {
+    this.directoryTree.tree.refresh();
   }
   render() {
     const project = this.props.project;
@@ -86,6 +82,7 @@ export class Workspace extends React.Component<WorkspaceProps, WorkSpaceState> {
         >
           <div/>
           <DirectoryTree
+            ref={(ref) => this.directoryTree = ref}
             directory={project}
             value={this.props.file}
             onNewFile={this.props.onNewFile}
