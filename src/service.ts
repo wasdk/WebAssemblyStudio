@@ -23,7 +23,7 @@ import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes, 
 import { assert } from "./util";
 import { isZlibData, decompressZlib } from "./utils/zlib";
 import { gaEvent } from "./utils/ga";
-import { WorkerCommand, IWorkerResponse, IWorkerRequest } from "./message";
+import { WorkerCommand, BinaryenOptimization, IWorkerResponse, IWorkerRequest } from "./message";
 import { processJSFile, RewriteSourcesContext } from "./utils/rewriteSources";
 import { getCurrentRunnerInfo } from "./utils/taskRunner";
 import { createCompilerService, Language } from "./compilerServices";
@@ -131,8 +131,18 @@ class ServiceWorker {
     });
   }
 
-  async optimizeWasmWithBinaryen(data: ArrayBuffer): Promise<ArrayBuffer> {
-    return await this.postMessage(WorkerCommand.OptimizeWasmWithBinaryen, data);
+  async optimizeWasmWithBinaryen(data: ArrayBuffer, type: BinaryenOptimization): Promise<ArrayBuffer> {
+    let command: WorkerCommand = WorkerCommand.OptimizeWasmWithBinaryen;
+    switch (type) {
+      case BinaryenOptimization.Speed:
+        command = WorkerCommand.OptimizeWasmWithBinaryenSpeed;
+        break;
+      case BinaryenOptimization.Size:
+        command = WorkerCommand.OptimizeWasmWithBinaryenSize;
+        break;
+      default: break;
+    }
+    return await this.postMessage(command, data);
   }
 
   async validateWasmWithBinaryen(data: ArrayBuffer): Promise<number> {
@@ -466,12 +476,12 @@ export class Service {
     });
   }
 
-  static async optimizeWasmWithBinaryen(file: File, status?: IStatusProvider) {
+  static async optimizeWasmWithBinaryen(file: File, status?: IStatusProvider, type: BinaryenOptimization = BinaryenOptimization.Default) {
     assert(this.worker);
     gaEvent("optimize", "Service", "binaryen");
     let data = file.getData() as ArrayBuffer;
     status && status.push("Optimizing with Binaryen");
-    data = await this.worker.optimizeWasmWithBinaryen(data);
+    data = await this.worker.optimizeWasmWithBinaryen(data, type);
     status && status.pop();
     file.setData(data);
     file.buffer.setValue(await Service.disassembleWasm(data, status));

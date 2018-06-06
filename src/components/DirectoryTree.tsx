@@ -22,6 +22,7 @@
 import * as React from "react";
 import { Project, File, Directory, FileType, getIconForFileType, ModelRef, isBinaryFileType, IStatusProvider, fileTypeForMimeType } from "../model";
 import { Service } from "../service";
+import { BinaryenOptimization } from "../message";
 import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
 import { ITree, ContextMenuEvent, IDragAndDrop, DragMouseEvent, IDragAndDropData, IDragOverReaction, DragOverEffect, DragOverBubble } from "../monaco-extra";
 import { MonacoUtils } from "../monaco-utils";
@@ -182,9 +183,26 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
             const result = await Service.validateWasmWithBinaryen(file, self.status);
             window.alert(result ? "Module is valid" : "Module is not valid");
           }));
-          actions.push(new MonacoUtils.Action("x", "Optimize", "octicon-gear", true, () => {
-            Service.optimizeWasmWithBinaryen(file, self.status);
+          actions.push(new MonacoUtils.ContextSubMenu("Binaryen", [
+            new MonacoUtils.Action("x", "Optimize (Default)", "octicon-gear", true, () => {
+              Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Default);
+            }),
+            new MonacoUtils.Action("x", "Optimize (Speed)", "octicon-gear", true, () => {
+              Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Speed);
+            }),
+            new MonacoUtils.Action("x", "Optimize (Size)", "octicon-gear", true, () => {
+              Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Size);
+            })
+          ]));
+          /* actions.push(new MonacoUtils.Action("x", "Optimize (Default)", "octicon-gear", true, () => {
+            Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Default);
           }));
+          actions.push(new MonacoUtils.Action("x", "Optimize (Speed)", "octicon-gear", true, () => {
+            Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Speed);
+          }));
+          actions.push(new MonacoUtils.Action("x", "Optimize (Size)", "octicon-gear", true, () => {
+            Service.optimizeWasmWithBinaryen(file, self.status, BinaryenOptimization.Size);
+          })); */
           actions.push(new MonacoUtils.Action("x", "Disassemble", "octicon-file-code", true, () => {
             Service.disassembleWasmWithWabt(file, self.status);
           }));
@@ -228,7 +246,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
           getAnchor: () => anchor,
 
           getActions: () => {
-            return monaco.Promise.as(actions);
+            return monaco.Promise.wrap(actions);
           },
 
           getActionItem: (action: any): any => {
