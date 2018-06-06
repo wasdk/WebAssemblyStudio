@@ -2,7 +2,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
 import * as React from "react";
-import {View, ViewType, defaultViewTypeForFileType} from "../../../src/components/editor/View";
+import {View, ViewType, defaultViewTypeForFileType, isViewFileDirty} from "../../../src/components/editor/View";
 import {File, FileType} from "../../../src/model";
 
 describe("Tests for View", () => {
@@ -25,9 +25,31 @@ describe("Tests for View", () => {
     expect(clone.type).toEqual(view.type);
     expect(clone.file).toBe(file);
   });
-  it("should return default ViewType for FileType", () => {
-    expect(defaultViewTypeForFileType(FileType.Markdown)).toEqual(ViewType.Markdown);
-    expect(defaultViewTypeForFileType(FileType.DOT)).toEqual(ViewType.Viz);
-    expect(defaultViewTypeForFileType(null)).toEqual(ViewType.Editor);
+  describe("defaultViewTypeForFileType", () => {
+    it("should return default ViewType for FileType", () => {
+      expect(defaultViewTypeForFileType(FileType.Markdown)).toEqual(ViewType.Markdown);
+      expect(defaultViewTypeForFileType(FileType.DOT)).toEqual(ViewType.Viz);
+      expect(defaultViewTypeForFileType(null)).toEqual(ViewType.Editor);
+    });
+  });
+  describe("isViewFileDirty", () => {
+    it("should return true if the views file is dirty", () => {
+      const file = new File("file", FileType.JavaScript);
+      file.isDirty = true;
+      const view = new View(file);
+      expect(isViewFileDirty(view)).toEqual(true);
+    });
+    it("should return false if the views file is not dirty", () => {
+      const file = new File("file", FileType.JavaScript);
+      const view = new View(file);
+      expect(isViewFileDirty(view)).toEqual(false);
+    });
+    it("should return false if no view is provided", () => {
+      expect(isViewFileDirty(null)).toEqual(false);
+    });
+    it("should return false if the view does not have a file", () => {
+      const view = new View(null);
+      expect(isViewFileDirty(view)).toEqual(false);
+    });
   });
 });

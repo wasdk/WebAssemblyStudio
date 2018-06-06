@@ -39,6 +39,13 @@ export function defaultViewTypeForFileType(type: FileType) {
   }
 }
 
+export function isViewFileDirty(view: View) {
+  if (!view || !view.file) {
+    return false;
+  }
+  return view.file.isDirty;
+}
+
 export class View {
   public file: File;
   public type: ViewType;
