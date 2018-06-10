@@ -48,6 +48,8 @@ export class FileTemplate {
   readonly label: HTMLAnchorElement;
   readonly description: HTMLSpanElement;
   readonly monacoIconLabel: HTMLDivElement;
+  readonly labelIconDirty: HTMLDivElement;
+  readonly labelIconTransient: HTMLDivElement;
   constructor(container: HTMLElement) {
     this.monacoIconLabel = document.createElement("div");
     this.monacoIconLabel.className = "monaco-icon-label";
@@ -65,6 +67,14 @@ export class FileTemplate {
     this.description = document.createElement("span");
     this.description.className = "label-description";
     labelDescriptionContainer.appendChild(this.description);
+
+    this.labelIconTransient = document.createElement("div");
+    this.labelIconTransient.className = "label-icon";
+    this.monacoIconLabel.appendChild(this.labelIconTransient);
+
+    this.labelIconDirty = document.createElement("div");
+    this.labelIconDirty.className = "label-icon";
+    this.monacoIconLabel.appendChild(this.labelIconDirty);
   }
   dispose() {
     // TODO dispose resources?
@@ -91,8 +101,8 @@ export class FileTemplate {
       this.monacoIconLabel.classList.add(icon);
     }
     this.label.innerHTML = file.name;
-    this.monacoIconLabel.classList.toggle("dirty", file.isDirty);
-    this.monacoIconLabel.classList.toggle("transient", file.isTransient);
+    this.labelIconDirty.classList.toggle("dirty", file.isDirty);
+    this.labelIconTransient.classList.toggle("transient", file.isTransient);
     let title = "";
     if (file.isDirty && file.isTransient) {
       title =  "File has been modified and is transient.";
