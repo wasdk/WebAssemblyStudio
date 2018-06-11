@@ -9,7 +9,10 @@ module.exports = function(config) {
       baseDir: "mutation/html",
     },
     coverageAnalysis: "off",
-    mutate: ["src/**/*.ts?(x)"],
+    mutate: [
+      "src/**/*.ts?(x)",
+      "!src/**/**.d.ts"
+    ],
     timeoutMs: 60000
   });
 };
