@@ -33,7 +33,7 @@ import { ViewType } from "./editor/View";
 export interface ProblemsProps {
 }
 
-class ProblemTemplate {
+export class ProblemTemplate {
   readonly icon: HTMLDivElement;
   readonly label: HTMLAnchorElement;
   readonly description: HTMLSpanElement;
@@ -60,7 +60,6 @@ class ProblemTemplate {
     // TODO
   }
   set(problem: Problem) {
-    const icon = "";
     this.label.classList.toggle(problem.severity + "-dark", true);
     const marker = problem.marker;
     const position = `(${marker.startLineNumber}, ${marker.startColumn})`;
