@@ -85,5 +85,8 @@ global.monaco = {
     Info: 2,
     Warning: 4,
     Error: 8
+  },
+  Promise: {
+    as: (args) => Promise.resolve(args)
   }
 }
