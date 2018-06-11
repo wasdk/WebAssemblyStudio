@@ -80,5 +80,10 @@ global.monaco = {
     KEY_S: 83,
     KEY_B: 66,
     Enter: 13,
-  }  
+  },
+  MarkerSeverity: {
+    Info: 2,
+    Warning: 4,
+    Error: 8
+  }
 }
