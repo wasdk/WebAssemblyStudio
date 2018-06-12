@@ -21,67 +21,50 @@
 
 import * as React from "react";
 import appStore from "../stores/AppStore";
-import { Project, File, Directory, FileType, getIconForFileType, Problem, ModelRef } from "../model";
-import { Service } from "../service";
-import { GoDelete, GoPencil, GoGear, GoVerified, GoFileCode, GoQuote, GoFileBinary, GoFile, GoDesktopDownload } from "./shared/Icons";
-import { ITree, ContextMenuEvent } from "../monaco-extra";
-import { FileTemplate } from "./DirectoryTree";
+import { File, Directory, Problem } from "../model";
+import { ITree } from "../monaco-extra";
+import { ProblemTemplate, FileTemplate } from "../utils/Template";
 import { MonacoUtils } from "../monaco-utils";
 import { openFile } from "../actions/AppActions";
 import { ViewType } from "./editor/View";
+import { createController } from "../monaco-controller";
 
 export interface ProblemsProps {
 }
 
-export class ProblemTemplate {
-  readonly icon: HTMLDivElement;
-  readonly label: HTMLAnchorElement;
-  readonly description: HTMLSpanElement;
-  readonly monacoIconLabel: HTMLDivElement;
-  constructor(container: HTMLElement) {
-    this.monacoIconLabel = document.createElement("div");
-    this.monacoIconLabel.className = "monaco-icon-label";
-    this.monacoIconLabel.style.display = "flex";
-    container.appendChild(this.monacoIconLabel);
-
-    const labelDescriptionContainer = document.createElement("div");
-    labelDescriptionContainer.className = "monaco-icon-label-description-container";
-    this.monacoIconLabel.appendChild(labelDescriptionContainer);
-
-    this.label = document.createElement("a");
-    this.label.className = "label-name";
-    labelDescriptionContainer.appendChild(this.label);
-
-    this.description = document.createElement("span");
-    this.description.className = "label-description";
-    labelDescriptionContainer.appendChild(this.description);
-  }
-  dispose() {
-    // TODO
-  }
-  set(problem: Problem) {
-    this.label.classList.toggle(problem.severity + "-dark", true);
-    const marker = problem.marker;
-    const position = `(${marker.startLineNumber}, ${marker.startColumn})`;
-    this.label.innerHTML = marker.message;
-    this.description.innerHTML = position;
-  }
-}
-
 export class Problems extends React.Component<ProblemsProps, {
 }> {
+  tree: ITree;
+  contextViewService: any;
+  contextMenuService: any;
+  container: HTMLDivElement;
+
   constructor(props: ProblemsProps) {
     super(props);
     // tslint:disable-next-line
     this.contextViewService = new MonacoUtils.ContextViewService(document.documentElement, null, {trace: () => {}});
     this.contextMenuService = new MonacoUtils.ContextMenuService(document.documentElement, null, null, this.contextViewService);
   }
-
-  tree: ITree;
-  contextViewService: any;
-  contextMenuService: any;
-
-  container: HTMLDivElement;
+  componentDidMount() {
+    this.ensureTree();
+    (this.tree as any).model.setInput(appStore.getProject().getModel());
+    (this.tree as any).model.onDidSelect((e: any) => {
+      if (e.selection.length) {
+        this.onSelectProblem(e.selection[0]);
+      }
+    });
+    appStore.onDidChangeProblems.register(() => {
+      this.tree.refresh();
+      this.tree.expandAll();
+    });
+    appStore.onLoadProject.register(() => {
+      (this.tree as any).model.setInput(appStore.getProject().getModel());
+    });
+  }
+  componentWillReceiveProps(props: ProblemsProps) {
+    this.tree.refresh();
+    this.tree.expandAll();
+  }
   private setContainer(container: HTMLDivElement) {
     if (container == null) { return; }
     this.container = container;
@@ -90,37 +73,6 @@ export class Problems extends React.Component<ProblemsProps, {
     if (this.container.lastChild) {
       this.container.removeChild(this.container.lastChild);
     }
-    const self = this;
-    class Controller extends MonacoUtils.TreeDefaults.DefaultController {
-      onContextMenu(tree: ITree, file: File, event: ContextMenuEvent): boolean {
-        tree.setFocus(file);
-        const anchorOffset = { x: -10, y: -3 };
-        const anchor = { x: event.posx + anchorOffset.x, y: event.posy + anchorOffset.y };
-        const actions: any[] = [];
-
-        self.contextMenuService.showContextMenu({
-          getAnchor: () => anchor,
-
-          getActions: () => {
-            return monaco.Promise.as(actions);
-          },
-
-          getActionItem: (action: any): any => {
-            return null;
-          },
-
-          onHide: (wasCancelled?: boolean) => {
-            if (wasCancelled) {
-              tree.DOMFocus();
-            }
-          }
-        });
-
-        super.onContextMenu(tree, file, event);
-        return true;
-      }
-    }
-
     this.tree = new MonacoUtils.Tree(this.container, {
       dataSource: {
         /**
@@ -191,7 +143,7 @@ export class Problems extends React.Component<ProblemsProps, {
           templateData.dispose();
         }
       },
-      controller: new Controller()
+      controller: createController(this)
     });
   }
   onSelectProblem(problem: File | Problem) {
@@ -199,26 +151,6 @@ export class Problems extends React.Component<ProblemsProps, {
       return;
     }
     openFile(problem.file, ViewType.Editor, true);
-  }
-  componentDidMount() {
-    this.ensureTree();
-    (this.tree as any).model.setInput(appStore.getProject().getModel());
-    (this.tree as any).model.onDidSelect((e: any) => {
-      if (e.selection.length) {
-        this.onSelectProblem(e.selection[0]);
-      }
-    });
-    appStore.onDidChangeProblems.register(() => {
-      this.tree.refresh();
-      this.tree.expandAll();
-    });
-    appStore.onLoadProject.register(() => {
-      (this.tree as any).model.setInput(appStore.getProject().getModel());
-    });
-  }
-  componentWillReceiveProps(props: ProblemsProps) {
-    this.tree.refresh();
-    this.tree.expandAll();
   }
   render() {
     return <div className="fill" ref={(ref) => this.setContainer(ref)}/>;
