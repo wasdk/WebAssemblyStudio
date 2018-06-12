@@ -48,6 +48,11 @@ export class ControlCenter extends React.Component<{
     problemCount: number;
     outputLineCount: number;
   }> {
+  outputView: View;
+  refs: { container: HTMLDivElement };
+  outputViewEditor: EditorView;
+  updateOutputViewTimeout: any;
+
   constructor(props: any) {
     super(props);
     const outputFile = appStore.getOutput().getModel();
@@ -66,21 +71,20 @@ export class ControlCenter extends React.Component<{
   onOutputChanged = () => {
     this.updateOutputView();
   }
+  onDidChangeProblems = () => {
+    this.updateOutputView();
+  }
   componentDidMount() {
     appStore.onOutputChanged.register(this.onOutputChanged);
+    appStore.onDidChangeProblems.register(this.onDidChangeProblems);
   }
   componentWillUnmount() {
     appStore.onOutputChanged.unregister(this.onOutputChanged);
+    appStore.onDidChangeProblems.unregister(this.onDidChangeProblems);
   }
-  outputView: View;
-  refs: {
-    container: HTMLDivElement;
-  };
-  outputViewEditor: EditorView;
   setOutputViewEditor(editor: EditorView) {
     this.outputViewEditor = editor;
   }
-  updateOutputViewTimeout: any;
   updateOutputView() {
     if (!this.updateOutputViewTimeout) {
       this.updateOutputViewTimeout = window.setTimeout(() => {
