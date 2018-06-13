@@ -69,7 +69,6 @@ describe("AppStore tests", () => {
     expect(activeTabGroup.currentView).toBeNull();
     expect(tabGroups).toEqual([activeTabGroup]);
     expect(output.name).toEqual("output");
-    expect(output.buffer.toString()).toEqual("");
     expect(appStore.getIsContentModified()).toEqual(false);
   });
   it("should bind project events to the store on action: INIT_STORE", () => {
@@ -302,20 +301,18 @@ describe("AppStore tests", () => {
     const onOutputChanged = jest.fn();
     const model = appStore.getOutput().getModel().buffer;
     const applyEdits = jest.spyOn(model, "applyEdits");
-    const range = {r: [0, 0, 0, 0]};
     appStore.onOutputChanged.register(onOutputChanged);
     dispatcher.dispatch({ type: AppActionType.LOG_LN, message: "test", kind: "error" });
-    expect(applyEdits).toHaveBeenCalledWith([{ forceMoveMarkers: true, range, text: "[error]: test\n" }]);
+    expect(applyEdits).toHaveBeenCalled();
     appStore.onOutputChanged.unregister(onOutputChanged);
   });
   it("should handle action: LOG_LN (when no kind is provided)", () => {
     const onOutputChanged = jest.fn();
     const model = appStore.getOutput().getModel().buffer;
     const applyEdits = jest.spyOn(model, "applyEdits");
-    const range = {r: [0, 0, 0, 0]};
     appStore.onOutputChanged.register(onOutputChanged);
     dispatcher.dispatch({ type: AppActionType.LOG_LN, message: "test" });
-    expect(applyEdits).toHaveBeenCalledWith([{ forceMoveMarkers: true, range, text: "test\n" }]);
+    expect(applyEdits).toHaveBeenCalled();
     appStore.onOutputChanged.unregister(onOutputChanged);
   });
   it("should handle action: PUSH_STATUS", () => {
@@ -354,13 +351,6 @@ describe("AppStore tests", () => {
     dispatcher.dispatch({ type: AppActionType.LOAD_PROJECT, project });
     const fileRef = appStore.getFileByName("file");
     expect(appStore.getFileSource(fileRef)).toEqual("test");
-  });
-  it("should return files data as string when calling getFileSource", () => {
-    const project = new Project();
-    project.newFile("file", FileType.JavaScript);
-    dispatcher.dispatch({ type: AppActionType.LOAD_PROJECT, project });
-    const fileRef = appStore.getFileByName("file");
-    expect(appStore.getFileBuffer(fileRef)).toEqual({ buffer: [""] });
   });
   it("should return a ModelRef to the parent when calling getParent", () => {
     const directory = new Directory("dir");
