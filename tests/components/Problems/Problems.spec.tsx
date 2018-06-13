@@ -5,7 +5,6 @@ import * as React from "react";
 import { mount, render } from "enzyme";
 import { File, FileType, Problem, Directory, Project } from "../../../src/model";
 import { ViewType } from "../../../src/components/editor/View";
-import { FileTemplate } from "../../../src/components/DirectoryTree";
 import * as appActions from "../../../src/actions/AppActions";
 import appStore from "../../../src/stores/AppStore";
 
@@ -32,7 +31,8 @@ jest.mock("../../../src/monaco-utils.ts", () => ({
   }
 }));
 
-import { Problems, ProblemTemplate } from "../../../src/components/Problems";
+import { FileTemplate, ProblemTemplate } from "../../../src/utils/Template";
+import { Problems } from "../../../src/components/Problems";
 
 describe("Tests for Problems component", () => {
   const setup = () => {

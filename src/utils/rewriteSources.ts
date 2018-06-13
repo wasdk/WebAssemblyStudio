@@ -20,7 +20,6 @@
  */
 
 import { Project } from "../model";
-import { FileTemplate } from "../components/DirectoryTree";
 
 export class RewriteSourcesContext {
     project: Project;
