@@ -82,6 +82,7 @@ export class FileTemplate extends Template {
       case FileType.Wat: icon = "wat-lang-file-icon"; break;
     }
     if (file instanceof Directory) {
+      this.monacoIconLabel.classList.remove("file-icon");
       this.monacoIconLabel.classList.add("folder-icon");
     } else {
       this.monacoIconLabel.classList.add("file-icon");
