@@ -375,7 +375,7 @@ export class File {
     });
     this.parent = null;
   }
-  setNameAndDescription(name: string, description: string, type?: FileType) {
+  setNameAndDescription(name: string, description: string) {
     this.name = name;
     this.description = description;
     if (this.parent) {
