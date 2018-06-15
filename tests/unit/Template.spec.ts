@@ -73,6 +73,7 @@ describe("Tests for Template", () => {
       const directory = new Directory("src");
       template.set(directory);
       expect(template.monacoIconLabel.classList.contains("folder-icon")).toEqual(true);
+      expect(template.monacoIconLabel.classList.contains("file-icon")).toEqual(false);
     });
     it("should handle dirty files", () => {
       const container = document.createElement("div");
