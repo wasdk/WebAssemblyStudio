@@ -108,6 +108,17 @@ describe("Tests for Split", () => {
     expect(preventDefault).not.toHaveBeenCalled();
     wrapper.unmount();
   });
+  it("should abort any ongoing drag when receiving new props", () => {
+    const onChange = jest.fn();
+    const wrapper = setup({ orientation: SplitOrientation.Horizontal, onChange });
+    const instance = wrapper.instance() as Split;
+    wrapper.find(".resizer").simulate("mousedown");
+    wrapper.setProps({});
+    expect(instance.index).toEqual(-1);
+    expect(window.document.documentElement.style.pointerEvents).toEqual("auto");
+    expect(onChange).toHaveBeenCalled();
+    wrapper.unmount();
+  });
   /*
     TODO: Add tests to verify the actual solving after #184 is done
   */

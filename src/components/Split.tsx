@@ -76,6 +76,7 @@ export class Split extends React.Component<SplitProps, {
   }
 
   componentWillReceiveProps(nextProps: SplitProps) {
+    this.onResizerMouseUp();
     const splits = this.canonicalizeSplits(nextProps);
     this.setupSolver(splits, this.getContainerSize(nextProps.orientation));
     this.querySolver(splits);
@@ -97,7 +98,7 @@ export class Split extends React.Component<SplitProps, {
   /**
    * This fires for all splits, even if the resizer doesn't belong to this split.
    */
-  onResizerMouseUp = (e: Event) => {
+  onResizerMouseUp = () => {
     if (this.index < 0) {
       return;
     }
