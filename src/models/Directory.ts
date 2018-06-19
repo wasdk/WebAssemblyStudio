@@ -64,9 +64,27 @@ export class Directory extends File {
       return true;
     }).map(fn);
   }
+  handleNameCollision(name: string, isDirectory?: boolean) {
+    for (let i = 1; i <= this.children.length; i++) {
+      const nameParts = name.split(".");
+      const extension = nameParts.pop();
+      let newName;
+      if (isDirectory) {
+        newName = `${name}${i + 1}`;
+      } else {
+        newName = `${nameParts.join(".")}.${i + 1}.${extension}`;
+      }
+      if (!this.getImmediateChild(newName)) {
+        return newName;
+      }
+    }
+    throw new Error("Name collision not handled");
+  }
   addFile(file: File) {
     assert(file.parent === null);
-    assert(!this.getImmediateChild(file.name));
+    if (this.getImmediateChild(file.name)) {
+      file.name = this.handleNameCollision(file.name, file instanceof Directory);
+    }
     this.children.push(file);
     file.parent = this;
     this.notifyDidChangeChildren(file);
@@ -106,14 +124,8 @@ export class Directory extends File {
     if (path.length > 1) {
       directory = this.newDirectory(path.slice(0, path.length - 1));
     }
-    const name = path[path.length - 1];
-    let file = directory.getFile(name);
-    if (file) {
-      assert(file.type === type);
-    } else {
-      file = new File(path[path.length - 1], type);
-      directory.addFile(file);
-    }
+    const file = new File(path[path.length - 1], type);
+    directory.addFile(file);
     file.isTransient = isTransient;
     return file;
   }
