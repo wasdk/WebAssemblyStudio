@@ -94,9 +94,9 @@ export class DragAndDrop implements IDragAndDrop {
    * Handles the action of dropping sources into target.
    */
   async drop(tree: ITree, data: IDragAndDropData, targetElement: File, originalEvent: DragMouseEvent) {
-    const files = originalEvent.browserEvent.dataTransfer.files;
-    if (files.length) {
-      await uploadFilesToDirectory(files, targetElement as Directory);
+    const items = originalEvent.browserEvent.dataTransfer.items;
+    if (!(data as any).elements && items.length) {
+      await uploadFilesToDirectory(items, targetElement as Directory);
       return;
     }
     const file: File = (data.getData() as any)[0];

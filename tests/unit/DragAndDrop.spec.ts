@@ -151,12 +151,12 @@ describe("Tests for DragAndDrop", () => {
       const dnd = new DragAndDrop({});
       const data = {} as any;
       const targetElement = {} as any;
-      const files = [{name: "file"}];
-      const originalEvent = { browserEvent: { dataTransfer: { files }}} as any;
+      const items = [{name: "file"}];
+      const originalEvent = { browserEvent: { dataTransfer: { items }}} as any;
       const uploadFilesToDirectory = jest.spyOn(utils, "uploadFilesToDirectory");
       uploadFilesToDirectory.mockImplementation(() => {});
       dnd.drop(null, data, targetElement, originalEvent);
-      expect(uploadFilesToDirectory).toHaveBeenCalledWith(files, targetElement);
+      expect(uploadFilesToDirectory).toHaveBeenCalledWith(items, targetElement);
     });
     it("should handle regular element drops", () => {
       const target = { props: { onMoveFile: jest.fn() }};
@@ -164,7 +164,7 @@ describe("Tests for DragAndDrop", () => {
       const file = new File("file", FileType.JavaScript);
       const data = { getData: () => [file] } as any;
       const targetElement = {} as any;
-      const originalEvent = { browserEvent: { dataTransfer: { files: [] }}} as any;
+      const originalEvent = { browserEvent: { dataTransfer: { items: [] }}} as any;
       dnd.drop(null, data, targetElement, originalEvent);
       expect(target.props.onMoveFile).toHaveBeenCalledWith(file, targetElement);
     });
