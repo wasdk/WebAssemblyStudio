@@ -28,6 +28,8 @@ import { File, Directory, ModelRef } from "../model";
 import { UploadInput } from "./Widgets";
 import { DirectoryTree } from "./DirectoryTree";
 import { uploadFilesToDirectory } from "../util";
+import { EditFileDialog } from "./EditFileDialog";
+import { updateFileNameAndDescription } from "../actions/AppActions";
 
 export interface UploadFileDialogProps {
   isOpen: boolean;
@@ -38,6 +40,7 @@ export interface UploadFileDialogProps {
 
 export interface UploadFileDialogState {
   hasFilesToUpload: boolean;
+  editFileDialogFile?: ModelRef<File>;
 }
 
 export class UploadFileDialog extends React.Component<UploadFileDialogProps, UploadFileDialogState> {
@@ -64,6 +67,20 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, Upl
       overlayClassName="overlay"
       ariaHideApp={false}
     >
+      {this.state.editFileDialogFile &&
+        <EditFileDialog
+          isOpen={true}
+          file={this.state.editFileDialogFile}
+          onCancel={() => {
+            this.setState({ editFileDialogFile: null });
+          }}
+          onChange={(name: string, description) => {
+            const file = this.state.editFileDialogFile.getModel();
+            updateFileNameAndDescription(file, name, description);
+            this.setState({ editFileDialogFile: null });
+          }}
+        />
+      }
       <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <div className="modal-title-bar">
           Upload Files & Directories to {this.props.directory.getModel().getPath()}
@@ -79,9 +96,13 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, Upl
           </div>
           <div className="column" style={{height: "290px"}}>
             <DirectoryTree
+              onlyUploadActions={true}
               directory={this.root}
               onDeleteFile={(file: File) => {
                 file.parent.removeFile(file);
+              }}
+              onEditFile={(file: File) => {
+                this.setState({ editFileDialogFile: ModelRef.getRef(file) });
               }}
             />
           </div>

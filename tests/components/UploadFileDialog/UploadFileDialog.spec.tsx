@@ -12,6 +12,7 @@ import { UploadInput } from "../../../src/components/Widgets";
 import { DirectoryTree } from "../../../src/components/DirectoryTree";
 import * as utils from "../../../src/util";
 import { GoX, GoFile, GoFileDirectory, GoCloudUpload } from "../../../src/components/shared/Icons";
+import { EditFileDialog } from "../../../src/components/EditFileDialog";
 
 enum ButtonIndex {
   Cancel,
@@ -136,6 +137,7 @@ describe("Tests for UploadFileDialog", () => {
     const { root } = addDirectory("src");
     const directoryTree = wrapper.find(DirectoryTree);
     expect(directoryTree).toHaveProp("directory", root);
+    expect(directoryTree).toHaveProp("onlyUploadActions", true);
     expect(directoryTree.parent()).toHaveStyle({ height: "290px" });
   });
   it("should be possible to delete files from the DirectoryTree", () => {
@@ -144,6 +146,34 @@ describe("Tests for UploadFileDialog", () => {
     const onDeleteFile = wrapper.find(DirectoryTree).prop("onDeleteFile");
     onDeleteFile(fileA);
     expect(directory.getFile("fileA")).toBeFalsy();
+  });
+  it("should be possible to rename files in the DirectoryTree", () => {
+    const { wrapper, addDirectory } = setup();
+    const { fileA } = addDirectory("src");
+    const onEditFile = wrapper.find(DirectoryTree).prop("onEditFile");
+    onEditFile(fileA);
+    wrapper.update();
+    const editFileDialog = wrapper.find(EditFileDialog);
+    const onChange = editFileDialog.prop("onChange");
+    expect(editFileDialog).toExist();
+    expect(editFileDialog).toHaveProp("isOpen", true);
+    expect(editFileDialog.prop("file").getModel()).toEqual(fileA);
+    onChange("newName", "newDescription");
+    wrapper.update();
+    expect(fileA.name).toEqual("newName");
+    expect(fileA.description).toEqual("newDescription");
+    expect(wrapper).toHaveState({ hasFilesToUpload: true, editFileDialogFile: null });
+  });
+  it("should be possible to cancel an ongoing rename", () => {
+    const { wrapper, addDirectory } = setup();
+    const { fileA } = addDirectory("src");
+    const onEditFile = wrapper.find(DirectoryTree).prop("onEditFile");
+    onEditFile(fileA);
+    wrapper.update();
+    const onCancel = wrapper.find(EditFileDialog).prop("onCancel");
+    onCancel();
+    wrapper.update();
+    expect(wrapper).toHaveState({ hasFilesToUpload: true, editFileDialogFile: null });
   });
   it("should upload files to the root directory when the UploadInput changes", () => {
     const uploadFilesToDirectory = jest.spyOn(utils, "uploadFilesToDirectory");

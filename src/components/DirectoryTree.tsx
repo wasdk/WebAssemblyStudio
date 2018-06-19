@@ -42,6 +42,7 @@ export interface DirectoryTreeProps {
   onDoubleClickFile?: (file: File) => void;
   onUploadFile?: (directory: Directory) => void;
   onCreateGist?: (fileOrDirectory: File) => void;
+  onlyUploadActions?: boolean;
 }
 
 export class DirectoryTree extends React.Component<DirectoryTreeProps, {
@@ -149,6 +150,20 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
   }
   getActions(file: File, event: ContextMenuEvent) {
     const actions: any[] = [];
+
+    // Upload options (Limited to delete & edit)
+    if (this.props.onlyUploadActions) {
+      if (!file.parent) {
+        return actions;
+      }
+      this.props.onDeleteFile && actions.push(new MonacoUtils.Action("x", "Delete", "octicon-x", true, () => {
+        return this.props.onDeleteFile(file as Directory);
+      }));
+      this.props.onEditFile && actions.push(new MonacoUtils.Action("x", "Edit", "octicon-pencil", true, () => {
+        return this.props.onEditFile(file as Directory);
+      }));
+      return actions;
+    }
 
     // Directory options
     if (file instanceof Directory) {
