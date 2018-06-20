@@ -22,7 +22,7 @@
 import * as React from "react";
 import { Header } from "./Header";
 import { DirectoryTree } from "./DirectoryTree";
-import { Project, File, Directory, ModelRef } from "../model";
+import { Project, File, Directory, ModelRef } from "../models";
 import { SplitOrientation, SplitInfo, Split } from "./Split";
 import appStore from "../stores/AppStore";
 

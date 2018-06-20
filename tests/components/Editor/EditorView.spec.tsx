@@ -6,7 +6,7 @@ import * as React from "react";
 import {mount} from "enzyme";
 import {EditorView} from "../../../src/components/editor/Editor";
 import {View} from "../../../src/components/editor";
-import {File, FileType} from "../../../src/model";
+import {File, FileType} from "../../../src/models";
 
 describe("Tests for Editor.tsx/EditorView", () => {
   const setup = (description?) => {

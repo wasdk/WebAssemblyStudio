@@ -21,7 +21,7 @@
 
 import * as React from "react";
 import appStore from "../stores/AppStore";
-import { File, Directory, Problem } from "../model";
+import { File, Directory, Problem } from "../models";
 import { ITree } from "../monaco-extra";
 import { ProblemTemplate, FileTemplate } from "../utils/Template";
 import { MonacoUtils } from "../monaco-utils";

@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { fileTypeForExtension, isBinaryFileType, Directory, FileType, fileTypeForMimeType } from "./model";
+import { fileTypeForExtension, isBinaryFileType, Directory, FileType, fileTypeForMimeType } from "./models";
 
 export function toAddress(n: number) {
   let s = n.toString(16);
@@ -246,4 +246,10 @@ export function isUploadAllowedForMimeType(type: string) {
     return true;
   }
   return fileTypeForMimeType(type) !== FileType.Unknown;
+}
+
+let nextKey = 0;
+
+export function getNextKey() {
+  return nextKey++;
 }

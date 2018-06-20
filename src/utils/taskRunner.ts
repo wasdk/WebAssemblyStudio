@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { Project, fileTypeForExtension, mimeTypeForFileType } from "../model";
+import { Project, fileTypeForExtension, mimeTypeForFileType } from "../models";
 import { Gulpy } from "../gulpy";
 import { Service } from "../service";
 import { Arc } from "../arc";

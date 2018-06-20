@@ -19,43 +19,22 @@
  * SOFTWARE.
  */
 
-import { File, FileType } from "../../models";
+const modelRefMap: WeakMap<any, any> = new WeakMap();
 
-export enum ViewType {
-  Editor,
-  Markdown,
-  Binary,
-  Viz
-}
-
-export function defaultViewTypeForFileType(type: FileType) {
-  switch (type) {
-    case FileType.Markdown:
-      return ViewType.Markdown;
-    case FileType.DOT:
-      return ViewType.Viz;
-    default:
-      return ViewType.Editor;
+export class ModelRef<T> {
+  obj: T;
+  private constructor(obj: T) {
+    this.obj = obj;
   }
-}
-
-export function isViewFileDirty(view: View) {
-  if (!view || !view.file) {
-    return false;
+  public getModel(): T {
+    return this.obj;
   }
-  return view.file.isDirty;
-}
-
-export class View {
-  public file: File;
-  public type: ViewType;
-  public state: monaco.editor.ICodeEditorViewState;
-
-  constructor(file: File, type = ViewType.Editor) {
-    this.file = file;
-    this.type = type;
-  }
-  clone(): View {
-    return new View(this.file, this.type);
+  public static getRef<T>(obj: T): ModelRef<T> {
+    if (modelRefMap.has(obj)) {
+      return modelRefMap.get(obj);
+    }
+    const ref = new ModelRef<T>(obj);
+    modelRefMap.set(obj, ref);
+    return ref;
   }
 }

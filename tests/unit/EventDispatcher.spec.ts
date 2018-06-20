@@ -1,7 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
-import { EventDispatcher } from "../../src/model";
+import { EventDispatcher } from "../../src/models";
 
 describe("EventDispatcher tests", () => {
   describe("constructor", () => {

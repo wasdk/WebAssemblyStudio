@@ -6,7 +6,7 @@ import * as React from "react";
 import * as ReactModal from "react-modal";
 import { shallow } from "enzyme";
 import { UploadFileDialog } from "../../../src/components/UploadFileDialog";
-import { Directory, ModelRef, FileType } from "../../../src/model";
+import { Directory, ModelRef, FileType } from "../../../src/models";
 import { Button } from "../../../src/components/shared/Button";
 import { UploadInput } from "../../../src/components/Widgets";
 import { DirectoryTree } from "../../../src/components/DirectoryTree";

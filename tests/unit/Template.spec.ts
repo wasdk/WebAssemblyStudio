@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { Template, ProblemTemplate, FileTemplate } from "../../src/utils/Template";
-import { File, FileType, Problem, Directory } from "../../src/model";
+import { File, FileType, Problem, Directory } from "../../src/models";
 
 declare var monaco: { MarkerSeverity };
 

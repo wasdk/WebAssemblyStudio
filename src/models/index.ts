@@ -19,43 +19,23 @@
  * SOFTWARE.
  */
 
-import { File, FileType } from "../../models";
-
-export enum ViewType {
-  Editor,
-  Markdown,
-  Binary,
-  Viz
-}
-
-export function defaultViewTypeForFileType(type: FileType) {
-  switch (type) {
-    case FileType.Markdown:
-      return ViewType.Markdown;
-    case FileType.DOT:
-      return ViewType.Viz;
-    default:
-      return ViewType.Editor;
-  }
-}
-
-export function isViewFileDirty(view: View) {
-  if (!view || !view.file) {
-    return false;
-  }
-  return view.file.isDirty;
-}
-
-export class View {
-  public file: File;
-  public type: ViewType;
-  public state: monaco.editor.ICodeEditorViewState;
-
-  constructor(file: File, type = ViewType.Editor) {
-    this.file = file;
-    this.type = type;
-  }
-  clone(): View {
-    return new View(this.file, this.type);
-  }
-}
+export {
+  FileType,
+  SandboxRun,
+  IStatusProvider,
+  isBinaryFileType,
+  languageForFileType,
+  nameForFileType,
+  extensionForFileType,
+  fileTypeFromFileName,
+  fileTypeForExtension,
+  mimeTypeForFileType,
+  fileTypeForMimeType,
+  getIconForFileType
+} from "./types";
+export { Problem } from "./Problem";
+export { Project } from "./Project";
+export { EventDispatcher } from "./EventDispatcher";
+export { ModelRef } from "./ModelRef";
+export { Directory } from "./Directory";
+export { File } from "./File";

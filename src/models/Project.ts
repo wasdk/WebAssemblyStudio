@@ -19,43 +19,36 @@
  * SOFTWARE.
  */
 
-import { File, FileType } from "../../models";
+import { assert } from "../util";
+import { EventDispatcher } from "./EventDispatcher";
+import { Directory } from "./Directory";
 
-export enum ViewType {
-  Editor,
-  Markdown,
-  Binary,
-  Viz
-}
+export class Project extends Directory {
+  onDidChangeStatus = new EventDispatcher("Status Change");
+  onChange = new EventDispatcher("Project Change");
+  onDirtyFileUsed = new EventDispatcher("Dirty File Used");
 
-export function defaultViewTypeForFileType(type: FileType) {
-  switch (type) {
-    case FileType.Markdown:
-      return ViewType.Markdown;
-    case FileType.DOT:
-      return ViewType.Viz;
-    default:
-      return ViewType.Editor;
+  constructor() {
+    super("Project");
   }
-}
 
-export function isViewFileDirty(view: View) {
-  if (!view || !view.file) {
-    return false;
+  private status: string [] = ["Idle"];
+  hasStatus() {
+    return this.status.length > 1;
   }
-  return view.file.isDirty;
-}
-
-export class View {
-  public file: File;
-  public type: ViewType;
-  public state: monaco.editor.ICodeEditorViewState;
-
-  constructor(file: File, type = ViewType.Editor) {
-    this.file = file;
-    this.type = type;
+  getStatus() {
+    if (this.hasStatus()) {
+      return this.status[this.status.length - 1];
+    }
+    return "";
   }
-  clone(): View {
-    return new View(this.file, this.type);
+  pushStatus(status: string) {
+    this.status.push(status);
+    this.onDidChangeStatus.dispatch();
+  }
+  popStatus() {
+    assert(this.status.length);
+    this.status.pop();
+    this.onDidChangeStatus.dispatch();
   }
 }

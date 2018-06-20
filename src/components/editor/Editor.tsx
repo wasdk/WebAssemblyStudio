@@ -20,7 +20,7 @@
  */
 
 import * as React from "react";
-import { Project, File, Directory, FileType, languageForFileType, IStatusProvider } from "../../model";
+import { languageForFileType, IStatusProvider } from "../../models";
 import { ViewTabs } from "./ViewTabs";
 import { View } from "./View";
 import { build, run, pushStatus, popStatus, logLn } from "../../actions/AppActions";

@@ -5,7 +5,7 @@ import * as React from "react";
 import appStore from "../../../src/stores/AppStore";
 import dispatcher from "../../../src/dispatcher";
 import { AppActionType } from "../../../src/actions/AppActions";
-import { Project, Directory, File, FileType, ModelRef } from "../../../src/model";
+import { Project, Directory, File, FileType, ModelRef } from "../../../src/models";
 import { View } from "../../../src/components/editor";
 import { ViewType } from "../../../src/components/editor/View";
 

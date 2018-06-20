@@ -1,7 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
-import { ModelRef, File, FileType } from "../../src/model";
+import { ModelRef, File, FileType } from "../../src/models";
 
 describe("ModelRef tests", () => {
   describe("getRef", () => {

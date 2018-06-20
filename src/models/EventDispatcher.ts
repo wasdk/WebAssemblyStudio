@@ -19,43 +19,29 @@
  * SOFTWARE.
  */
 
-import { File, FileType } from "../../models";
-
-export enum ViewType {
-  Editor,
-  Markdown,
-  Binary,
-  Viz
-}
-
-export function defaultViewTypeForFileType(type: FileType) {
-  switch (type) {
-    case FileType.Markdown:
-      return ViewType.Markdown;
-    case FileType.DOT:
-      return ViewType.Viz;
-    default:
-      return ViewType.Editor;
+export class EventDispatcher {
+  readonly name: string;
+  private callbacks: Function[] = [];
+  constructor(name: string) {
+    this.name = name;
   }
-}
-
-export function isViewFileDirty(view: View) {
-  if (!view || !view.file) {
-    return false;
+  register(callback: Function) {
+    if (this.callbacks.indexOf(callback) >= 0) {
+      return;
+    }
+    this.callbacks.push(callback);
   }
-  return view.file.isDirty;
-}
-
-export class View {
-  public file: File;
-  public type: ViewType;
-  public state: monaco.editor.ICodeEditorViewState;
-
-  constructor(file: File, type = ViewType.Editor) {
-    this.file = file;
-    this.type = type;
+  unregister(callback: Function) {
+    const i = this.callbacks.indexOf(callback);
+    if (i < 0) {
+      throw new Error("Unknown callback.");
+    }
+    this.callbacks.splice(i, 1);
   }
-  clone(): View {
-    return new View(this.file, this.type);
+  dispatch(target?: any) {
+    // console.log("Dispatching " + this.name);
+    this.callbacks.forEach(callback => {
+      callback(target);
+    });
   }
 }

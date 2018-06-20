@@ -1,7 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
-import { Directory, FileType, File, Problem, Project } from "../../src/model";
+import { Directory, FileType, File, Problem, Project } from "../../src/models";
 import { Service } from "../../src/service";
 
 function getDirectoryStructure() {

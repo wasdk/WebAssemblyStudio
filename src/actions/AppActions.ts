@@ -20,7 +20,7 @@
  */
 
 import dispatcher from "../dispatcher";
-import { File, Directory, Project } from "../model";
+import { File, Directory, Project } from "../models";
 import { App } from "../components/App";
 import { Template } from "../components/NewProjectDialog";
 import { View, ViewType } from "../components/editor/View";

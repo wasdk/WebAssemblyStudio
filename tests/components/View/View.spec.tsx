@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import {View, ViewType, defaultViewTypeForFileType, isViewFileDirty} from "../../../src/components/editor/View";
-import {File, FileType} from "../../../src/model";
+import {File, FileType} from "../../../src/models";
 
 describe("Tests for View", () => {
   it("should be constructable", () => {

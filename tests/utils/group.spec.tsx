@@ -3,7 +3,7 @@
 
 import Group from "../../src/utils/group";
 import { View } from "../../src/components/editor/View";
-import { File, FileType } from "../../src/model";
+import { File, FileType } from "../../src/models";
 
 function generateFiles() {
     return {

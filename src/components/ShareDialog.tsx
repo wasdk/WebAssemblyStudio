@@ -24,7 +24,7 @@ import { Service } from "../service";
 import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoGear, GoFile, GoX, Icon } from "./shared/Icons";
-import { File, FileType, Directory, extensionForFileType, nameForFileType } from "../model";
+import { File, FileType, Directory, extensionForFileType, nameForFileType } from "../models";
 import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
 

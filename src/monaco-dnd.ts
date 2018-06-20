@@ -27,7 +27,7 @@ import {
   IDragOverReaction,
   DragOverBubble
 } from "./monaco-extra";
-import { File, Directory } from "./model";
+import { File, Directory } from "./models";
 import { uploadFilesToDirectory, isUploadAllowedForMimeType } from "./util";
 
 export class DragAndDrop implements IDragAndDrop {
