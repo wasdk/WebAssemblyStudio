@@ -4,7 +4,7 @@
 import "jest-enzyme";
 import * as React from "react";
 import { mount } from "enzyme";
-import { Directory, ModelRef, File, FileType, Project } from "../../../src/model";
+import { Directory, ModelRef, File, FileType, Project } from "../../../src/models";
 import * as appActions from "../../../src/actions/AppActions";
 
 const layout = jest.fn();
