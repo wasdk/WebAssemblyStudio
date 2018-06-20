@@ -12,7 +12,7 @@
   mimeTypeForFileType,
   fileTypeForMimeType,
   getIconForFileType,
-} from "../../src/model";
+} from "../../src/models";
 
 describe("FileType tests", () => {
   describe("isBinaryFileType", () => {

@@ -1,7 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
-import { Problem, File, FileType } from "../../src/model";
+import { Problem, File, FileType } from "../../src/models";
 
 declare var monaco: { MarkerSeverity };
 

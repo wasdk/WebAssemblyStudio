@@ -24,7 +24,7 @@ import * as ReactModal from "react-modal";
 import appStore from "../stores/AppStore";
 import { Button } from "./shared/Button";
 import { GoFile, GoX, GoCloudUpload, GoFileDirectory } from "./shared/Icons";
-import { File, Directory, ModelRef } from "../model";
+import { File, Directory, ModelRef } from "../models";
 import { UploadInput } from "./Widgets";
 import { DirectoryTree } from "./DirectoryTree";
 import { uploadFilesToDirectory } from "../util";

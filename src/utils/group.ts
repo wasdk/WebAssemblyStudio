@@ -21,7 +21,7 @@
 
 import { assert } from "../util";
 import { View, ViewType } from "../components/editor/View";
-import { File } from "../model";
+import { File } from "../models";
 
 export default class Group {
   currentView: View;

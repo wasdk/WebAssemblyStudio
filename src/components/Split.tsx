@@ -21,7 +21,7 @@
 
 import * as React from "react";
 import { MouseEvent } from "react";
-import { EventDispatcher } from "../model";
+import { EventDispatcher } from "../models";
 import { assert } from "../util";
 import { assignObject, toCSSPx } from "../utils/splitUtils";
 

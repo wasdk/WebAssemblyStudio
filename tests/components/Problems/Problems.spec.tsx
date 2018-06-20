@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { mount, render } from "enzyme";
-import { File, FileType, Problem, Directory, Project } from "../../../src/model";
+import { File, FileType, Problem, Directory, Project } from "../../../src/models";
 import { ViewType } from "../../../src/components/editor/View";
 import * as appActions from "../../../src/actions/AppActions";
 import appStore from "../../../src/stores/AppStore";

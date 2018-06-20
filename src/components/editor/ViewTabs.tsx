@@ -23,7 +23,7 @@ import * as React from "react";
 import { assert } from "../../util";
 import { Tabs, Tab, TabProps } from "./Tabs";
 import { EditorView } from "./Editor";
-import { Project, File, getIconForFileType, FileType, IStatusProvider } from "../../model";
+import { getIconForFileType, FileType, IStatusProvider } from "../../models";
 import { Markdown, MarkdownView } from ".././Markdown";
 import { Button } from "../shared/Button";
 import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye, GoCode } from "../shared/Icons";

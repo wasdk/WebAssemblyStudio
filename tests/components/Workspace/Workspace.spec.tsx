@@ -4,7 +4,7 @@
 import "jest-enzyme";
 import * as React from "react";
 import { shallow } from "enzyme";
-import { Project, FileType } from "../../../src/model";
+import { Project, FileType } from "../../../src/models";
 import { Workspace } from "../../../src/components/Workspace";
 import { Header } from "../../../src/components/Header";
 import { Split, SplitOrientation } from "../../../src/components/Split";

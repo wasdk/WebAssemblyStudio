@@ -21,7 +21,7 @@
 
 import * as React from "react";
 import { Split } from "./Split";
-import { Project, mimeTypeForFileType, SandboxRun } from "../model";
+import { Project, mimeTypeForFileType, SandboxRun } from "../models";
 import { logLn } from "../actions/AppActions";
 import appStore from "../stores/AppStore";
 

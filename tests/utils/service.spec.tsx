@@ -17,7 +17,7 @@ jest.mock("../../src/compilerServices", () => ({
   }
 }));
 
-import { Project, Directory, File, FileType } from "../../src/model";
+import { Project, Directory, File, FileType } from "../../src/models";
 import { Service, Language } from "../../src/service";
 
 function generateFiles() {

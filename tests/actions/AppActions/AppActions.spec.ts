@@ -4,7 +4,7 @@
 import * as React from "react";
 import dispatcher from "../../../src/dispatcher";
 import Group from "../../../src/utils/group";
-import { FileType, File, Directory, Project } from "../../../src/model";
+import { FileType, File, Directory, Project } from "../../../src/models";
 import { View, ViewType } from "../../../src/components/editor/View";
 import { Service } from "../../../src/service";
 import { Template } from "../../../src/components/NewProjectDialog";

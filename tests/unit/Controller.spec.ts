@@ -2,7 +2,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
 import * as React from "react";
-import { File, FileType } from "../../src/model";
+import { File, FileType } from "../../src/models";
 import { ITree, ContextMenuEvent } from "../../src/monaco-extra";
 
 const superOnContextMenu = jest.fn();

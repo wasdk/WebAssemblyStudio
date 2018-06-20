@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { File, Project, Directory } from "../model";
+import { File, Project, Directory } from "../models";
 import * as JSZip from "jszip";
 
 export async function downloadProject(project: Project, uri?: string) {

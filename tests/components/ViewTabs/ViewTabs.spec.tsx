@@ -4,7 +4,7 @@
 import "jest-enzyme";
 import * as React from "react";
 import {mount} from "enzyme";
-import {File, FileType} from "../../../src/model";
+import {File, FileType} from "../../../src/models";
 import {View, ViewType} from "../../../src/components/editor/View";
 import {Tabs, Tab} from "../../../src/components/editor/Tabs";
 import {EditorView} from "../../../src/components/editor/Editor";

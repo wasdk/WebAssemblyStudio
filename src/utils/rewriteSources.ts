@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { Project } from "../model";
+import { Project } from "../models";
 
 export class RewriteSourcesContext {
     project: Project;

@@ -19,43 +19,31 @@
  * SOFTWARE.
  */
 
-import { File, FileType } from "../../models";
+import { getNextKey } from "../util";
+import { File } from "./File";
 
-export enum ViewType {
-  Editor,
-  Markdown,
-  Binary,
-  Viz
-}
-
-export function defaultViewTypeForFileType(type: FileType) {
-  switch (type) {
-    case FileType.Markdown:
-      return ViewType.Markdown;
-    case FileType.DOT:
-      return ViewType.Viz;
-    default:
-      return ViewType.Editor;
+export function monacoSeverityToString(severity: monaco.MarkerSeverity) {
+  switch (severity) {
+    case monaco.MarkerSeverity.Info: return "info";
+    case monaco.MarkerSeverity.Warning: return "warning";
+    case monaco.MarkerSeverity.Error: return "error";
   }
 }
 
-export function isViewFileDirty(view: View) {
-  if (!view || !view.file) {
-    return false;
+export class Problem {
+  readonly key = String(getNextKey());
+  constructor(
+    public file: File,
+    public description: string,
+    public severity: "error" | "warning" | "info" | "ignore",
+    public marker?: monaco.editor.IMarkerData) {
   }
-  return view.file.isDirty;
-}
 
-export class View {
-  public file: File;
-  public type: ViewType;
-  public state: monaco.editor.ICodeEditorViewState;
-
-  constructor(file: File, type = ViewType.Editor) {
-    this.file = file;
-    this.type = type;
-  }
-  clone(): View {
-    return new View(this.file, this.type);
+  static fromMarker(file: File, marker: monaco.editor.IMarkerData) {
+    return new Problem(
+      file,
+      `${marker.message} (${marker.startLineNumber}, ${marker.startColumn})`,
+      monacoSeverityToString(marker.severity),
+      marker);
   }
 }

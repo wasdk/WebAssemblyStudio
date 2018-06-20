@@ -18,7 +18,7 @@ jest.mock("../../../src/actions/AppActions", () => {
 
 import {Monaco} from "../../../src/components/editor/Editor";
 import {View} from "../../../src/components/editor";
-import {File, FileType} from "../../../src/model";
+import {File, FileType} from "../../../src/models";
 
 describe("Tests for Editor.tsx/Monaco", () => {
   const setup = (options?) => {

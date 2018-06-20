@@ -6,7 +6,7 @@ import * as React from "react";
 import {shallow} from "enzyme";
 import {Button} from '../../../src/components/shared/Button';
 import {TextInputBox} from '../../../src/components/Widgets';
-import {Directory, ModelRef} from '../../../src/model';
+import {Directory, ModelRef} from '../../../src/models';
 import {NewDirectoryDialog} from '../../../src/components/NewDirectoryDialog';
 
 const cancelButtonIndex = 0;

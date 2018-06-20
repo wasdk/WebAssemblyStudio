@@ -2,7 +2,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
 import * as React from "react";
-import { File, FileType, Directory } from "../../src/model";
+import { File, FileType, Directory } from "../../src/models";
 import { ITree, ContextMenuEvent, DragOverBubble } from "../../src/monaco-extra";
 import { DragAndDrop } from "../../src/monaco-dnd";
 import * as utils from "../../src/util";
