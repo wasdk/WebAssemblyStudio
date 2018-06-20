@@ -35,10 +35,13 @@ import { MonacoUtils } from "./monaco-utils";
 import { BrowserNotSupported } from "./components/BrowserNotSupported";
 import registerLanguages from "./utils/registerLanguages";
 import registerTheme from "./utils/registerTheme";
+import { Logger } from "./utils/Logger";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 declare var window: any;
 declare var WebAssembly: any;
 
+Logger.init();
 window.addEventListener("resize", layout, false);
 
 export function forEachUrlParameter(callback: (key: string, value: any) => void) {
@@ -114,10 +117,13 @@ MonacoUtils.initialize()
       );
     } else {
       ReactDOM.render(
-        <App update={update} fiddle={fiddle} embeddingParams={embeddingParams} windowContext={appWindowContext}/>,
+        <ErrorBoundary>
+          <App update={update} fiddle={fiddle} embeddingParams={embeddingParams} windowContext={appWindowContext}/>
+        </ErrorBoundary>,
         document.getElementById("app")
       );
     }
   })
   .then(() => import(/* webpackChunkName: "monaco-languages" */ "monaco-editor"))
-  .then(registerLanguages);
+  .then(registerLanguages)
+  .catch(e => Logger.captureException(e));

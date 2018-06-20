@@ -1048,3 +1048,38 @@ a {
 .binary .byte {
   margin-right: 2px;
 }
+
+.error-dialog-description {
+  flex: 1;
+  height: 256px;
+  padding: 8px 15px;
+  font-size: 12px;
+  overflow: auto;
+}
+
+.error-dialog-stacktrace {
+  padding: 10px 20px;
+  margin-top: 15px;
+  background-color: #3e3e3e;
+}
+
+.error-dialog-stacktrace-line {
+  display: block;
+  font-size: 10px;
+  line-height: 1.5;
+  padding-left: 5px;
+}
+
+.error-dialog-stacktrace-title {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+  font-size: 11px;
+}
+
+.error-dialog-error-id {
+  padding: 5px 25px;
+  font-size: 8px;
+  display: block;
+  background-color: #484848;
+ }

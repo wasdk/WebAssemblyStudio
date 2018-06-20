@@ -31,7 +31,8 @@ import {
   GoClippy,
   GoEye,
   GoCode,
-  GoCloudUpload
+  GoCloudUpload,
+  GoSync
 } from "../../../src/components/shared/Icons";
 
 describe("Tests for Icon component", () => {
@@ -175,5 +176,10 @@ describe("Tests for Icon component", () => {
     const wrapper = shallow(<GoCloudUpload/>);
     expect(wrapper.first()).toHaveClassName("octicon");
     expect(wrapper.first()).toHaveClassName("octicon-cloud-upload");
+  });
+  it("GoSync renders correctly", () => {
+    const wrapper = shallow(<GoSync/>);
+    expect(wrapper.first()).toHaveClassName("octicon");
+    expect(wrapper.first()).toHaveClassName("octicon-sync");
   });
 });
