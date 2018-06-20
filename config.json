@@ -7,5 +7,5 @@
     "default": "/dist/templates/index.js",
     "arc": "/dist/arc-templates/index.js"
   },
-  "sentryDNS": ""
+  "sentryDNS": "https://756ae32005ed49cf9d4dd2aa106ccd4a@sentry.io/1229949"
 }
