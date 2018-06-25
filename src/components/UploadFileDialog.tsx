@@ -29,7 +29,7 @@ import { UploadInput } from "./Widgets";
 import { DirectoryTree } from "./DirectoryTree";
 import { uploadFilesToDirectory } from "../util";
 import { EditFileDialog } from "./EditFileDialog";
-import { updateFileNameAndDescription } from "../actions/AppActions";
+import { updateFileNameAndDescription, addFileTo } from "../actions/AppActions";
 
 export interface UploadFileDialogProps {
   isOpen: boolean;
@@ -52,8 +52,8 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, Upl
     this.root.getModel().onDidChangeChildren.register(() => this.onRootChildrenChange());
     this.state = { hasFilesToUpload: false };
   }
-  private async handleUpload(files: FileList) {
-    await uploadFilesToDirectory(files, this.root.getModel());
+  private async handleUpload(items: DataTransferItemList) {
+    await uploadFilesToDirectory(items, this.root.getModel());
   }
   private onRootChildrenChange() {
     this.setState({ hasFilesToUpload: this.root.getModel().hasChildren() });
@@ -90,7 +90,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, Upl
             <UploadInput
               ref={(ref) => this.uploadInput = ref}
               onChange={(e) => {
-                this.handleUpload(e.target.files);
+                this.handleUpload(e.target.items);
               }}
             />
           </div>
@@ -103,6 +103,9 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, Upl
               }}
               onEditFile={(file: File) => {
                 this.setState({ editFileDialogFile: ModelRef.getRef(file) });
+              }}
+              onMoveFile={(file: File, directory: Directory) => {
+                addFileTo(file, directory);
               }}
             />
           </div>

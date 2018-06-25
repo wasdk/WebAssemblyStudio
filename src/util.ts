@@ -225,8 +225,38 @@ export async function readUploadedFile(inputFile: File, readAs: "text" | "arrayB
   });
 }
 
-export async function uploadFilesToDirectory(files: FileList, root: Directory) {
-  Array.from(files).forEach(async (file: any) => {
+export async function readUploadedDirectory(inputEntry: any, root: Directory) {
+  const reader = inputEntry.createReader();
+  reader.readEntries(((entries: any) => {
+    entries.forEach(async (entry: any) => {
+      if (entry.isDirectory) {
+        return readUploadedDirectory(entry, root);
+      }
+      entry.file(async (file: File) => {
+        try {
+          const name: string = file.name;
+          const path: string = entry.fullPath.replace(/^\/+/g, "");
+          const fileType = fileTypeForExtension(name.split(".").pop());
+          const data = await readUploadedFile(file, isBinaryFileType(fileType) ? "arrayBuffer" : "text");
+          const newFile = root.newFile(path, fileType);
+          newFile.setData(data);
+        } catch (e) {
+          console.log("Unable to read the file!");
+        }
+      });
+    });
+  }));
+}
+
+export async function uploadFilesToDirectory(items: DataTransferItemList, root: Directory) {
+  Array.from(items).forEach(async (item: DataTransferItem) => {
+    if (typeof item.webkitGetAsEntry === "function") {
+      const entry = item.webkitGetAsEntry();
+      if (entry.isDirectory) {
+        return readUploadedDirectory(entry, root);
+      }
+    }
+    const file: File = item.getAsFile();
     const name: string = file.name;
     const path: string = file.webkitRelativePath || name; // This works in FF also.
     const fileType = fileTypeForExtension(name.split(".").pop());
