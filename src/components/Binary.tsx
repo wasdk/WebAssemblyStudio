@@ -20,10 +20,9 @@
  */
 
 import * as React from "react";
-import { Service } from "../service";
 import { View } from "./editor";
 
-const colors = [
+export const colors = [
   "#ead780", "#efb8f6", "#89ee39", "#bbc3fe", "#cbed3a",
   "#d0cdee", "#7aec58", "#f2bcd5", "#35ed72", "#cbd5e7",
   "#e2de49", "#79d8f6", "#f3c63e", "#66e9de", "#bee869",
@@ -51,7 +50,7 @@ export class BinaryView extends React.Component<BinaryViewProps, {
   constructor(props: BinaryViewProps) {
     super(props);
     const data = this.props.view.file.getData() as ArrayBuffer;
-    this.state = { data, };
+    this.state = { data };
   }
   onDidChangeData = () => {
     const data = this.props.view.file.getData() as ArrayBuffer;
@@ -83,7 +82,7 @@ export class BinaryView extends React.Component<BinaryViewProps, {
       let str = "";
       for (let j = 0; j < colCount; j++) {
         const b = data[rowOffset + j];
-        cols.push(<span className="byte" style={{color: colors[b & 0x1F]}}>{toHex(b, 2)}</span>);
+        cols.push(<span className="byte" key={"col" + j} style={{color: colors[b & 0x1F]}}>{toHex(b, 2)}</span>);
         str += b >= 32 && b < 127 ? String.fromCharCode(b) : ".";
       }
       rows.push(
