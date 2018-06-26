@@ -1,0 +1,157 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tests for NewFileDialog should render correctly 1`] = `
+<Modal
+  ariaHideApp={false}
+  bodyOpenClassName="ReactModal__Body--open"
+  className="modal show-file-icons"
+  closeTimeoutMS={0}
+  contentLabel="Create New File"
+  isOpen={true}
+  overlayClassName="overlay"
+  parentSelector={[Function]}
+  portalClassName="ReactModalPortal"
+  shouldCloseOnEsc={true}
+  shouldCloseOnOverlayClick={true}
+  shouldFocusAfterRender={true}
+  shouldReturnFocusAfterClose={true}
+>
+  <div
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "height": "100%",
+      }
+    }
+  >
+    <div
+      className="modal-title-bar"
+    >
+      Create New File
+    </div>
+    <div>
+      <div
+        style={
+          Object {
+            "display": "flex",
+          }
+        }
+      >
+        <div
+          style={
+            Object {
+              "width": 250,
+            }
+          }
+        >
+          <ListBox
+            height={240}
+            onSelect={[Function]}
+            value="c"
+          >
+            <ListItem
+              icon="c-lang-file-icon"
+              label="C File (.c)"
+              value="c"
+            />
+            <ListItem
+              icon="cpp-lang-file-icon"
+              label="C++ File (.cpp)"
+              value="cpp"
+            />
+            <ListItem
+              icon="rust-lang-file-icon"
+              label="Rust File (.rs)"
+              value="rust"
+            />
+            <ListItem
+              icon="txt-ext-file-icon"
+              label="Cretonne (.cton)"
+              value="cretonne"
+            />
+            <ListItem
+              icon="wat-lang-file-icon"
+              label="Wat (.wat)"
+              value="wat"
+            />
+            <ListItem
+              icon="javascript-lang-file-icon"
+              label="JavaScript (.js)"
+              value="javascript"
+            />
+            <ListItem
+              icon="typescript-lang-file-icon"
+              label="TypeScript (.ts)"
+              value="typescript"
+            />
+            <ListItem
+              icon="html-lang-file-icon"
+              label="HTML (.html)"
+              value="html"
+            />
+            <ListItem
+              icon="css-lang-file-icon"
+              label="CSS (.css)"
+              value="css"
+            />
+            <ListItem
+              icon="markdown-lang-file-icon"
+              label="Markdown (.md)"
+              value="markdown"
+            />
+            <ListItem
+              icon="json-lang-file-icon"
+              label="JSON (.json)"
+              value="json"
+            />
+            <ListItem
+              icon="txt-ext-file-icon"
+              label="GraphViz DOT (.dot)"
+              value="dot"
+            />
+            <ListItem
+              icon="txt-ext-file-icon"
+              label="TOML Document (.toml)"
+              value="toml"
+            />
+          </ListBox>
+        </div>
+        <div
+          className="new-file-dialog-description"
+        />
+      </div>
+    </div>
+    <div
+      style={
+        Object {
+          "flex": 1,
+          "padding": "8px",
+        }
+      }
+    >
+      <TextInputBox
+        error=""
+        label="Name: Project/directory/"
+        onChange={[Function]}
+        value=""
+      />
+    </div>
+    <div>
+      <Button
+        icon={<GoX />}
+        label="Cancel"
+        onClick={[Function]}
+        title="Create New File"
+      />
+      <Button
+        icon={<GoFile />}
+        isDisabled={true}
+        label="Create"
+        onClick={[Function]}
+        title="Create New File"
+      />
+    </div>
+  </div>
+</Modal>
+`;

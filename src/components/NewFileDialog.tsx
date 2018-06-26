@@ -20,13 +20,12 @@
  */
 
 import * as React from "react";
-import { Service } from "../service";
 import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
-import { GoGear, GoFile, GoX, Icon } from "./shared/Icons";
+import { GoFile, GoX } from "./shared/Icons";
 import appStore from "../stores/AppStore";
 import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef, getIconForFileType } from "../models";
-import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
+import { ChangeEvent } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
 
 export class NewFileDialog extends React.Component<{
