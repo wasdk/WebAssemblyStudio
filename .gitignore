@@ -5,3 +5,4 @@ coverage
 mutation
 .stryker-tmp
 stats
+.DS_Store
