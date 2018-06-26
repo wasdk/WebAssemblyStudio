@@ -20,14 +20,13 @@
  */
 
 import * as React from "react";
-import { Service } from "../service";
 import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
-import { GoGear, GoFile, GoX, Icon, GoPencil } from "./shared/Icons";
+import { GoX, GoPencil } from "./shared/Icons";
 import appStore from "../stores/AppStore";
 import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef } from "../models";
-import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
-import { ListBox, ListItem, TextInputBox, Spacer } from "./Widgets";
+import { ChangeEvent } from "react";
+import { TextInputBox, Spacer } from "./Widgets";
 
 export interface EditFileDialogProps {
   isOpen: boolean;
