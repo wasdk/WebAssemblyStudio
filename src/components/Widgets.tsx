@@ -20,11 +20,7 @@
  */
 
 import * as React from "react";
-import { Service } from "../service";
-import * as ReactModal from "react-modal";
-import { Button } from "./shared/Button";
-import { GoGear, GoFile, GoX, Icon } from "./shared/Icons";
-import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
+import { ChangeEventHandler } from "react";
 
 export class Spacer extends React.Component<{
   height: number
