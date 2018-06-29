@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tests for ShareDialog should render correctly 1`] = `
+<Modal
+  ariaHideApp={false}
+  bodyOpenClassName="ReactModal__Body--open"
+  className="modal"
+  closeTimeoutMS={0}
+  contentLabel="Share Project"
+  isOpen={true}
+  overlayClassName="overlay"
+  parentSelector={[Function]}
+  portalClassName="ReactModalPortal"
+  shouldCloseOnEsc={true}
+  shouldCloseOnOverlayClick={true}
+  shouldFocusAfterRender={true}
+  shouldReturnFocusAfterClose={true}
+>
+  <div
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "height": "100%",
+      }
+    }
+  >
+    <div
+      className="modal-title-bar"
+    >
+      Share Project
+    </div>
+    <div
+      style={
+        Object {
+          "flex": 1,
+          "padding": "8px",
+        }
+      }
+    >
+      <TextInputBox
+        label="URL"
+        value="https://webassembly.studio/?f=fiddle"
+      />
+      <TextInputBox
+        label="IFrame"
+        value="<iframe src=\\"https://webassembly.studio/?embed&f=fiddle\\" style=\\"width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;\\" sandbox=\\"allow-modals allow-forms allow-popups allow-scripts allow-same-origin\\"></iframe>"
+      />
+    </div>
+    <div>
+      <Button
+        icon={<GoX />}
+        label="Cancel"
+        onClick={[Function]}
+        title="Cancel"
+      />
+    </div>
+  </div>
+</Modal>
+`;
