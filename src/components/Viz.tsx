@@ -37,18 +37,18 @@ export interface VizViewProps {
   view: View;
 }
 
-const updateThrottleDuration = 500;
 export class VizView extends React.Component<VizViewProps, {
-  isVisLoaded: boolean;
+  isVizLoaded: boolean;
   content: string;
 }> {
   constructor(props: VizViewProps) {
     super(props);
     this.state = {
-      isVisLoaded: isVizLoaded(),
+      isVizLoaded: isVizLoaded(),
       content: this.props.view.file.buffer.getValue(),
     };
   }
+  updateThrottleDuration = 500;
   updateTimeout = 0;
   onDidChangeBuffer = () => {
     if (this.updateTimeout) {
@@ -59,13 +59,13 @@ export class VizView extends React.Component<VizViewProps, {
       this.setState({
         content: this.props.view.file.buffer.getValue(),
       });
-    }, updateThrottleDuration);
+    }, this.updateThrottleDuration);
   }
   async componentWillMount() {
-    if (!this.state.isVisLoaded) {
+    if (!this.state.isVizLoaded) {
       await loadViz();
       this.setState({
-        isVisLoaded: isVizLoaded(),
+        isVizLoaded: isVizLoaded(),
       });
     }
   }
@@ -84,7 +84,7 @@ export class VizView extends React.Component<VizViewProps, {
     }
   }
   render() {
-    if (!this.state.isVisLoaded) {
+    if (!this.state.isVizLoaded) {
       return <div>Loading GraphViz, please wait ...</div>;
     }
     try {
