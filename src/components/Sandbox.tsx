@@ -55,7 +55,7 @@ export class Sandbox extends React.Component<{}, {}>  {
   componentWillUnmount() {
     Split.onResizeBegin.unregister(this.onResizeBegin);
     Split.onResizeEnd.unregister(this.onResizeEnd);
-    appStore.onSandboxRun.register(this.onSandboxRun);
+    appStore.onSandboxRun.unregister(this.onSandboxRun);
   }
   run(project: Project, src: string) {
     const iframe = document.createElement("iframe");
