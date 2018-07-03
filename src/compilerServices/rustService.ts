@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { CompilerService, ServiceInput, ServiceOutput, Language } from "./types";
+import { CompilerService, ServiceInput, ServiceOutput } from "./types";
 
 import { sendRequestJSON, ServiceTypes } from "./sendRequest";
 import { decodeBinary } from "./utils";
@@ -51,7 +51,7 @@ export class RustService implements CompilerService {
       if (files.length !== 1) {
         throw new Error(`Supporting compilation of a single file, but ${files.length} file(s) found`);
       }
-      const [ fileRef ] = Object.keys(input.files);
+      fileRef = Object.keys(input.files)[0];
       const code = files[0].content;
       result = await sendRequestJSON({ code, options, }, ServiceTypes.Rustc);
     }

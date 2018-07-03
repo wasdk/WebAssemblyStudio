@@ -32,7 +32,7 @@ export class ClangService implements CompilerService {
   async compile(input: ServiceInput): Promise<ServiceOutput> {
     const files = Object.values(input.files);
     if (files.length !== 1) {
-      throw new Error(`Supporting complation of a single file, but ${files.length} file(s) found`);
+      throw new Error(`Supporting compilation of a single file, but ${files.length} file(s) found`);
     }
     const [ fileRef ] = Object.keys(input.files);
     const src = files[0].content;

@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { CompilerService, ServiceInput, ServiceOutput, Language } from "./types";
+import { CompilerService, ServiceInput, ServiceOutput } from "./types";
 import { sendRequest, ServiceTypes } from "./sendRequest";
 import { encodeBinary } from "./utils";
 
