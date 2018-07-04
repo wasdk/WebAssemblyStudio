@@ -317,8 +317,8 @@ describe("AppActions component", () => {
           getModel: () => ({
             getEmitOutput: () => ({ outputFiles: [{ text: "outputfile" }]})
           })
-        }
-      };
+        };
+      }
     });
     await AppActions.runTask("build-ts");
     expect(runTask).toHaveBeenCalledWith("outputfile", "build-ts", false, "model", AppActions.logLn, 0);

@@ -41,6 +41,7 @@ function mockCreateElement(returnElement) {
 
 function mockAppendChild(element) {
   const appendChild = jest.spyOn(element, "appendChild");
+  // tslint:disable-next-line
   appendChild.mockImplementationOnce(() => {});
   return appendChild;
 }
@@ -122,6 +123,7 @@ describe("Tests for Sandbox", () => {
   it("should handle SandboxRun events", () => {
     const wrapper = setup();
     const run = jest.spyOn(Sandbox.prototype, "run");
+    // tslint:disable-next-line
     run.mockImplementation(() => {});
     appStore.onSandboxRun.dispatch({});
     expect(run).toHaveBeenCalled();

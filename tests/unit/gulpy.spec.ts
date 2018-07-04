@@ -12,18 +12,18 @@ describe("Gulpy tests", () => {
       await Promise.resolve();
       results += "B";
     });
-  
+
     gulp.task("c", [], async () => {
       await Promise.resolve();
       await Promise.resolve();
       await Promise.resolve();
       results += "C";
     });
-  
+
     gulp.task("a", ["b", "c"], async () => {
       results += "A";
     });
-  
+
     await gulp.run("a");
 
     expect(results).toBe("BCA");

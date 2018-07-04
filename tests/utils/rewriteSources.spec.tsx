@@ -37,7 +37,7 @@ describe("Rewrite sources tests", () => {
   });
   it("html changed", () => {
     const projectStub = new ProjectMock();
-    projectStub.setFile("main.html", 
+    projectStub.setFile("main.html",
       "<script src=\"test.js\"></script><body>test</body>");
     projectStub.setFile("test.js", "void 0");
 
@@ -52,14 +52,14 @@ describe("Rewrite sources tests", () => {
   });
   it("html and js changed", () => {
     const projectStub = new ProjectMock();
-    projectStub.setFile("main.html", 
+    projectStub.setFile("main.html",
       "<script src=\"test.js\"></script><body>test</body>");
     projectStub.setFile("test.js", "import { test } from 'test2.js'; test();");
     projectStub.setFile("test2.js", "void 0");
 
     const context = new RewriteSourcesContext(projectStub.toProject());
     context.createFile = (content: ArrayBuffer|string, type: string): string => {
-      if (content == "void 0") {
+      if (content === "void 0") {
         return "fake-url:test2";
       }
       expect(content).toBe("import { test } from \"fake-url:test2\"; test();");

@@ -224,7 +224,9 @@ describe("Tests for DirectoryTree", () => {
     it("should pass a renderer object to the Tree constructor", () => {
       const { wrapper } = setup();
       const renderer = treeConstructor.mock.calls[0][1].renderer;
+      // tslint:disable-next-line
       const setSpy = jest.spyOn(FileTemplate.prototype, "set").mockImplementation(() => {});
+      // tslint:disable-next-line
       const disposeSpy = jest.spyOn(FileTemplate.prototype, "dispose").mockImplementation(() => {});
       const file = new File("file", FileType.JavaScript);
       const element = document.createElement("div");
@@ -409,7 +411,9 @@ describe("Tests for DirectoryTree", () => {
         Service.disassembleX86.mockClear();
         Service.openBinaryExplorer.mockClear();
         Service.twiggyWasm.mockClear();
+        // tslint:disable-next-line
         alert.mockImplementation(() => {});
+        // tslint:disable-next-line
         openFile.mockImplementation(() => {});
       });
       afterAll(() => {

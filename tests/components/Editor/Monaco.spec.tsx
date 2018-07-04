@@ -48,6 +48,7 @@ describe("Tests for Editor.tsx/Monaco", () => {
     };
   };
   beforeAll(() => {
+    // tslint:disable-next-line
     jest.spyOn(console, "info").mockImplementation(() => {});
   });
   afterAll(() => {
@@ -257,7 +258,7 @@ describe("Tests for Editor.tsx/Monaco", () => {
     expect(updateOptionsSpy.mock.calls[1][0]).toEqual({ scrollbar: { handleMouseWheel: true }});
     updateOptionsSpy.mockRestore();
     onDidFocusEditorSpy.mockRestore();
-    onDidFocusEditorTextSpy.mockRestore()
+    onDidFocusEditorTextSpy.mockRestore();
     wrapper.unmount();
   });
 });

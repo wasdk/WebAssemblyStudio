@@ -154,6 +154,7 @@ describe("Tests for DragAndDrop", () => {
       const items = [{name: "file"}];
       const originalEvent = { browserEvent: { dataTransfer: { items }}} as any;
       const uploadFilesToDirectory = jest.spyOn(utils, "uploadFilesToDirectory");
+      // tslint:disable-next-line
       uploadFilesToDirectory.mockImplementation(() => {});
       dnd.drop(null, data, targetElement, originalEvent);
       expect(uploadFilesToDirectory).toHaveBeenCalledWith(items, targetElement);

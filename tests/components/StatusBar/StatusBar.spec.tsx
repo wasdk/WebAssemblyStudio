@@ -5,8 +5,8 @@ import "jest-enzyme";
 import * as React from "react";
 import {shallow} from "enzyme";
 import {StatusBar} from "../../../src/components/StatusBar";
-import {initStore} from '../../../src/actions/AppActions';
-import appStore from '../../../src/stores/AppStore';
+import {initStore} from "../../../src/actions/AppActions";
+import appStore from "../../../src/stores/AppStore";
 
 describe("Tests for StatusBar", () => {
   const setup = () => {

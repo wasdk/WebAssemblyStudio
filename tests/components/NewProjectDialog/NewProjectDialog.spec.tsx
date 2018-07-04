@@ -7,8 +7,8 @@ import { shallow } from "enzyme";
 
 jest.mock("../../../src/utils/fetchTemplates", () => {
   return {
-      "default": async () =>
-        JSON.parse(require('fs').readFileSync(__dirname + "/templates.json").toString()),
+    default: async () =>
+      JSON.parse(require("fs").readFileSync(__dirname + "/templates.json").toString()),
   };
 });
 
@@ -17,12 +17,12 @@ jest.mock("../../../src/service", () => {
     Service: {
       compileMarkdownToHtml(md) { return `<pre>${md}</pre>`; },
     },
-  }
+  };
 });
 
 jest.mock("../../../src/config", () => {
   return {
-    "default": async () => {
+    default: async () => {
       return {
         serviceUrl: "",
         clang: "",
@@ -30,7 +30,7 @@ jest.mock("../../../src/config", () => {
         templates: ""
       };
     },
-  }
+  };
 });
 
 import { NewProjectDialog, Template } from "../../../src/components/NewProjectDialog";
@@ -47,11 +47,12 @@ describe("Tests for NewProjectDialog component", () => {
     onCreate?: (template: Template) => void;
     onCancel?: () => void;
   }) => {
+    // tslint:disable-next-line
     const nop = () => {};
     return shallow(<NewProjectDialog
       isOpen={true}
-      onCreate={params.onCreate || nop }
-      onCancel={params.onCancel || nop }
+      onCreate={params.onCreate || nop}
+      onCancel={params.onCancel || nop}
     />);
   };
   it("NewProjectDialog renders correctly", () => {
