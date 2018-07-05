@@ -43,7 +43,7 @@ export interface IServiceRequest {
   wasmBindgenJs?: string;
 }
 
-async function getServiceURL(to: ServiceTypes): Promise<string> {
+export async function getServiceURL(to: ServiceTypes): Promise<string> {
   const config = await getConfig();
   switch (to) {
     case ServiceTypes.Rustc:
@@ -59,7 +59,7 @@ async function getServiceURL(to: ServiceTypes): Promise<string> {
   }
 }
 
-async function parseJSONResponse(response: Response): Promise < IServiceRequest > {
+export async function parseJSONResponse(response: Response): Promise < IServiceRequest > {
   const text = await response.text();
   if (response.status === 200) {
     try {

@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { decodeRestrictedBase64ToBytes, base64EncodeBytes } from "../util";
+import { decodeRestrictedBase64ToBytes } from "../util";
 import { isZlibData, decompressZlib } from "../utils/zlib";
 import { fromByteArray } from "base64-js";
 
