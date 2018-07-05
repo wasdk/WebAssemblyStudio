@@ -29,6 +29,9 @@ export function getController(target: any, getActionsFn?: Function, resolveMenuH
       const anchorOffset = { x: -10, y: -3 };
       const anchor = { x: event.posx + anchorOffset.x, y: event.posy + anchorOffset.y };
       const actions = getActionsFn && getActionsFn(file, event);
+      if (!actions || !actions.length) {
+        return false;
+      }
       target.contextMenuService.showContextMenu({
         getAnchor: () => anchor,
         getActions: () => monaco.Promise.as(actions || []),
