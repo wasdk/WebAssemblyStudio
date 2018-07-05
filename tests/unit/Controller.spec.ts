@@ -27,7 +27,7 @@ describe("Tests for Controller", () => {
   const setup = (resolveMenuPosition?, customEvent?) => {
     (window as any).innerHeight = 1200;
     const target = { contextMenuService: { showContextMenu: jest.fn() }};
-    const getActionsFn = jest.fn();
+    const getActionsFn = jest.fn().mockImplementation(() => ["action1"]);
     const tree = { setFocus: jest.fn(), DOMFocus: jest.fn() } as any;
     const file = new File("fileA", FileType.JavaScript);
     const event = customEvent || { posx: 10, posy: 10} as any;
@@ -59,6 +59,22 @@ describe("Tests for Controller", () => {
       controller.onContextMenu(tree, file, event);
       expect(getActionsFn).toHaveBeenCalledWith(file, event);
     });
+    it("should hide the context menu if no actions are provided", () => {
+      superOnContextMenu.mockClear();
+      const { controller, target, tree, file, event, getActionsFn } = setup();
+      getActionsFn.mockImplementation(() => undefined);
+      expect(controller.onContextMenu(tree, file, event)).toEqual(false);
+      expect(target.contextMenuService.showContextMenu).not.toHaveBeenCalled();
+      expect(superOnContextMenu).not.toHaveBeenCalled();
+    });
+    it("should hide the context menu if an empty array of actions are provided", () => {
+      superOnContextMenu.mockClear();
+      const { controller, target, tree, file, event, getActionsFn } = setup();
+      getActionsFn.mockImplementation(() => []);
+      expect(controller.onContextMenu(tree, file, event)).toEqual(false);
+      expect(target.contextMenuService.showContextMenu).not.toHaveBeenCalled();
+      expect(superOnContextMenu).not.toHaveBeenCalled();
+    });
     it("should call the contextMenuService", async () => {
       const { controller, target, tree, file, event } = setup();
       tree.DOMFocus.mockClear();
@@ -69,9 +85,10 @@ describe("Tests for Controller", () => {
       expect(options.onHide()).toBeUndefined();
       expect(options.onHide(true)).toBeUndefined();
       expect(tree.DOMFocus).toHaveBeenCalledTimes(1);
-      await expect(options.getActions()).resolves.toEqual([]);
+      await expect(options.getActions()).resolves.toEqual(["action1"]);
     });
     it("should call super.onContextMenu", () => {
+      superOnContextMenu.mockClear();
       const { controller, tree, file, event } = setup();
       controller.onContextMenu(tree, file, event);
       expect(superOnContextMenu).toHaveBeenCalledWith(tree, file, event);
