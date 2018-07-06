@@ -102,21 +102,6 @@ describe("Tests for DragAndDrop", () => {
         autoExpand: true
       });
     });
-    it("should disable drop on name collisions", () => {
-      const dnd = new DragAndDrop({});
-      const file = new File("file", FileType.JavaScript);
-      const data = {
-        elements: [file],
-        getData: () => [file]
-      } as any;
-      const targetElement = new Directory("src");
-      targetElement.addFile(file);
-      expect(dnd.onDragOver(null, data, targetElement, null)).toEqual({
-        accept: false,
-        bubble: DragOverBubble.BUBBLE_DOWN,
-        autoExpand: true
-      });
-    });
     it("should disable drop when a folder is being moved into its own child", () => {
       const dnd = new DragAndDrop({});
       const parent = new Directory("parent");

@@ -83,8 +83,7 @@ export class DragAndDrop implements IDragAndDrop {
     return {
       accept: targetElement instanceof Directory &&
               targetElement !== file &&
-              !targetElement.isDescendantOf(file) &&
-              !targetElement.getImmediateChild(file.name),
+              !targetElement.isDescendantOf(file),
       bubble: DragOverBubble.BUBBLE_DOWN,
       autoExpand: true
     };
