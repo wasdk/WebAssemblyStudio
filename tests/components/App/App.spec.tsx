@@ -1,6 +1,8 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
+/* tslint:disable: no-empty */
+
 import "jest-enzyme";
 import * as React from "react";
 import { shallow } from "enzyme";

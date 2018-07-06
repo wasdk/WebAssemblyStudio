@@ -12,7 +12,7 @@
     "coverage": "jest --coverage --no-cache",
     "coveralls": "jest --coverage --no-cache --maxWorkers=2 && cat ./coverage/lcov.info | coveralls",
     "clean": "rm -r dist/*",
-    "tslint": "tslint -p .",
+    "tslint": "tslint -p ./tsconfig.json; tslint -p ./tsconfig.test.json",
     "templates": "bin/build-templates.sh && bin/build-arc-templates.sh",
     "mutate": "./node_modules/.bin/stryker run",
     "analyse": "mkdir -p ./stats && webpack --profile --json > ./stats/stats.json && webpack-bundle-analyzer ./stats/stats.json ./dist -r stats/index.html"

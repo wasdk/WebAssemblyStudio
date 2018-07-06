@@ -26,7 +26,9 @@ describe("Tests for UploadFileDialog", () => {
   const setup = ({
     isOpen = true,
     directory = ModelRef.getRef(new Directory("test-directory")),
+    // tslint:disable-next-line
     onUpload = () => {},
+    // tslint:disable-next-line
     onCancel = () => {}
   } = {}) => {
     const wrapper = shallow(

@@ -32,10 +32,10 @@ describe("Tests for Toasts", () => {
   });
   it("Render ToastContainer Component with Toasts", () => {
     const wrapper = setup();
-    for (var i = 1; i <= 2; i++) {
+    for (let i = 1; i <= 2; i++) {
       wrapper.instance().showToast(message);
       expect(wrapper.state().toasts.length).toBe(i);
-      wrapper.update();	
+      wrapper.update();
       expect(wrapper.find(Toast)).toHaveLength(i);
       expect(wrapper.find(Toast).at(i - 1)).toHaveProp("message", message);
     }
@@ -44,7 +44,7 @@ describe("Tests for Toasts", () => {
     const wrapper = mount(<ToastContainer/>);
     wrapper.instance().showToast(message);
     wrapper.update();
-    wrapper.find(Toast).first().find(Button).last().simulate('click');
+    wrapper.find(Toast).first().find(Button).last().simulate("click");
     expect(wrapper.state().toasts.length).toBe(0);
   });
 });

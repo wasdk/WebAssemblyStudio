@@ -153,7 +153,9 @@ describe("Tests for Problems component", () => {
     it("should pass a renderer object to the Tree constructor", () => {
       const wrapper = setup();
       const renderer = treeConstructor.mock.calls[0][1].renderer;
+      // tslint:disable-next-line
       const setSpy = jest.spyOn(ProblemTemplate.prototype, "set").mockImplementation(() => {});
+      // tslint:disable-next-line
       const disposeSpy = jest.spyOn(ProblemTemplate.prototype, "dispose").mockImplementation(() => {});
       const file = new File("file", FileType.JavaScript);
       const problem = new Problem(file, "", "info");

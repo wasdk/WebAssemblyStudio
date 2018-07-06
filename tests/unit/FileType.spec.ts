@@ -1,7 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
- import {
+import {
   FileType,
   isBinaryFileType,
   languageForFileType,
@@ -84,7 +84,7 @@ describe("FileType tests", () => {
   });
   describe("fileTypeFromFileName", () => {
     it("should return the file type", () => {
-      expect(fileTypeFromFileName("index.html")).toEqual(FileType.HTML)
+      expect(fileTypeFromFileName("index.html")).toEqual(FileType.HTML);
     });
   });
   describe("fileTypeForExtension", () => {
@@ -105,7 +105,7 @@ describe("FileType tests", () => {
       expect(fileTypeForExtension("dot")).toEqual(FileType.DOT);
       expect(fileTypeForExtension("toml")).toEqual(FileType.TOML);
       expect(fileTypeForExtension("")).toBeNull();
-    })
+    });
   });
   describe("mimeTypeForFileType", () => {
     it("should return the mime type as a string", () => {
@@ -123,7 +123,7 @@ describe("FileType tests", () => {
       expect(fileTypeForMimeType("text/html")).toEqual(FileType.HTML);
       expect(fileTypeForMimeType("application/javascript")).toEqual(FileType.JavaScript);
       expect(fileTypeForMimeType("application/wasm")).toEqual(FileType.Wasm);
-      expect(fileTypeForMimeType("application/json")).toEqual(FileType.JSON);;
+      expect(fileTypeForMimeType("application/json")).toEqual(FileType.JSON);
       expect(fileTypeForMimeType("text/markdown")).toEqual(FileType.Markdown);
       expect(fileTypeForMimeType("")).toEqual(FileType.Unknown);
     });

@@ -62,6 +62,7 @@ describe("Tests for ViewTabs", () => {
     };
   };
   beforeAll(() => {
+    // tslint:disable-next-line
     jest.spyOn(console, "info").mockImplementation(() => {});
   });
   afterAll(() => {

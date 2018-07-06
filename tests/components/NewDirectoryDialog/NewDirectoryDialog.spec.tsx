@@ -4,10 +4,10 @@
 import "jest-enzyme";
 import * as React from "react";
 import {shallow} from "enzyme";
-import {Button} from '../../../src/components/shared/Button';
-import {TextInputBox} from '../../../src/components/Widgets';
-import {Directory, ModelRef} from '../../../src/models';
-import {NewDirectoryDialog} from '../../../src/components/NewDirectoryDialog';
+import {Button} from "../../../src/components/shared/Button";
+import {TextInputBox} from "../../../src/components/Widgets";
+import {Directory, ModelRef} from "../../../src/models";
+import {NewDirectoryDialog} from "../../../src/components/NewDirectoryDialog";
 
 const cancelButtonIndex = 0;
 const createButtonIndex = 1;
@@ -21,16 +21,17 @@ function getDirectory() {
 describe("Tests for NewDirectoryDialog", () => {
   const setup = (params: {
     onCreate?: (directory: Directory) => void,
-    onCancel?: () => void 
+    onCancel?: () => void
   }) => {
+    // tslint:disable-next-line
     const nop = () => {};
     return shallow(
-      <NewDirectoryDialog 
+      <NewDirectoryDialog
         isOpen={true}
         directory={getDirectory()}
         onCancel={params.onCancel || nop}
         onCreate={params.onCreate || nop}
-      />    
+      />
     );
   };
   it("renders correctly", () => {
@@ -62,14 +63,14 @@ describe("Tests for NewDirectoryDialog", () => {
   it("invokes onCancel when clicking cancel button", () => {
     const onCancel = jest.fn();
     const wrapper = setup({ onCancel });
-    wrapper.find(Button).at(cancelButtonIndex).simulate('click');
+    wrapper.find(Button).at(cancelButtonIndex).simulate("click");
     expect(onCancel.mock.calls.length).toBe(1);
   });
   it("invokes onCreate with created directory when clicking create button", () => {
     const onCreate = jest.fn();
     const wrapper = setup({ onCreate });
     wrapper.find(TextInputBox).simulate("change", { target: { value: "test" }});
-    wrapper.find(Button).at(createButtonIndex).simulate('click');
+    wrapper.find(Button).at(createButtonIndex).simulate("click");
     expect(onCreate.mock.calls.length).toBe(1);
     expect(onCreate.mock.calls[0][0].name).toBe("test");
   });
