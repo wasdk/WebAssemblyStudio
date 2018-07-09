@@ -81,26 +81,6 @@ describe("Directory tests", () => {
       expect(callback.mock.calls[0][0]).toBe(c);
     });
   });
-  describe("handleNameCollision", () => {
-    it("should handle name collisions for file names", () => {
-      const directory = new Directory("src");
-      const fileA = directory.newFile("file.js", FileType.JavaScript);
-      const fileB = directory.newFile("file.js", FileType.JavaScript);
-      const fileC = new File("file.js", FileType.JavaScript);
-      expect(fileB.name).toEqual("file.2.js");
-      expect(directory.handleNameCollision(fileC.name)).toEqual("file.3.js");
-    });
-    it("should handle name collisions for directory names", () => {
-      const root = new Directory("src");
-      const dirA = root.newDirectory("dir");
-      const dirB = new Directory("dir");
-      expect(root.handleNameCollision(dirB.name, true)).toEqual("dir2");
-    });
-    it("should throw an error if name collision was not handled", () => {
-      const root = new Directory("src");
-      expect(() => root.handleNameCollision("test")).toThrowError("Name collision not handled");
-    });
-  });
   describe("addFile", () => {
     it("should add the file", () => {
       const file = new File("file", FileType.JavaScript);
@@ -116,6 +96,13 @@ describe("Directory tests", () => {
       directoryA.addFile(file);
       expect(() => directoryB.addFile(file)).toThrowError();
     });
+    it("should assert that there isn't already a file with the same name", () => {
+      const fileA = new File("file", FileType.JavaScript);
+      const fileB = new File("file", FileType.JavaScript);
+      const directory = new Directory("src");
+      directory.addFile(fileA);
+      expect(() => directory.addFile(fileB)).toThrowError();
+    });
     it("should dispatch an onDidChangeChildren event", () => {
       const file = new File("file", FileType.JavaScript);
       const directory = new Directory("src");
@@ -123,17 +110,6 @@ describe("Directory tests", () => {
       directory.onDidChangeChildren.register(callback);
       directory.addFile(file);
       expect(callback).toHaveBeenCalled();
-    });
-    it("should handle name collisions", () => {
-      const directory = new Directory("src");
-      const fileA = new File("file.js", FileType.JavaScript);
-      const fileB = new File("file.js", FileType.JavaScript);
-      directory.addFile(fileA);
-      directory.addFile(fileB);
-      expect(fileA.parent).toBe(directory);
-      expect(fileB.parent).toBe(directory);
-      expect(fileA.name).toEqual("file.js");
-      expect(fileB.name).toEqual("file.2.js");
     });
   });
   describe("removeFile", () => {
@@ -214,14 +190,17 @@ describe("Directory tests", () => {
       const file = directory.newFile("file", FileType.JavaScript, true);
       expect(file.isTransient).toEqual(true);
     });
-    it("should handle name collisions", () => {
-      const directory = new Directory("src");
-      const fileA = directory.newFile("file.js", FileType.JavaScript);
-      const fileB = directory.newFile("file.js", FileType.JavaScript);
-      expect(fileA.parent).toBe(directory);
-      expect(fileB.parent).toBe(directory);
-      expect(fileA.name).toEqual("file.js");
-      expect(fileB.name).toEqual("file.2.js");
+    it("should not add a new file if one already exists with the same name and type", () => {
+      const directory = new Directory("parent");
+      const file = directory.newFile("file", FileType.JavaScript, true);
+      expect(directory.newFile("file", FileType.JavaScript)).toBe(file);
+      expect(directory.children).toHaveLength(1);
+    });
+    it("should thrown an error if trying to create a file with an existing name but different type", () => {
+      const directory = new Directory("parent");
+      const file = directory.newFile("file", FileType.JavaScript, true);
+      expect(() => directory.newFile("file", FileType.Wasm)).toThrowError();
+      expect(directory.children).toHaveLength(1);
     });
   });
   describe("getImmediateChild", () => {
