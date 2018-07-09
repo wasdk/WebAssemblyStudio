@@ -253,8 +253,8 @@ export async function readUploadedDirectory(inputEntry: any, root: Directory, cu
   }));
 }
 
-export async function uploadFilesToDirectory(items: DataTransferItemList, root: Directory) {
-  Array.from(items).forEach(async (item: DataTransferItem) => {
+export async function uploadFilesToDirectory(items: any, root: Directory) {
+  Array.from(items).forEach(async (item: any) => {
     if (typeof item.webkitGetAsEntry === "function") {
       const entry = item.webkitGetAsEntry();
       if (entry.isDirectory) {
@@ -265,7 +265,12 @@ export async function uploadFilesToDirectory(items: DataTransferItemList, root: 
         return readUploadedDirectory(entry, root);
       }
     }
-    const file: File = item.getAsFile();
+    let file: File;
+    if (item instanceof DataTransferItem) {
+      file = item.getAsFile();
+    } else {
+      file = item;
+    }
     const name: string = file.name;
     const path: string = file.webkitRelativePath || name; // This works in FF also.
     const fileType = fileTypeForExtension(name.split(".").pop());
