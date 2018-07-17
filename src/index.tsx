@@ -40,13 +40,9 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 declare var window: any;
 declare var WebAssembly: any;
 
-Logger.init();
-window.addEventListener("resize", layout, false);
-
 export function forEachUrlParameter(callback: (key: string, value: any) => void) {
   let url = window.location.search.substring(1);
   url = url.replace(/\/$/, ""); // Replace / at the end that gets inserted by browsers.
-  const params = {};
   url.split("&").forEach(function(s: any) {
     const t = s.split("=");
     if (t.length === 2) {
@@ -65,11 +61,11 @@ export function getUrlParameters(): any {
   return params;
 }
 
-const appWindowContext = {
+export const appWindowContext = {
   promptWhenClosing: false,
 };
 
-function unloadPageHandler(e: {returnValue: string}): any {
+export function unloadPageHandler(e: {returnValue: string}): any {
   if (!appWindowContext.promptWhenClosing) {
     window.removeEventListener("beforeunload", unloadPageHandler, false);
     return;
@@ -77,9 +73,7 @@ function unloadPageHandler(e: {returnValue: string}): any {
   e.returnValue = "Project data is not saved.";
 }
 
-window.addEventListener("beforeunload", unloadPageHandler, false);
-
-function getEmbeddingParams(parameters: any): EmbeddingParams {
+export function getEmbeddingParams(parameters: any): EmbeddingParams {
   const embedding = parameters["embedding"];
   let type;
   switch (embedding) {
@@ -101,14 +95,17 @@ function getEmbeddingParams(parameters: any): EmbeddingParams {
   };
 }
 
-const parameters = getUrlParameters();
-const update = parameters["update"] === true ? true : !!parseInt(parameters["update"], 10);
-const fiddle = parameters["fiddle"] || parameters["f"];
-const embeddingParams = getEmbeddingParams(parameters);
-
-MonacoUtils.initialize()
-  .then(registerTheme)
-  .then(() => {
+export async function init(environment = "production") {
+  Logger.init();
+  window.addEventListener("resize", layout, false);
+  window.addEventListener("beforeunload", unloadPageHandler, false);
+  const parameters = getUrlParameters();
+  const update = parameters["update"] === true ? true : !!parseInt(parameters["update"], 10);
+  const fiddle = parameters["fiddle"] || parameters["f"];
+  const embeddingParams = getEmbeddingParams(parameters);
+  try {
+    await MonacoUtils.initialize();
+    await registerTheme();
     if (typeof WebAssembly !== "object") {
       ReactDOM.render(
         <BrowserNotSupported/>,
@@ -122,7 +119,13 @@ MonacoUtils.initialize()
         document.getElementById("app")
       );
     }
-  })
-  .then(() => import(/* webpackChunkName: "monaco-languages" */ "monaco-editor"))
-  .then(registerLanguages)
-  .catch(e => Logger.captureException(e));
+    if (environment !== "test") {
+      await import(/* webpackChunkName: "monaco-languages" */ "monaco-editor");
+    }
+    await registerLanguages();
+  } catch (e) {
+    Logger.captureException(e);
+  }
+}
+
+init();
