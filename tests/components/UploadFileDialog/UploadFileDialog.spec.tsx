@@ -181,8 +181,8 @@ describe("Tests for UploadFileDialog", () => {
     const uploadFilesToDirectory = jest.spyOn(utils, "uploadFilesToDirectory");
     const { wrapper, addDirectory } = setup();
     const { root } = addDirectory("src");
-    const items = [];
-    wrapper.find(UploadInput).simulate("change", { target: { items }});
-    expect(uploadFilesToDirectory).toHaveBeenCalledWith(items, root.getModel());
+    const files = [];
+    wrapper.find(UploadInput).simulate("change", { target: { files }});
+    expect(uploadFilesToDirectory).toHaveBeenCalledWith(files, root.getModel());
   });
 });
