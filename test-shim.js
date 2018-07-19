@@ -44,7 +44,9 @@ global.monaco = {
     },
     uri: {
       toString: () => "uri"
-    }
+    },
+    defineTheme() { },
+
   },
   Range: function (l1, c1, l2, c2) {
     this.r = [l1, c1, l2, c2];
@@ -54,8 +56,22 @@ global.monaco = {
       Keyword: 12
     },
     typescript: {
-      getTypeScriptWorker() { }
-    }
+      getTypeScriptWorker() { },
+      typescriptDefaults: {
+        addExtraLib() {},
+        setCompilerOptions() {}
+      },
+      javascriptDefaults: {
+        setCompilerOptions() {}
+      }
+    },
+    register() {},
+    onLanguage() {},
+    setMonarchTokensProvider() {},
+    setLanguageConfiguration() {},
+    registerCompletionItemProvider() {},
+    registerHoverProvider() {},
+
   },
   KeyMod: {
     CtrlCmd: 0,
