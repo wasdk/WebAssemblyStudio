@@ -21,9 +21,8 @@
 import { File, Project, Directory, FileType, Problem, isBinaryFileType, fileTypeFromFileName, IStatusProvider } from "./models";
 import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes, base64EncodeBytes } from "./util";
 import { assert } from "./util";
-import { isZlibData, decompressZlib } from "./utils/zlib";
 import { gaEvent } from "./utils/ga";
-import { WorkerCommand, IWorkerResponse, IWorkerRequest } from "./message";
+import { WorkerCommand, IWorkerResponse } from "./message";
 import { processJSFile, RewriteSourcesContext } from "./utils/rewriteSources";
 import { getCurrentRunnerInfo } from "./utils/taskRunner";
 import { createCompilerService, Language } from "./compilerServices";
@@ -35,7 +34,7 @@ declare var capstone: {
 };
 
 declare var Module: ({ }) => any;
-declare var define: any;
+
 declare var showdown: {
   Converter: any;
   setFlavor: Function;
@@ -58,38 +57,14 @@ export interface ILoadFiddleResponse {
   success: boolean;
 }
 
-interface ICreateFiddleResponse {
-  id: string;
-  success: boolean;
-}
-
 export { Language } from "./compilerServices";
-
-interface IFile {
-  name: string;
-  children: IFile[];
-  type?: string;
-  data?: string;
-  description?: string;
-}
-
-/**
- * Turn blocking operations into promises.
- */
-async function defer(fn: Function): Promise<any> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve(fn());
-    });
-  });
-}
 
 function getProjectFilePath(file: File): string {
   const project = file.getProject();
   return file.getPath(project);
 }
 
-class ServiceWorker {
+export class ServiceWorker {
   worker: Worker;
   workerCallbacks: Array<{fn: Function, ex: Function}> = [];
   nextId = 0;
@@ -193,7 +168,8 @@ export class Service {
         }
         annotations.push({
           severity, message,
-          startLineNumber: startLineNumber, startColumn: startColumn,
+          startLineNumber: startLineNumber,
+          startColumn: startColumn,
           endLineNumber: startLineNumber, endColumn: startColumn
         });
       }
@@ -511,7 +487,7 @@ export class Service {
   static async convertWasmToAsmWithBinaryen(file: File, status?: IStatusProvider) {
     gaEvent("asm.js", "Service", "binaryen");
     const data = file.getData() as ArrayBuffer;
-    status && status.push("Creating Call Graph with Binaryen");
+    status && status.push("Converting to asm.js with Binaryen");
     const result = await this.worker.convertWasmToAsmWithBinaryen(data);
     status && status.pop();
     const output = file.parent.newFile(file.name + ".asm.js", FileType.JavaScript);
