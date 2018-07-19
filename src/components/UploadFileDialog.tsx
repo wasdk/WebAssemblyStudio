@@ -90,7 +90,7 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, Upl
             <UploadInput
               ref={(ref) => this.uploadInput = ref}
               onChange={(e) => {
-                this.handleUpload(e.target.items);
+                this.handleUpload(e.target.files);
               }}
             />
           </div>

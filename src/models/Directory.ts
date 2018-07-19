@@ -64,9 +64,27 @@ export class Directory extends File {
       return true;
     }).map(fn);
   }
+  handleNameCollision(name: string, isDirectory?: boolean) {
+    for (let i = 1; i <= this.children.length; i++) {
+      const nameParts = name.split(".");
+      const extension = nameParts.pop();
+      let newName;
+      if (isDirectory) {
+        newName = `${name}${i + 1}`;
+      } else {
+        newName = `${nameParts.join(".")}.${i + 1}.${extension}`;
+      }
+      if (!this.getImmediateChild(newName)) {
+        return newName;
+      }
+    }
+    throw new Error("Name collision not handled");
+  }
   addFile(file: File) {
     assert(file.parent === null);
-    assert(!this.getImmediateChild(file.name));
+    if (this.getImmediateChild(file.name)) {
+      file.name = this.handleNameCollision(file.name, file instanceof Directory);
+    }
     this.children.push(file);
     file.parent = this;
     this.notifyDidChangeChildren(file);
@@ -98,7 +116,7 @@ export class Directory extends File {
     assert(directory instanceof Directory);
     return directory;
   }
-  newFile(path: string | string[], type: FileType, isTransient = false): File {
+  newFile(path: string | string[], type: FileType, isTransient = false, handleNameCollision = false): File {
     if (typeof path === "string") {
       path = path.split("/");
     }
@@ -108,7 +126,7 @@ export class Directory extends File {
     }
     const name = path[path.length - 1];
     let file = directory.getFile(name);
-    if (file) {
+    if (file && !handleNameCollision) {
       assert(file.type === type);
     } else {
       file = new File(path[path.length - 1], type);
