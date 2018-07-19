@@ -13,6 +13,7 @@ module.exports = function(config) {
       "src/**/*.ts?(x)",
       "!src/**/**.d.ts"
     ],
-    timeoutMs: 60000
+    timeoutMs: 60000,
+    logLevel: "fatal"
   });
 };
