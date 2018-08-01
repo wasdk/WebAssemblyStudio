@@ -54,7 +54,7 @@ describe("Tests for ErrorBoundary", () => {
   });
   it("should catch errors thrown from child components", () => {
     const wrapper = setup({ throw: true });
-    expect(wrapper.state().error.message).toEqual("Thrown from child");
+    expect((wrapper.state() as any).error.message).toEqual("Thrown from child");
     wrapper.unmount();
   });
   it("should render a fallback UI", () =>  {

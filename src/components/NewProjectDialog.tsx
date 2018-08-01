@@ -57,16 +57,6 @@ export class NewProjectDialog extends React.Component<{
       templates: []
     };
   }
-  onChangeName = (event: ChangeEvent<any>) => {
-    this.setState({ name: event.target.value });
-  }
-  nameError() {
-    return;
-  }
-
-  createButtonLabel() {
-    return "Create";
-  }
   async componentDidMount() {
     const config = await getConfig();
     const templatesPath = config.templates[this.props.templatesName];
@@ -144,7 +134,7 @@ export class NewProjectDialog extends React.Component<{
           />
           <Button
             icon={<GoFile />}
-            label={this.createButtonLabel()}
+            label="Create"
             title="Create"
             isDisabled={!this.state.template}
             onClick={() => {

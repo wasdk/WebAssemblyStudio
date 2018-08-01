@@ -34,6 +34,7 @@ jest.mock("../../../src/config", () => {
 });
 
 import { NewProjectDialog, Template } from "../../../src/components/NewProjectDialog";
+import { ListBox } from "../../../src/components/Widgets";
 
 const createButtonIndex = 1;
 const cancelButtonIndex = 0;
@@ -44,6 +45,7 @@ async function promiseWait(count) {
 
 describe("Tests for NewProjectDialog component", () => {
   const setup = (params: {
+    templatesName?: string;
     onCreate?: (template: Template) => void;
     onCancel?: () => void;
   }) => {
@@ -51,49 +53,41 @@ describe("Tests for NewProjectDialog component", () => {
     const nop = () => {};
     return shallow(<NewProjectDialog
       isOpen={true}
+      templatesName={params.templatesName || ""}
       onCreate={params.onCreate || nop}
       onCancel={params.onCancel || nop}
     />);
   };
-  it("NewProjectDialog renders correctly", () => {
-    const dialog = setup({});
-    expect(dialog.find("ListBox")).toExist();
-    const buttons = dialog.find("Button");
-    expect(buttons.length).toBe(2);
-    expect(buttons.at(createButtonIndex)).toHaveProp("label", "Create");
-    expect(buttons.at(createButtonIndex)).toHaveProp("title", "Create");
-    expect(buttons.at(cancelButtonIndex)).toHaveProp("label", "Cancel");
-    expect(buttons.at(cancelButtonIndex)).toHaveProp("title", "Cancel");
+  it("should render correctly", async () => {
+    const wrapper = setup({});
+    expect(wrapper).toMatchSnapshot();
   });
-
-  it("NewProjectDialog calls back onCreate", async () => {
-    let chosenTemplate = null;
-    const dialog = setup({
-      onCreate(template) { chosenTemplate = template; },
-    });
-
-    {
-      const createButton = dialog.find("Button").at(createButtonIndex);
-      expect(createButton).toHaveProp("isDisabled", true);
-    }
-
+  it("should handle template selection", async () => {
+    const onCreate = jest.fn();
+    const wrapper = setup({ onCreate });
+    expect(wrapper).toHaveState({ template: null });
     await promiseWait(3); // wait on templates loading and md-to-html
-    dialog.update();
-
-    {
-      const createButton = dialog.find("Button").at(createButtonIndex);
-      expect(createButton).toHaveProp("isDisabled", false);
-      createButton.simulate("click");
-      expect(chosenTemplate).toBeTruthy();
-    }
+    wrapper.update();
+    expect((wrapper.state() as any).template.files[0].data).toEqual("# Empty C Project\n");
+    wrapper.find(ListBox).prop("onSelect")({ description: "abc" });
+    await promiseWait(3); // wait on templates loading and md-to-html
+    wrapper.update();
+    expect(wrapper).toHaveState({ description: "<pre>abc</pre>", template: { description: "abc" }});
   });
-
-  it("NewProjectDialog calls back onCancel", () => {
-    let cancelCalled = false;
-    const dialog = setup({
-      onCancel() { cancelCalled = true; },
-    });
-    dialog.find("Button").at(cancelButtonIndex).simulate("click");
-    expect(cancelCalled).toBeTruthy();
+  it("should invoke onCreate when clicking the Create button", async () => {
+    const onCreate = jest.fn();
+    const wrapper = setup({ onCreate });
+    await promiseWait(3); // wait on templates loading and md-to-html
+    wrapper.update();
+    const createButton = wrapper.find("Button").at(createButtonIndex);
+    expect(createButton).toHaveProp("isDisabled", false);
+    createButton.simulate("click");
+    expect(onCreate).toHaveBeenCalled();
+  });
+  it("should invoke onCancel when clicking the Cancel button", () => {
+    const onCancel = jest.fn();
+    const wrapper = setup({ onCancel });
+    wrapper.find("Button").at(cancelButtonIndex).simulate("click");
+    expect(onCancel).toHaveBeenCalledWith();
   });
 });

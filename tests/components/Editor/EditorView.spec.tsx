@@ -8,6 +8,10 @@ import {EditorView} from "../../../src/components/editor/Editor";
 import {View} from "../../../src/components/editor";
 import {File, FileType} from "../../../src/models";
 
+declare var monaco: {
+  editor
+};
+
 describe("Tests for Editor.tsx/EditorView", () => {
   const setup = (description?) => {
     const file = new File("test.js", FileType.JavaScript);

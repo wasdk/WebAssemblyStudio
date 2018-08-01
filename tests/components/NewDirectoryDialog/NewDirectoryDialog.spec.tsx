@@ -36,15 +36,12 @@ describe("Tests for NewDirectoryDialog", () => {
   };
   it("renders correctly", () => {
     const wrapper = setup({});
-    const textInputBox = wrapper.find(TextInputBox);
-    const buttons = wrapper.find(Button);
-    expect(textInputBox).toExist();
-    expect(buttons.length).toBe(2);
-    expect(buttons.at(cancelButtonIndex)).toHaveProp("label", "Cancel");
-    expect(buttons.at(cancelButtonIndex)).toHaveProp("title", "Cancel");
-    expect(buttons.at(createButtonIndex)).toHaveProp("label", "Create");
-    expect(buttons.at(createButtonIndex)).toHaveProp("title", "Create New Directory");
-    expect(buttons.at(createButtonIndex)).toHaveProp("isDisabled", true);
+    expect(wrapper).toMatchSnapshot();
+  });
+  it("renders correctly on valid input", () => {
+    const wrapper = setup({});
+    wrapper.find(TextInputBox).simulate("change", { target: { value: "valid" }});
+    expect(wrapper).toMatchSnapshot();
   });
   it("displays error & disables create button if name already exists", () => {
     const wrapper = setup({});
@@ -57,6 +54,13 @@ describe("Tests for NewDirectoryDialog", () => {
     const wrapper = setup({});
     const expectedErrorMessage = "Illegal characters in directory name.";
     wrapper.find(TextInputBox).simulate("change", { target: { value: "a+b" }});
+    expect(wrapper.find(TextInputBox)).toHaveProp("error", expectedErrorMessage);
+    expect(wrapper.find(Button).at(createButtonIndex)).toHaveProp("isDisabled", true);
+  });
+  it("displays error & disables create button if directory already exists", () => {
+    const wrapper = setup({});
+    const expectedErrorMessage = "Directory 'src' already exists.";
+    wrapper.find(TextInputBox).simulate("change", { target: { value: "src" }});
     expect(wrapper.find(TextInputBox)).toHaveProp("error", expectedErrorMessage);
     expect(wrapper.find(Button).at(createButtonIndex)).toHaveProp("isDisabled", true);
   });

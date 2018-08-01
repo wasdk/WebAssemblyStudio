@@ -43,7 +43,7 @@ describe("Tests for Tabs.tsx/Tabs", () => {
     const instance = wrapper.instance() as Tabs;
     wrapper.find(".tabs-tab-container").simulate("wheel", { preventDefault, deltaY: 10 });
     expect(preventDefault).toHaveBeenCalled();
-    expect(wrapper.state().scrollLeft).toEqual(10);
+    expect((wrapper.state() as any).scrollLeft).toEqual(10);
     expect(instance.container.scrollLeft).toEqual(10);
     wrapper.unmount();
   });
