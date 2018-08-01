@@ -219,7 +219,7 @@ describe("Tests for App", () => {
         const layout = jest.spyOn(utils, "layout");
         const file = new File("file", FileType.JavaScript);
         appActions.openFile(file);
-        expect(wrapper.state().activeTabGroup.currentView.file).toBe(file);
+        expect((wrapper.state() as any).activeTabGroup.currentView.file).toBe(file);
         expect(layout).toHaveBeenCalled();
         layout.mockRestore();
       });

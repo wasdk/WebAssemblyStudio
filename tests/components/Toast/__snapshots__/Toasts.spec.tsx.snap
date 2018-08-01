@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tests for Toasts Toast should render correctly 1`] = `
+<div
+  className="toast info"
+>
+  <div
+    className="toast-header"
+  >
+    <a
+      href="https://webassembly.studio/"
+    >
+      Label
+    </a>
+    <Button
+      customClassName="button-toast"
+      icon={<GoX />}
+      label="Dismiss"
+      onClick={[MockFunction]}
+      title="Dismiss"
+    />
+  </div>
+</div>
+`;
+
+exports[`Tests for Toasts Toast should render correctly when passing the kind prop 1`] = `
+<div
+  className="toast error"
+>
+  <div
+    className="toast-header"
+  >
+    <a
+      href="https://webassembly.studio/"
+    >
+      Label
+    </a>
+    <Button
+      customClassName="button-toast"
+      icon={<GoX />}
+      label="Dismiss"
+      onClick={[MockFunction]}
+      title="Dismiss"
+    />
+  </div>
+</div>
+`;
+
+exports[`Tests for Toasts ToastContainer should render correctly 1`] = `
+<div
+  className="toast-container"
+>
+  <Toast
+    key="0"
+    kind="info"
+    message={
+      <a
+        href="https://webassembly.studio/"
+      >
+        ToastA
+      </a>
+    }
+    onDismiss={[Function]}
+  />
+  <Toast
+    key="1"
+    kind="warning"
+    message={
+      <a
+        href="https://webassembly.studio/"
+      >
+        ToastB
+      </a>
+    }
+    onDismiss={[Function]}
+  />
+  <Toast
+    key="2"
+    kind="error"
+    message={
+      <a
+        href="https://webassembly.studio/"
+      >
+        ToastC
+      </a>
+    }
+    onDismiss={[Function]}
+  />
+</div>
+`;

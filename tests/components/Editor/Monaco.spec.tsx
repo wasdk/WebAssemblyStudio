@@ -4,6 +4,10 @@
 import * as React from "react";
 import {mount} from "enzyme";
 
+declare var monaco: {
+  editor
+};
+
 const buildMock = jest.fn(() => Promise.resolve("build"));
 const runMock = jest.fn(() => Promise.resolve("run"));
 jest.mock("../../../src/actions/AppActions", () => {

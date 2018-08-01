@@ -30,7 +30,7 @@ describe("Tests for Widgets", () => {
       expect(wrapper.find(".text-input-box").parent()).toHaveStyle({ flex: 1 });
     });
     it("should render correctly without a label", () => {
-      const wrapper = shallow(<TextInputBox value="value" />);
+      const wrapper = shallow(<TextInputBox value="value" label={null} />);
       expect(wrapper).toHaveProp("value", "value");
       expect(wrapper.find(".text-input-box-label")).not.toExist();
     });
