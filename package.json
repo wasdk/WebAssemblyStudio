@@ -96,7 +96,7 @@
     "puppeteer": "^1.6.1",
     "react-test-renderer": "^16.4.1",
     "source-map-loader": "^0.2.3",
-    "stryker": "^0.25.1",
+    "stryker": "^0.26.1",
     "stryker-api": "^0.18.0",
     "stryker-html-reporter": "^0.15.0",
     "stryker-jest-runner": "^1.0.0",
