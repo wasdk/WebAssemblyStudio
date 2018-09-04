@@ -31,11 +31,12 @@ export class ClangService implements CompilerService {
 
   async compile(input: ServiceInput): Promise<ServiceOutput> {
     const files = Object.values(input.files);
-    if (files.length !== 1) {
-      throw new Error(`Supporting compilation of a single file, but ${files.length} file(s) found`);
-    }
+    // if (files.length !== 1) {
+    //   throw new Error(`Supporting compilation of a single file, but ${files.length} file(s) found`);
+    // }
     const [ fileRef ] = Object.keys(input.files);
     const src = files[0].content;
+    const header = files[1].content;
     const from = this.lang;
     const project = {
       output: "wasm",
@@ -43,10 +44,16 @@ export class ClangService implements CompilerService {
       files: [
         {
           type: from,
-          name: "file." + from,
-          options: input.options,
-          src
-        }
+          name: "main."+from,
+          options:input.options,
+          src,
+        },
+       {
+          type:Language.h,
+          name:"header."+ Language.h,
+          options:input.options,
+          src:header,
+        },
       ]
     };
     const result = await sendRequestJSON(project, ServiceTypes.Clang);
