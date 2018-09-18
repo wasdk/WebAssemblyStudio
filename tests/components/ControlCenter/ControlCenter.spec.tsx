@@ -2,6 +2,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
 import "jest-enzyme";
+import waitUntil from "wait-until-promise";
 import * as React from "react";
 import { shallow } from "enzyme";
 import { ControlCenter } from "../../../src/components/ControlCenter";
@@ -23,12 +24,6 @@ enum TabIndex {
 declare var monaco: {
   editor
 };
-
-function wait(duration) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), duration);
-  });
-}
 
 describe("Tests for ControlCenter component", () => {
   const setup = (props?) => {
@@ -115,7 +110,7 @@ describe("Tests for ControlCenter component", () => {
     const problem = new Problem(file, "description", "error");
     file.isTransient = true;
     file.setProblems([problem]);
-    await wait(10);
+    await waitUntil(() => (wrapper.state() as any).problemCount); // Wait until state is updated
     expect(wrapper).toHaveState("problemCount", 1);
   });
 });

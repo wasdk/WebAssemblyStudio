@@ -1,6 +1,7 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
+import waitUntil from "wait-until-promise";
 import { Directory, FileType, File, Problem, Project } from "../../src/models";
 import { Service } from "../../src/service";
 
@@ -10,12 +11,6 @@ function getDirectoryStructure() {
   const c = a.newDirectory("c");
   const cd = a.newFile("c/d", FileType.JavaScript, false);
   return { a, b, c, cd };
-}
-
-function wait(duration) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), duration);
-  });
 }
 
 declare var monaco: { editor, languages };
@@ -257,7 +252,7 @@ describe("File tests", () => {
         const file = new File("file", FileType.Wasm);
         const data = "test";
         file.setData(data, "status" as any);
-        await wait(10);
+        await waitUntil(() => file.data); // Wait until the file data is set
         expect(disassembleWasm).toHaveBeenCalledWith(data, "status");
         expect(setValue).toHaveBeenCalledWith(data);
         expect(setModelLanguage).toHaveBeenCalledWith(file.buffer, "wat");

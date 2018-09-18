@@ -2,6 +2,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
 import "jest-enzyme";
+import waitUntil from "wait-until-promise";
 import * as React from "react";
 import { shallow } from "enzyme";
 
@@ -39,10 +40,6 @@ import { ListBox } from "../../../src/components/Widgets";
 const createButtonIndex = 1;
 const cancelButtonIndex = 0;
 
-async function promiseWait(count) {
-  return count > 0 && await Promise.resolve(count - 1).then(promiseWait);
-}
-
 describe("Tests for NewProjectDialog component", () => {
   const setup = (params: {
     templatesName?: string;
@@ -66,18 +63,18 @@ describe("Tests for NewProjectDialog component", () => {
     const onCreate = jest.fn();
     const wrapper = setup({ onCreate });
     expect(wrapper).toHaveState({ template: null });
-    await promiseWait(3); // wait on templates loading and md-to-html
+    await waitUntil(() => (wrapper.state() as any).templates.length); // Wait until templates has been loaded
     wrapper.update();
     expect((wrapper.state() as any).template.files[0].data).toEqual("# Empty C Project\n");
     wrapper.find(ListBox).prop("onSelect")({ description: "abc" });
-    await promiseWait(3); // wait on templates loading and md-to-html
+    await waitUntil(() => (wrapper.state() as any).description !== "<pre></pre>"); // Wait until description has been updated
     wrapper.update();
     expect(wrapper).toHaveState({ description: "<pre>abc</pre>", template: { description: "abc" }});
   });
   it("should invoke onCreate when clicking the Create button", async () => {
     const onCreate = jest.fn();
     const wrapper = setup({ onCreate });
-    await promiseWait(3); // wait on templates loading and md-to-html
+    await waitUntil(() => (wrapper.state() as any).templates.length); // Wait until templates has been loaded
     wrapper.update();
     const createButton = wrapper.find("Button").at(createButtonIndex);
     expect(createButton).toHaveProp("isDisabled", false);

@@ -272,7 +272,7 @@ export async function uploadFilesToDirectory(items: any, root: Directory) {
       file = item;
     }
     const name: string = file.name;
-    const path: string = file.webkitRelativePath || name; // This works in FF also.
+    const path: string = (file as any).webkitRelativePath || name; // This works in FF also.
     const fileType = fileTypeForExtension(name.split(".").pop());
     let data: any;
     try {

@@ -55,16 +55,11 @@ function mockFetch(returnValue) {
   };
 }
 
-function wait(duration) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), duration);
-  });
-}
-
 function trimAll(input: string) {
   return input.replace(/[\n\r]+/g, "").replace(/\s{2,}/g, "").replace(/^\s+|\s+$/, "");
 }
 
+import waitUntil from "wait-until-promise";
 import { Service } from "../../src/service";
 import { File, FileType, Directory, Project } from "../../src/models";
 import * as taskRunner from "../../src/utils/taskRunner";
@@ -490,7 +485,7 @@ describe("Tests for Service", () => {
       appendChild.mockImplementation(() => {});
       const status = { push: jest.fn(), pop: jest.fn() } as any;
       Service.lazyLoad("uri", status);
-      await wait(10); // Wait for the onload fn to be defined
+      await waitUntil(() => (scriptElement as any).onload); // Wait until the onload fn is defined
       (scriptElement as any).onload();
       expect(createElement).toHaveBeenLastCalledWith("script");
       expect(appendChild).toHaveBeenCalledWith(scriptElement);
@@ -831,8 +826,8 @@ describe("Tests for Service", () => {
       expect(global.document.head.appendChild).toHaveBeenCalledWith(scriptElement);
       expect(processJSFile).toHaveBeenCalledWith(context, "script-path");
       expect(RewriteSourcesContext).toHaveBeenCalledWith(project);
-      makeReady(); // Fake that is ready
-      await wait(10); // Wait for it to resolve
+      await makeReady(); // Fake that is ready
+      await waitUntil(() => !global[id]); // Wait until the makeReady fn has finished
       expect(global[id]).toBeUndefined();
       expect(remove).toHaveBeenCalled();
       random.mockRestore();

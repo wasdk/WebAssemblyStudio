@@ -395,7 +395,7 @@ export class App extends React.Component<AppProps, AppState> {
   makeToolbarButtons() {
     const toolbarButtons = [
       <Button
-        key="View Workspace"
+        key="ViewWorkspace"
         icon={<GoThreeBars />}
         title="View Project Workspace"
         onClick={() => {
@@ -417,6 +417,7 @@ export class App extends React.Component<AppProps, AppState> {
     if (this.props.embeddingParams.type === EmbeddingType.Default) {
       toolbarButtons.push(
         <Button
+          key="EditInWebAssemblyStudio"
           icon={<GoPencil />}
           label="Edit in WebAssembly Studio"
           title="Edit Project in WebAssembly Studio"
@@ -430,6 +431,7 @@ export class App extends React.Component<AppProps, AppState> {
         this.props.update) {
       toolbarButtons.push(
         <Button
+          key="UpdateProject"
           icon={<GoPencil />}
           label="Update"
           title="Update Project"
@@ -444,6 +446,7 @@ export class App extends React.Component<AppProps, AppState> {
         this.props.embeddingParams.type === EmbeddingType.Arc) {
       toolbarButtons.push(
         <Button
+          key="ForkProject"
           icon={<GoRepoForked />}
           label="Fork"
           title="Fork Project"
@@ -457,6 +460,7 @@ export class App extends React.Component<AppProps, AppState> {
     if (this.props.embeddingParams.type === EmbeddingType.None) {
       toolbarButtons.push(
         <Button
+          key="CreateGist"
           icon={<GoGist />}
           label="Create Gist"
           title="Create GitHub Gist from Project"
@@ -466,6 +470,7 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         />,
         <Button
+          key="Download"
           icon={<GoDesktopDownload />}
           label="Download"
           title="Download Project"
@@ -475,6 +480,7 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         />,
         <Button
+          key="Share"
           icon={<GoRocket />}
           label="Share"
           title={this.state.fiddle ? "Share Project" : "Cannot share a project that has not been forked yet."}
@@ -486,6 +492,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
     toolbarButtons.push(
       <Button
+        key="Build"
         icon={<GoBeaker />}
         label="Build"
         title="Build Project: CtrlCmd + B"
@@ -497,6 +504,7 @@ export class App extends React.Component<AppProps, AppState> {
     if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
       toolbarButtons.push(
         <Button
+          key="Run"
           icon={<GoGear />}
           label="Run"
           title="Run Project: CtrlCmd + Enter"
@@ -506,6 +514,7 @@ export class App extends React.Component<AppProps, AppState> {
           }}
         />,
         <Button
+          key="BuildAndRun"
           icon={<GoBeakerGear />}
           label="Build &amp; Run"
           title="Build &amp; Run Project: CtrlCmd + Alt + Enter"
@@ -519,6 +528,7 @@ export class App extends React.Component<AppProps, AppState> {
     if (this.props.embeddingParams.type === EmbeddingType.Arc) {
       toolbarButtons.push(
         <Button
+          key="Preview"
           icon={<GoGear />}
           label="Preview"
           title="Preview Project: CtrlCmd + Enter"
@@ -530,6 +540,7 @@ export class App extends React.Component<AppProps, AppState> {
       );
       toolbarButtons.push(
         <Button
+          key="BuildAndPreview"
           icon={<GoGear />}
           label="Build &amp; Preview"
           title="Build &amp; Preview Project: CtrlCmd + Alt + Enter"
@@ -543,6 +554,7 @@ export class App extends React.Component<AppProps, AppState> {
     if (this.props.embeddingParams.type === EmbeddingType.None) {
       toolbarButtons.push(
         <Button
+          key="GithubIssues"
           icon={<GoOpenIssue />}
           label="GitHub Issues"
           title="GitHub Issues"
@@ -552,6 +564,7 @@ export class App extends React.Component<AppProps, AppState> {
           rel="noopener noreferrer"
         />,
         <Button
+          key="HelpAndPrivacy"
           icon={<GoQuestion />}
           label="Help & Privacy"
           title="Help & Privacy"
@@ -574,9 +587,10 @@ export class App extends React.Component<AppProps, AppState> {
       if (groups.length === 0) {
         return <div>No Groups</div>;
       }
-      return groups.map((group: Group) => {
+      return groups.map((group: Group, i: number) => {
         // tslint:disable-next-line:jsx-key
         return <ViewTabs
+          key={`editorPane${i}`}
           views={group.views.slice(0)}
           view={group.currentView}
           preview={group.preview}

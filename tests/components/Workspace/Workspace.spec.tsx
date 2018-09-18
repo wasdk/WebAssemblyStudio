@@ -52,7 +52,6 @@ describe("Tests for Workspace", () => {
     expect(header).toExist();
     expect(split).toHaveProp("orientation", SplitOrientation.Horizontal);
     expect(split).toHaveProp("splits", []);
-    expect(split.parent()).toHaveStyle({ height: "calc(100% - 41px)" });
     expect(directoryTree).toHaveProp("directory", project);
     expect(directoryTree).toHaveProp("value", fileA);
     expect(directoryTree).toHaveProp("onNewFile", onNewFile);

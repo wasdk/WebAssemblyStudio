@@ -98,9 +98,9 @@ window.addEventListener("message", (e) => {
   if (typeof e.data !== "object" || !e.data || e.data.type !== "taskRunner-sandbox-ready") {
     return;
   }
-  const contentWindow = e.source;
-  const iframe = contentWindow.frameElement as HTMLIFrameElement;
-  iframeReady.get(iframe)(contentWindow);
+  const contentWindow = e.source as Window;
+  const iframe = (contentWindow as Window).frameElement as HTMLIFrameElement;
+  iframeReady.get(iframe)(contentWindow as Window);
 
   const originalFetch = window.fetch;
   contentWindow.fetch = (input: string, init?: RequestInit) => {

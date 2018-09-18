@@ -160,13 +160,14 @@ exports[`Tests for App render should render correctly (arc) 1`] = `
           <Toolbar>
             <Button
               icon={<GoThreeBars />}
-              key="View Workspace"
+              key="ViewWorkspace"
               onClick={[Function]}
               title="View Project Workspace"
             />
             <Button
               icon={<GoRepoForked />}
               isDisabled={false}
+              key="ForkProject"
               label="Fork"
               onClick={[Function]}
               title="Fork Project"
@@ -174,6 +175,7 @@ exports[`Tests for App render should render correctly (arc) 1`] = `
             <Button
               icon={<GoBeaker />}
               isDisabled={false}
+              key="Build"
               label="Build"
               onClick={[Function]}
               title="Build Project: CtrlCmd + B"
@@ -181,6 +183,7 @@ exports[`Tests for App render should render correctly (arc) 1`] = `
             <Button
               icon={<GoGear />}
               isDisabled={false}
+              key="Preview"
               label="Preview"
               onClick={[Function]}
               title="Preview Project: CtrlCmd + Enter"
@@ -188,6 +191,7 @@ exports[`Tests for App render should render correctly (arc) 1`] = `
             <Button
               icon={<GoGear />}
               isDisabled={false}
+              key="BuildAndPreview"
               label="Build & Preview"
               onClick={[Function]}
               title="Build & Preview Project: CtrlCmd + Alt + Enter"
@@ -230,6 +234,7 @@ exports[`Tests for App render should render correctly (arc) 1`] = `
             >
               <ViewTabs
                 hasFocus={true}
+                key="editorPane0"
                 onChangeViewType={[Function]}
                 onClickView={[Function]}
                 onClose={[Function]}
@@ -417,7 +422,7 @@ exports[`Tests for App render should render correctly (embedded) 1`] = `
           <Toolbar>
             <Button
               icon={<GoThreeBars />}
-              key="View Workspace"
+              key="ViewWorkspace"
               onClick={[Function]}
               title="View Project Workspace"
             />
@@ -425,6 +430,7 @@ exports[`Tests for App render should render correctly (embedded) 1`] = `
               href="//webassembly.studio/?f=null"
               icon={<GoPencil />}
               isDisabled={true}
+              key="EditInWebAssemblyStudio"
               label="Edit in WebAssembly Studio"
               rel="noopener noreferrer"
               target="wasm.studio"
@@ -433,6 +439,7 @@ exports[`Tests for App render should render correctly (embedded) 1`] = `
             <Button
               icon={<GoBeaker />}
               isDisabled={false}
+              key="Build"
               label="Build"
               onClick={[Function]}
               title="Build Project: CtrlCmd + B"
@@ -440,6 +447,7 @@ exports[`Tests for App render should render correctly (embedded) 1`] = `
             <Button
               icon={<GoGear />}
               isDisabled={false}
+              key="Run"
               label="Run"
               onClick={[Function]}
               title="Run Project: CtrlCmd + Enter"
@@ -447,6 +455,7 @@ exports[`Tests for App render should render correctly (embedded) 1`] = `
             <Button
               icon={<GoBeakerGear />}
               isDisabled={false}
+              key="BuildAndRun"
               label="Build & Run"
               onClick={[Function]}
               title="Build & Run Project: CtrlCmd + Alt + Enter"
@@ -489,6 +498,7 @@ exports[`Tests for App render should render correctly (embedded) 1`] = `
             >
               <ViewTabs
                 hasFocus={true}
+                key="editorPane0"
                 onChangeViewType={[Function]}
                 onClickView={[Function]}
                 onClose={[Function]}
@@ -672,13 +682,14 @@ exports[`Tests for App render should render correctly (fiddle) 1`] = `
           <Toolbar>
             <Button
               icon={<GoThreeBars />}
-              key="View Workspace"
+              key="ViewWorkspace"
               onClick={[Function]}
               title="View Project Workspace"
             />
             <Button
               icon={<GoBeaker />}
               isDisabled={true}
+              key="Build"
               label="Build"
               onClick={[Function]}
               title="Build Project: CtrlCmd + B"
@@ -686,6 +697,7 @@ exports[`Tests for App render should render correctly (fiddle) 1`] = `
             <Button
               icon={<GoGear />}
               isDisabled={true}
+              key="Run"
               label="Run"
               onClick={[Function]}
               title="Run Project: CtrlCmd + Enter"
@@ -693,6 +705,7 @@ exports[`Tests for App render should render correctly (fiddle) 1`] = `
             <Button
               icon={<GoBeakerGear />}
               isDisabled={true}
+              key="BuildAndRun"
               label="Build & Run"
               onClick={[Function]}
               title="Build & Run Project: CtrlCmd + Alt + Enter"
@@ -735,6 +748,7 @@ exports[`Tests for App render should render correctly (fiddle) 1`] = `
             >
               <ViewTabs
                 hasFocus={true}
+                key="editorPane0"
                 onChangeViewType={[Function]}
                 onClickView={[Function]}
                 onClose={[Function]}
@@ -922,13 +936,14 @@ exports[`Tests for App render should render correctly (update) 1`] = `
           <Toolbar>
             <Button
               icon={<GoThreeBars />}
-              key="View Workspace"
+              key="ViewWorkspace"
               onClick={[Function]}
               title="View Project Workspace"
             />
             <Button
               icon={<GoPencil />}
               isDisabled={false}
+              key="UpdateProject"
               label="Update"
               onClick={[Function]}
               title="Update Project"
@@ -936,6 +951,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
             <Button
               icon={<GoRepoForked />}
               isDisabled={false}
+              key="ForkProject"
               label="Fork"
               onClick={[Function]}
               title="Fork Project"
@@ -943,6 +959,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
             <Button
               icon={<GoGist />}
               isDisabled={false}
+              key="CreateGist"
               label="Create Gist"
               onClick={[Function]}
               title="Create GitHub Gist from Project"
@@ -950,6 +967,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
             <Button
               icon={<GoDesktopDownload />}
               isDisabled={false}
+              key="Download"
               label="Download"
               onClick={[Function]}
               title="Download Project"
@@ -957,6 +975,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
             <Button
               icon={<GoRocket />}
               isDisabled={true}
+              key="Share"
               label="Share"
               onClick={[Function]}
               title="Cannot share a project that has not been forked yet."
@@ -964,6 +983,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
             <Button
               icon={<GoBeaker />}
               isDisabled={false}
+              key="Build"
               label="Build"
               onClick={[Function]}
               title="Build Project: CtrlCmd + B"
@@ -971,6 +991,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
             <Button
               icon={<GoGear />}
               isDisabled={false}
+              key="Run"
               label="Run"
               onClick={[Function]}
               title="Run Project: CtrlCmd + Enter"
@@ -978,6 +999,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
             <Button
               icon={<GoBeakerGear />}
               isDisabled={false}
+              key="BuildAndRun"
               label="Build & Run"
               onClick={[Function]}
               title="Build & Run Project: CtrlCmd + Alt + Enter"
@@ -986,6 +1008,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
               customClassName="issue"
               href="https://github.com/wasdk/WebAssemblyStudio"
               icon={<GoOpenIssue />}
+              key="GithubIssues"
               label="GitHub Issues"
               rel="noopener noreferrer"
               target="_blank"
@@ -994,6 +1017,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
             <Button
               customClassName="help"
               icon={<GoQuestion />}
+              key="HelpAndPrivacy"
               label="Help & Privacy"
               onClick={[Function]}
               title="Help & Privacy"
@@ -1036,6 +1060,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
             >
               <ViewTabs
                 hasFocus={true}
+                key="editorPane0"
                 onChangeViewType={[Function]}
                 onClickView={[Function]}
                 onClose={[Function]}
@@ -1223,13 +1248,14 @@ exports[`Tests for App render should render correctly 1`] = `
           <Toolbar>
             <Button
               icon={<GoThreeBars />}
-              key="View Workspace"
+              key="ViewWorkspace"
               onClick={[Function]}
               title="View Project Workspace"
             />
             <Button
               icon={<GoRepoForked />}
               isDisabled={false}
+              key="ForkProject"
               label="Fork"
               onClick={[Function]}
               title="Fork Project"
@@ -1237,6 +1263,7 @@ exports[`Tests for App render should render correctly 1`] = `
             <Button
               icon={<GoGist />}
               isDisabled={false}
+              key="CreateGist"
               label="Create Gist"
               onClick={[Function]}
               title="Create GitHub Gist from Project"
@@ -1244,6 +1271,7 @@ exports[`Tests for App render should render correctly 1`] = `
             <Button
               icon={<GoDesktopDownload />}
               isDisabled={false}
+              key="Download"
               label="Download"
               onClick={[Function]}
               title="Download Project"
@@ -1251,6 +1279,7 @@ exports[`Tests for App render should render correctly 1`] = `
             <Button
               icon={<GoRocket />}
               isDisabled={true}
+              key="Share"
               label="Share"
               onClick={[Function]}
               title="Cannot share a project that has not been forked yet."
@@ -1258,6 +1287,7 @@ exports[`Tests for App render should render correctly 1`] = `
             <Button
               icon={<GoBeaker />}
               isDisabled={false}
+              key="Build"
               label="Build"
               onClick={[Function]}
               title="Build Project: CtrlCmd + B"
@@ -1265,6 +1295,7 @@ exports[`Tests for App render should render correctly 1`] = `
             <Button
               icon={<GoGear />}
               isDisabled={false}
+              key="Run"
               label="Run"
               onClick={[Function]}
               title="Run Project: CtrlCmd + Enter"
@@ -1272,6 +1303,7 @@ exports[`Tests for App render should render correctly 1`] = `
             <Button
               icon={<GoBeakerGear />}
               isDisabled={false}
+              key="BuildAndRun"
               label="Build & Run"
               onClick={[Function]}
               title="Build & Run Project: CtrlCmd + Alt + Enter"
@@ -1280,6 +1312,7 @@ exports[`Tests for App render should render correctly 1`] = `
               customClassName="issue"
               href="https://github.com/wasdk/WebAssemblyStudio"
               icon={<GoOpenIssue />}
+              key="GithubIssues"
               label="GitHub Issues"
               rel="noopener noreferrer"
               target="_blank"
@@ -1288,6 +1321,7 @@ exports[`Tests for App render should render correctly 1`] = `
             <Button
               customClassName="help"
               icon={<GoQuestion />}
+              key="HelpAndPrivacy"
               label="Help & Privacy"
               onClick={[Function]}
               title="Help & Privacy"
@@ -1330,6 +1364,7 @@ exports[`Tests for App render should render correctly 1`] = `
             >
               <ViewTabs
                 hasFocus={true}
+                key="editorPane0"
                 onChangeViewType={[Function]}
                 onClickView={[Function]}
                 onClose={[Function]}

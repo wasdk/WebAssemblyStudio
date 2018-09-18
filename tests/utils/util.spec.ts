@@ -1,14 +1,9 @@
 /* Any copyright is dedicated to the Public Domain.
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
+import waitUntil from "wait-until-promise";
 import * as util from "../../src/util";
 import { Project, Directory, FileType } from "../../src/models";
-
-function wait(duration) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), duration);
-  });
-}
 
 describe("Tests for util.ts", () => {
   describe("toAddress", () => {
@@ -71,7 +66,7 @@ describe("Tests for util.ts", () => {
       const onLayout = jest.fn();
       document.addEventListener("layout", onLayout);
       util.layout();
-      await wait(10);
+      await waitUntil(() => new Promise((resolve) => setTimeout(() => resolve(), 10))); // Wait for the event listener to be called
       expect(onLayout).toHaveBeenCalledTimes(1);
       document.removeEventListener("layout", onLayout);
     });
@@ -144,8 +139,7 @@ describe("Tests for util.ts", () => {
       const root = new Directory("root");
       const items = [ new File(["file-data"], "file.js") ];
       await util.uploadFilesToDirectory(items, root);
-      await wait(10);
-      const newFile = root.getFile("file.js");
+      const newFile = await waitUntil(() => root.getFile("file.js")); // Wait until file.js has been created
       expect(newFile.getData()).toEqual("file-data");
     });
     it("should upload a file to the directory (DataTransferItem)", async () => {
@@ -155,8 +149,7 @@ describe("Tests for util.ts", () => {
       (file as any).getAsFile = () => file;
       const items = [ file ];
       await util.uploadFilesToDirectory(items, root);
-      await wait(10);
-      const newFile = root.getFile("file.js");
+      const newFile = await waitUntil(() => root.getFile("file.js")); // Wait until file.js has been created
       expect(newFile.getData()).toEqual("file-data");
     });
     it("should upload a file to the directory (webkitGetAsEntry)", async () => {
@@ -167,8 +160,7 @@ describe("Tests for util.ts", () => {
       (file as any).webkitGetAsEntry = () => file;
       const items = [ file ];
       await util.uploadFilesToDirectory(items, root);
-      await wait(10);
-      const newFile = root.getFile("file.js");
+      const newFile = await waitUntil(() => root.getFile("file.js")); // Wait until file.js has been created
       expect(newFile.getData()).toEqual("file-data");
     });
     it("should upload a directory to the directory (webkitGetAsEntry && isDirectory)", async () => {
@@ -181,7 +173,7 @@ describe("Tests for util.ts", () => {
       (src as any).createReader = () => ({ readEntries });
       const items = [ src ];
       await util.uploadFilesToDirectory(items, root);
-      await wait(10);
+      await waitUntil(() => readEntries.mock.calls.length > 0); // Wait until readEntries has been called
       expect(readEntries).toHaveBeenCalled();
     });
     it("should handle name collisions while uploading files", async () => {
@@ -191,9 +183,8 @@ describe("Tests for util.ts", () => {
       file.setData("fileA");
       const items = [ new File(["fileB"], "file.js") ];
       await util.uploadFilesToDirectory(items, root);
-      await wait(10);
-      const fileA = root.getFile("file.js");
-      const fileB = root.getFile("file.2.js");
+      const fileA = await waitUntil(() => root.getFile("file.js")); // Wait until file.js has been created
+      const fileB = await waitUntil(() => root.getFile("file.2.js")); // Wait until file.2.js has been created
       expect(fileA.getData()).toEqual("fileA");
       expect(fileB.getData()).toEqual("fileB");
       expect(root.children).toHaveLength(2);
@@ -210,7 +201,7 @@ describe("Tests for util.ts", () => {
       (src2 as any).createReader = () => ({ readEntries });
       const items = [ src2 ];
       await util.uploadFilesToDirectory(items, root);
-      await wait(10);
+      await waitUntil(() => handleNameCollision.mock.calls.length > 0); // Wait until handleNameCollision has been called
       expect(handleNameCollision).toHaveBeenCalledWith("src");
     });
   });
@@ -235,9 +226,8 @@ describe("Tests for util.ts", () => {
         })
       };
       await util.readUploadedDirectory(rootInput, root);
-      await wait(10);
-      const createdFileA = root.getFile("fileA.js");
-      const createdFileB = root.getFile("sub/fileB.js");
+      const createdFileA = await waitUntil(() => root.getFile("fileA.js")); // Wait until fileA.js has been created
+      const createdFileB = await waitUntil(() => root.getFile("sub/fileB.js")); // Wait until sub/FileB.js has been created
       expect(createdFileA.getData()).toEqual("fileA");
       expect(createdFileB.getData()).toEqual("fileB");
     });
@@ -252,8 +242,7 @@ describe("Tests for util.ts", () => {
         })
       };
       await util.readUploadedDirectory(rootInput, root, "custom-root");
-      await wait(10);
-      const createdFileA = root.getFile("custom-root/fileA.js");
+      const createdFileA = await waitUntil(() => root.getFile("custom-root/fileA.js")); // Wait until custom-root/fileA.js has been created
       expect(createdFileA.getData()).toEqual("fileA");
     });
   });

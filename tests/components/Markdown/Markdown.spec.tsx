@@ -2,6 +2,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
 import "jest-enzyme";
+import waitUntil from "wait-until-promise";
 import * as React from "react";
 import { shallow } from "enzyme";
 
@@ -30,15 +31,18 @@ describe("Tests for Markdown", () =>  {
       expect(wrapper).toHaveState({ html: "Loading ..." });
     });
     it("should compile the provided Markdown to HTML on componentDidMount", async () => {
-      const wrapper = await shallow(<Markdown src="test" />);
+      const wrapper = shallow(<Markdown src="test" />);
+      await waitUntil(() => (wrapper.state() as any).html !== "Loading ..."); // Wait until the markdown has been compiled
       wrapper.update();
       expect(wrapper).toHaveClassName("md");
       expect(wrapper).toHaveStyle({padding: "8px", height: "100%", overflow: "scroll"});
       expect(wrapper).toHaveProp("dangerouslySetInnerHTML", {__html: "<span>test</span>"});
     });
     it("should compile the provided Markdown to HTML on componentWillReceiveProps", async () => {
-      const wrapper = await shallow(<Markdown src="test" />);
-      await wrapper.setProps({ src: "newSrc" });
+      const wrapper = shallow(<Markdown src="test" />);
+      await waitUntil(() => (wrapper.state() as any).html !== "Loading ..."); // Wait until the markdown has been compiled
+      wrapper.setProps({ src: "newSrc" });
+      await waitUntil(() => (wrapper.state() as any).html !== "src"); // Wait until the new markdown has been compiled
       wrapper.update();
       expect(wrapper).toHaveProp("dangerouslySetInnerHTML", {__html: "<span>newSrc</span>"});
     });
