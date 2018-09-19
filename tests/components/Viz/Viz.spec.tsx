@@ -2,6 +2,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/ */
 
 import "jest-enzyme";
+import waitUntil from "wait-until-promise";
 import * as React from "react";
 import { shallow } from "enzyme";
 
@@ -21,12 +22,6 @@ function mockViz(status) {
     viz.mockImplementation(() => { throw new Error(); });
   }
   return viz;
-}
-
-function wait(duration) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), duration);
-  });
 }
 
 import { VizView } from "../../../src/components/Viz";
@@ -102,7 +97,7 @@ describe("Tests for Viz", () => {
     getValue.mockImplementation(() => "updatedValue");
     mockViz("loaded");
     file.onDidChangeBuffer.dispatch();
-    await wait(10); // Wait for the updateTimeout to fire
+    await waitUntil(() => (wrapper.state() as any).content); // Wait until state has been updated
     expect(wrapper).toHaveState({ content: "updatedValue", isVizLoaded: true });
     getValue.mockRestore();
   });

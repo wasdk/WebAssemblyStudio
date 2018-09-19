@@ -33,6 +33,7 @@ class Child extends React.Component<{
 
 describe("Tests for ErrorBoundary", () => {
   beforeAll(() => {
+    // Silence console.error that will log errors that are being caught by the Error Boundary
     // tslint:disable-next-line
     jest.spyOn(console, "error").mockImplementation(() => {});
   });

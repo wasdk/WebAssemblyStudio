@@ -81,9 +81,8 @@ describe("Tests for UploadFileDialog", () => {
     expect(buttons.at(ButtonIndex.Upload)).toHaveProp("label", "Upload");
     expect(buttons.at(ButtonIndex.Upload)).toHaveProp("title", "Upload");
     expect(buttons.at(ButtonIndex.Upload)).toHaveProp("isDisabled", true);
-    expect(buttons.at(ButtonIndex.UploadRootContents)).toBeEmptyRender();
+    expect(buttons.at(ButtonIndex.UploadRootContents)).not.toExist();
     expect(titleBar).toHaveText(`Upload Files & Directories to test-directory`);
-    expect(titleBar.parent()).toHaveStyle({ display: "flex", flexDirection: "column", height: "100%" });
   });
   it("should open a file picker when clicking the files button", () => {
     const { wrapper } = setup();
