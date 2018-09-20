@@ -19,6 +19,7 @@ install:
 - npm install
 script:
 - npm test
+- npm run e2e
 - npm run coveralls
 - npm run templates
 - cp .gitignore.travis .gitignore
