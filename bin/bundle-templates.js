@@ -93,7 +93,8 @@ function mkdirP(dirPath) {
         buildPath.push(pathParts[buildPath.length]);
         const to = buildPath.join(path.sep);
         path.resolve(to);
-        if( !fs.existsSync(to)) {
+        // if path is not empty and path does not exist.
+        if( to.length > 0 && !fs.existsSync(to)) {
             fs.mkdirSync(to);
         }
     }
