@@ -86,6 +86,19 @@ function rimraf(dir_path) {
     }
 }
 
+function mkdirP(dirPath) {
+    const pathParts = path.resolve(dirPath).split(path.sep);
+    const buildPath = [];
+    while( buildPath.length < pathParts.length ) {
+        buildPath.push(pathParts[buildPath.length]);
+        const to = buildPath.join(path.sep);
+        path.resolve(to);
+        if( !fs.existsSync(to)) {
+            fs.mkdirSync(to);
+        }
+    }
+}
+
 /**
  * Copy files to folder
  * @param from
@@ -93,7 +106,7 @@ function rimraf(dir_path) {
  * @see https://stackoverflow.com/questions/13786160/copy-folder-recursively-in-node-js
  */
 function copyFolderSync(from, to) {
-    fs.mkdirSync(to);
+    mkdirP(to);
     fs.readdirSync(from).forEach(element => {
         if (fs.lstatSync(path.join(from, element)).isFile()) {
             fs.copyFileSync(path.join(from, element), path.join(to, element));
