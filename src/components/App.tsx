@@ -335,6 +335,13 @@ export class App extends React.Component<AppProps, AppState> {
         windowDimensions: App.getWindowDimensions(),
       });
     }, false);
+    if (this.props.embeddingParams.type === EmbeddingType.Arc) {
+      window.addEventListener("message", (e) => {
+        if (typeof e.data === "object" && e.data !== null && e.data.type === "arc/fork") {
+          this.fork();
+        }
+      });
+    }
   }
 
   share() {
