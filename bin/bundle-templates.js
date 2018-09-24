@@ -67,6 +67,42 @@ function bundleTemplate(templateName) {
   }
 }
 
+/**
+ * Remove directory recursively
+ * @param {string} dir_path
+ * @see https://stackoverflow.com/a/42505874/3027390
+ */
+function rimraf(dir_path) {
+    if (fs.existsSync(dir_path)) {
+        fs.readdirSync(dir_path).forEach(function(entry) {
+            var entry_path = path.join(dir_path, entry);
+            if (fs.lstatSync(entry_path).isDirectory()) {
+                rimraf(entry_path);
+            } else {
+                fs.unlinkSync(entry_path);
+            }
+        });
+        fs.rmdirSync(dir_path);
+    }
+}
+
+/**
+ * Copy files to folder
+ * @param from
+ * @param to
+ * @see https://stackoverflow.com/questions/13786160/copy-folder-recursively-in-node-js
+ */
+function copyFolderSync(from, to) {
+    fs.mkdirSync(to);
+    fs.readdirSync(from).forEach(element => {
+        if (fs.lstatSync(path.join(from, element)).isFile()) {
+            fs.copyFileSync(path.join(from, element), path.join(to, element));
+        } else {
+            copyFolderSync(path.join(from, element), path.join(to, element));
+        }
+    });
+}
+
 let templates = fs.readdirSync(templatesDir);
 
 let output = {};
@@ -78,6 +114,8 @@ templates.forEach((file) => {
   output[file] = template;
 });
 
+rimraf(path.resolve(outputPath));
+copyFolderSync(path.resolve(templatesDir), path.resolve(outputPath));
 fs.writeFileSync(
   path.resolve(outputPath, "index.js"),
   JSON.stringify(output, null, 2));
