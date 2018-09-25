@@ -14,7 +14,7 @@ notifications:
     on_success: never
     on_failure: always
 before_install:
-- npm update
+#- npm update
 install:
 - npm install
 script:
