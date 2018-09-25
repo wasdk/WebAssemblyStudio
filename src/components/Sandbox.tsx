@@ -85,7 +85,7 @@ export class Sandbox extends React.Component<{}, {}>  {
       error.apply(contentWindow.console, arguments);
     })(contentWindow.console.error);
     // Hijack fetch
-    contentWindow.fetch = (input: string, init?: RequestInit) => {
+    contentWindow.fetch =  async (input: string, init?: RequestInit) => {
       const url = new URL(input, "http://example.org/src/main.html");
       const file = project.getFile(url.pathname.substr(1));
       if (file) {
@@ -99,7 +99,12 @@ export class Sandbox extends React.Component<{}, {}>  {
           })
         );
       }
-      return fetch(input, init);
+      const response = await fetch(input, init);
+      if (response.status === 404) {
+        return Promise.reject(`Failed to fetch: ${response.url}`);
+      } else {
+        return Promise.resolve(response);
+      }
     };
     contentWindow.getFileURL = (path: string) => {
       const file = project.getFile(path);
