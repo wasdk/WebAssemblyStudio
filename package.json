@@ -91,6 +91,7 @@
     "css-loader": "^0.28.11",
     "enzyme": "^3.6.0",
     "enzyme-adapter-react-16": "^1.5.0",
+    "fs-extra": "^7.0.0",
     "jest": "^22.4.4",
     "jest-enzyme": "^6.0.2",
     "jest-puppeteer": "^3.2.1",
