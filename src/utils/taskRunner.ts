@@ -183,6 +183,7 @@ export async function runTask(
   if (gulp.hasTask(name)) {
     try {
       await gulp.run(name);
+      logLn("Build is Finished", "info");
     } catch (e) {
       logLn(e.message, "error");
     }
