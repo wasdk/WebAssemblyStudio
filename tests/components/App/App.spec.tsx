@@ -66,7 +66,7 @@ function createActionSpies() {
   spies.build.mockImplementation(() => Promise.resolve());
   spies.run.mockImplementation(() => Promise.resolve());
   spies.publishArc.mockImplementation(() => Promise.resolve());
-  spies.saveProject.mockImplementation(() => {});
+  spies.saveProject.mockImplementation(async () => "fiddle-url");
   spies.notifyArcAboutFork.mockImplementation(() => {});
   spies.openProjectFiles.mockImplementation(() => {});
   spies.addFileTo.mockImplementation(() => {});
@@ -446,7 +446,7 @@ describe("Tests for App", () => {
         fork.mockRestore();
       });
       it("should create a fork", async () => {
-        Service.saveProject.mockImplementation(() => "fiddle-url");
+        Service.saveProject.mockImplementation(async () => "fiddle-url");
         const { pushStatus, popStatus, notifyArcAboutFork, restore } = createActionSpies();
         const embeddingParams = { type: EmbeddingType.None } as EmbeddingParams;
         const wrapper = setup({ embeddingParams });
@@ -459,7 +459,8 @@ describe("Tests for App", () => {
         restore();
       });
       it("should update the fiddle param in the url", async () => {
-        Service.saveProject.mockImplementation(() => "new-fiddle-url");
+        const { saveProject } = createActionSpies();
+        saveProject.mockImplementation(() => "new-fiddle-url");
         const embeddingParams = { type: EmbeddingType.None } as EmbeddingParams;
         const wrapper = await setup({ embeddingParams, fiddle: "fiddle-url" });
         await (wrapper.instance() as App).fork();

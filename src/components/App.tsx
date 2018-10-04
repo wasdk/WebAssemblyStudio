@@ -302,6 +302,14 @@ export class App extends React.Component<AppProps, AppState> {
     openFile(help, defaultViewTypeForFileType(help.type));
   }
 
+  private publishArc(): Promise<void> {
+    if (this.state.isContentModified) {
+      return this.fork().then(publishArc);
+    } else {
+      return publishArc();
+    }
+  }
+
   registerShortcuts() {
     Mousetrap.bind("command+b", () => {
       build();
@@ -310,14 +318,14 @@ export class App extends React.Component<AppProps, AppState> {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
         run();
       } else {
-        publishArc();
+        this.publishArc();
       }
     });
     Mousetrap.bind("command+alt+enter", () => {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
         build().then(run);
       } else {
-        build().then(publishArc);
+        build().then(() => this.publishArc());
       }
     });
   }
@@ -352,9 +360,8 @@ export class App extends React.Component<AppProps, AppState> {
     saveProject(this.state.fiddle);
   }
   async fork() {
-    const projectModel = this.state.project.getModel();
     pushStatus("Forking Project");
-    const fiddle = await Service.saveProject(projectModel, []);
+    const fiddle = await saveProject("");
     popStatus();
     const search = window.location.search;
     if (this.state.fiddle) {
@@ -541,7 +548,7 @@ export class App extends React.Component<AppProps, AppState> {
           title="Preview Project: CtrlCmd + Enter"
           isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
-            publishArc();
+            this.publishArc();
           }}
         />
       );
@@ -553,7 +560,7 @@ export class App extends React.Component<AppProps, AppState> {
           title="Build &amp; Preview Project: CtrlCmd + Alt + Enter"
           isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
-            build().then(publishArc);
+            build().then(() => this.publishArc());
           }}
         />
       );
