@@ -18,10 +18,8 @@ before_install:
 install:
 - npm install
 script:
-- npm test
-- npm run e2e
-- npm run coveralls
-- npm run templates
+- npm run build
+- npm run test:ci
 - cp .gitignore.travis .gitignore
 deploy:
   provider: pages
