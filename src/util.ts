@@ -332,8 +332,7 @@ export function validateFileName(name: string, sourceType: FileType): string {
     return "File name can't be empty";
   }
 
-  const extDotPos: number = name.lastIndexOf(".");
-  if (extDotPos === -1 || !name.endsWith(sourceTypeExtension)) {
+  if (!name.endsWith(sourceTypeExtension)) {
     return `${nameForFileType(sourceType)} file extension is missing or incorrect`;
   }
 
