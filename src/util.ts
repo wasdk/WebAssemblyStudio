@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { fileTypeForExtension, isBinaryFileType, Directory, FileType, fileTypeForMimeType } from "./models";
+import { fileTypeForExtension, FileType, fileTypeForMimeType, nameForFileType, extensionForFileType, isBinaryFileType, Directory, } from "./models";
 
 export function toAddress(n: number) {
   let s = n.toString(16);
@@ -69,7 +69,6 @@ const base64EOF = 0x3D;
 
 const _concat3array = new Array(3);
 const _concat4array = new Array(4);
-const _concat9array = new Array(9);
 
 /**
  * The concatN() functions concatenate multiple strings in a way that
@@ -81,18 +80,18 @@ const _concat9array = new Array(9);
  */
 
 export function concat3(s0: any, s1: any, s2: any) {
-    _concat3array[0] = s0;
-    _concat3array[1] = s1;
-    _concat3array[2] = s2;
-    return _concat3array.join("");
+  _concat3array[0] = s0;
+  _concat3array[1] = s1;
+  _concat3array[2] = s2;
+  return _concat3array.join("");
 }
 
 export function concat4(s0: any, s1: any, s2: any, s3: any) {
-    _concat4array[0] = s0;
-    _concat4array[1] = s1;
-    _concat4array[2] = s2;
-    _concat4array[3] = s3;
-    return _concat4array.join("");
+  _concat4array[0] = s0;
+  _concat4array[1] = s1;
+  _concat4array[2] = s2;
+  _concat4array[3] = s3;
+  return _concat4array.join("");
 }
 
 // https://gist.github.com/958841
@@ -122,7 +121,7 @@ export function base64EncodeBytes(bytes: Uint8Array) {
     d = chunk & 63; // 63 = 2^6 - 1
     // Convert the raw binary segments to the appropriate ASCII encoding
     base64 += concat4(encodings[a], encodings[b], encodings[c],
-                      encodings[d]);
+      encodings[d]);
   }
 
   // Deal with the remaining bytes and padding
@@ -265,15 +264,18 @@ export async function uploadFilesToDirectory(items: any, root: Directory) {
         return readUploadedDirectory(entry, root);
       }
     }
+
     let file: File;
     if (item instanceof DataTransferItem) {
       file = item.getAsFile();
     } else {
       file = item;
     }
+
     const name: string = file.name;
     const path: string = (file as any).webkitRelativePath || name; // This works in FF also.
     const fileType = fileTypeForExtension(name.split(".").pop());
+
     let data: any;
     try {
       data = await readUploadedFile(file, isBinaryFileType(fileType) ? "arrayBuffer" : "text");
@@ -296,4 +298,21 @@ let nextKey = 0;
 
 export function getNextKey() {
   return nextKey++;
+}
+
+export function validateFileName(name: string, sourceType: FileType): string {
+  if (!name) {
+    return "File name can't be empty";
+  }
+
+  if (!/^[a-z0-9\.\-\_]+$/i.test(name)) {
+    return "Illegal characters in file name.";
+  }
+
+  const extDotPos: number = name.lastIndexOf(".");
+  if (extDotPos === -1 || extensionForFileType(sourceType) !== name.substring(extDotPos + 1)) {
+    return nameForFileType(sourceType) + " file extension is missing.";
+  }
+
+  return "";
 }

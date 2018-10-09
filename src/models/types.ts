@@ -25,22 +25,22 @@ import { Project } from "./Project";
 export enum FileType {
   JavaScript = "javascript",
   TypeScript = "typescript",
-  HTML       = "html",
-  CSS        = "css",
-  C          = "c",
-  Cpp        = "cpp",
-  Rust       = "rust",
-  Wat        = "wat",
-  Wasm       = "wasm",
-  Directory  = "directory",
-  Log        = "log",
-  x86        = "x86",
-  Markdown   = "markdown",
-  Cretonne   = "cretonne",
-  JSON       = "json",
-  DOT        = "dot",
-  TOML       = "toml",
-  Unknown    = "unknown"
+  HTML = "html",
+  CSS = "css",
+  C = "c",
+  Cpp = "cpp",
+  Rust = "rust",
+  Wat = "wat",
+  Wasm = "wasm",
+  Directory = "directory",
+  Log = "log",
+  x86 = "x86",
+  Markdown = "markdown",
+  Cretonne = "cretonne",
+  JSON = "json",
+  DOT = "dot",
+  TOML = "toml",
+  Unknown = "unknown"
 }
 
 export interface SandboxRun {
@@ -182,7 +182,7 @@ export function fileTypeForExtension(extension: string): FileType {
   } else if (extension === "wat") {
     return FileType.Wat;
   } else if (extension === "wasm") {
-     return FileType.Wasm;
+    return FileType.Wasm;
   } else if (extension === "md") {
     return FileType.Markdown;
   } else if (extension === "rs") {
