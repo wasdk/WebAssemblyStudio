@@ -124,7 +124,7 @@ describe("Tests for util.ts", () => {
     it("should handle errors", async () => {
       const file = new File(["file-data"], "fileA");
       const reader = jest.spyOn(FileReader.prototype, "readAsText");
-      reader.mockImplementation(function () { this.onerror(); });
+      reader.mockImplementation(function() { this.onerror(); });
       await expect(util.readUploadedFile(file, "text")).rejects.toThrowError("Problem parsing input file.");
       reader.mockRestore();
     });
