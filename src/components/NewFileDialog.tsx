@@ -27,17 +27,17 @@ import appStore from "../stores/AppStore";
 import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef, getIconForFileType } from "../models";
 import { ChangeEvent } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
+import { FileDialogState } from './EditFileDialog';
+import { validateFileName } from '../util';
 
-export class NewFileDialog extends React.Component<{
+interface NewFileDialogProps {
   isOpen: boolean;
   directory: ModelRef<Directory>
   onCreate: (file: File) => void;
   onCancel: () => void;
-}, {
-    fileType: FileType;
-    description: string;
-    name: string;
-  }> {
+}
+
+export class NewFileDialog extends React.Component<NewFileDialogProps, FileDialogState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -46,33 +46,42 @@ export class NewFileDialog extends React.Component<{
       name: ""
     };
   }
+
   onChangeName = (event: ChangeEvent<any>) => {
     this.setState({ name: event.target.value });
   }
+
   getNameError() {
-    const directory = this.props.directory;
     if (this.state.name) {
-      if (!/^[a-z0-9\.\-\_]+$/i.test(this.state.name)) {
-        return "Illegal characters in file name.";
-      } else if (!this.state.name.endsWith(extensionForFileType(this.state.fileType))) {
-        return nameForFileType(this.state.fileType) + " file extension is missing.";
-      } else if (directory && appStore.getImmediateChild(directory, this.state.name)) {
+      const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
+      if (fileNameError) {
+        return fileNameError;
+      }
+
+      const directory = this.props.directory;
+      if (directory && appStore.getImmediateChild(directory, this.state.name)) {
         return `File '${this.state.name}' already exists.`;
       }
     }
+
     return "";
   }
+
   fileName() {
     let name = this.state.name;
     const extension = extensionForFileType(this.state.fileType);
+
     if (!name.endsWith("." + extension)) {
       name += "." + extension;
     }
+
     return name;
   }
+
   createButtonLabel() {
     return "Create";
   }
+
   render() {
     return <ReactModal
       isOpen={this.props.isOpen}
@@ -125,7 +134,7 @@ export class NewFileDialog extends React.Component<{
           </div>
         </div>
         <div style={{ flex: 1, padding: "8px" }}>
-          <TextInputBox label={"Name: " + (this.props.directory ? appStore.getPath(this.props.directory) + "/" : "")} error={this.getNameError()} value={this.state.name} onChange={this.onChangeName}/>
+          <TextInputBox label={"Name: " + (this.props.directory ? appStore.getPath(this.props.directory) + "/" : "")} error={this.getNameError()} value={this.state.name} onChange={this.onChangeName} />
         </div>
         <div>
           <Button

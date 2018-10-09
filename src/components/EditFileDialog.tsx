@@ -27,6 +27,7 @@ import appStore from "../stores/AppStore";
 import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef } from "../models";
 import { ChangeEvent } from "react";
 import { TextInputBox, Spacer } from "./Widgets";
+import { validateFileName } from '../util';
 
 export interface EditFileDialogProps {
   isOpen: boolean;
@@ -34,11 +35,14 @@ export interface EditFileDialogProps {
   onChange: (name: string, description: string) => void;
   onCancel: () => void;
 }
-export class EditFileDialog extends React.Component<EditFileDialogProps, {
-    description: string;
-    name: string;
-    fileType: FileType;
-  }> {
+
+export interface FileDialogState {
+  description: string;
+  name: string;
+  fileType: FileType;
+}
+
+export class EditFileDialog extends React.Component<EditFileDialogProps, FileDialogState> {
   constructor(props: EditFileDialogProps) {
     super(props);
     const { description, name, type: fileType } = props.file.getModel();
@@ -48,27 +52,34 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, {
       fileType,
     };
   }
+
   onChangeName = (event: ChangeEvent<any>) => {
     this.setState({ name: event.target.value });
   }
+
   onChangeDescription = (event: ChangeEvent<any>) => {
     this.setState({ description: event.target.value });
   }
+
   getNameError() {
+    const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
+    if (fileNameError) {
+      return fileNameError;
+    }
+
     const directory = appStore.getParent(this.props.file);
     const file = appStore.getImmediateChild(directory, this.state.name);
-    if (!/^[a-z0-9\.\-\_]+$/i.test(this.state.name)) {
-      return "Illegal characters in file name.";
-    } else if (!this.state.name.endsWith(extensionForFileType(this.state.fileType))) {
-      return nameForFileType(this.state.fileType) + " file extension is missing.";
-    } else if (file && this.props.file !== file) {
+    if (file && this.props.file !== file) {
       return `File '${this.state.name}' already exists.`;
     }
+
     return "";
   }
+
   render() {
     const file = this.props.file;
     const fileModel = file.getModel();
+
     return <ReactModal
       isOpen={this.props.isOpen}
       contentLabel={"Edit " + (fileModel instanceof Directory ? "Directory" : "File")}
@@ -81,9 +92,9 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, {
           {`Edit ${fileModel instanceof Directory ? "Directory" : "File"} ${fileModel.name}`}
         </div>
         <div style={{ flex: 1, padding: "8px" }}>
-          <TextInputBox label="Name:" error={this.getNameError()} value={this.state.name} onChange={this.onChangeName}/>
-          <Spacer height={8}/>
-          <TextInputBox label="Description:" value={this.state.description} onChange={this.onChangeDescription}/>
+          <TextInputBox label="Name:" error={this.getNameError()} value={this.state.name} onChange={this.onChangeName} />
+          <Spacer height={8} />
+          <TextInputBox label="Description:" value={this.state.description} onChange={this.onChangeDescription} />
         </div>
         <div>
           <Button
