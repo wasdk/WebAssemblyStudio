@@ -70,7 +70,7 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, FileDia
     const directory = appStore.getParent(this.props.file);
     const file = appStore.getImmediateChild(directory, result.fullName);
     if (file && this.props.file !== file) {
-      return `File '${this.state.name}' already exists.`;
+      return `File '${this.state.name}' already exists`;
     }
 
     return "";

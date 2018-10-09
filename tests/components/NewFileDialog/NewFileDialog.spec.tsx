@@ -72,7 +72,7 @@ describe("Tests for NewFileDialog", () => {
     wrapper.find(TextInputBox).simulate("change", {
       target: { value: "??.c" }
     });
-    expect(wrapper.find(TextInputBox)).toHaveProp("error", "Illegal characters in file name.");
+    expect(wrapper.find(TextInputBox)).toHaveProp("error", "Illegal characters in file name");
     expect(wrapper.find(Button).at(ButtonIndex.Create)).toHaveProp("isDisabled", true);
   });
   it("should display an error and disable the create button on missing file extension", () => {
@@ -80,7 +80,7 @@ describe("Tests for NewFileDialog", () => {
     wrapper.find(TextInputBox).simulate("change", {
       target: { value: "newFileName" }
     });
-    expect(wrapper.find(TextInputBox)).toHaveProp("error", "C file extension is missing.");
+    expect(wrapper.find(TextInputBox)).toHaveProp("error", "C file extension is missing or incorrect");
     expect(wrapper.find(Button).at(ButtonIndex.Create)).toHaveProp("isDisabled", true);
   });
   it("should display an error and disable the create button on name collisions", () => {
@@ -88,7 +88,7 @@ describe("Tests for NewFileDialog", () => {
     wrapper.find(TextInputBox).simulate("change", {
       target: { value: "fileB.c" }
     });
-    expect(wrapper.find(TextInputBox)).toHaveProp("error", "File 'fileB.c' already exists.");
+    expect(wrapper.find(TextInputBox)).toHaveProp("error", "File 'fileB.c' already exists");
     expect(wrapper.find(Button).at(ButtonIndex.Create)).toHaveProp("isDisabled", true);
   });
 });

@@ -60,7 +60,7 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, FileDialo
 
       const directory = this.props.directory;
       if (directory && appStore.getImmediateChild(directory, result.fullName)) {
-        return `File '${this.state.name}' already exists.`;
+        return `File '${this.state.name}' already exists`;
       }
     }
 
