@@ -12,6 +12,7 @@ describe("Tests for util.ts", () => {
       expect(util.toAddress(255)).toEqual("0x0000ff");
     });
   });
+
   describe("padRight", () => {
     it("should pad string to the right", () => {
       expect(util.padRight("test", 6, " ")).toEqual("test  ");
@@ -19,6 +20,7 @@ describe("Tests for util.ts", () => {
       expect(util.padRight("test", 2, " ")).toEqual("test");
     });
   });
+
   describe("padLeft", () => {
     it("should pad string to the left", () => {
       expect(util.padLeft("test", 6, " ")).toEqual("  test");
@@ -26,27 +28,31 @@ describe("Tests for util.ts", () => {
       expect(util.padLeft("test", 2, " ")).toEqual("test");
     });
   });
+
   describe("isBranch", () => {
     it("should return true if instruction is branch", () => {
-      [ "jmp", "ja", "jae", "jb", "jbe", "jc", "je", "jg", "jge", "jl", "jle", "jna", "jnae",
+      ["jmp", "ja", "jae", "jb", "jbe", "jc", "je", "jg", "jge", "jl", "jle", "jna", "jnae",
         "jnb", "jnbe", "jnc", "jne", "jng", "jnge", "jnl", "jnle", "jno", "jnp", "jns", "jnz",
         "jo", "jp", "jpe", "jpo", "js", "jz"
-      ].forEach(mnemonic => expect(util.isBranch({mnemonic})).toEqual(true));
+      ].forEach(mnemonic => expect(util.isBranch({ mnemonic })).toEqual(true));
     });
     it("should return false if instruction is not branch", () => {
-      expect(util.isBranch({mnemonic: "something"})).toEqual(false);
+      expect(util.isBranch({ mnemonic: "something" })).toEqual(false);
     });
   });
+
   describe("concat3", () => {
     it("should concat three strings", () => {
       expect(util.concat3("a", "b", "c")).toEqual("abc");
     });
   });
+
   describe("concat4", () => {
     it("should concat four strings", () => {
       expect(util.concat4("a", "b", "c", "d")).toEqual("abcd");
     });
   });
+
   describe("base64EncodeBytes", () => {
     it("should encode bytes -> base64", () => {
       expect(util.base64EncodeBytes(new Uint8Array([1, 2, 3]))).toEqual("AQID");
@@ -54,6 +60,7 @@ describe("Tests for util.ts", () => {
       expect(util.base64EncodeBytes(new Uint8Array([1, 2, 3, 4, 5]))).toEqual("AQIDBAU=");
     });
   });
+
   describe("decodeRestrictedBase64ToBytes", () => {
     it("should decode base64 -> bytes", () => {
       expect(util.decodeRestrictedBase64ToBytes("AQID")).toEqual(new Uint8Array([1, 2, 3]));
@@ -61,6 +68,7 @@ describe("Tests for util.ts", () => {
       expect(util.decodeRestrictedBase64ToBytes("AQIDBAU=")).toEqual(new Uint8Array([1, 2, 3, 4, 5]));
     });
   });
+
   describe("layout", () => {
     it("should dispatch a layout event", async () => {
       const onLayout = jest.fn();
@@ -71,6 +79,7 @@ describe("Tests for util.ts", () => {
       document.removeEventListener("layout", onLayout);
     });
   });
+
   describe("resetDOMSelection", () => {
     it("should reset DOM selections", () => {
       const removeAllRanges = jest.fn();
@@ -80,6 +89,7 @@ describe("Tests for util.ts", () => {
       window.getSelection = undefined;
     });
   });
+
   describe("assert", () => {
     it("should assert that the given condition is true", () => {
       expect(() => util.assert(true)).not.toThrowError();
@@ -87,6 +97,7 @@ describe("Tests for util.ts", () => {
       expect(() => util.assert(false, "message")).toThrowError("message");
     });
   });
+
   describe("clamp", () => {
     it("should clamp the given number", () => {
       expect(util.clamp(0, 1, 10)).toEqual(1);
@@ -96,6 +107,7 @@ describe("Tests for util.ts", () => {
       expect(util.clamp(11, 1, 10)).toEqual(10);
     });
   });
+
   describe("readUploadedFile", () => {
     it("should read the file as text", async () => {
       const file = new File(["file-data"], "fileA");
@@ -112,11 +124,12 @@ describe("Tests for util.ts", () => {
     it("should handle errors", async () => {
       const file = new File(["file-data"], "fileA");
       const reader = jest.spyOn(FileReader.prototype, "readAsText");
-      reader.mockImplementation(function() { this.onerror(); });
+      reader.mockImplementation(function () { this.onerror(); });
       await expect(util.readUploadedFile(file, "text")).rejects.toThrowError("Problem parsing input file.");
       reader.mockRestore();
     });
   });
+
   describe("isUploadAllowedForMimeType", () => {
     it("should return true for allowed mime types", () => {
       expect(util.isUploadAllowedForMimeType("")).toEqual(true);
@@ -126,6 +139,7 @@ describe("Tests for util.ts", () => {
       expect(util.isUploadAllowedForMimeType("unknown")).toEqual(false);
     });
   });
+
   describe("getNextKey", () => {
     it("should generate keys", () => {
       expect(util.getNextKey()).toEqual(0);
@@ -133,11 +147,12 @@ describe("Tests for util.ts", () => {
       expect(util.getNextKey()).toEqual(2);
     });
   });
+
   describe("uploadFilesToDirectory", () => {
     it("should upload a file to the directory (File)", async () => {
       (global as any).DataTransferItem = jest.fn();
       const root = new Directory("root");
-      const items = [ new File(["file-data"], "file.js") ];
+      const items = [new File(["file-data"], "file.js")];
       await util.uploadFilesToDirectory(items, root);
       const newFile = await waitUntil(() => root.getFile("file.js")); // Wait until file.js has been created
       expect(newFile.getData()).toEqual("file-data");
@@ -147,7 +162,7 @@ describe("Tests for util.ts", () => {
       const root = new Directory("root");
       const file = new File(["file-data"], "file.js");
       (file as any).getAsFile = () => file;
-      const items = [ file ];
+      const items = [file];
       await util.uploadFilesToDirectory(items, root);
       const newFile = await waitUntil(() => root.getFile("file.js")); // Wait until file.js has been created
       expect(newFile.getData()).toEqual("file-data");
@@ -158,7 +173,7 @@ describe("Tests for util.ts", () => {
       const file = new File(["file-data"], "file.js");
       (file as any).getAsFile = () => file;
       (file as any).webkitGetAsEntry = () => file;
-      const items = [ file ];
+      const items = [file];
       await util.uploadFilesToDirectory(items, root);
       const newFile = await waitUntil(() => root.getFile("file.js")); // Wait until file.js has been created
       expect(newFile.getData()).toEqual("file-data");
@@ -171,7 +186,7 @@ describe("Tests for util.ts", () => {
       (src as any).webkitGetAsEntry = () => src;
       (src as any).isDirectory = true; // Fake that the file is a directory
       (src as any).createReader = () => ({ readEntries });
-      const items = [ src ];
+      const items = [src];
       await util.uploadFilesToDirectory(items, root);
       await waitUntil(() => readEntries.mock.calls.length > 0); // Wait until readEntries has been called
       expect(readEntries).toHaveBeenCalled();
@@ -181,7 +196,7 @@ describe("Tests for util.ts", () => {
       const root = new Directory("root");
       const file = root.newFile("file.js", FileType.JavaScript);
       file.setData("fileA");
-      const items = [ new File(["fileB"], "file.js") ];
+      const items = [new File(["fileB"], "file.js")];
       await util.uploadFilesToDirectory(items, root);
       const fileA = await waitUntil(() => root.getFile("file.js")); // Wait until file.js has been created
       const fileB = await waitUntil(() => root.getFile("file.2.js")); // Wait until file.2.js has been created
@@ -199,12 +214,13 @@ describe("Tests for util.ts", () => {
       (src2 as any).webkitGetAsEntry = () => src2;
       (src2 as any).isDirectory = true; // Fake that the file is a directory
       (src2 as any).createReader = () => ({ readEntries });
-      const items = [ src2 ];
+      const items = [src2];
       await util.uploadFilesToDirectory(items, root);
       await waitUntil(() => handleNameCollision.mock.calls.length > 0); // Wait until handleNameCollision has been called
       expect(handleNameCollision).toHaveBeenCalledWith("src");
     });
   });
+
   describe("readUploadedDirectory", () => {
     it("should recursively read an uploaded directory", async () => {
       const root = new Directory("root");
@@ -217,12 +233,12 @@ describe("Tests for util.ts", () => {
       const subInput = {
         isDirectory: true,
         createReader: () => ({
-          readEntries: (cb) => cb([ fileB ])
+          readEntries: (cb) => cb([fileB])
         })
       };
       const rootInput = {
         createReader: () => ({
-          readEntries: (cb) => cb([ fileA, subInput ])
+          readEntries: (cb) => cb([fileA, subInput])
         })
       };
       await util.readUploadedDirectory(rootInput, root);
@@ -238,12 +254,39 @@ describe("Tests for util.ts", () => {
       (fileA as any).file = async (cb) => await cb(fileA);
       const rootInput = {
         createReader: () => ({
-          readEntries: (cb) => cb([ fileA ])
+          readEntries: (cb) => cb([fileA])
         })
       };
       await util.readUploadedDirectory(rootInput, root, "custom-root");
       const createdFileA = await waitUntil(() => root.getFile("custom-root/fileA.js")); // Wait until custom-root/fileA.js has been created
       expect(createdFileA.getData()).toEqual("fileA");
+    });
+  });
+
+  describe("validateFileName", () => {
+    it("empty file name is rejected", async () => {
+      const result: string = util.validateFileName("", FileType.C);
+      expect(result).toEqual("File name can't be empty");
+    });
+
+    it("file name with illegal characters is rejected", async () => {
+      const result: string = util.validateFileName("??.js", FileType.JavaScript);
+      expect(result).toEqual("Illegal characters in file name");
+    });
+
+    it("file name with only extension is rejected", async () => {
+      const result: string = util.validateFileName(".c", FileType.C);
+      expect(result).toEqual("File name can't be empty");
+    });
+
+    it("file name with wrong extension is rejected", async () => {
+      const result: string = util.validateFileName("fileName.cpp", FileType.C);
+      expect(result).toEqual("C file extension is missing or incorrect");
+    });
+
+    it("valid file name is accepted", async () => {
+      const result: string = util.validateFileName("fileName.c", FileType.C);
+      expect(result).toBe("");
     });
   });
 });

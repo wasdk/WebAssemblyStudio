@@ -27,12 +27,12 @@ import appStore from "../stores/AppStore";
 import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef, getIconForFileType } from "../models";
 import { ChangeEvent } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
-import { FileDialogState } from './EditFileDialog';
-import { validateFileName, FileNameValidationResult } from '../util';
+import { FileDialogState } from "./EditFileDialog";
+import { validateFileName } from "../util";
 
 interface NewFileDialogProps {
   isOpen: boolean;
-  directory: ModelRef<Directory>
+  directory: ModelRef<Directory>;
   onCreate: (file: File) => void;
   onCancel: () => void;
 }
@@ -53,13 +53,13 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, FileDialo
 
   getNameError() {
     if (this.state.name) {
-      const result: FileNameValidationResult = validateFileName(this.state.name, this.state.fileType);
-      if (result.error) {
-        return result.error;
+      const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
+      if (fileNameError) {
+        return fileNameError;
       }
 
       const directory = this.props.directory;
-      if (directory && appStore.getImmediateChild(directory, result.fullName)) {
+      if (directory && appStore.getImmediateChild(directory, this.state.name)) {
         return `File '${this.state.name}' already exists`;
       }
     }
