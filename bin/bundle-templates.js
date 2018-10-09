@@ -21,6 +21,7 @@
 
 const path = require("path");
 const fs = require("fs");
+const fse = require("fs-extra");
 
 const templatesDir = process.argv[2];
 const outputPath = process.argv[3];
@@ -77,6 +78,10 @@ templates.forEach((file) => {
   let template = bundleTemplate(file);
   output[file] = template;
 });
+
+fse.removeSync(path.resolve(outputPath));
+fse.mkdirpSync(path.resolve(outputPath));
+fse.copySync(path.resolve(templatesDir), path.resolve(outputPath));
 
 fs.writeFileSync(
   path.resolve(outputPath, "index.js"),

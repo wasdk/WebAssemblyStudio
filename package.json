@@ -13,7 +13,9 @@
     "coveralls": "jest --coverage --no-cache --maxWorkers=2 && cat ./coverage/lcov.info | coveralls",
     "clean": "rm -r dist/*",
     "tslint": "tslint -p ./tsconfig.json; tslint -p ./tsconfig.test.json",
-    "templates": "./bin/build-templates.sh && ./bin/build-arc-templates.sh",
+    "templates": "npm run templates:build-templates && npm run templates:build-arc-templates",
+    "templates:build-templates": "node ./bin/bundle-templates.js templates dist/templates",
+    "templates:build-arc-templates": "node ./bin/bundle-templates.js misc/arc-templates dist/arc-templates",
     "mutate": "./node_modules/.bin/stryker run",
     "analyse": "mkdir -p ./stats && webpack --profile --json > ./stats/stats.json && webpack-bundle-analyzer ./stats/stats.json ./dist -r stats/index.html",
     "e2e": "jest --maxWorkers=2 -c jest.e2e.config.json"
@@ -89,6 +91,7 @@
     "css-loader": "^0.28.11",
     "enzyme": "^3.6.0",
     "enzyme-adapter-react-16": "^1.5.0",
+    "fs-extra": "^7.0.0",
     "jest": "^22.4.4",
     "jest-enzyme": "^6.0.2",
     "jest-puppeteer": "^3.2.1",
