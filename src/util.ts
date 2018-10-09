@@ -339,9 +339,10 @@ export function validateFileName(name: string, sourceType: FileType, extensionRe
   }
 
   const extDotPos: number = name.lastIndexOf(".");
+
   if (extensionRequired && extDotPos === -1) {
     return {
-      error: "File name must contain valid extension",
+      error: `${nameForFileType(sourceType)} file extension is missing or incorrect`,
       fullName: null
     };
   }
@@ -356,7 +357,7 @@ export function validateFileName(name: string, sourceType: FileType, extensionRe
 
   if (sourceTypeExtension !== name.substring(extDotPos + 1)) {
     return {
-      error: nameForFileType(sourceType) + " file extension is missing or incorrect",
+      error: `${nameForFileType(sourceType)} file extension is missing or incorrect`,
       fullName: null
     };
   }
