@@ -318,52 +318,24 @@ export function getNextKey() {
   return nextKey++;
 }
 
-export interface FileNameValidationResult {
-  error: string,
-  fullName: string,
-}
-
-export function validateFileName(name: string, sourceType: FileType, extensionRequired = false): FileNameValidationResult {
+export function validateFileName(name: string, sourceType: FileType): string {
   if (!name) {
-    return {
-      error: "File name can't be empty",
-      fullName: null
-    };
+    return "File name can't be empty";
   }
 
   if (!/^[a-z0-9\.\-\_]+$/i.test(name)) {
-    return {
-      error: "Illegal characters in file name",
-      fullName: null
-    };
+    return "Illegal characters in file name";
+  }
+
+  const sourceTypeExtension = "." + extensionForFileType(sourceType);
+  if (sourceTypeExtension === name) {
+    return "File name can't be empty";
   }
 
   const extDotPos: number = name.lastIndexOf(".");
-
-  if (extensionRequired && extDotPos === -1) {
-    return {
-      error: `${nameForFileType(sourceType)} file extension is missing or incorrect`,
-      fullName: null
-    };
+  if (extDotPos === -1 || !name.endsWith(sourceTypeExtension)) {
+    return `${nameForFileType(sourceType)} file extension is missing or incorrect`;
   }
 
-  const sourceTypeExtension = extensionForFileType(sourceType);
-  if (sourceTypeExtension === name) {
-    return {
-      error: "File name can't be empty",
-      fullName: null
-    };
-  }
-
-  if (sourceTypeExtension !== name.substring(extDotPos + 1)) {
-    return {
-      error: `${nameForFileType(sourceType)} file extension is missing or incorrect`,
-      fullName: null
-    };
-  }
-
-  return {
-    error: "",
-    fullName: extDotPos === -1 ? name + "." + sourceTypeExtension : name
-  };
+  return "";
 }
