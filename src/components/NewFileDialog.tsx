@@ -28,7 +28,7 @@ import { File, FileType, Directory, extensionForFileType, nameForFileType, Model
 import { ChangeEvent } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
 import { FileDialogState } from './EditFileDialog';
-import { validateFileName } from '../util';
+import { validateFileName, FileNameValidationResult } from '../util';
 
 interface NewFileDialogProps {
   isOpen: boolean;
@@ -53,13 +53,13 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, FileDialo
 
   getNameError() {
     if (this.state.name) {
-      const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
-      if (fileNameError) {
-        return fileNameError;
+      const result: FileNameValidationResult = validateFileName(this.state.name, this.state.fileType);
+      if (result.error) {
+        return result.error;
       }
 
       const directory = this.props.directory;
-      if (directory && appStore.getImmediateChild(directory, this.state.name)) {
+      if (directory && appStore.getImmediateChild(directory, result.fullName)) {
         return `File '${this.state.name}' already exists.`;
       }
     }
@@ -134,7 +134,12 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, FileDialo
           </div>
         </div>
         <div style={{ flex: 1, padding: "8px" }}>
-          <TextInputBox label={"Name: " + (this.props.directory ? appStore.getPath(this.props.directory) + "/" : "")} error={this.getNameError()} value={this.state.name} onChange={this.onChangeName} />
+          <TextInputBox
+            label={"Name: " + (this.props.directory ? appStore.getPath(this.props.directory) + "/" : "")}
+            error={this.getNameError()}
+            value={this.state.name}
+            onChange={this.onChangeName}
+          />
         </div>
         <div>
           <Button

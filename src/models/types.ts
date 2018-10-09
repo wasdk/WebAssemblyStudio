@@ -25,22 +25,22 @@ import { Project } from "./Project";
 export enum FileType {
   JavaScript = "javascript",
   TypeScript = "typescript",
-  HTML = "html",
-  CSS = "css",
-  C = "c",
-  Cpp = "cpp",
-  Rust = "rust",
-  Wat = "wat",
-  Wasm = "wasm",
-  Directory = "directory",
-  Log = "log",
-  x86 = "x86",
-  Markdown = "markdown",
-  Cretonne = "cretonne",
-  JSON = "json",
-  DOT = "dot",
-  TOML = "toml",
-  Unknown = "unknown"
+  HTML       = "html",
+  CSS        = "css",
+  C          = "c",
+  Cpp        = "cpp",
+  Rust       = "rust",
+  Wat        = "wat",
+  Wasm       = "wasm",
+  Directory  = "directory",
+  Log        = "log",
+  x86        = "x86",
+  Markdown   = "markdown",
+  Cretonne   = "cretonne",
+  JSON       = "json",
+  DOT        = "dot",
+  TOML       = "toml",
+  Unknown    = "unknown"
 }
 
 export interface SandboxRun {

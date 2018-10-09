@@ -27,7 +27,7 @@ import appStore from "../stores/AppStore";
 import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef } from "../models";
 import { ChangeEvent } from "react";
 import { TextInputBox, Spacer } from "./Widgets";
-import { validateFileName } from '../util';
+import { validateFileName, FileNameValidationResult } from '../util';
 
 export interface EditFileDialogProps {
   isOpen: boolean;
@@ -62,13 +62,13 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, FileDia
   }
 
   getNameError() {
-    const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
-    if (fileNameError) {
-      return fileNameError;
+    const result: FileNameValidationResult = validateFileName(this.state.name, this.state.fileType, true);
+    if (result.error) {
+      return result.error;
     }
 
     const directory = appStore.getParent(this.props.file);
-    const file = appStore.getImmediateChild(directory, this.state.name);
+    const file = appStore.getImmediateChild(directory, result.fullName);
     if (file && this.props.file !== file) {
       return `File '${this.state.name}' already exists.`;
     }
