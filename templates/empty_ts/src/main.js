@@ -5,9 +5,7 @@ WebAssembly.instantiateStreaming(fetch("../out/main.wasm"), {
     },
     abort(msg, file, line, column) {
       console.error("abort called at main.ts:" + line + ":" + column);
-    }
-  },
-  console: {
+    },
     logi(value) { console.log('logi: ' + value); },
     logf(value) { console.log('logf: ' + value); }
   }
