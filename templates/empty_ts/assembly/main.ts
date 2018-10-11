@@ -2,7 +2,10 @@
 declare function sayHello(): void;
 
 declare namespace console {
+  @external("env", "logi")
   function logi(value: i32): void;
+
+  @external("env", "logf")
   function logf(value: f64): void;
 }
 
