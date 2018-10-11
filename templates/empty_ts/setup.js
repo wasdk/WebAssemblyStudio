@@ -1,4 +1,5 @@
-// WebAssembly Studio only
+// This file is not required when running the project locally. Its purpose is to set up the
+// AssemblyScript compiler when a new project has been loaded in WebAssembly Studio.
 require.config({
   paths: {
     "binaryen": "https://rawgit.com/AssemblyScript/binaryen.js/master/index",
