@@ -52,34 +52,27 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, FileDia
       fileType,
     };
   }
-
   onChangeName = (event: ChangeEvent<any>) => {
     this.setState({ name: event.target.value });
   }
-
   onChangeDescription = (event: ChangeEvent<any>) => {
     this.setState({ description: event.target.value });
   }
-
   getNameError() {
     const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
     if (fileNameError) {
       return fileNameError;
     }
-
     const directory = appStore.getParent(this.props.file);
     const file = appStore.getImmediateChild(directory, this.state.name);
     if (file && this.props.file !== file) {
       return `File '${this.state.name}' already exists`;
     }
-
     return "";
   }
-
   render() {
     const file = this.props.file;
     const fileModel = file.getModel();
-
     return <ReactModal
       isOpen={this.props.isOpen}
       contentLabel={"Edit " + (fileModel instanceof Directory ? "Directory" : "File")}
