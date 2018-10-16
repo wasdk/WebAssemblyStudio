@@ -394,7 +394,7 @@ describe("AppActions component", () => {
       type: AppActionType.PUSH_STATUS,
       status: "Building Project"
     });
-    expect(runTask).toHaveBeenCalledWith("source", "default", false, "model", AppActions.logLn, 0);
+    expect(runTask).toHaveBeenCalledWith("source", "build", false, "model", AppActions.logLn, 0);
     expect(dispatch).toHaveBeenCalledWith({ type: AppActionType.POP_STATUS });
     dispatch.mockRestore();
   });
