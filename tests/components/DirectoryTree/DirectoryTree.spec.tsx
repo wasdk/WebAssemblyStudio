@@ -64,12 +64,12 @@ jest.mock("../../../src/monaco-utils.ts", () => ({
     Tree: treeConstructor.mockImplementation(() => ({
       model: { setInput, onDidSelect },
       refresh,
-      expandAll,
       layout
     })),
     Action: jest.fn().mockImplementation((id, label, cssClass, enabled, actionCallback) => ({
       id, label, cssClass, enabled, actionCallback
-    }))
+    })),
+    expandTree: expandAll
   }
 }));
 
