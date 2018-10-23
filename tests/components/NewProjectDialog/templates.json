@@ -23,7 +23,7 @@
       },
       {
         "name": "src/main.js",
-        "data": "fetch('../out/main.wasm').then(response =>\n  response.arrayBuffer()\n).then(bytes => WebAssembly.instantiate(bytes)).then(results => {\n  instance = results.instance;\n  document.getElementById(\"container\").innerText = instance.exports.main();\n});"
+        "data": "fetch('../out/main.wasm').then(response =>\n  response.arrayBuffer()\n).then(bytes => WebAssembly.instantiate(bytes)).then(results => {\n  instance = results.instance;\n  document.getElementById(\"container\").textContent = instance.exports.main();\n});"
       }
     ]
   },
@@ -47,7 +47,7 @@
       },
       {
         "name": "src/main.js",
-        "data": "fetch('../out/main.wasm').then(response =>\n  response.arrayBuffer()\n).then(bytes => WebAssembly.instantiate(bytes)).then(results => {\n  instance = results.instance;\n  document.getElementById(\"container\").innerText = instance.exports.add_one(41);\n});"
+        "data": "fetch('../out/main.wasm').then(response =>\n  response.arrayBuffer()\n).then(bytes => WebAssembly.instantiate(bytes)).then(results => {\n  instance = results.instance;\n  document.getElementById(\"container\").textContent = instance.exports.add_one(41);\n});"
       },
       {
         "name": "src/main.rs",
@@ -87,7 +87,7 @@
       },
       {
         "name": "src/main.js",
-        "data": "WebAssembly.instantiateStreaming(fetch(\"../out/main.wasm\"), {\n  env: {\n    sayHello: function() {\n      console.log(\"Hello from WebAssembly!\");\n    },\n    abort: function(msg, file, line, column) {\n      console.error(\"abort called at main.ts:\" + line + \":\" + column);\n    }\n  }\n}).then(result => {\n  const exports = result.instance.exports;\n  document.getElementById(\"container\").innerText = \"Result: \" + exports.add(19, 23);\n});\n"
+        "data": "WebAssembly.instantiateStreaming(fetch(\"../out/main.wasm\"), {\n  env: {\n    sayHello: function() {\n      console.log(\"Hello from WebAssembly!\");\n    },\n    abort: function(msg, file, line, column) {\n      console.error(\"abort called at main.ts:\" + line + \":\" + column);\n    }\n  }\n}).then(result => {\n  const exports = result.instance.exports;\n  document.getElementById(\"container\").textContent = \"Result: \" + exports.add(19, 23);\n});\n"
       }
     ]
   },
@@ -111,7 +111,7 @@
       },
       {
         "name": "src/main.js",
-        "data": "fetch('../out/main.wasm').then(response =>\n  response.arrayBuffer()\n).then(bytes => WebAssembly.instantiate(bytes)).then(results => {\n  instance = results.instance;\n  document.getElementById(\"container\").innerText = instance.exports.add(1,1);\n});\n"
+        "data": "fetch('../out/main.wasm').then(response =>\n  response.arrayBuffer()\n).then(bytes => WebAssembly.instantiate(bytes)).then(results => {\n  instance = results.instance;\n  document.getElementById(\"container\").textContent = instance.exports.add(1,1);\n});\n"
       },
       {
         "name": "src/main.wat",
@@ -143,7 +143,7 @@
       },
       {
         "name": "src/main.js",
-        "data": "let x = '../out/main.wasm';\n\nlet instance = null;\nlet memoryStates = new WeakMap();\n\nfunction syscall(instance, n, args) {\n  switch (n) {\n    default:\n      // console.log(\"Syscall \" + n + \" NYI.\");\n      break;\n    case /* brk */ 45: return 0;\n    case /* writev */ 146:\n      return instance.exports.writev_c(args[0], args[1], args[2]);\n    case /* mmap2 */ 192:\n      debugger;\n      const memory = instance.exports.memory;\n      let memoryState = memoryStates.get(instance);\n      const requested = args[1];\n      if (!memoryState) {\n        memoryState = {\n          object: memory,\n          currentPosition: memory.buffer.byteLength,\n        };\n        memoryStates.set(instance, memoryState);\n      }\n      let cur = memoryState.currentPosition;\n      if (cur + requested > memory.buffer.byteLength) {\n        const need = Math.ceil((cur + requested - memory.buffer.byteLength) / 65536);\n        memory.grow(need);\n      }\n      memoryState.currentPosition += requested;\n      return cur;\n  }\n}\n\nlet s = \"\";\nfetch(x).then(response =>\n  response.arrayBuffer()\n).then(bytes =>\n  WebAssembly.instantiate(bytes, {\n    env: {\n      __syscall0: function __syscall0(n) { return syscall(instance, n, []); },\n      __syscall1: function __syscall1(n, a) { return syscall(instance, n, [a]); },\n      __syscall2: function __syscall2(n, a, b) { return syscall(instance, n, [a, b]); },\n      __syscall3: function __syscall3(n, a, b, c) { return syscall(instance, n, [a, b, c]); },\n      __syscall4: function __syscall4(n, a, b, c, d) { return syscall(instance, n, [a, b, c, d]); },\n      __syscall5: function __syscall5(n, a, b, c, d, e) { return syscall(instance, n, [a, b, c, d, e]); },\n      __syscall6: function __syscall6(n, a, b, c, d, e, f) { return syscall(instance, n, [a, b, c, d, e, f]); },\n      putc_js: function (c) {\n        c = String.fromCharCode(c);\n        if (c == \"\\n\") {\n          console.log(s);\n          s = \"\";\n        } else {\n          s += c;\n        }\n      }\n    }\n  })\n).then(results => {\n  instance = results.instance;\n  document.getElementById(\"container\").innerText = instance.exports.main();\n});\n"
+        "data": "let x = '../out/main.wasm';\n\nlet instance = null;\nlet memoryStates = new WeakMap();\n\nfunction syscall(instance, n, args) {\n  switch (n) {\n    default:\n      // console.log(\"Syscall \" + n + \" NYI.\");\n      break;\n    case /* brk */ 45: return 0;\n    case /* writev */ 146:\n      return instance.exports.writev_c(args[0], args[1], args[2]);\n    case /* mmap2 */ 192:\n      debugger;\n      const memory = instance.exports.memory;\n      let memoryState = memoryStates.get(instance);\n      const requested = args[1];\n      if (!memoryState) {\n        memoryState = {\n          object: memory,\n          currentPosition: memory.buffer.byteLength,\n        };\n        memoryStates.set(instance, memoryState);\n      }\n      let cur = memoryState.currentPosition;\n      if (cur + requested > memory.buffer.byteLength) {\n        const need = Math.ceil((cur + requested - memory.buffer.byteLength) / 65536);\n        memory.grow(need);\n      }\n      memoryState.currentPosition += requested;\n      return cur;\n  }\n}\n\nlet s = \"\";\nfetch(x).then(response =>\n  response.arrayBuffer()\n).then(bytes =>\n  WebAssembly.instantiate(bytes, {\n    env: {\n      __syscall0: function __syscall0(n) { return syscall(instance, n, []); },\n      __syscall1: function __syscall1(n, a) { return syscall(instance, n, [a]); },\n      __syscall2: function __syscall2(n, a, b) { return syscall(instance, n, [a, b]); },\n      __syscall3: function __syscall3(n, a, b, c) { return syscall(instance, n, [a, b, c]); },\n      __syscall4: function __syscall4(n, a, b, c, d) { return syscall(instance, n, [a, b, c, d]); },\n      __syscall5: function __syscall5(n, a, b, c, d, e) { return syscall(instance, n, [a, b, c, d, e]); },\n      __syscall6: function __syscall6(n, a, b, c, d, e, f) { return syscall(instance, n, [a, b, c, d, e, f]); },\n      putc_js: function (c) {\n        c = String.fromCharCode(c);\n        if (c == \"\\n\") {\n          console.log(s);\n          s = \"\";\n        } else {\n          s += c;\n        }\n      }\n    }\n  })\n).then(results => {\n  instance = results.instance;\n  document.getElementById(\"container\").textContent = instance.exports.main();\n});\n"
       }
     ]
   }
