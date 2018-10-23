@@ -13,7 +13,9 @@ gulp.task("build", callback => {
 
 gulp.task("default", ["build"]);
 
-gulp.task("project:load", () => { // WebAssembly Studio only
+// This task is not required when running the project locally. Its purpose is to set up the
+// AssemblyScript compiler when a new project has been loaded in WebAssembly Studio.
+gulp.task("project:load", () => {
   const utils = require("@wasm/studio-utils");
   utils.eval(utils.project.getFile("setup.js").getData(), {
     logLn,
