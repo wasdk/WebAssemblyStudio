@@ -153,7 +153,7 @@ export class Monaco extends React.Component<MonacoProps, {}> {
       this.resolveMenuPosition(e);
       this.disableEditorScroll(); // This makes it possible to scroll inside the menu
     });
-    this.editor.onDidFocusEditor(() => this.enableEditorScroll());
+    this.editor.onDidFocusEditorWidget(() => this.enableEditorScroll());
     this.editor.onDidFocusEditorText(() => this.enableEditorScroll());
     this.registerActions();
     console.info("Created a new Monaco editor.");

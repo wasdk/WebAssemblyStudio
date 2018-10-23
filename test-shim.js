@@ -17,7 +17,7 @@ global.monaco = {
     getValue() { },
     toString() { },
     onDidFocusEditorText() { },
-    onDidFocusEditor() { },
+    onDidFocusEditorWidget() { },
     onContextMenu() { },
     setModelLanguage() { },
     setModelMarkers() { },

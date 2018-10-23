@@ -55,7 +55,7 @@ export class Problems extends React.Component<ProblemsProps, {
     });
     appStore.onDidChangeProblems.register(() => {
       this.tree.refresh();
-      this.tree.expandAll();
+      MonacoUtils.expandTree(this.tree);
     });
     appStore.onLoadProject.register(() => {
       (this.tree as any).model.setInput(appStore.getProject().getModel());
@@ -63,7 +63,7 @@ export class Problems extends React.Component<ProblemsProps, {
   }
   componentWillReceiveProps(props: ProblemsProps) {
     this.tree.refresh();
-    this.tree.expandAll();
+    MonacoUtils.expandTree(this.tree);
   }
   private setContainer(container: HTMLDivElement) {
     if (container == null) { return; }

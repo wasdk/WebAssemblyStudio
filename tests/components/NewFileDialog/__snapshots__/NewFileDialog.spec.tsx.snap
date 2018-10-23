@@ -11,6 +11,7 @@ exports[`Tests for NewFileDialog should render correctly 1`] = `
   overlayClassName="overlay"
   parentSelector={[Function]}
   portalClassName="ReactModalPortal"
+  role="dialog"
   shouldCloseOnEsc={true}
   shouldCloseOnOverlayClick={true}
   shouldFocusAfterRender={true}

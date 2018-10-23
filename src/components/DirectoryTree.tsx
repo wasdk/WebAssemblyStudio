@@ -87,7 +87,7 @@ export class DirectoryTree extends React.Component<DirectoryTreeProps, {
       this.setState({ directory: props.directory });
     } else {
       this.tree.refresh();
-      this.tree.expandAll();
+      MonacoUtils.expandTree(this.tree);
     }
   }
   private setContainer(container: HTMLDivElement) {
