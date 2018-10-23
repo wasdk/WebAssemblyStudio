@@ -182,10 +182,11 @@ export async function runTask(
   })();
   if (gulp.hasTask(name)) {
     try {
+      logLn(`Task ${name} is running...`, "info");
       await gulp.run(name);
-      logLn(`Task ${name} is completed `, "info");
+      logLn(`Task ${name} is completed`, "info");
     } catch (e) {
-      logLn(e.message, "error");
+      logLn(`Task ${name} failed: ${e.message}`, "error");
     }
   } else if (!optional) {
     logLn(`Task ${name} is not optional.` , "error");
