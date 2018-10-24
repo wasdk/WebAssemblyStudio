@@ -36,13 +36,13 @@ export interface EditFileDialogProps {
   onCancel: () => void;
 }
 
-export interface FileDialogState {
+interface EditFileDialogState {
   description: string;
   name: string;
   fileType: FileType;
 }
 
-export class EditFileDialog extends React.Component<EditFileDialogProps, FileDialogState> {
+export class EditFileDialog extends React.Component<EditFileDialogProps, EditFileDialogState> {
   constructor(props: EditFileDialogProps) {
     super(props);
     const { description, name, type: fileType } = props.file.getModel();
@@ -58,16 +58,19 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, FileDia
   onChangeDescription = (event: ChangeEvent<any>) => {
     this.setState({ description: event.target.value });
   }
-  getNameError() {
+  getNameError() {    
     const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
     if (fileNameError) {
       return fileNameError;
     }
+    
     const directory = appStore.getParent(this.props.file);
     const file = appStore.getImmediateChild(directory, this.state.name);
+
     if (file && this.props.file !== file) {
       return `File '${this.state.name}' already exists`;
     }
+
     return "";
   }
   render() {
@@ -85,9 +88,9 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, FileDia
           {`Edit ${fileModel instanceof Directory ? "Directory" : "File"} ${fileModel.name}`}
         </div>
         <div style={{ flex: 1, padding: "8px" }}>
-          <TextInputBox label="Name:" error={this.getNameError()} value={this.state.name} onChange={this.onChangeName} />
-          <Spacer height={8} />
-          <TextInputBox label="Description:" value={this.state.description} onChange={this.onChangeDescription} />
+          <TextInputBox label="Name:" error={this.getNameError()} value={this.state.name} onChange={this.onChangeName}/>
+          <Spacer height={8}/>
+          <TextInputBox label="Description:" value={this.state.description} onChange={this.onChangeDescription}/>
         </div>
         <div>
           <Button

@@ -19,35 +19,29 @@
  * SOFTWARE.
  */
 
-import { fileTypeForExtension, FileType, fileTypeForMimeType, nameForFileType, extensionForFileType, isBinaryFileType, Directory, } from "./models";
+import { fileTypeForExtension, FileType, fileTypeForMimeType, nameForFileType, extensionForFileType, isBinaryFileType, Directory } from "./models";
 
 export function toAddress(n: number) {
   let s = n.toString(16);
-
   while (s.length < 6) {
     s = "0" + s;
   }
-
   return "0x" + s;
 }
 
 export function padRight(s: string, n: number, c: string) {
   s = String(s);
-
   while (s.length < n) {
     s = s + c;
   }
-
   return s;
 }
 
 export function padLeft(s: string, n: number, c: string) {
   s = String(s);
-
   while (s.length < n) {
     s = c + s;
   }
-
   return s;
 }
 
@@ -75,6 +69,7 @@ const base64EOF = 0x3D;
 
 const _concat3array = new Array(3);
 const _concat4array = new Array(4);
+const _concat9array = new Array(9);
 
 /**
  * The concatN() functions concatenate multiple strings in a way that
@@ -86,18 +81,18 @@ const _concat4array = new Array(4);
  */
 
 export function concat3(s0: any, s1: any, s2: any) {
-  _concat3array[0] = s0;
-  _concat3array[1] = s1;
-  _concat3array[2] = s2;
-  return _concat3array.join("");
+    _concat3array[0] = s0;
+    _concat3array[1] = s1;
+    _concat3array[2] = s2;
+    return _concat3array.join("");
 }
 
 export function concat4(s0: any, s1: any, s2: any, s3: any) {
-  _concat4array[0] = s0;
-  _concat4array[1] = s1;
-  _concat4array[2] = s2;
-  _concat4array[3] = s3;
-  return _concat4array.join("");
+    _concat4array[0] = s0;
+    _concat4array[1] = s1;
+    _concat4array[2] = s2;
+    _concat4array[3] = s3;
+    return _concat4array.join("");
 }
 
 // https://gist.github.com/958841
@@ -125,10 +120,9 @@ export function base64EncodeBytes(bytes: Uint8Array) {
     b = (chunk & 258048) >> 12; // 258048 = (2^6 - 1) << 12
     c = (chunk & 4032) >> 6; // 4032 = (2^6 - 1) << 6
     d = chunk & 63; // 63 = 2^6 - 1
-
     // Convert the raw binary segments to the appropriate ASCII encoding
     base64 += concat4(encodings[a], encodings[b], encodings[c],
-      encodings[d]);
+                      encodings[d]);
   }
 
   // Deal with the remaining bytes and padding
@@ -138,7 +132,6 @@ export function base64EncodeBytes(bytes: Uint8Array) {
     a = (chunk & 252) >> 2; // 252 = (2^6 - 1) << 2
     // Set the 4 least significant bits to zero
     b = (chunk & 3) << 4; // 3 = 2^2 - 1
-
     base64 += concat3(encodings[a], encodings[b], "===");
   } else if (byteRemainder === 2) {
     chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1];
@@ -147,10 +140,8 @@ export function base64EncodeBytes(bytes: Uint8Array) {
     b = (chunk & 1008) >> 4; // 1008 = (2^6 - 1) << 4
     // Set the 2 least significant bits to zero
     c = (chunk & 15) << 2; // 15 = 2^4 - 1
-
     base64 += concat4(encodings[a], encodings[b], encodings[c], "=");
   }
-
   return base64;
 }
 
@@ -194,7 +185,6 @@ export function layout() {
   if (layoutTimeout) {
     window.clearTimeout(layoutTimeout);
   }
-
   window.setTimeout(() => {
     layoutTimeout = 0;
     document.dispatchEvent(new Event("layout"));
@@ -217,17 +207,14 @@ export function clamp(x: number, min: number, max: number): number {
 
 export async function readUploadedFile(inputFile: File, readAs: "text" | "arrayBuffer"): Promise<string | ArrayBuffer> {
   const temporaryFileReader = new FileReader();
-
   return new Promise<string | ArrayBuffer>((resolve, reject) => {
     temporaryFileReader.onerror = () => {
       temporaryFileReader.abort();
       reject(new DOMException("Problem parsing input file."));
     };
-
     temporaryFileReader.onload = () => {
       resolve(temporaryFileReader.result as any);
     };
-
     if (readAs === "text") {
       temporaryFileReader.readAsText(inputFile);
     } else if (readAs === "arrayBuffer") {
@@ -240,24 +227,20 @@ export async function readUploadedFile(inputFile: File, readAs: "text" | "arrayB
 
 export async function readUploadedDirectory(inputEntry: any, root: Directory, customRoot?: string) {
   const reader = inputEntry.createReader();
-
   reader.readEntries(((entries: any) => {
     entries.forEach(async (entry: any) => {
       if (entry.isDirectory) {
         return readUploadedDirectory(entry, root, customRoot);
       }
-
       entry.file(async (file: File) => {
         try {
           const name: string = file.name;
           let path: string = entry.fullPath.replace(/^\/+/g, "");
-
           if (customRoot) {
             const pathArray = path.split("/");
             pathArray[0] = customRoot;
             path = pathArray.join("/");
           }
-
           const fileType = fileTypeForExtension(name.split(".").pop());
           const data = await readUploadedFile(file, isBinaryFileType(fileType) ? "arrayBuffer" : "text");
           const newFile = root.newFile(path, fileType, false, true);
@@ -282,18 +265,15 @@ export async function uploadFilesToDirectory(items: any, root: Directory) {
         return readUploadedDirectory(entry, root);
       }
     }
-
     let file: File;
     if (item instanceof DataTransferItem) {
       file = item.getAsFile();
     } else {
       file = item;
     }
-
     const name: string = file.name;
     const path: string = (file as any).webkitRelativePath || name; // This works in FF also.
     const fileType = fileTypeForExtension(name.split(".").pop());
-
     let data: any;
     try {
       data = await readUploadedFile(file, isBinaryFileType(fileType) ? "arrayBuffer" : "text");
@@ -322,19 +302,15 @@ export function validateFileName(name: string, sourceType: FileType): string {
   if (!name) {
     return "File name can't be empty";
   }
-
-  if (!/^[a-z0-9\.\-\_]+$/i.test(name)) {
+   if (!/^[a-z0-9\.\-\_]+$/i.test(name)) {
     return "Illegal characters in file name";
   }
-
-  const sourceTypeExtension = "." + extensionForFileType(sourceType);
+   const sourceTypeExtension = "." + extensionForFileType(sourceType);
   if (sourceTypeExtension === name) {
     return "File name can't be empty";
   }
-
-  if (!name.endsWith(sourceTypeExtension)) {
+   if (!name.endsWith(sourceTypeExtension)) {
     return `${nameForFileType(sourceType)} file extension is missing or incorrect`;
   }
-
-  return "";
+   return "";
 }
