@@ -252,22 +252,22 @@ describe("Tests for util.ts", () => {
       const result: string = util.validateFileName("", FileType.C);
       expect(result).toEqual("File name can't be empty");
     });
-    
+
     it("file name with illegal characters is rejected", async () => {
       const result: string = util.validateFileName("??.js", FileType.JavaScript);
       expect(result).toEqual("Illegal characters in file name");
     });
-    
+
     it("file name with only extension is rejected", async () => {
       const result: string = util.validateFileName(".c", FileType.C);
       expect(result).toEqual("File name can't be empty");
     });
-    
+
     it("file name with wrong extension is rejected", async () => {
       const result: string = util.validateFileName("fileName.cpp", FileType.C);
       expect(result).toEqual("C file extension is missing or incorrect");
     });
-    
+
     it("valid file name is accepted", async () => {
       const result: string = util.validateFileName("fileName.c", FileType.C);
       expect(result).toBe("");
