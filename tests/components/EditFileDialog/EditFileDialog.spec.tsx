@@ -21,7 +21,7 @@ enum ButtonIndex {
   Edit
 }
 
-describe("Tests for EditFileDialog", () => {
+describe("Tests for EditFileDialog", () =>  {
   const setup = (fileA, props?) => {
     const parent = new Directory("parent");
     const fileB = new File("fileB.js", FileType.JavaScript);

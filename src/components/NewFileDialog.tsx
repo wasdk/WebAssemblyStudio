@@ -27,7 +27,6 @@ import appStore from "../stores/AppStore";
 import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef, getIconForFileType } from "../models";
 import { ChangeEvent } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
-import { FileDialogState } from "./EditFileDialog";
 import { validateFileName } from "../util";
 
 interface NewFileDialogProps {
@@ -37,7 +36,13 @@ interface NewFileDialogProps {
   onCancel: () => void;
 }
 
-export class NewFileDialog extends React.Component<NewFileDialogProps, FileDialogState> {
+interface NewFileDialogState {
+  fileType: FileType;
+  description: string;
+  name: string;
+}
+
+export class NewFileDialog extends React.Component<NewFileDialogProps, NewFileDialogState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -46,12 +51,12 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, FileDialo
       name: ""
     };
   }
-
   onChangeName = (event: ChangeEvent<any>) => {
     this.setState({ name: event.target.value });
   }
-
   getNameError() {
+    const directory = this.props.directory;
+
     if (this.state.name) {
       const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
       if (fileNameError) {
@@ -66,22 +71,17 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, FileDialo
 
     return "";
   }
-
   fileName() {
     let name = this.state.name;
     const extension = extensionForFileType(this.state.fileType);
-
     if (!name.endsWith("." + extension)) {
       name += "." + extension;
     }
-
     return name;
   }
-
   createButtonLabel() {
     return "Create";
   }
-
   render() {
     return <ReactModal
       isOpen={this.props.isOpen}
@@ -134,12 +134,7 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, FileDialo
           </div>
         </div>
         <div style={{ flex: 1, padding: "8px" }}>
-          <TextInputBox
-            label={"Name: " + (this.props.directory ? appStore.getPath(this.props.directory) + "/" : "")}
-            error={this.getNameError()}
-            value={this.state.name}
-            onChange={this.onChangeName}
-          />
+          <TextInputBox label={"Name: " + (this.props.directory ? appStore.getPath(this.props.directory) + "/" : "")} error={this.getNameError()} value={this.state.name} onChange={this.onChangeName}/>
         </div>
         <div>
           <Button
