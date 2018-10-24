@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { fileTypeForExtension, isBinaryFileType, Directory, FileType, fileTypeForMimeType } from "./models";
+import { fileTypeForExtension, FileType, fileTypeForMimeType, nameForFileType, extensionForFileType, isBinaryFileType, Directory } from "./models";
 
 export function toAddress(n: number) {
   let s = n.toString(16);
@@ -296,4 +296,25 @@ let nextKey = 0;
 
 export function getNextKey() {
   return nextKey++;
+}
+
+export function validateFileName(name: string, sourceType: FileType): string {
+  if (!name) {
+    return "File name can't be empty";
+  }
+
+  if (!/^[a-z0-9\.\-\_]+$/i.test(name)) {
+    return "Illegal characters in file name";
+  }
+
+  const sourceTypeExtension = "." + extensionForFileType(sourceType);
+  if (sourceTypeExtension === name) {
+    return "File name can't be empty";
+  }
+
+  if (!name.endsWith(sourceTypeExtension)) {
+    return `${nameForFileType(sourceType)} file extension is missing or incorrect`;
+  }
+
+  return "";
 }

@@ -83,7 +83,7 @@ describe("Tests for EditFileDialog", () =>  {
     wrapper.find(TextInputBox).at(TextInputIndex.Name).simulate("change", {
       target: { value: "??.js" }
     });
-    const expectedErrorMsg = "Illegal characters in file name.";
+    const expectedErrorMsg = "Illegal characters in file name";
     expect(wrapper.find(TextInputBox).at(TextInputIndex.Name)).toHaveProp("error", expectedErrorMsg);
     expect(wrapper.find(Button).at(ButtonIndex.Edit)).toHaveProp("isDisabled", true);
   });
@@ -93,7 +93,7 @@ describe("Tests for EditFileDialog", () =>  {
     wrapper.find(TextInputBox).at(TextInputIndex.Name).simulate("change", {
       target: { value: "fileName" }
     });
-    const expectedErrorMsg = "JavaScript file extension is missing.";
+    const expectedErrorMsg = "JavaScript file extension is missing or incorrect";
     expect(wrapper.find(TextInputBox).at(TextInputIndex.Name)).toHaveProp("error", expectedErrorMsg);
     expect(wrapper.find(Button).at(ButtonIndex.Edit)).toHaveProp("isDisabled", true);
   });
@@ -103,7 +103,7 @@ describe("Tests for EditFileDialog", () =>  {
     wrapper.find(TextInputBox).at(TextInputIndex.Name).simulate("change", {
       target: { value: "fileB.js" }
     });
-    const expectedErrorMsg = "File 'fileB.js' already exists.";
+    const expectedErrorMsg = "File 'fileB.js' already exists";
     expect(wrapper.find(TextInputBox).at(TextInputIndex.Name)).toHaveProp("error", expectedErrorMsg);
     expect(wrapper.find(Button).at(ButtonIndex.Edit)).toHaveProp("isDisabled", true);
   });

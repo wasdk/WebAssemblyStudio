@@ -27,17 +27,22 @@ import appStore from "../stores/AppStore";
 import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef, getIconForFileType } from "../models";
 import { ChangeEvent } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
+import { validateFileName } from "../util";
 
-export class NewFileDialog extends React.Component<{
+interface NewFileDialogProps {
   isOpen: boolean;
-  directory: ModelRef<Directory>
+  directory: ModelRef<Directory>;
   onCreate: (file: File) => void;
   onCancel: () => void;
-}, {
-    fileType: FileType;
-    description: string;
-    name: string;
-  }> {
+}
+
+interface NewFileDialogState {
+  fileType: FileType;
+  description: string;
+  name: string;
+}
+
+export class NewFileDialog extends React.Component<NewFileDialogProps, NewFileDialogState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -51,15 +56,19 @@ export class NewFileDialog extends React.Component<{
   }
   getNameError() {
     const directory = this.props.directory;
+
     if (this.state.name) {
-      if (!/^[a-z0-9\.\-\_]+$/i.test(this.state.name)) {
-        return "Illegal characters in file name.";
-      } else if (!this.state.name.endsWith(extensionForFileType(this.state.fileType))) {
-        return nameForFileType(this.state.fileType) + " file extension is missing.";
-      } else if (directory && appStore.getImmediateChild(directory, this.state.name)) {
-        return `File '${this.state.name}' already exists.`;
+      const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
+      if (fileNameError) {
+        return fileNameError;
+      }
+
+      const directory = this.props.directory;
+      if (directory && appStore.getImmediateChild(directory, this.state.name)) {
+        return `File '${this.state.name}' already exists`;
       }
     }
+
     return "";
   }
   fileName() {
