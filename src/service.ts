@@ -66,7 +66,7 @@ function getProjectFilePath(file: File): string {
 
 export class ServiceWorker {
   worker: Worker;
-  workerCallbacks: Array<{fn: Function, ex: Function}> = [];
+  workerCallbacks: Array<{fn: (data: any) => void, ex: (err: Error) => void}> = [];
   nextId = 0;
   private getNextId() {
     return String(this.nextId++);
@@ -79,9 +79,13 @@ export class ServiceWorker {
       }
       const cb = this.workerCallbacks[e.data.id];
       if (e.data.success) {
-        cb.fn(e);
+        cb.fn(e.data.payload);
       } else {
-        cb.ex(e);
+        const error = Object.assign(
+          Object.create(Error.prototype),
+          e.data.payload,
+        );
+        cb.ex(error);
       }
       this.workerCallbacks[e.data.id] = null;
     });
@@ -95,10 +99,10 @@ export class ServiceWorker {
   async postMessage(command: WorkerCommand, payload: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const id = this.getNextId();
-      this.setWorkerCallback(id, (e: {data: IWorkerResponse}) => {
-        resolve(e.data.payload);
-      }, (e) => {
-        reject(e.data.payload);
+      this.setWorkerCallback(id, (data: any) => {
+        resolve(data);
+      }, (err: Error) => {
+        reject(err);
       });
       this.worker.postMessage({
         id, command, payload
