@@ -58,7 +58,7 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, EditFil
   onChangeDescription = (event: ChangeEvent<any>) => {
     this.setState({ description: event.target.value });
   }
-  getNameError() {    
+  getNameError() {
     const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
     if (fileNameError) {
       return fileNameError;
@@ -70,7 +70,6 @@ export class EditFileDialog extends React.Component<EditFileDialogProps, EditFil
     if (file && this.props.file !== file) {
       return `File '${this.state.name}' already exists`;
     }
-    
     return "";
   }
   render() {
