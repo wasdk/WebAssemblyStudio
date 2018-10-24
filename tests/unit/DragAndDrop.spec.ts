@@ -64,7 +64,7 @@ describe("Tests for DragAndDrop", () => {
       const dnd = new DragAndDrop({});
       const isUploadAllowedForMimeType = jest.spyOn(utils, "isUploadAllowedForMimeType");
       const data = {
-        getData: () => [{ name: "test" }]
+        elements: [{ name: "test" }]
       } as any;
       const targetElement = {} as any;
       const originalEvent = { browserEvent: { dataTransfer: { items: [{ type: "text/uri-list" }]}}} as any;
@@ -80,7 +80,7 @@ describe("Tests for DragAndDrop", () => {
       const dnd = new DragAndDrop({});
       const isUploadAllowedForMimeType = jest.spyOn(utils, "isUploadAllowedForMimeType");
       const data = {
-        getData: () => [{ name: "test" }]
+        elements: [{ name: "test" }]
       } as any;
       const targetElement = {} as any;
       const originalEvent = { browserEvent: { dataTransfer: { items: []}}} as any;
@@ -92,8 +92,7 @@ describe("Tests for DragAndDrop", () => {
       const dnd = new DragAndDrop({});
       const file = new File("file", FileType.JavaScript);
       const data = {
-        elements: [file],
-        getData: () => [file]
+        elements: [file]
       } as any;
       const targetElement = new Directory("src");
       expect(dnd.onDragOver(null, data, targetElement, null)).toEqual({
@@ -106,8 +105,7 @@ describe("Tests for DragAndDrop", () => {
       const dnd = new DragAndDrop({});
       const parent = new Directory("parent");
       const data = {
-        elements: [parent],
-        getData: () => [parent]
+        elements: [parent]
       } as any;
       const targetElement = parent.newDirectory("child");
       expect(dnd.onDragOver(null, data, targetElement, null)).toEqual({
@@ -120,8 +118,7 @@ describe("Tests for DragAndDrop", () => {
       const dnd = new DragAndDrop({});
       const dir = new Directory("dir");
       const data = {
-        elements: [dir],
-        getData: () => [dir]
+        elements: [dir]
       } as any;
       const targetElement = dir;
       expect(dnd.onDragOver(null, data, targetElement, null)).toEqual({
@@ -148,7 +145,7 @@ describe("Tests for DragAndDrop", () => {
       const target = { props: { onMoveFile: jest.fn() }};
       const dnd = new DragAndDrop(target);
       const file = new File("file", FileType.JavaScript);
-      const data = { getData: () => [file] } as any;
+      const data = { elements: [file] } as any;
       const targetElement = {} as any;
       const originalEvent = { browserEvent: { dataTransfer: { items: [] }}} as any;
       dnd.drop(null, data, targetElement, originalEvent);

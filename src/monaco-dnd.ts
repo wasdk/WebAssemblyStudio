@@ -79,7 +79,7 @@ export class DragAndDrop implements IDragAndDrop {
       }
     }
     // Regular drag
-    const file: File = (data.getData() as any)[0];
+    const file: File = data.elements[0];
     return {
       accept: targetElement instanceof Directory &&
               targetElement !== file &&
@@ -98,7 +98,7 @@ export class DragAndDrop implements IDragAndDrop {
       await uploadFilesToDirectory(items, targetElement as Directory);
       return;
     }
-    const file: File = (data.getData() as any)[0];
+    const file: File = data.elements[0];
     return this.target.props.onMoveFile && this.target.props.onMoveFile(file, targetElement as Directory);
   }
 }

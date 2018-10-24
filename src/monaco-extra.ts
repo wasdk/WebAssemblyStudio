@@ -591,7 +591,7 @@ export const DRAG_OVER_ACCEPT_BUBBLE_DOWN_COPY = (autoExpand = false) => ({ acce
 
 export interface IDragAndDropData {
   update(event: DragMouseEvent): void;
-  getData(): any;
+  elements: any[];
 }
 
 export interface IDragAndDrop {
