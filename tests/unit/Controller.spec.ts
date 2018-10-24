@@ -28,9 +28,9 @@ describe("Tests for Controller", () => {
     (window as any).innerHeight = 1200;
     const target = { contextMenuService: { showContextMenu: jest.fn() }};
     const getActionsFn = jest.fn().mockImplementation(() => ["action1"]);
-    const tree = { setFocus: jest.fn(), DOMFocus: jest.fn() } as any;
+    const tree = { setFocus: jest.fn(), domFocus: jest.fn() } as any;
     const file = new File("fileA", FileType.JavaScript);
-    const event = customEvent || { posx: 10, posy: 10} as any;
+    const event = customEvent || { _posx: 10, _posy: 10} as any;
     const controller = createController(target, getActionsFn, resolveMenuPosition);
     return { target, getActionsFn, tree, file, event, controller };
   };
@@ -77,14 +77,14 @@ describe("Tests for Controller", () => {
     });
     it("should call the contextMenuService", async () => {
       const { controller, target, tree, file, event } = setup();
-      tree.DOMFocus.mockClear();
+      tree.domFocus.mockClear();
       controller.onContextMenu(tree, file, event);
       const options = target.contextMenuService.showContextMenu.mock.calls[0][0];
       expect(options.getAnchor()).toEqual({ x: 0, y: 7 });
       expect(options.getActionItem()).toBeNull();
       expect(options.onHide()).toBeUndefined();
       expect(options.onHide(true)).toBeUndefined();
-      expect(tree.DOMFocus).toHaveBeenCalledTimes(1);
+      expect(tree.domFocus).toHaveBeenCalledTimes(1);
       await expect(options.getActions()).resolves.toEqual(["action1"]);
     });
     it("should call super.onContextMenu", () => {
@@ -96,7 +96,7 @@ describe("Tests for Controller", () => {
   });
   describe("resolveMenuHeight", () => {
     it("should resolve the menu max height", () => {
-      const event  = { posx: 10, posy: 1000 } as any;
+      const event  = { _posx: 10, _posy: 1000 } as any;
       const { controller, tree, file  } = setup(true, event);
       const element = document.createElement("div");
       const querySelector = jest.spyOn(document, "querySelector");

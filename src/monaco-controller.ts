@@ -27,7 +27,7 @@ export function getController(target: any, getActionsFn?: Function, resolveMenuH
     onContextMenu(tree: ITree, file: File, event: ContextMenuEvent): boolean {
       tree.setFocus(file);
       const anchorOffset = { x: -10, y: -3 };
-      const anchor = { x: event.posx + anchorOffset.x, y: event.posy + anchorOffset.y };
+      const anchor = { x: event._posx + anchorOffset.x, y: event._posy + anchorOffset.y };
       const actions = getActionsFn && getActionsFn(file, event);
       if (!actions || !actions.length) {
         return false;
@@ -38,7 +38,7 @@ export function getController(target: any, getActionsFn?: Function, resolveMenuH
         getActionItem: (action: any): any => null,
         onHide: (wasCancelled?: boolean) => {
           if (wasCancelled) {
-            tree.DOMFocus();
+            tree.domFocus();
           }
         }
       });
@@ -52,7 +52,7 @@ export function getController(target: any, getActionsFn?: Function, resolveMenuH
       // Set the context menus max height to avoid overflow outside window
       const menu: HTMLElement = document.querySelector(".context-view.monaco-menu-container");
       const windowPadding = 10;
-      menu.style.maxHeight = Math.min(window.innerHeight - event.posy - windowPadding, 380) + "px";
+      menu.style.maxHeight = Math.min(window.innerHeight - event._posy - windowPadding, 380) + "px";
     }
   };
 }
