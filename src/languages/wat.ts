@@ -383,6 +383,11 @@ const MonarchDefinitions = {
     "get_global",
     "set_global",
 
+    "drop",
+    "select",
+    "memory.size",
+    "memory.grow",
+
     "current_memory",
     "grow_memory"
   ],
