@@ -36,7 +36,7 @@ describe("Empty C Project: Create, Build and Run", () => {
       "main.js"
     ]);
   });
-  it("should build the project when clicking the Build button", async () => {
+  xit("should build the project when clicking the Build button", async () => {
     // Click the build button and wait for the request to finish
     await page.click("div.button[title=\"Build Project: CtrlCmd + B\"]");
     await page.waitFor(3000); // TODO: Remove hardcoded wait duration
@@ -55,7 +55,7 @@ describe("Empty C Project: Create, Build and Run", () => {
       "main.wasm"
     ]);
   });
-  it("should run the project when clicking the Run button", async () => {
+  xit("should run the project when clicking the Run button", async () => {
     // Click the run button and wait for the results
     await page.click("div.button[title=\"Run Project: CtrlCmd + Enter\"]");
     await page.waitFor(1000); // TODO: Remove hardcoded wait duration
