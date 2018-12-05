@@ -18,16 +18,16 @@ require(["assemblyscript/bin/asc"], asc => {
     return main(args, options || {
       stdout: asc.createMemoryStream(),
       stderr: asc.createMemoryStream(logLn),
-      readFile: (filename) => {
-        const file = project.getFile(filename.replace(/^\//, ""));
+      readFile: (filename, baseDir) => {
+        const file = project.getFile(baseDir + "/" + filename.replace(/^\//, ""));
         return file ? file.data : null;
       },
       writeFile: (filename, contents) => {
-        const name = filename.startsWith("/") ? filename.substring(1) : filename;
+        const name = filename.startsWith("../") ? filename.substring(3) : filename;
         const type = fileTypeForExtension(name.substring(name.lastIndexOf(".") + 1));
         project.newFile(name, type, true).setData(contents);
       },
-      listFiles: (dirname) => []
+      listFiles: () => []
     }, fn);
   })(asc.main);
   logLn("AssemblyScript compiler is ready!");
