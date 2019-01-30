@@ -50,14 +50,14 @@ describe("Tests for util.ts", () => {
   describe("base64EncodeBytes", () => {
     it("should encode bytes -> base64", () => {
       expect(util.base64EncodeBytes(new Uint8Array([1, 2, 3]))).toEqual("AQID");
-      expect(util.base64EncodeBytes(new Uint8Array([1, 2, 3, 4]))).toEqual("AQIDBA===");
+      expect(util.base64EncodeBytes(new Uint8Array([1, 2, 3, 4]))).toEqual("AQIDBA==");
       expect(util.base64EncodeBytes(new Uint8Array([1, 2, 3, 4, 5]))).toEqual("AQIDBAU=");
     });
   });
   describe("decodeRestrictedBase64ToBytes", () => {
     it("should decode base64 -> bytes", () => {
       expect(util.decodeRestrictedBase64ToBytes("AQID")).toEqual(new Uint8Array([1, 2, 3]));
-      expect(util.decodeRestrictedBase64ToBytes("AQIDBA===")).toEqual(new Uint8Array([1, 2, 3, 4]));
+      expect(util.decodeRestrictedBase64ToBytes("AQIDBA==")).toEqual(new Uint8Array([1, 2, 3, 4]));
       expect(util.decodeRestrictedBase64ToBytes("AQIDBAU=")).toEqual(new Uint8Array([1, 2, 3, 4, 5]));
     });
   });

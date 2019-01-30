@@ -132,7 +132,7 @@ export function base64EncodeBytes(bytes: Uint8Array) {
     a = (chunk & 252) >> 2; // 252 = (2^6 - 1) << 2
     // Set the 4 least significant bits to zero
     b = (chunk & 3) << 4; // 3 = 2^2 - 1
-    base64 += concat3(encodings[a], encodings[b], "===");
+    base64 += concat3(encodings[a], encodings[b], "==");
   } else if (byteRemainder === 2) {
     chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1];
 
