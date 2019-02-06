@@ -63,6 +63,6 @@ export function Button({
     }}
     title={title}
   >
-{icon} {label}
+    {icon} {label}
   </div>;
 }
