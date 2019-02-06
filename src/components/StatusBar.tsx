@@ -22,38 +22,32 @@
 import * as React from "react";
 import appStore from "../stores/AppStore";
 
-export class StatusBar extends React.Component<{}, {
-  hasStatus: boolean;
-  status: string;
-}> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      hasStatus: false,
-      status: ""
-    };
-  }
-  onDidChangeStatus = () => {
-    this.setState({
+export function StatusBar() {
+  let [state, setState] = React.useState({
+    hasStatus: false,
+    status: ""
+  });
+
+  function onDidChangeStatus() {
+    setState({
       hasStatus: appStore.hasStatus(),
       status: appStore.getStatus()
     });
   }
-  componentDidMount() {
-    appStore.onDidChangeStatus.register(this.onDidChangeStatus);
+
+  React.useEffect(() => {
+    appStore.onDidChangeStatus.register(onDidChangeStatus);
+    return () => appStore.onDidChangeStatus.unregister(onDidChangeStatus);
+  });
+
+  let className = "status-bar";
+  if (state.hasStatus) {
+    className += " active";
   }
-  componentWillUnmount() {
-    appStore.onDidChangeStatus.unregister(this.onDidChangeStatus);
-  }
-  render() {
-    let className = "status-bar";
-    if (this.state.hasStatus) {
-      className += " active";
-    }
-    return <div className={className}>
-      <div className="status-bar-item">
-        {this.state.status}
-      </div>
-    </div>;
-  }
+  
+  return <div className={className}>
+    <div className="status-bar-item">
+      {state.status}
+    </div>
+  </div>;
 }
