@@ -22,50 +22,34 @@
 import * as React from "react";
 import { ChangeEventHandler } from "react";
 
-export class Spacer extends React.Component<{
-  height: number
-}, {}> {
-  render() {
-    return <div style={{ height: this.props.height }} />;
-  }
+export function Spacer(props: { height: number }) {
+  return <div style={{ height: props.height }} />;
 }
 
-export class Divider extends React.Component<{
-  height: number
-}, {}> {
-  render() {
-    return <div
-      className="divider"
-      style={{
-        marginTop: this.props.height / 2,
-        marginBottom: this.props.height / 2
-      }}
-    />;
-  }
+export function Divider(props: { height: number }) {
+  return <div
+    className="divider"
+    style={{
+      marginTop: props.height / 2,
+      marginBottom: props.height / 2
+    }} />;
 }
 
-export class TextInputBox extends React.Component<{
+export function TextInputBox(props: {
   label: string;
   value: string;
   error?: string;
   onChange?: ChangeEventHandler<any>;
-}, {
-
-  }> {
-  constructor(props: any) {
-    super(props);
-  }
-  render() {
-    const input = <input className="text-input-box" type="text" value={this.props.value} onChange={this.props.onChange} />;
-    if (this.props.label) {
-      return <div style={{ display: "flex", flexDirection: "row" }}>
-        <div className="text-input-box-label">{this.props.label}</div>
-        <div style={{ flex: 1 }}>{input}</div>
-        {this.props.error && <div className="text-input-box-error">{this.props.error}</div>}
-      </div>;
-    } else {
-      return input;
-    }
+}) {
+  const input = <input className="text-input-box" type="text" value={props.value} onChange={props.onChange} />;
+  if (props.label) {
+    return <div style={{ display: "flex", flexDirection: "row" }}>
+      <div className="text-input-box-label">{props.label}</div>
+      <div style={{ flex: 1 }}>{input}</div>
+      {props.error && <div className="text-input-box-error">{props.error}</div>}
+    </div>;
+  } else {
+    return input;
   }
 }
 
@@ -94,70 +78,56 @@ export class UploadInput extends React.Component<{
     this.inputElement.click();
   }
   render() {
-    return <input id="file-upload-input" ref={ref => this.setInputElement(ref)} type="file" onChange={this.props.onChange} multiple hidden/>;
+    return <input id="file-upload-input" ref={ref => this.setInputElement(ref)} type="file" onChange={this.props.onChange} multiple hidden />;
   }
 }
 
-export class ListItem extends React.Component<{
+export function ListItem(props: {
   label: string;
   onClick?: Function;
   icon?: string;
   selected?: boolean;
   value: any;
   error?: string;
-}, {
-
-  }> {
-
-  render() {
-    let className = "list-item";
-    if (this.props.selected) {
-      className += " selected";
-    }
-    let content = <div className="label">{this.props.label}</div>;
-    if (this.props.error) {
-        content = <div className="list-item-flex">
-          <div className="label">{this.props.label}</div>
-          <div className="error">{this.props.error}</div>
-        </div>;
-    }
-    return <div className={className} onClick={this.props.onClick as any}>
-      <div className={"monaco-icon-label file-icon " + this.props.icon} />
-      {content}
+}) {
+  let className = "list-item";
+  if (props.selected) {
+    className += " selected";
+  }
+  let content = <div className="label">{props.label}</div>;
+  if (props.error) {
+    content = <div className="list-item-flex">
+      <div className="label">{props.label}</div>
+      <div className="error">{props.error}</div>
     </div>;
   }
+  return <div className={className} onClick={props.onClick as any}>
+    <div className={"monaco-icon-label file-icon " + props.icon} />
+    {content}
+  </div>;
 }
 
-export class ListBox extends React.Component<{
+export function ListBox(props: {
   height: number;
   value?: any;
   onSelect?: (value: any) => void;
-}, {
-
-  }> {
-  constructor(props: any) {
-    super(props);
-  }
-
-  render() {
-    const { children, onSelect } = this.props;
-
-    const newChildren = React.Children.map(children, (child: any, index) => {
-      return React.cloneElement(child as any, {
-        onClick: () => {
-          return onSelect && onSelect(child.props.value);
-        },
-        selected: this.props.value === child.props.value
-      });
+  children: any;
+}) {
+  const newChildren = React.Children.map(props.children, (child: any, index) => {
+    return React.cloneElement(child as any, {
+      onClick: () => {
+        return props.onSelect && props.onSelect(child.props.value);
+      },
+      selected: props.value === child.props.value
     });
+  });
 
-    return <div
-      className="list-box"
-      style={{
-        height: this.props.height
-      }}
-    >
-      {newChildren}
-    </div>;
-  }
+  return <div
+    className="list-box"
+    style={{
+      height: props.height
+    }}
+  >
+    {newChildren}
+  </div>;
 }
