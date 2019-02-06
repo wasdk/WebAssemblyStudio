@@ -21,8 +21,8 @@
 
 import * as React from "react";
 
-export class Button extends React.Component<{
-  icon?: JSX.Element;
+export function Button(props: {
+  icon: JSX.Element;
   label?: string;
   title?: string;
   isDisabled?: boolean;
@@ -31,38 +31,36 @@ export class Button extends React.Component<{
   href?: string,
   target?: string,
   rel?: string
-}, {}> {
-  render() {
-    let className = "button ";
-    if (this.props.customClassName) {
-      className += this.props.customClassName;
-    }
-    if (this.props.isDisabled) {
-      className += " disabled";
-    }
-    if (this.props.href && !this.props.isDisabled) {
-      return (
-        <a
-          href={this.props.href}
-          target={this.props.target || ""}
-          rel={this.props.rel || ""}
-          className={className}
-          title={this.props.title}
-        >
-          {this.props.icon} {this.props.label}
-        </a>
-      );
-    }
-    return <div
-      className={className}
-      onClick={() => {
-        if (this.props.onClick && !this.props.isDisabled) {
-          this.props.onClick();
-        }
-      }}
-      title={this.props.title}
-    >
-      {this.props.icon} {this.props.label}
-    </div>;
+}) {
+  let className = "button ";
+  if (props.customClassName) {
+    className += props.customClassName;
   }
+  if (props.isDisabled) {
+    className += " disabled";
+  }
+  if (props.href && !props.isDisabled) {
+    return (
+      <a
+        href={props.href}
+        target={props.target || ""}
+        rel={props.rel || ""}
+        className={className}
+        title={props.title}
+      >
+        {props.icon} {props.label}
+      </a>
+    );
+  }
+  return <div
+    className={className}
+    onClick={() => {
+      if (props.onClick && !props.isDisabled) {
+        props.onClick();
+      }
+    }}
+    title={props.title}
+  >
+    {props.icon} {props.label}
+  </div>;
 }
