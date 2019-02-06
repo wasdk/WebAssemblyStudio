@@ -110,7 +110,7 @@ export class Split extends React.Component<SplitProps, {
     return this.props.onChange && this.props.onChange(this.state.splits);
   }
 
-  onResizerMouseMove = (e: MouseEvent<any>) => {
+  onResizerMouseMove = (e: any) => {
     if (this.index < 0) {
       return;
     }
