@@ -23,7 +23,7 @@ import * as React from "react";
 import appStore from "../stores/AppStore";
 
 export function StatusBar() {
-  let [state, setState] = React.useState({
+  const [state, setState] = React.useState({
     hasStatus: false,
     status: ""
   });
@@ -44,7 +44,7 @@ export function StatusBar() {
   if (state.hasStatus) {
     className += " active";
   }
-  
+
   return <div className={className}>
     <div className="status-bar-item">
       {state.status}

@@ -22,31 +22,32 @@
 import * as React from "react";
 import { ChangeEventHandler } from "react";
 
-export function Spacer(props: { height: number }) {
-  return <div style={{ height: props.height }} />;
+export function Spacer({ height }: { height: number }) {
+  return <div style={{ height }} />;
 }
 
-export function Divider(props: { height: number }) {
+export function Divider({ height }: { height: number }) {
   return <div
     className="divider"
     style={{
-      marginTop: props.height / 2,
-      marginBottom: props.height / 2
-    }} />;
+      marginTop: height / 2,
+      marginBottom: height / 2
+    }}
+  />;
 }
 
-export function TextInputBox(props: {
+export function TextInputBox({ label, value, error, onChange }: {
   label: string;
   value: string;
   error?: string;
   onChange?: ChangeEventHandler<any>;
 }) {
-  const input = <input className="text-input-box" type="text" value={props.value} onChange={props.onChange} />;
-  if (props.label) {
+  const input = <input className="text-input-box" type="text" value={value} onChange={onChange} />;
+  if (label) {
     return <div style={{ display: "flex", flexDirection: "row" }}>
-      <div className="text-input-box-label">{props.label}</div>
+      <div className="text-input-box-label">{label}</div>
       <div style={{ flex: 1 }}>{input}</div>
-      {props.error && <div className="text-input-box-error">{props.error}</div>}
+      {error && <div className="text-input-box-error">{error}</div>}
     </div>;
   } else {
     return input;
@@ -82,7 +83,7 @@ export class UploadInput extends React.Component<{
   }
 }
 
-export function ListItem(props: {
+export function ListItem({ label, onClick, icon, selected, value, error }: {
   label: string;
   onClick?: Function;
   icon?: string;
@@ -91,42 +92,40 @@ export function ListItem(props: {
   error?: string;
 }) {
   let className = "list-item";
-  if (props.selected) {
+  if (selected) {
     className += " selected";
   }
-  let content = <div className="label">{props.label}</div>;
-  if (props.error) {
+  let content = <div className="label">{label}</div>;
+  if (error) {
     content = <div className="list-item-flex">
-      <div className="label">{props.label}</div>
-      <div className="error">{props.error}</div>
+      <div className="label">{label}</div>
+      <div className="error">{error}</div>
     </div>;
   }
-  return <div className={className} onClick={props.onClick as any}>
-    <div className={"monaco-icon-label file-icon " + props.icon} />
+  return <div className={className} onClick={onClick as any}>
+    <div className={"monaco-icon-label file-icon " + icon} />
     {content}
   </div>;
 }
 
-export function ListBox(props: {
+export function ListBox({ height, value, onSelect, children }: {
   height: number;
   value?: any;
   onSelect?: (value: any) => void;
   children: any;
 }) {
-  const newChildren = React.Children.map(props.children, (child: any, index) => {
+  const newChildren = React.Children.map(children, (child: any, index) => {
     return React.cloneElement(child as any, {
       onClick: () => {
-        return props.onSelect && props.onSelect(child.props.value);
+        return onSelect && onSelect(child.props.value);
       },
-      selected: props.value === child.props.value
+      selected: value === child.props.value
     });
   });
 
   return <div
     className="list-box"
-    style={{
-      height: props.height
-    }}
+    style={{ height }}
   >
     {newChildren}
   </div>;

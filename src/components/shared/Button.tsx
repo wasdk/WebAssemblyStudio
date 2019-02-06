@@ -21,7 +21,9 @@
 
 import * as React from "react";
 
-export function Button(props: {
+export function Button({
+  icon, label, title, isDisabled, onClick, customClassName, href, target, rel
+}: {
   icon: JSX.Element;
   label?: string;
   title?: string;
@@ -33,34 +35,34 @@ export function Button(props: {
   rel?: string
 }) {
   let className = "button ";
-  if (props.customClassName) {
-    className += props.customClassName;
+  if (customClassName) {
+    className += customClassName;
   }
-  if (props.isDisabled) {
+  if (isDisabled) {
     className += " disabled";
   }
-  if (props.href && !props.isDisabled) {
+  if (href && !isDisabled) {
     return (
       <a
-        href={props.href}
-        target={props.target || ""}
-        rel={props.rel || ""}
+        href={href}
+        target={target || ""}
+        rel={rel || ""}
         className={className}
-        title={props.title}
+        title={title}
       >
-        {props.icon} {props.label}
+        {icon} {label}
       </a>
     );
   }
   return <div
     className={className}
     onClick={() => {
-      if (props.onClick && !props.isDisabled) {
-        props.onClick();
+      if (onClick && !isDisabled) {
+        onClick();
       }
     }}
-    title={props.title}
+    title={title}
   >
-    {props.icon} {props.label}
+{icon} {label}
   </div>;
 }
