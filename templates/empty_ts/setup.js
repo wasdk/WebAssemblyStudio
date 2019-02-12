@@ -2,9 +2,9 @@
 // AssemblyScript compiler when a new project has been loaded in WebAssembly Studio.
 require.config({
   paths: {
-    "binaryen": "https://cdn.jsdelivr.net/gh/AssemblyScript/binaryen.js/index",
-    "assemblyscript": "https://cdn.jsdelivr.net/gh/AssemblyScript/assemblyscript/dist/assemblyscript",
-    "assemblyscript/bin/asc": "https://cdn.jsdelivr.net/gh/AssemblyScript/assemblyscript/dist/asc",
+    "binaryen": "https://assemblyscript.github.io/binaryen.js/index",
+    "assemblyscript": "https://assemblyscript.github.io/assemblyscript/dist/assemblyscript",
+    "assemblyscript/bin/asc": "https://assemblyscript.github.io/assemblyscript/dist/asc",
   }
 });
 logLn("Loading AssemblyScript compiler ...");
