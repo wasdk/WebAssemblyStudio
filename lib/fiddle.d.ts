@@ -24,7 +24,8 @@ declare enum Language {
   Json = "json",
   JavaScript = "javascript",
   TypeScript = "typescript",
-  Text = "text"
+  Text = "text",
+  Go = "go",
 }
 
 declare class Service {
