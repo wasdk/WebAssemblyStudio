@@ -1,5 +1,5 @@
 {
-  "name": "@wasm/empty_rust",
+  "name": "@wasm/simple_storage_rust",
   "description": "",
   "version": "1.0.0",
   "scripts": {
@@ -12,8 +12,8 @@
     "typescript": "~2.7.2"
   },
   "wasmStudio": {
-    "name": "Empty Rust Project",
-    "description": "# Empty Rust Project",
+    "name": "Simple Storage Rust Project",
+    "description": "# Simple Storage Rust Project",
     "icon": "rust-lang-file-icon"
   }
 }

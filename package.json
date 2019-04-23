@@ -55,6 +55,8 @@
   },
   "homepage": "https://github.com/wasdk/WebAssemblyStudio",
   "dependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-transform-flow-strip-types": "^7.4.0",
     "@types/flux": "^3.1.8",
     "@types/jszip": "^3.1.4",
     "@types/minimatch": "^3.0.3",
@@ -70,6 +72,7 @@
     "monaco-editor": "^0.14.3",
     "mousetrap": "^1.6.2",
     "pako": "^1.0.7",
+    "prettier": "^1.17.0",
     "raven-js": "^3.27.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
@@ -77,6 +80,7 @@
     "react-modal": "^3.6.1",
     "request": "^2.88.0",
     "tar-js": "^0.3.0",
+    "terser": "^3.17.0",
     "tslint-react": "^3.6.0"
   },
   "devDependencies": {
@@ -108,8 +112,8 @@
     "stryker-typescript": "^0.14.2",
     "style-loader": "^0.21.0",
     "ts-loader": "^4.5.0",
-    "tslint": "^5.11.0",
-    "typescript": "^3.1.6",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.4",
     "wait-until-promise": "^1.0.0",
     "webpack": "^4.26.1",
     "webpack-bundle-analyzer": "^2.13.1",

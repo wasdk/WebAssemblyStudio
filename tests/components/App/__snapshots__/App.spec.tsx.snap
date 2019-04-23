@@ -1006,7 +1006,7 @@ exports[`Tests for App render should render correctly (update) 1`] = `
             />
             <Button
               customClassName="issue"
-              href="https://github.com/wasdk/WebAssemblyStudio"
+              href="https://github.com/TradaTech/WebAssemblyStudio"
               icon={<GoOpenIssue />}
               key="GithubIssues"
               label="GitHub Issues"

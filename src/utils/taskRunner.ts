@@ -23,11 +23,12 @@ import { Project, fileTypeForExtension, mimeTypeForFileType } from "../models";
 import { Gulpy } from "../gulpy";
 import { Service } from "../service";
 import { Arc } from "../arc";
+import { transpile } from "../sunseed";
 
 export enum RunTaskExternals {
   Default,
   Arc,
-  Setup,
+  Setup
 }
 
 function unsafeEval(code: string, params: any) {
@@ -62,16 +63,20 @@ function contextify(
 
   // Use provided contextual keys as parameters and wrap the source in an IIFE
   // so redefining variables using parameter names is allowed...
-  const contextParameters = Object.keys(context)
-    .concat("require", "exports", "return ()=>{" + src + "}");
+  const contextParameters = Object.keys(context).concat(
+    "require",
+    "exports",
+    "return ()=>{" + src + "}"
+  );
   // ...and use provided contextual values as arguments.
-  const contextArguments = Object.values(context)
-    .concat(require, {});
+  const contextArguments = Object.values(context).concat(require, {});
 
   const global = sandboxGlobal || window;
   // Call the function constructor with our variable parameters and arguments.
-  return global.Function.apply(null, contextParameters)
-    .apply(thisArg, contextArguments);
+  return global.Function.apply(null, contextParameters).apply(
+    thisArg,
+    contextArguments
+  );
 }
 
 async function createSandboxIFrame(): Promise<Window> {
@@ -83,7 +88,10 @@ async function createSandboxIFrame(): Promise<Window> {
   // Chrome needs width and height attributes set for iframe.
   iframe.setAttribute("width", "1");
   iframe.setAttribute("height", "1");
-  iframe.setAttribute("src", URL.createObjectURL(new Blob([src], { type: "text/html" })));
+  iframe.setAttribute(
+    "src",
+    URL.createObjectURL(new Blob([src], { type: "text/html" }))
+  );
   const container = document.getElementById("task-runner-content");
   container.textContent = "";
   container.appendChild(iframe);
@@ -92,10 +100,17 @@ async function createSandboxIFrame(): Promise<Window> {
   });
 }
 
-const iframeReady: WeakMap<HTMLIFrameElement, (thisArg: Window) => void> = new WeakMap();
+const iframeReady: WeakMap<
+  HTMLIFrameElement,
+  (thisArg: Window) => void
+> = new WeakMap();
 
-window.addEventListener("message", (e) => {
-  if (typeof e.data !== "object" || !e.data || e.data.type !== "taskRunner-sandbox-ready") {
+window.addEventListener("message", e => {
+  if (
+    typeof e.data !== "object" ||
+    !e.data ||
+    e.data.type !== "taskRunner-sandbox-ready"
+  ) {
     return;
   }
   const contentWindow = e.source as Window;
@@ -152,34 +167,40 @@ export async function runTask(
   const currentRunnerGlobal = await createSandboxIFrame();
   currentRunnerInfo = {
     global: currentRunnerGlobal,
-    project,
+    project
   };
   // Runs the provided source in our fantasy gulp context
   const gulp = new Gulpy();
-  contextify(src,
+  contextify(
+    src,
     currentRunnerGlobal,
     // thisArg
     gulp,
-  {
-    // context for backwards compatibility
-    gulp,
-    Service,
-    project,
-    logLn,
-    fileTypeForExtension,
-    monaco: externals === RunTaskExternals.Setup ? monaco : undefined,
-  }, {
-    // modules
-    "gulp": gulp,
-    "@wasm/studio-utils": {
+    {
+      // context for backwards compatibility
+      gulp,
       Service,
       project,
       logLn,
       fileTypeForExtension,
-      Arc: externals === RunTaskExternals.Arc ? Arc : undefined,
-      eval: externals === RunTaskExternals.Setup ? unsafeEval : undefined,
+      monaco: externals === RunTaskExternals.Setup ? monaco : undefined
+    },
+    {
+      // modules
+      "gulp": gulp,
+      "@wasm/studio-utils": {
+        Service,
+        project,
+        logLn,
+        fileTypeForExtension,
+        Arc: externals === RunTaskExternals.Arc ? Arc : undefined,
+        eval: externals === RunTaskExternals.Setup ? unsafeEval : undefined
+      },
+      "sunseed": {
+        transpile
+      }
     }
-  })();
+  )();
   if (gulp.hasTask(name)) {
     try {
       logLn(`Task ${name} is running...`, "info");
@@ -189,7 +210,7 @@ export async function runTask(
       logLn(`Task ${name} failed: ${e.message}`, "error");
     }
   } else if (!optional) {
-    logLn(`Task ${name} is not optional.` , "error");
+    logLn(`Task ${name} is not optional.`, "error");
   }
   clearCurrentRunnerInfoAndIframe();
 }

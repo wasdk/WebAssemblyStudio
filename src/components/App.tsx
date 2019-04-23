@@ -515,6 +515,7 @@ export class App extends React.Component<AppProps, AppState> {
           build();
         }}
       />);
+    {/*
     if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
       toolbarButtons.push(
         <Button
@@ -539,6 +540,7 @@ export class App extends React.Component<AppProps, AppState> {
         />
       );
     }
+    */}
     if (this.props.embeddingParams.type === EmbeddingType.Arc) {
       toolbarButtons.push(
         <Button
@@ -573,7 +575,7 @@ export class App extends React.Component<AppProps, AppState> {
           label="GitHub Issues"
           title="GitHub Issues"
           customClassName="issue"
-          href="https://github.com/wasdk/WebAssemblyStudio"
+          href="https://github.com/TradaTech/WebAssemblyStudio"
           target="_blank"
           rel="noopener noreferrer"
         />,
