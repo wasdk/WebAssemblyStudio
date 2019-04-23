@@ -55,8 +55,6 @@
   },
   "homepage": "https://github.com/wasdk/WebAssemblyStudio",
   "dependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/plugin-transform-flow-strip-types": "^7.4.0",
     "@types/flux": "^3.1.8",
     "@types/jszip": "^3.1.4",
     "@types/minimatch": "^3.0.3",
@@ -79,6 +77,7 @@
     "react-icons": "^2.2.7",
     "react-modal": "^3.6.1",
     "request": "^2.88.0",
+    "sunseed": "git+https://github.com/TradaTech/sunseed.git",
     "tar-js": "^0.3.0",
     "terser": "^3.17.0",
     "tslint-react": "^3.6.0"

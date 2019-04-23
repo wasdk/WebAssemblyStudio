@@ -1,0 +1,20 @@
+{
+  "name": "@wasm/dice_djs",
+  "description": "",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "gulp --gulpfile ./build.ts"
+  },
+  "devDependencies": {
+    "@wasm/studio-utils": "*",
+    "gulp": "~3.9.1",
+    "sunseed": "git+https://github.com/TradaTech/sunseed.git",
+    "ts-node": "~5.0.0",
+    "typescript": "~2.7.2"
+  },
+  "wasmStudio": {
+    "name": "Dice Decorated JS Project",
+    "description": "# Dice Decorated JS Project",
+    "icon": "javascript-lang-file-icon"
+  }
+}
