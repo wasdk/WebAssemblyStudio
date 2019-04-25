@@ -55,6 +55,7 @@
   },
   "homepage": "https://github.com/wasdk/WebAssemblyStudio",
   "dependencies": {
+    "@babel/core": "7.4.3",
     "@types/flux": "^3.1.8",
     "@types/jszip": "^3.1.4",
     "@types/minimatch": "^3.0.3",
@@ -63,8 +64,10 @@
     "@types/react-icons": "^2.2.6",
     "@types/react-modal": "^3.2.1",
     "@types/xterm": "^3.0.0",
+    "base64-arraybuffer": "0.1.5",
     "cassowary": "0.0.2",
     "flux": "^3.1.3",
+    "icetea-web3": "git+https://github.com/TradaTech/icetea-web3.git",
     "jszip": "^3.1.5",
     "minimatch": "^3.0.4",
     "monaco-editor": "^0.14.3",

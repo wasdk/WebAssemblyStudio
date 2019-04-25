@@ -24,6 +24,7 @@ import { Gulpy } from "../gulpy";
 import { Service } from "../service";
 import { Arc } from "../arc";
 const { transpile } = require("sunseed");
+const tweb3 = require("icetea-web3");
 
 export enum RunTaskExternals {
   Default,
@@ -198,7 +199,12 @@ export async function runTask(
       },
       "sunseed": {
         transpile
-      }
+      },
+      "icetea-web3": {
+        utils: tweb3.utils,
+        IceTeaWeb3: tweb3.IceTeaWeb3
+      },
+      "base64-arraybuffer": require("base64-arraybuffer")
     }
   )();
   if (gulp.hasTask(name)) {

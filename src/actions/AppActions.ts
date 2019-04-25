@@ -50,7 +50,7 @@ export enum AppActionType {
   SANDBOX_RUN = "SANDBOX_RUN",
   CLOSE_VIEW = "CLOSE_VIEW",
   CLOSE_TABS = "CLOSE_TABS",
-  OPEN_VIEW = "OPEN_VIEW",
+  OPEN_VIEW = "OPEN_VIEW"
 }
 
 export interface AppAction {
@@ -67,7 +67,7 @@ export function addFileTo(file: File, parent: Directory) {
   dispatcher.dispatch({
     type: AppActionType.ADD_FILE_TO,
     file,
-    parent,
+    parent
   } as AddFileToAction);
 }
 
@@ -79,13 +79,13 @@ export interface LoadProjectAction extends AppAction {
 export function loadProject(project: Project) {
   dispatcher.dispatch({
     type: AppActionType.LOAD_PROJECT,
-    project,
+    project
   } as LoadProjectAction);
 }
 
 export function initStore() {
   dispatcher.dispatch({
-    type: AppActionType.INIT_STORE,
+    type: AppActionType.INIT_STORE
   } as AppAction);
 }
 
@@ -96,12 +96,16 @@ export interface UpdateFileNameAndDescriptionAction extends AppAction {
   description: string;
 }
 
-export function updateFileNameAndDescription(file: File, name: string, description: string) {
+export function updateFileNameAndDescription(
+  file: File,
+  name: string,
+  description: string
+) {
   dispatcher.dispatch({
     type: AppActionType.UPDATE_FILE_NAME_AND_DESCRIPTION,
     file,
     name,
-    description,
+    description
   } as UpdateFileNameAndDescriptionAction);
 }
 
@@ -113,14 +117,14 @@ export interface DeleteFileAction extends AppAction {
 export function deleteFile(file: File) {
   dispatcher.dispatch({
     type: AppActionType.DELETE_FILE,
-    file,
+    file
   } as DeleteFileAction);
 }
 
 export interface LogLnAction extends AppAction {
   type: AppActionType.LOG_LN;
   message: string;
-  kind: ("" | "info" | "warn" | "error");
+  kind: "" | "info" | "warn" | "error";
 }
 
 export type logKind = "" | "info" | "warn" | "error";
@@ -129,7 +133,7 @@ export function logLn(message: string, kind: logKind = "") {
   dispatcher.dispatch({
     type: AppActionType.LOG_LN,
     message,
-    kind,
+    kind
   } as LogLnAction);
 }
 
@@ -189,7 +193,11 @@ export interface OpenFileAction extends AppAction {
   // TODO: Add the location where the file should open.
 }
 
-export function openFile(file: File, type: ViewType = ViewType.Editor, preview = true) {
+export function openFile(
+  file: File,
+  type: ViewType = ViewType.Editor,
+  preview = true
+) {
   dispatcher.dispatch({
     type: AppActionType.OPEN_FILE,
     file,
@@ -212,7 +220,11 @@ export interface OpenFilesAction extends AppAction {
 
 export async function openProjectFiles(template: Template) {
   const newProject = new Project();
-  await Service.loadFilesIntoProject(template.files, newProject, template.baseUrl);
+  await Service.loadFilesIntoProject(
+    template.files,
+    newProject,
+    template.baseUrl
+  );
   dispatcher.dispatch({
     type: AppActionType.LOAD_PROJECT,
     project: newProject
@@ -227,15 +239,15 @@ export async function saveProject(fiddle: string): Promise<string> {
   const tabGroups = appStore.getTabGroups();
   const projectModel = appStore.getProject().getModel();
 
-  const openedFiles = tabGroups.map((group) => {
-    return group.views.map((view) => view.file.getPath());
+  const openedFiles = tabGroups.map(group => {
+    return group.views.map(view => view.file.getPath());
   });
 
   const uri = await Service.saveProject(projectModel, openedFiles, fiddle);
   logLn("Saved Project OK");
 
   dispatcher.dispatch({
-    type: AppActionType.CLEAR_PROJECT_MODIFIED,
+    type: AppActionType.CLEAR_PROJECT_MODIFIED
   } as AppAction);
   return uri;
 }
@@ -264,13 +276,13 @@ export interface PopStatusAction extends AppAction {
 export function pushStatus(status: string) {
   dispatcher.dispatch({
     type: AppActionType.PUSH_STATUS,
-    status,
+    status
   } as PushStatusAction);
 }
 
 export function popStatus() {
   dispatcher.dispatch({
-    type: AppActionType.POP_STATUS,
+    type: AppActionType.POP_STATUS
   } as PopStatusAction);
 }
 
@@ -293,11 +305,11 @@ export async function runTask(
   if (gulpfile) {
     await run(appStore.getFileSource(gulpfile));
   } else {
-    if (gulpfile = appStore.getFileByName("build.ts")) {
+    if ((gulpfile = appStore.getFileByName("build.ts"))) {
       const output = await gulpfile.getModel().getEmitOutput();
       await run(output.outputFiles[0].text);
     } else {
-      if (gulpfile = appStore.getFileByName("build.js")) {
+      if ((gulpfile = appStore.getFileByName("build.js"))) {
         await run(appStore.getFileSource(gulpfile));
       } else {
         logLn(Errors.BuildFileMissing, "error");
@@ -311,8 +323,8 @@ export async function run() {
   const projectModel = appStore.getProject().getModel();
   const context = new RewriteSourcesContext(projectModel);
   context.logLn = logLn;
-  context.createFile = (src: ArrayBuffer|string, type: string) => {
-    const blob = new Blob([src], { type, });
+  context.createFile = (src: ArrayBuffer | string, type: string) => {
+    const blob = new Blob([src], { type });
     return window.URL.createObjectURL(blob);
   };
 
@@ -324,13 +336,19 @@ export async function run() {
 
   dispatcher.dispatch({
     type: AppActionType.SANDBOX_RUN,
-    src,
+    src
   } as SandboxRunAction);
 }
 
 export async function build() {
   pushStatus("Building Project");
   await runTask("build");
+  popStatus();
+}
+
+export async function deploy() {
+  pushStatus("Deploying Project");
+  await runTask("deploy");
   popStatus();
 }
 
