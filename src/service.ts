@@ -333,7 +333,20 @@ export class Service {
     const response = await fetch(url, {
       headers: new Headers({ "Content-type": "application/json; charset=utf-8" })
     });
-    return await response.json();
+
+    const jsonData = await response.json();
+    if (jsonData.success) {
+      return Promise.resolve(jsonData);
+    }
+
+    // local storage support
+    const latestFiles = JSON.parse(localStorage.getItem(localStorage.getItem("latestUri")));
+    return Promise.resolve({
+      success: true,
+      message: "Success",
+      id: uri,
+      files: latestFiles.files
+    });
   }
 
   static async saveJSON(json: ICreateFiddleRequest, uri: string): Promise<string> {
@@ -348,6 +361,12 @@ export class Service {
       });
       let jsonURI = (await response.json()).id;
       jsonURI = jsonURI.substring(jsonURI.lastIndexOf("/") + 1);
+
+      // localstorage support
+      localStorage.removeItem(localStorage.getItem("latestUri"));
+      localStorage.setItem(jsonURI, JSON.stringify(json));
+      localStorage.setItem("latestUri", jsonURI);
+
       return jsonURI;
     }
   }
