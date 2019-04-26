@@ -1,3 +1,5 @@
+const hello = require("./hello.js")
+
 @contract
 class SimpleStore {
   @state value;
@@ -8,5 +10,9 @@ class SimpleStore {
 
   getValue() {
     return this.value;
+  }
+
+  @pure hello() {
+    return hello();
   }
 }

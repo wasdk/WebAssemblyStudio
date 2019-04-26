@@ -5,7 +5,11 @@ import { IceTeaWeb3 } from "icetea-web3";
 
 gulp.task("build", async () => {
   const storeSrc = project.getFile("src/simplestore.djs");
-  const store = await transpile(storeSrc.getData(), { prettier: true });
+  const store = await transpile(storeSrc.getData(), {
+    prettier: true,
+    project,
+    context: "src"
+  });
 
   const storeJs = project.newFile("out/simplestore.js", "javascript", true);
   storeJs.setData(store);
