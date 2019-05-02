@@ -24,7 +24,7 @@ import * as React from "react";
 export class Header extends React.Component<{}, {}> {
   render() {
     return <div className="wasmStudioHeader">
-      <span className="waHeaderText">IceTea Studio</span>
+      <span className="waHeaderText">Icetea Studio</span>
     </div>;
   }
 }

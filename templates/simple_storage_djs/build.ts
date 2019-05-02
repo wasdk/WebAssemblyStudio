@@ -16,10 +16,16 @@ gulp.task("build", async () => {
 });
 
 gulp.task("deploy", async () => {
-  const tweb3 = new IceTeaWeb3("ws://localhost:26657/websocket");
-  tweb3.wallet.importAccount("CJUPdD38vwc2wMC3hDsySB7YQ6AFLGuU6QYQYaiSeBsK");
+  const tweb3 = new IceTeaWeb3("https://kitchensink.icetea.io/api");
+  tweb3.wallet.importAccount("FFEewpqqtnr7ddB1upMMVvTm5dbEJUYWi2iwA4eyshsM");
   const storeSrc = project.getFile("out/simplestore.js");
-  return tweb3.deployJs(storeSrc.getData());
+  if (!storeSrc) {
+    throw new Error("You need to build the project first.");
+  }
+  const result = await tweb3.deployJs(storeSrc.getData());
+  logLn("Deploy successfully to address " + result.address, "info");
+  logLn("https://kitchensink.icetea.io/contract.html?address=" + result.address, "info");
+  return result;
 });
 
 gulp.task("default", ["build"], async () => {});

@@ -13,8 +13,8 @@
     "typescript": "~2.7.2"
   },
   "wasmStudio": {
-    "name": "Simple Storage Decorated JS Project",
-    "description": "# Simple Storage Decorated JS Project",
+    "name": "Simple Storage JavaScript Smart Contract",
+    "description": "# Simple Storage JavaScript Smart Contract\n\nThis is a sample 'Simple Storage' JavaScript smart contract for [Icetea platform](https://icetea.io).",
     "icon": "javascript-lang-file-icon"
   }
 }

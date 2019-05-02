@@ -1,7 +1,7 @@
-# "Simple Storage" Rust Project
+# "Simple Storage" Wasm Smart Contract using Rust
 
 This is a sample Rust project which uses the [`wasm_bindgen` crate][crate] to
-build a rust smart contract for [IceTea platform][platform].
+build a WebAssembly smart contract for [Icetea platform][platform].
 
-[platform]: https://github.com/TradaTech/icetea
+[platform]: https://icetea.io
 [crate]: https://github.com/rustwasm/wasm-bindgen

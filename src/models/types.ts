@@ -211,7 +211,7 @@ export function fileTypeForExtension(extension: string): FileType {
 export function mimeTypeForFileType(type: FileType): string {
   if (type === FileType.HTML) {
     return "text/html";
-  } else if (type === FileType.JavaScript) {
+  } else if (type === FileType.JavaScript || type === FileType.Djs) {
     return "application/javascript";
   } else if (type === FileType.Wasm) {
     return "application/wasm";

@@ -1,7 +1,6 @@
-# "Simple Storage" Decorated JS Project
+# "Simple Storage" JavaScript Smart Contract
 
-This is a sample Decorated JS project which uses the [`babel` package][package] to
-build a raw js smart contract for [IceTea platform][platform].
+This is a sample 'Simple Storage' JavaScript smart contract for [Icetea platform][platform].
 
-[platform]: https://github.com/TradaTech/icetea
-[package]: https://github.com/babel/babel
+[platform]: https://icetea.io
+

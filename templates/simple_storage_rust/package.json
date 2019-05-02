@@ -12,8 +12,8 @@
     "typescript": "~2.7.2"
   },
   "wasmStudio": {
-    "name": "Simple Storage Rust Project",
-    "description": "# Simple Storage Rust Project",
+    "name": "Simple Storage Wasm Smart Contract in Rust",
+    "description": "# Simple Storage Wasm Smart Contract in Rust\n\nThis is a sample Rust project which compiles into a WebAssembly smart contract for [Icetea platform](https://icetea.io).",
     "icon": "rust-lang-file-icon"
   }
 }

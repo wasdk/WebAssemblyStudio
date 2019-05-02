@@ -13,8 +13,8 @@
     "typescript": "~2.7.2"
   },
   "wasmStudio": {
-    "name": "Dice Decorated JS Project",
-    "description": "# Dice Decorated JS Project",
+    "name": "Dice JavaScript Chatbot",
+    "description": "# Dice JavaScript Chatbot\n\nA sample JavaScript dice chatbot for [Icetea platform](https://icetea.io). After deploying, you could register it with the BotStore.",
     "icon": "javascript-lang-file-icon"
   }
 }

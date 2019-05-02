@@ -215,7 +215,7 @@ export class NewFileDialog extends React.Component<
 
                   <ListItem
                     value={FileType.Djs}
-                    label={"Decorated javascript (.djs)"}
+                    label={"Decorated JavaScript (.djs)"}
                     icon={getIconForFileType(FileType.Djs)}
                   />
                 </ListBox>
