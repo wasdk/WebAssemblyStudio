@@ -25,22 +25,23 @@ import { Project } from "./Project";
 export enum FileType {
   JavaScript = "javascript",
   TypeScript = "typescript",
-  HTML       = "html",
-  CSS        = "css",
-  C          = "c",
-  Cpp        = "cpp",
-  Rust       = "rust",
-  Wat        = "wat",
-  Wasm       = "wasm",
-  Directory  = "directory",
-  Log        = "log",
-  x86        = "x86",
-  Markdown   = "markdown",
-  Cretonne   = "cretonne",
-  JSON       = "json",
-  DOT        = "dot",
-  TOML       = "toml",
-  Unknown    = "unknown"
+  HTML = "html",
+  CSS = "css",
+  C = "c",
+  Cpp = "cpp",
+  Rust = "rust",
+  Wat = "wat",
+  Wasm = "wasm",
+  Directory = "directory",
+  Log = "log",
+  x86 = "x86",
+  Markdown = "markdown",
+  Cretonne = "cretonne",
+  JSON = "json",
+  DOT = "dot",
+  TOML = "toml",
+  Djs = "djs",
+  Unknown = "unknown"
 }
 
 export interface SandboxRun {
@@ -92,6 +93,8 @@ export function languageForFileType(type: FileType): string {
     return "dot";
   } else if (type === FileType.TOML) {
     return "toml";
+  } else if (type === FileType.Djs) {
+    return "javascript";
   }
   return "";
 }
@@ -125,6 +128,8 @@ export function nameForFileType(type: FileType): string {
     return "DOT";
   } else if (type === FileType.TOML) {
     return "TOML";
+  } else if (type === FileType.Djs) {
+    return "Decorated JavaScript";
   }
   return "";
 }
@@ -158,6 +163,8 @@ export function extensionForFileType(type: FileType): string {
     return "dot";
   } else if (type === FileType.TOML) {
     return "toml";
+  } else if (type === FileType.Djs) {
+    return "djs";
   }
   return "";
 }
@@ -195,6 +202,8 @@ export function fileTypeForExtension(extension: string): FileType {
     return FileType.DOT;
   } else if (extension === "toml") {
     return FileType.TOML;
+  } else if (extension === "djs") {
+    return FileType.Djs;
   }
   return null;
 }
@@ -256,6 +265,8 @@ export function getIconForFileType(fileType: FileType): string {
     return "wasm-lang-file-icon";
   } else if (fileType === FileType.Wat) {
     return "wat-lang-file-icon";
+  } else if (fileType === FileType.Djs) {
+    return "javascript-lang-file-icon";
   }
   return "txt-ext-file-icon";
 }

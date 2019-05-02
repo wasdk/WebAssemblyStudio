@@ -30,6 +30,7 @@ export enum Language {
   JavaScript = "javascript",
   TypeScript = "typescript",
   Toml = "toml",
+  Djs = "djs",
   Text = "text"
 }
 
@@ -39,7 +40,7 @@ export interface InputFile {
 }
 
 export interface ServiceInput {
-  files: { [name: string]: InputFile; };
+  files: { [name: string]: InputFile };
   options?: any;
 }
 
@@ -51,7 +52,7 @@ export interface OutputItem {
 
 export interface ServiceOutput {
   success: boolean;
-  items: { [name: string]: OutputItem; };
+  items: { [name: string]: OutputItem };
   console?: string;
 }
 

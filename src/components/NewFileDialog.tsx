@@ -24,7 +24,15 @@ import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoFile, GoX } from "./shared/Icons";
 import appStore from "../stores/AppStore";
-import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef, getIconForFileType } from "../models";
+import {
+  File,
+  FileType,
+  Directory,
+  extensionForFileType,
+  nameForFileType,
+  ModelRef,
+  getIconForFileType
+} from "../models";
 import { ChangeEvent } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
 import { validateFileName } from "../util";
@@ -42,7 +50,10 @@ interface NewFileDialogState {
   name: string;
 }
 
-export class NewFileDialog extends React.Component<NewFileDialogProps, NewFileDialogState> {
+export class NewFileDialog extends React.Component<
+  NewFileDialogProps,
+  NewFileDialogState
+> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -58,7 +69,10 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, NewFileDi
     const directory = this.props.directory;
 
     if (this.state.name) {
-      const fileNameError: string = validateFileName(this.state.name, this.state.fileType);
+      const fileNameError: string = validateFileName(
+        this.state.name,
+        this.state.fileType
+      );
       if (fileNameError) {
         return fileNameError;
       }
@@ -83,80 +97,173 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, NewFileDi
     return "Create";
   }
   render() {
-    return <ReactModal
-      isOpen={this.props.isOpen}
-      contentLabel="Create New File"
-      className="modal show-file-icons"
-      overlayClassName="overlay"
-      ariaHideApp={false}
-    >
-      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <div className="modal-title-bar">
-          Create New File
-        </div>
-        <div>
-          <div style={{ display: "flex" }}>
-            <div style={{ width: 250 }}>
-              <ListBox
-                value={this.state.fileType}
-                height={240}
-                onSelect={(fileType) => {
-                  let description = "";
-                  switch (fileType) {
-                    case FileType.C: description = "Creates a file containing C source code."; break;
-                    case FileType.Cpp: description = "Creates a file containing C++ source code."; break;
-                    case FileType.Cretonne: description = "Cretonne intermediate language (IL) source code."; break;
-                    default: description = "Creates a " + nameForFileType(fileType) + " file."; break;
-                  }
-                  this.setState({ fileType, description });
-                }}
-              >
-                <ListItem value={FileType.C} label={"C File (.c)"} icon={getIconForFileType(FileType.C)} />
-                <ListItem value={FileType.Cpp} label={"C++ File (.cpp)"} icon={getIconForFileType(FileType.Cpp)} />
-                <ListItem value={FileType.Rust} label={"Rust File (.rs)"} icon={getIconForFileType(FileType.Rust)} />
+    return (
+      <ReactModal
+        isOpen={this.props.isOpen}
+        contentLabel="Create New File"
+        className="modal show-file-icons"
+        overlayClassName="overlay"
+        ariaHideApp={false}
+      >
+        <div
+          style={{ display: "flex", flexDirection: "column", height: "100%" }}
+        >
+          <div className="modal-title-bar">Create New File</div>
+          <div>
+            <div style={{ display: "flex" }}>
+              <div style={{ width: 250 }}>
+                <ListBox
+                  value={this.state.fileType}
+                  height={240}
+                  onSelect={fileType => {
+                    let description = "";
+                    switch (fileType) {
+                      // case FileType.C:
+                      //   description =
+                      //     "Creates a file containing C source code.";
+                      //   break;
+                      // case FileType.Cpp:
+                      //   description =
+                      //     "Creates a file containing C++ source code.";
+                      //   break;
+                      // case FileType.Cretonne:
+                      //   description =
+                      //     "Cretonne intermediate language (IL) source code.";
+                      //   break;
+                      case FileType.Djs:
+                        description = "Create a smart contract file.";
+                        break;
+                      default:
+                        description =
+                          "Creates a " + nameForFileType(fileType) + " file.";
+                        break;
+                    }
+                    this.setState({ fileType, description });
+                  }}
+                >
+                  {/*
+                  <ListItem
+                    value={FileType.C}
+                    label={"C File (.c)"}
+                    icon={getIconForFileType(FileType.C)}
+                  />
+                  <ListItem
+                    value={FileType.Cpp}
+                    label={"C++ File (.cpp)"}
+                    icon={getIconForFileType(FileType.Cpp)}
+                  />
+                  <ListItem
+                    value={FileType.Cretonne}
+                    label={"Cretonne (.cton)"}
+                    icon={getIconForFileType(FileType.Cretonne)}
+                  />
+                  <ListItem
+                    value={FileType.Wat}
+                    label={"Wat (.wat)"}
+                    icon={getIconForFileType(FileType.Wat)}
+                  />
+                  <ListItem
+                    value={FileType.TypeScript}
+                    label={"TypeScript (.ts)"}
+                    icon={getIconForFileType(FileType.TypeScript)}
+                  />
+                  <ListItem
+                    value={FileType.HTML}
+                    label={"HTML (.html)"}
+                    icon={getIconForFileType(FileType.HTML)}
+                  />
+                  <ListItem
+                    value={FileType.CSS}
+                    label={"CSS (.css)"}
+                    icon={getIconForFileType(FileType.CSS)}
+                  />
+                  <ListItem
+                    value={FileType.DOT}
+                    label={"GraphViz DOT (.dot)"}
+                    icon={getIconForFileType(FileType.DOT)}
+                  />
+                  */}
+                  <ListItem
+                    value={FileType.Rust}
+                    label={"Rust File (.rs)"}
+                    icon={getIconForFileType(FileType.Rust)}
+                  />
 
-                <ListItem value={FileType.Cretonne} label={"Cretonne (.cton)"} icon={getIconForFileType(FileType.Cretonne)} />
-                <ListItem value={FileType.Wat} label={"Wat (.wat)"} icon={getIconForFileType(FileType.Wat)} />
+                  <ListItem
+                    value={FileType.JavaScript}
+                    label={"JavaScript (.js)"}
+                    icon={getIconForFileType(FileType.JavaScript)}
+                  />
 
-                <ListItem value={FileType.JavaScript} label={"JavaScript (.js)"} icon={getIconForFileType(FileType.JavaScript)} />
-                <ListItem value={FileType.TypeScript} label={"TypeScript (.ts)"} icon={getIconForFileType(FileType.TypeScript)} />
-                <ListItem value={FileType.HTML} label={"HTML (.html)"} icon={getIconForFileType(FileType.HTML)} />
-                <ListItem value={FileType.CSS} label={"CSS (.css)"} icon={getIconForFileType(FileType.CSS)} />
-                <ListItem value={FileType.Markdown} label={"Markdown (.md)"} icon={getIconForFileType(FileType.Markdown)} />
-                <ListItem value={FileType.JSON} label={"JSON (.json)"} icon={getIconForFileType(FileType.JSON)} />
-                <ListItem value={FileType.DOT} label={"GraphViz DOT (.dot)"} icon={getIconForFileType(FileType.DOT)} />
-                <ListItem value={FileType.TOML} label={"TOML Document (.toml)"} icon={getIconForFileType(FileType.TOML)} />
-              </ListBox>
-            </div>
-            <div className="new-file-dialog-description">
-              {this.state.description}
+                  <ListItem
+                    value={FileType.Markdown}
+                    label={"Markdown (.md)"}
+                    icon={getIconForFileType(FileType.Markdown)}
+                  />
+
+                  <ListItem
+                    value={FileType.JSON}
+                    label={"JSON (.json)"}
+                    icon={getIconForFileType(FileType.JSON)}
+                  />
+
+                  <ListItem
+                    value={FileType.TOML}
+                    label={"TOML Document (.toml)"}
+                    icon={getIconForFileType(FileType.TOML)}
+                  />
+
+                  <ListItem
+                    value={FileType.Djs}
+                    label={"Decorated javascript (.djs)"}
+                    icon={getIconForFileType(FileType.Djs)}
+                  />
+                </ListBox>
+              </div>
+              <div className="new-file-dialog-description">
+                {this.state.description}
+              </div>
             </div>
           </div>
+          <div style={{ flex: 1, padding: "8px" }}>
+            <TextInputBox
+              label={
+                "Name: " +
+                (this.props.directory
+                  ? appStore.getPath(this.props.directory) + "/"
+                  : "")
+              }
+              error={this.getNameError()}
+              value={this.state.name}
+              onChange={this.onChangeName}
+            />
+          </div>
+          <div>
+            <Button
+              icon={<GoX />}
+              label="Cancel"
+              title="Create New File"
+              onClick={() => {
+                this.props.onCancel();
+              }}
+            />
+            <Button
+              icon={<GoFile />}
+              label={this.createButtonLabel()}
+              title="Create New File"
+              isDisabled={
+                !this.state.fileType ||
+                !this.state.name ||
+                !!this.getNameError()
+              }
+              onClick={() => {
+                const file = new File(this.fileName(), this.state.fileType);
+                return this.props.onCreate && this.props.onCreate(file);
+              }}
+            />
+          </div>
         </div>
-        <div style={{ flex: 1, padding: "8px" }}>
-          <TextInputBox label={"Name: " + (this.props.directory ? appStore.getPath(this.props.directory) + "/" : "")} error={this.getNameError()} value={this.state.name} onChange={this.onChangeName}/>
-        </div>
-        <div>
-          <Button
-            icon={<GoX />}
-            label="Cancel"
-            title="Create New File"
-            onClick={() => {
-              this.props.onCancel();
-            }}
-          />
-          <Button
-            icon={<GoFile />}
-            label={this.createButtonLabel()}
-            title="Create New File"
-            isDisabled={!this.state.fileType || !this.state.name || !!this.getNameError()}
-            onClick={() => {
-              const file = new File(this.fileName(), this.state.fileType);
-              return this.props.onCreate && this.props.onCreate(file);
-            }}
-          />
-        </div>
-      </div>
-    </ReactModal>;
+      </ReactModal>
+    );
   }
 }

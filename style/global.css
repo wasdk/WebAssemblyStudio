@@ -18,7 +18,7 @@
   --grey-950: #1d1d1d;
   --grey-1000: #1a1a1a;
 
-  --title: #654FF0;
+  --title: #15B5DD;
   --title-light: #c0b9f0;
   --title-complement: #f0db4f;
 }
@@ -162,7 +162,7 @@ a {
 
 .waHeaderText {
   vertical-align: middle;
-  margin-left: 2.2rem;
+  margin-left: 3.3rem;
   line-height: 40px;
 }
 
