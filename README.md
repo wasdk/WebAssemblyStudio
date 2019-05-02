@@ -1,8 +1,7 @@
-WebAssembly Studio
+Icetea Studio
 ====
-[![Build Status](https://travis-ci.org/wasdk/WebAssemblyStudio.svg?branch=master)](https://travis-ci.org/wasdk/WebAssemblyStudio) [![Coverage Status](https://coveralls.io/repos/github/wasdk/WebAssemblyStudio/badge.svg)](https://coveralls.io/github/wasdk/WebAssemblyStudio) [![Maintainance Status](https://img.shields.io/badge/maintained-seldom-yellowgreen.svg)](https://github.com/wasdk/WebAssemblyStudio/issues/381)
 
-This repository contains the [WebAssembly Studio](https://webassembly.studio) website source code.
+This repository contains the [Icetea Studio](https://studio.icetea.io) website source code.
 
 Running your own local copy of the website
 ===
@@ -13,7 +12,7 @@ To run a local copy, you will need to install node.js and webpack on your comput
 npm install
 ```
 
-To build WebAssembly Studio whenever a file changes run:
+To build Icetea Studio whenever a file changes run:
 
 ```
 npm run build-watch
@@ -31,15 +30,9 @@ Before submitting a pull request run:
 npm test
 ```
 
-### Contributing
-
-Please get familiar with the [contributing guide](https://github.com/wasdk/WebAssemblyStudio/wiki/Contributing).
-
-Any doubts or questions? You can always find us on slack at http://wasm-studio.slack.com
-
-Need a slack invite? https://wasm-studio-invite.herokuapp.com/
-
 ### Credits
+
+This projects started as a fork of [WebAssembly Studio](https://github.com/wasdk/WebAssemblyStudio).
 
 This project depends on several excellent libraries and tools:
 
