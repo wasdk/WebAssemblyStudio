@@ -32,7 +32,7 @@ npm test
 
 ### Credits
 
-This projects started as a fork of [WebAssembly Studio](https://github.com/wasdk/WebAssemblyStudio).
+This project started as a fork of [WebAssembly Studio](https://github.com/wasdk/WebAssemblyStudio).
 
 This project depends on several excellent libraries and tools:
 
