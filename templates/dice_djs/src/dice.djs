@@ -1,4 +1,4 @@
-const { SurveyBot, Message } = require('https://raw.githubusercontent.com/TradaTech/icetea/master/icetea/bot/index.js')
+const { SurveyBot, Message } = require('https://raw.githubusercontent.com/TradaTech/botutils/master/index.js')
 
 const RATE = 5
 const MAX = 6
