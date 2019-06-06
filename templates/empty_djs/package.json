@@ -1,5 +1,5 @@
 {
-  "name": "storage-sample",
+  "name": "empty-sample",
   "description": "Simple storage",
   "version": "1.0.0",
   "scripts": {
@@ -15,8 +15,8 @@
     "@iceteachain/web3": "~0.1.3"
   },
   "wasmStudio": {
-    "name": "Simple Storage JavaScript Smart Contract",
-    "description": "# Simple Storage JavaScript Smart Contract\n\nThis is a sample 'Simple Storage' JavaScript smart contract for [Icetea platform](https://icetea.io).",
+    "name": "Empty JavaScript Smart Contract",
+    "description": "# Empty JavaScript Smart Contract\n\nThis is a empty JavaScript smart contract for [Icetea platform](https://icetea.io).",
     "icon": "javascript-lang-file-icon"
   }
 }

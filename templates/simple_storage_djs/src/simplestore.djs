@@ -1,18 +1,13 @@
-const hello = require("./hello.js")
+const { validate } = require("./helper.js")
 
 @contract
-class SimpleStore {
-  @state value;
+class NumberStore {
+  @view @state value : number = 0
 
-  @transaction setValue(value) {
-    this.value = value;
-  }
-
-  getValue() {
-    return this.value;
-  }
-
-  @pure hello() {
-    return hello();
+  @transaction setValue (value) {
+    const oldValue = this.value
+    this.value = validate(value)
+    this.emitEvent('ValueSet', { by: msg.sender, oldValue, newValue: this.value }, ['by'])
+    return oldValue
   }
 }

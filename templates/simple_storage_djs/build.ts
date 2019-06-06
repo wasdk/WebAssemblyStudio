@@ -1,7 +1,7 @@
 import * as gulp from "gulp";
 import { project } from "@wasm/studio-utils";
-import { transpile } from "sunseed";
-import { IceTeaWeb3 } from "icetea-web3";
+import { transpile } from "@iceteachain/sunseed";
+import { IceteaWeb3 } from "@iceteachain/web3";
 
 gulp.task("build", async () => {
   const storeSrc = project.getFile("src/simplestore.djs");
@@ -16,15 +16,15 @@ gulp.task("build", async () => {
 });
 
 gulp.task("deploy", async () => {
-  const tweb3 = new IceTeaWeb3("https://kitchensink.icetea.io/api");
-  tweb3.wallet.importAccount("FFEewpqqtnr7ddB1upMMVvTm5dbEJUYWi2iwA4eyshsM");
+  const tweb3 = new IceteaWeb3("https://rpc.icetea.io");
+  tweb3.wallet.createAccount();
   const storeSrc = project.getFile("out/simplestore.js");
   if (!storeSrc) {
     throw new Error("You need to build the project first.");
   }
   const result = await tweb3.deployJs(storeSrc.getData());
   logLn("Deploy successfully to address " + result.address, "info");
-  logLn("https://kitchensink.icetea.io/contract.html?address=" + result.address, "info");
+  logLn("https://devtools.icetea.io/contract.html?address=" + result.address, "info");
   return result;
 });
 

@@ -1,16 +1,18 @@
 {
-  "name": "@wasm/dice_djs",
+  "name": "dice-sample",
   "description": "",
   "version": "1.0.0",
   "scripts": {
-    "build": "gulp --gulpfile ./build.ts"
+    "build": "gulp --gulpfile ./build.ts",
+    "deploy": "gulp deploy --gulpfile ./build.ts"
   },
   "devDependencies": {
     "@wasm/studio-utils": "*",
     "gulp": "~3.9.1",
-    "sunseed": "git+https://github.com/TradaTech/sunseed.git",
     "ts-node": "~5.0.0",
-    "typescript": "~2.7.2"
+    "typescript": "~2.7.2",
+    "@iceteachain/sunseed": "0.1.0",
+    "@iceteachain/web3": "~0.1.3"
   },
   "wasmStudio": {
     "name": "Dice JavaScript Chatbot",

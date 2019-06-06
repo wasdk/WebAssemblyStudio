@@ -1,6 +1,6 @@
 {
-  "name": "@wasm/simple_storage_rust",
-  "description": "",
+  "name": "rust-sample",
+  "description": "Sample storage and ERC20-style token in Rust.",
   "version": "1.0.0",
   "scripts": {
     "build": "gulp --gulpfile ./build.ts"

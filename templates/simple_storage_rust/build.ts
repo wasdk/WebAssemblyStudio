@@ -1,6 +1,6 @@
 import * as gulp from "gulp";
 import { Service, project } from "@wasm/studio-utils";
-import { IceTeaWeb3 } from "icetea-web3";
+import { IceteaWeb3 } from "@iceteachain/web3";
 import * as base64ArrayBuffer from "base64-arraybuffer";
 
 gulp.task("build", async () => {
@@ -20,15 +20,15 @@ gulp.task("build", async () => {
 });
 
 gulp.task("deploy", async () => {
-  const tweb3 = new IceTeaWeb3("https://kitchensink.icetea.io/api");
-  tweb3.wallet.importAccount("FFEewpqqtnr7ddB1upMMVvTm5dbEJUYWi2iwA4eyshsM");
+  const tweb3 = new IceteaWeb3("https://rpc.icetea.io");
+  tweb3.wallet.createAccount()
   const storeSrc = project.getFile("out/store.wasm");
   if (!storeSrc) {
     throw new Error("You need to build the project first.")
   }
   const result = await tweb3.deployWasm(base64ArrayBuffer.encode(storeSrc.getData()));
   logLn("Deploy successfully to address " + result.address, "info");
-  logLn("https://kitchensink.icetea.io/contract.html?address=" + result.address, "info");
+  logLn("https://devtools.icetea.io/contract.html?address=" + result.address, "info");
   return result;
 });
 

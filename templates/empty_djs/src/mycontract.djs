@@ -1,0 +1,3 @@
+@contract class MyContract {
+
+}

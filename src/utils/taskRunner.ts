@@ -23,8 +23,8 @@ import { Project, fileTypeForExtension, mimeTypeForFileType } from "../models";
 import { Gulpy } from "../gulpy";
 import { Service } from "../service";
 import { Arc } from "../arc";
-const { transpile } = require("sunseed");
-const tweb3 = require("icetea-web3");
+const sunseed = require("@iceteachain/sunseed");
+const tweb3 = require("@iceteachain/web3");
 
 export enum RunTaskExternals {
   Default,
@@ -197,13 +197,8 @@ export async function runTask(
         Arc: externals === RunTaskExternals.Arc ? Arc : undefined,
         eval: externals === RunTaskExternals.Setup ? unsafeEval : undefined
       },
-      "sunseed": {
-        transpile
-      },
-      "icetea-web3": {
-        utils: tweb3.utils,
-        IceTeaWeb3: tweb3.IceTeaWeb3
-      },
+      "@iceteachain/sunseed": sunseed,
+      "@iceteachain/web3": tweb3,
       "base64-arraybuffer": require("base64-arraybuffer")
     }
   )();

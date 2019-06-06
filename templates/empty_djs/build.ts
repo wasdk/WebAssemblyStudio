@@ -4,17 +4,21 @@ import { transpile } from "@iceteachain/sunseed";
 import { IceteaWeb3 } from "@iceteachain/web3";
 
 gulp.task("build", async () => {
-  const diceSrc = project.getFile("src/dice.djs");
-  const dice = await transpile(diceSrc.getData(), { prettier: true });
+  const storeSrc = project.getFile("src/mycontract.djs");
+  const store = await transpile(storeSrc.getData(), {
+    prettier: true,
+    project,
+    context: "src"
+  });
 
-  const diceJs = project.newFile("out/dice.js", "javascript", true);
-  diceJs.setData(dice);
+  const storeJs = project.newFile("out/mycontract.js", "javascript", true);
+  storeJs.setData(store);
 });
 
 gulp.task("deploy", async () => {
   const tweb3 = new IceteaWeb3("https://rpc.icetea.io");
   tweb3.wallet.createAccount();
-  const storeSrc = project.getFile("out/dice.js");
+  const storeSrc = project.getFile("out/mycontract.js");
   if (!storeSrc) {
     throw new Error("You need to build the project first.");
   }
