@@ -25,7 +25,7 @@ deploy:
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
-  email: travis@webassembly.studio
-  name: "WebAssemblyStudio bot"
+  email: iceteachain@gmail.com
+  name: "IceteaStudio bot"
   on:
     branch: master

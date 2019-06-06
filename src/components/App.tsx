@@ -465,10 +465,10 @@ export class App extends React.Component<AppProps, AppState> {
         <Button
           key="EditInWebAssemblyStudio"
           icon={<GoPencil />}
-          label="Edit in WebAssembly Studio"
-          title="Edit Project in WebAssembly Studio"
+          label="Edit in Icetea Studio"
+          title="Edit Project in Icetea Studio"
           isDisabled={!this.state.fiddle}
-          href={`//webassembly.studio/?f=${this.state.fiddle}`}
+          href={`//studio.icetea.io/?f=${this.state.fiddle}`}
           target="wasm.studio"
           rel="noopener noreferrer"
         />
@@ -632,7 +632,7 @@ export class App extends React.Component<AppProps, AppState> {
           label="GitHub Issues"
           title="GitHub Issues"
           customClassName="issue"
-          href="https://github.com/TradaTech/WebAssemblyStudio"
+          href="https://github.com/TradaTech/icetea-studio"
           target="_blank"
           rel="noopener noreferrer"
         />,
