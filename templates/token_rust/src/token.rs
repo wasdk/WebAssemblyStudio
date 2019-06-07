@@ -76,40 +76,34 @@ pub fn main(operation: &str, value: &Value) -> Value {
   return true.to_value();
 }
 
-//#[wasm_bindgen]
-pub fn total_supply() -> u128 {
+fn total_supply() -> u128 {
   let total_supply = load!(u128, TOTAL_SUPPLY_KEY);
   return total_supply;
 }
 
-//#[wasm_bindgen]
-pub fn balance_of(owner: &str) -> u128 {
+fn balance_of(owner: &str) -> u128 {
   let balance = load!(u128, &get_key!(BALANCE_KEY, owner));
   return balance;
 }
 
-//#[wasm_bindgen]
-pub fn allowance(owner: &str, spender: &str) -> u128 {
+fn allowance(owner: &str, spender: &str) -> u128 {
   let allow = load!(u128, &get_key!(ALLOW_KEY, owner, spender));
   return allow;
 }
 
-//#[wasm_bindgen]
-pub fn transfer(to: &str, value: u128) -> bool {
+fn transfer(to: &str, value: u128) -> bool {
   let sender = get_sender();
   _transfer(&sender, to, value);
   return true;
 }
 
-//#[wasm_bindgen]
-pub fn approve(spender: &str, value: u128) -> bool {
+fn approve(spender: &str, value: u128) -> bool {
   let sender = get_sender();
   _approve(&sender, spender, value);
   return true;
 }
 
-//#[wasm_bindgen]
-pub fn transfer_from(from: &str, to: &str, value: u128) -> bool {
+fn transfer_from(from: &str, to: &str, value: u128) -> bool {
   let sender = get_sender();
   let allow = allowance(from, &sender);
   _transfer(from, to, value);
@@ -117,16 +111,14 @@ pub fn transfer_from(from: &str, to: &str, value: u128) -> bool {
   return true;
 }
 
-//#[wasm_bindgen]
-pub fn increase_allowance(spender: &str, add_value: u128) -> bool {
+fn increase_allowance(spender: &str, add_value: u128) -> bool {
   let sender = get_sender();
   let allow = allowance(&sender, spender);
   _approve(&sender, spender, allow.add(add_value));
   return true;
 }
 
-//#[wasm_bindgen]
-pub fn decrease_allowance(spender: &str, subtracted_value: u128) -> bool {
+fn decrease_allowance(spender: &str, subtracted_value: u128) -> bool {
   let sender = get_sender();
   let allow = allowance(&sender, spender);
   _approve(&sender, spender, allow.sub(subtracted_value));

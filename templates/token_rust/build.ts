@@ -25,17 +25,17 @@ const deployWasm = async (file: string) => {
     throw new Error("You need to build the project first.")
   }
   const result = await tweb3.deployWasm(base64ArrayBuffer.encode(wasm.getData()));
-  logLn("Deploy successfully " + wasm + " to address " + result.address, "info");
+  logLn("Deploy successfully to address " + result.address, "info");
   logLn("https://devtools.icetea.io/contract.html?address=" + result.address, "info");
   return result;
 }
 
 gulp.task("build", () => {
-  return buildWasm('store')
+  return buildWasm('token')
 })
 
 gulp.task("deploy", () => {
-  return deployWasm('store')
+  return deployWasm('token')
 })
 
 gulp.task("default", ["build"], async () => {});

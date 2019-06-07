@@ -1,4 +1,4 @@
-# Simpla Storage - Wasm Smart Contract using Rust
+# Sample Token - Wasm Smart Contract using Rust
 
 This is a sample Rust project which uses the [`wasm_bindgen` crate][crate] to
 build a WebAssembly smart contract for [Icetea platform][platform].

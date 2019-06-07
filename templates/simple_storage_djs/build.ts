@@ -17,13 +17,17 @@ gulp.task("build", async () => {
 
 gulp.task("deploy", async () => {
   const tweb3 = new IceteaWeb3("https://rpc.icetea.io");
-  tweb3.wallet.createAccount();
+  
+  // Create a new account to deploy
+  // To use existing account, use tweb3.wallet.importAccount(privateKey)
+  tweb3.wallet.createAccount()
+
   const storeSrc = project.getFile("out/simplestore.js");
   if (!storeSrc) {
     throw new Error("You need to build the project first.");
   }
   const result = await tweb3.deployJs(storeSrc.getData());
-  logLn("Deploy successfully to address " + result.address, "info");
+  logLn("Deploy successfully " + storeSrc + " to address " + result.address, "info");
   logLn("https://devtools.icetea.io/contract.html?address=" + result.address, "info");
   return result;
 });

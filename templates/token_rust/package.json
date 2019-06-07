@@ -1,6 +1,6 @@
 {
-  "name": "storage-sample",
-  "description": "Sample storage in Rust",
+  "name": "token-sample",
+  "description": "Sample token in Rust",
   "version": "0.1.0",
   "scripts": {
     "build": "gulp --gulpfile ./build.ts",
@@ -15,8 +15,8 @@
     "@iceteachain/web3": "~0.1.3"
   },
   "wasmStudio": {
-    "name": "Simple Storage - Wasm Smart Contract in Rust",
-    "description": "# Simple Storage - Wasm Smart Contract in Rust\n\nThis is a sample Rust project which compiles into a WebAssembly smart contract for [Icetea platform](https://icetea.io).",
+    "name": "Sample Token - Wasm Smart Contract in Rust",
+    "description": "# Sample Token - Wasm Smart Contract in Rust\n\nThis is a sample Rust project which compiles into a WebAssembly smart contract for [Icetea platform](https://icetea.io).",
     "icon": "rust-lang-file-icon"
   }
 }

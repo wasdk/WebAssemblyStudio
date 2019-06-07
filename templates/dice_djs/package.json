@@ -1,7 +1,7 @@
 {
   "name": "dice-sample",
-  "description": "",
-  "version": "1.0.0",
+  "description": "Dice chatbot",
+  "version": "0.1.0",
   "scripts": {
     "build": "gulp --gulpfile ./build.ts",
     "deploy": "gulp deploy --gulpfile ./build.ts"

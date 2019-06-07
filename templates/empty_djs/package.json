@@ -1,7 +1,7 @@
 {
   "name": "empty-sample",
   "description": "Simple storage",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "scripts": {
     "build": "gulp --gulpfile ./build.ts",
     "deploy": "gulp deploy --gulpfile ./build.ts"

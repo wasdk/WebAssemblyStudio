@@ -19,7 +19,7 @@ gulp.task("deploy", async () => {
     throw new Error("You need to build the project first.");
   }
   const result = await tweb3.deployJs(storeSrc.getData());
-  logLn("Deploy successfully to address " + result.address, "info");
+  logLn("Deploy successfully " + storeSrc + " to address " + result.address, "info");
   logLn("https://devtools.icetea.io/contract.html?address=" + result.address, "info");
   return result;
 });
