@@ -5,7 +5,11 @@ import { IceteaWeb3 } from "@iceteachain/web3";
 
 gulp.task("build", async () => {
   const diceSrc = project.getFile("src/dice.djs");
-  const dice = await transpile(diceSrc.getData(), { prettier: true });
+  const dice = await transpile(diceSrc.getData(), {
+    prettier: true,
+    project,
+    context: "src"
+  });
 
   const diceJs = project.newFile("out/dice.js", "javascript", true);
   diceJs.setData(dice);

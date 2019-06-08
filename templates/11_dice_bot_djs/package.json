@@ -1,0 +1,22 @@
+{
+  "name": "dice-sample",
+  "description": "Dice chatbot",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "gulp --gulpfile ./build.ts",
+    "deploy": "gulp deploy --gulpfile ./build.ts"
+  },
+  "devDependencies": {
+    "@wasm/studio-utils": "*",
+    "gulp": "~3.9.1",
+    "ts-node": "~5.0.0",
+    "typescript": "~2.7.2",
+    "@iceteachain/sunseed": "0.1.0",
+    "@iceteachain/web3": "~0.1.3"
+  },
+  "wasmStudio": {
+    "name": "Dice JavaScript Chatbot",
+    "description": "# Dice JavaScript Chatbot\n\nA sample JavaScript dice chatbot for [Icetea platform](https://icetea.io). After deploying, you need to transfer some TEA to it so that it could accept betting.",
+    "icon": "javascript-lang-file-icon"
+  }
+}

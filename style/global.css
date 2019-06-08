@@ -796,6 +796,7 @@ a {
 
 .md h1, .md h2 {
   font-family: 'Zilla Slab', serif;
+  line-height: normal;
 }
 
 .md blockquote, .md h1, .md ol, .md p, .md ul {
