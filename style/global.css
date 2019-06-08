@@ -100,7 +100,7 @@ a {
 }
 
 .workspaceContainer:after {
-    content: "beta";
+    content: "alpha";
     position: fixed;
     width: 80px;
     height: 20px;

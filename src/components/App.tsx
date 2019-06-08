@@ -514,8 +514,8 @@ export class App extends React.Component<AppProps, AppState> {
           key="CreateGist"
           icon={<GoGist />}
           label="Create Gist"
-          title="Create GitHub Gist from Project"
-          isDisabled={this.toolbarButtonsAreDisabled()}
+          title="Cannot create gist since Github requires authentication."
+          isDisabled={true}
           onClick={() => {
             this.gist();
           }}
@@ -536,8 +536,8 @@ export class App extends React.Component<AppProps, AppState> {
           label="Share"
           title={
             this.state.fiddle
-              ? "Share Project"
-              : "Cannot share a project that has not been forked yet."
+              ? "Share & Embed Project"
+              : "Please fork the project first."
           }
           isDisabled={this.toolbarButtonsAreDisabled() || !this.state.fiddle}
           onClick={() => {

@@ -24,9 +24,9 @@ import * as JSZip from "jszip";
 
 export async function downloadProject(project: Project, uri?: string) {
   const zipFile: JSZip = new JSZip();
-  let zipName: string = "wasm-project.zip";
+  let zipName: string = "icetea-project.zip";
   if (uri !== undefined) {
-    zipName = `wasm-project-${uri}.zip`;
+    zipName = `icetea-project-${uri}.zip`;
   }
   const queue: Array<{filePrefix: string; file: File}> = [];
   project.mapEachFile((f: File) => queue.push({filePrefix: "", file: f}));

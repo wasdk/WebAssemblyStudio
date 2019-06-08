@@ -393,7 +393,7 @@ export class Service {
       }
     }
     serialize(content);
-    const json: any = { description: "source: https://webassembly.studio", public: true, files};
+    const json: any = { description: "source: https://studio.icetea.io", public: true, files};
     if (uri !== undefined) {
       json["description"] = json["description"] + `/?f=${uri}`;
     }
