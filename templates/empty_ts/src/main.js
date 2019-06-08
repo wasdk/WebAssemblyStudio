@@ -5,7 +5,7 @@ WebAssembly.instantiateStreaming(fetch("../out/main.wasm"), {
     }
   },
   env: {
-    abort(msg, file, line, column) {
+    abort(_msg, _file, line, column) {
       console.error("abort called at main.ts:" + line + ":" + column);
     }
   },
