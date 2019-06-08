@@ -1,6 +1,8 @@
 const gulp = require("gulp");
 /*
-  "--runtime", "full"
+  Runtime variants:
+
+  "--runtime", "full" (default)
     A proper memory manager and reference-counting based garbage collector, with runtime interfaces
     being exported to the host for being able to create managed objects externally.
 
