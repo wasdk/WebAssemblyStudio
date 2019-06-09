@@ -103,6 +103,6 @@ export class Gulpy {
   }
   async run(name: string) {
     const session = new GulpySession(this);
-    await session.run(this.tasks[name]);
+    return await session.run(this.tasks[name]);
   }
 }

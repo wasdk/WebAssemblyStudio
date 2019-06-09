@@ -202,10 +202,11 @@ export async function runTask(
       "base64-arraybuffer": require("base64-arraybuffer")
     }
   )();
+  let result
   if (gulp.hasTask(name)) {
     try {
       logLn(`Task ${name} is running...`, "info");
-      await gulp.run(name);
+      result = await gulp.run(name);
       logLn(`Task ${name} is completed`, "info");
     } catch (e) {
       logLn(`Task ${name} failed: ${e.message}`, "error");
@@ -214,4 +215,5 @@ export async function runTask(
     logLn(`Task ${name} is not optional.`, "error");
   }
   clearCurrentRunnerInfoAndIframe();
+  return result
 }

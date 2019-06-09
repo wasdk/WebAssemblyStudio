@@ -93,6 +93,7 @@ import { UploadFileDialog } from "./UploadFileDialog";
 import { ToastContainer } from "./Toasts";
 import { Spacer, Divider } from "./Widgets";
 import { ShareDialog } from "./ShareDialog";
+import { CallContractDialog } from "./CallContractDialog";
 import { NewProjectDialog, Template } from "./NewProjectDialog";
 import { NewDirectoryDialog } from "./NewDirectoryDialog";
 import { Errors } from "../errors";
@@ -106,6 +107,7 @@ export interface AppState {
   project: ModelRef<Project>;
   file: ModelRef<File>;
   fiddle: string;
+  lastDeployedAddress: string;
 
   /**
    * If not null, the the new file dialog is open and files are created in this
@@ -122,6 +124,12 @@ export interface AppState {
    * If true, the share fiddle dialog is open.
    */
   shareDialog: boolean;
+
+  /**
+   * If true, the call contract dialog is open.
+   */
+  callContractDialog: boolean;
+
 
   /**
    * If true, the new project dialog is open.
@@ -165,6 +173,7 @@ export interface AppProps {
    */
   update: boolean;
   fiddle: string;
+  lastDeployedAddress: string;
   embeddingParams: EmbeddingParams;
   windowContext: AppWindowContext;
 }
@@ -191,12 +200,14 @@ export class App extends React.Component<AppProps, AppState> {
     super(props);
     this.state = {
       fiddle: props.fiddle,
+      lastDeployedAddress: props.lastDeployedAddress,
       project: null,
       file: null,
       newFileDialogDirectory: null,
       editFileDialogFile: null,
       newProjectDialog: !props.fiddle,
       shareDialog: false,
+      callContractDialog: false,
       workspaceSplits: [
         {
           min: 200,
@@ -377,6 +388,10 @@ export class App extends React.Component<AppProps, AppState> {
     this.setState({ shareDialog: true });
   }
 
+  callContract() {
+    this.setState({ callContractDialog: true });
+  }
+
   async update() {
     saveProject(this.state.fiddle);
   }
@@ -510,16 +525,16 @@ export class App extends React.Component<AppProps, AppState> {
     }
     if (this.props.embeddingParams.type === EmbeddingType.None) {
       toolbarButtons.push(
-        <Button
-          key="CreateGist"
-          icon={<GoGist />}
-          label="Create Gist"
-          title="Cannot create gist since Github requires authentication."
-          isDisabled={true}
-          onClick={() => {
-            this.gist();
-          }}
-        />,
+        // <Button
+        //   key="CreateGist"
+        //   icon={<GoGist />}
+        //   label="Create Gist"
+        //   title="Cannot create gist since Github requires authentication."
+        //   isDisabled={this.toolbarButtonsAreDisabled()}
+        //   onClick={() => {
+        //     this.gist();
+        //   }}
+        // />,
         <Button
           key="Download"
           icon={<GoDesktopDownload />}
@@ -566,7 +581,17 @@ export class App extends React.Component<AppProps, AppState> {
         title="Deploy"
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
-          deploy();
+          deploy().then(result => {
+            if (result) {
+              const address = result.address || result
+              if (address) {
+                this.setState({
+                  lastDeployedAddress: address,
+                  callContractDialog: true
+                })
+              }
+            }
+          })
         }}
       />
     );
@@ -762,6 +787,15 @@ export class App extends React.Component<AppProps, AppState> {
             fiddle={this.state.fiddle}
             onCancel={() => {
               this.setState({ shareDialog: false });
+            }}
+          />
+        )}
+        {this.state.callContractDialog && (
+          <CallContractDialog
+            isOpen={true}
+            address={this.state.lastDeployedAddress}
+            onCancel={() => {
+              this.setState({ callContractDialog: false });
             }}
           />
         )}
