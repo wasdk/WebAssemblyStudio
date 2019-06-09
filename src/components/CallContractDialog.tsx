@@ -27,7 +27,7 @@ import { TextInputBox } from "./Widgets";
 
 export class CallContractDialog extends React.Component<{
   isOpen: boolean;
-  address: string;
+  deployedAddresses: string[];
   onCancel: () => void;
 }, {
   }> {
@@ -50,19 +50,26 @@ export class CallContractDialog extends React.Component<{
         <div className="modal-title-bar">
           Call Contract
         </div>
+        { this.props.deployedAddresses.length > 0 ? (
         <div style={{ flex: 1, padding: "8px" }}>
-          <p>Contract address: <b>{this.props.address}</b></p>
+          <p>Contract:&nbsp;
+            <select id="callContractAddr">
+              { this.props.deployedAddresses.map((addr, i) => <option key={i} value={addr}>{addr}</option>) }
+            </select>
+          </p>
           <Button
             label=" Call this contract "
             title="Go to DevTools to call contract"
             onClick={() => {
+              const addr = (document.getElementById("callContractAddr") as HTMLSelectElement).value;
+              const url = "https://devtools.icetea.io/contract.html?address=" + addr;
               this.props.onCancel();
-              const url = "https://devtools.icetea.io/contract.html?address=" + this.props.address
               const win = window.open(url, '_blank');
               win.focus();
             }}
             />
         </div>
+        ) : (<p style={{ flex: 1, padding: "8px" }}>No deployed contract. Deploy one first.</p>) }
         <div>
           <Button
             icon={<GoX />}

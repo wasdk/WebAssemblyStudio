@@ -114,7 +114,7 @@ export async function init(environment = "production") {
     } else {
       ReactDOM.render(
         <ErrorBoundary>
-          <App update={update} fiddle={fiddle} lastDeployedAddress="" embeddingParams={embeddingParams} windowContext={appWindowContext}/>
+          <App update={update} fiddle={fiddle} deployedAddresses={[]} embeddingParams={embeddingParams} windowContext={appWindowContext}/>
         </ErrorBoundary>,
         document.getElementById("app")
       );

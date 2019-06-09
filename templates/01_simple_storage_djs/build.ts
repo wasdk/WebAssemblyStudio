@@ -3,33 +3,50 @@ import { project } from "@wasm/studio-utils";
 import { transpile } from "@iceteachain/sunseed";
 import { IceteaWeb3 } from "@iceteachain/web3";
 
-gulp.task("build", async () => {
-  const storeSrc = project.getFile("src/simplestore.djs");
-  const store = await transpile(storeSrc.getData(), {
+const buildJs = async (file: string) => {
+
+  const inFile = project.getFile("src/" + file + ".djs");
+  const compiledSrc = await transpile(inFile.getData(), {
     prettier: true,
     project,
     context: "src"
   });
 
-  const storeJs = project.newFile("out/simplestore.js", "javascript", true);
-  storeJs.setData(store);
-});
+  const outFileName = "out/" + file + ".js";
+  const outFile = project.newFile(outFileName, "javascript", true);
+  outFile.setData(compiledSrc);
+  logLn("Output file: " + outFileName);
+}
 
-gulp.task("deploy", async () => {
+const deployJs = async (file: string) => {
   const tweb3 = new IceteaWeb3("https://rpc.icetea.io");
-  
+
   // Create a new account to deploy
   // To use existing account, use tweb3.wallet.importAccount(privateKey)
-  tweb3.wallet.createAccount()
+  tweb3.wallet.createAccount();
 
-  const storeSrc = project.getFile("out/simplestore.js");
-  if (!storeSrc) {
+  const inFileName = "out/" + file + ".js"
+  logLn("File to deploy: " + inFileName)
+
+  const inFile = project.getFile(inFileName);
+  if (!inFile) {
     throw new Error("You need to build the project first.");
   }
-  const result = await tweb3.deployJs(storeSrc.getData());
-  logLn("Deploy successfully " + storeSrc + " to address " + result.address, "info");
-  logLn("https://devtools.icetea.io/contract.html?address=" + result.address, "info");
-  return result;
-});
+  const deployResult = await tweb3.deployJs(inFile.getData());
 
-gulp.task("default", ["build"], async () => {});
+  logLn("TxHash: " + deployResult.hash);
+  logLn("Address: " + deployResult.address)
+  logLn("Test URL: https://devtools.icetea.io/contract.html?address=" + deployResult.address);
+
+  return deployResult;
+}
+
+gulp.task("build", () => {
+  return buildJs('simplestore');
+})
+
+gulp.task("deploy", () => {
+  return deployJs('simplestore');
+})
+
+gulp.task("default", ["build"], async () => { });

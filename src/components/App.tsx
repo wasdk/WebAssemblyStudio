@@ -30,7 +30,7 @@ import { Toolbar } from "./Toolbar";
 import { ViewType, defaultViewTypeForFileType } from "./editor/View";
 import {
   build,
-  deploy,
+  deploy as deployTask,
   run,
   runTask,
   openFiles,
@@ -107,7 +107,7 @@ export interface AppState {
   project: ModelRef<Project>;
   file: ModelRef<File>;
   fiddle: string;
-  lastDeployedAddress: string;
+  deployedAddresses: string[];
 
   /**
    * If not null, the the new file dialog is open and files are created in this
@@ -173,7 +173,7 @@ export interface AppProps {
    */
   update: boolean;
   fiddle: string;
-  lastDeployedAddress: string;
+  deployedAddresses: string[];
   embeddingParams: EmbeddingParams;
   windowContext: AppWindowContext;
 }
@@ -200,7 +200,7 @@ export class App extends React.Component<AppProps, AppState> {
     super(props);
     this.state = {
       fiddle: props.fiddle,
-      lastDeployedAddress: props.lastDeployedAddress,
+      deployedAddresses: props.deployedAddresses,
       project: null,
       file: null,
       newFileDialogDirectory: null,
@@ -334,20 +334,45 @@ export class App extends React.Component<AppProps, AppState> {
     }
   }
 
+  private async deploy() {
+    return deployTask().then(result => {
+      if (result) {
+        const address = result.address || result
+        if (address) {
+          this.state.deployedAddresses.unshift(address)
+          if (this.props.embeddingParams.type === EmbeddingType.Default && this.toastContainer) {
+            const index = this.toastContainer.showToast(
+              <span>
+                {" "}Deployed to <b>{address.slice(0, 12) + "..." + address.substr(-6)}</b> -{" "}
+                <a href={"https://devtools.icetea.io/contract.html?address=" + address} target="_blank" className="toast-span"
+                onClick = {() => {
+                  this.toastContainer.onDismiss(index)
+                }}>
+                  Call this contract
+                </a>
+              </span>
+            );
+          }
+        }
+      }
+    })
+  }
+
   registerShortcuts() {
     Mousetrap.bind("command+b", () => {
       build();
     });
     Mousetrap.bind("command+enter", () => {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
-        run();
+        //run();
+        this.callContract()
       } else {
         this.publishArc();
       }
     });
     Mousetrap.bind("command+alt+enter", () => {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
-        build().then(run);
+        build().then(this.deploy.bind(this));
       } else {
         build().then(() => this.publishArc());
       }
@@ -581,47 +606,45 @@ export class App extends React.Component<AppProps, AppState> {
         title="Deploy"
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
-          deploy().then(result => {
-            if (result) {
-              const address = result.address || result
-              if (address) {
-                this.setState({
-                  lastDeployedAddress: address,
-                  callContractDialog: true
-                })
-              }
-            }
-          })
+          this.deploy.call(this)
         }}
       />
     );
     {
-      /*
     if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
       toolbarButtons.push(
         <Button
-          key="Run"
-          icon={<GoGear />}
-          label="Run"
-          title="Run Project: CtrlCmd + Enter"
+          key="BuildAndRun"
+          icon={<GoVerified />}
+          label="Build &amp; Deploy"
+          title="Build &amp; Deploy Project: CtrlCmd + Alt + Enter"
           isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
-            run();
+            build().then(this.deploy.bind(this));
           }}
         />,
         <Button
-          key="BuildAndRun"
-          icon={<GoBeakerGear />}
-          label="Build &amp; Run"
-          title="Build &amp; Run Project: CtrlCmd + Alt + Enter"
+          key="Call"
+          icon={<GoGear />}
+          label="Call"
+          title="Call Contract: CtrlCmd + Enter"
           isDisabled={this.toolbarButtonsAreDisabled()}
           onClick={() => {
-            build().then(run);
+            this.callContract();
           }}
-        />
+        />,
+        // <Button
+        //   key="Run"
+        //   icon={<GoGear />}
+        //   label="Run"
+        //   title="Run Project: CtrlCmd + Enter"
+        //   isDisabled={this.toolbarButtonsAreDisabled()}
+        //   onClick={() => {
+        //     run();
+        //   }}
+        // />,
       );
     }
-    */
     }
     if (this.props.embeddingParams.type === EmbeddingType.Arc) {
       toolbarButtons.push(
@@ -793,7 +816,7 @@ export class App extends React.Component<AppProps, AppState> {
         {this.state.callContractDialog && (
           <CallContractDialog
             isOpen={true}
-            address={this.state.lastDeployedAddress}
+            deployedAddresses={this.state.deployedAddresses}
             onCancel={() => {
               this.setState({ callContractDialog: false });
             }}

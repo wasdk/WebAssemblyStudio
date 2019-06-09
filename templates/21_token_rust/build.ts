@@ -3,14 +3,16 @@ import { Service, project } from "@wasm/studio-utils";
 import { IceteaWeb3 } from "@iceteachain/web3";
 import * as base64ArrayBuffer from "base64-arraybuffer";
 
-const buildWasm = async (file : string) => {
-    // opt_level: "s": optimize for small build
-    const options = { lto: true, opt_level: "s", debug: true };
-    const src = project.getFile("src/" + file + ".rs");
-    const result = await Service.compileFileWithBindings(src, "rust", "wasm", options)
-  
-    const wasm = project.newFile("out/" + file + ".wasm", "wasm", true);
-    wasm.setData(result.wasm);
+const buildWasm = async (file: string) => {
+  // opt_level: "s": optimize for small build
+  const options = { lto: true, opt_level: "s", debug: true };
+  const inFile = project.getFile("src/" + file + ".rs");
+  const compileResult = await Service.compileFileWithBindings(inFile, "rust", "wasm", options);
+  const outFileName = "out/" + file + ".wasm"
+  const outFile = project.newFile(outFileName, "wasm", true);
+  outFile.setData(compileResult.wasm);
+  logLn("Output file: " + outFileName);
+  return outFile;
 }
 
 const deployWasm = async (file: string) => {
@@ -18,24 +20,30 @@ const deployWasm = async (file: string) => {
 
   // Create a new account to deploy
   // To use existing account, use tweb3.wallet.importAccount(privateKey)
-  tweb3.wallet.createAccount()
+  tweb3.wallet.createAccount();
 
-  const wasm = project.getFile("out/" + file + ".wasm");
-  if (!wasm) {
-    throw new Error("You need to build the project first.")
+  const inFileName = "out/" + file + ".wasm"
+  logLn("File to deploy: " + inFileName)
+
+  const inFile = project.getFile(inFileName);
+  if (!inFile) {
+    throw new Error("You need to build the project first.");
   }
-  const result = await tweb3.deployWasm(base64ArrayBuffer.encode(wasm.getData()));
-  logLn("Deploy successfully to address " + result.address, "info");
-  logLn("https://devtools.icetea.io/contract.html?address=" + result.address, "info");
-  return result;
+  const deployResult = await tweb3.deployWasm(base64ArrayBuffer.encode(inFile.getData()));
+
+  logLn("TxHash: " + deployResult.hash);
+  logLn("Address: " + deployResult.address);
+  logLn("Test URL: https://devtools.icetea.io/contract.html?address=" + deployResult.address);
+
+  return deployResult;
 }
 
 gulp.task("build", () => {
-  return buildWasm('token')
+  return buildWasm('token');
 })
 
 gulp.task("deploy", () => {
-  return deployWasm('token')
+  return deployWasm('token');
 })
 
 gulp.task("default", ["build"], async () => {});

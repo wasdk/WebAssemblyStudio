@@ -35,13 +35,14 @@ export class ToastContainer extends React.Component<{}, {
     };
   }
 
-  showToast(message: JSX.Element, kind: ToastKind = "info") {
+  showToast(message: JSX.Element, kind: ToastKind = "info"): number {
     const { toasts } = this.state;
-    toasts.push({message, kind});
+    const length = toasts.push({message, kind});
     this.setState({toasts});
+    return length - 1
   }
 
-  private onDismiss(index: number) {
+  onDismiss(index: number) {
     this.setState((prevState: any) => ({
       toasts: prevState.toasts.filter((key: number, value: number) => value !== index )
     }));

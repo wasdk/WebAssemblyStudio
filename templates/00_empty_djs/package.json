@@ -16,7 +16,7 @@
   },
   "wasmStudio": {
     "name": "Empty JavaScript Smart Contract",
-    "description": "# Empty JavaScript Smart Contract\n\nThis is a empty JavaScript smart contract for [Icetea platform](https://icetea.io).",
+    "description": "# Empty JavaScript Smart Contract\n\nThis is an empty JavaScript smart contract for [Icetea platform](https://icetea.io).",
     "icon": "javascript-lang-file-icon"
   }
 }
