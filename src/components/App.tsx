@@ -82,6 +82,7 @@ import {
   GoBeakerGear,
   GoThreeBars,
   GoGist,
+  GoCheck,
   GoOpenIssue,
   GoQuestion
 } from "./shared/Icons";
@@ -615,7 +616,7 @@ export class App extends React.Component<AppProps, AppState> {
       toolbarButtons.push(
         <Button
           key="BuildAndRun"
-          icon={<GoVerified />}
+          icon={<GoCheck />}
           label="Build &amp; Deploy"
           title="Build &amp; Deploy Project: CtrlCmd + Alt + Enter"
           isDisabled={this.toolbarButtonsAreDisabled()}
@@ -625,7 +626,7 @@ export class App extends React.Component<AppProps, AppState> {
         />,
         <Button
           key="Call"
-          icon={<GoGear />}
+          icon={<GoGist />}
           label="Call"
           title="Call Contract: CtrlCmd + Enter"
           isDisabled={this.toolbarButtonsAreDisabled()}
