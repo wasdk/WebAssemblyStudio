@@ -1,4 +1,4 @@
-const { validate } = require("./helper.js")
+const { validate } = require('./helper.js')
 
 @contract
 class NumberStore {
@@ -7,7 +7,7 @@ class NumberStore {
   @transaction setValue (value) {
     const oldValue = this.value
     this.value = validate(value)
-    this.emitEvent('ValueSet', { by: msg.sender, oldValue, newValue: this.value }, ['by'])
+    this.emitEvent('ValueSet', { by: msg.sender, oldValue: oldValue, newValue: this.value }, ['by'])
     return oldValue
   }
 }

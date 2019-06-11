@@ -1,4 +1,4 @@
-const validate = n => {
+exports.validate = n => {
     n = +n
     if (n < 0) {
         throw new Error('Number can not be negative.')
@@ -8,4 +8,3 @@ const validate = n => {
     }
     return n
 }
-
