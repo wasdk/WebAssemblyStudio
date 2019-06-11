@@ -248,7 +248,7 @@ export class App extends React.Component<AppProps, AppState> {
   private static getWindowDimensions(): string {
     return `${window.innerWidth}x${window.innerHeight}@${
       window.devicePixelRatio
-    }`;
+      }`;
   }
   private async loadProjectFromFiddle(uri: string) {
     const project = new Project();
@@ -341,18 +341,22 @@ export class App extends React.Component<AppProps, AppState> {
         const address = result.address || result
         if (address) {
           this.state.deployedAddresses.unshift(address)
-          if (this.props.embeddingParams.type === EmbeddingType.Default && this.toastContainer) {
+          if (this.toastContainer) {
             const index = this.toastContainer.showToast(
               <span>
                 {" "}Deployed to <b>{address.slice(0, 12) + "..." + address.substr(-6)}</b> -{" "}
                 <a href={"https://devtools.icetea.io/contract.html?address=" + address} target="_blank" className="toast-span"
-                onClick = {() => {
-                  this.toastContainer.onDismiss(index)
-                }}>
+                  onClick={() => {
+                    this.toastContainer.onDismiss(index)
+                  }}>
                   Call this contract
                 </a>
               </span>
             );
+            const timeout = this.props.embeddingParams.type === EmbeddingType.Default ? 15000 : 5000
+            setTimeout(() => {
+              this.toastContainer.onDismiss(index)
+            }, timeout)
           }
         }
       }
@@ -612,40 +616,40 @@ export class App extends React.Component<AppProps, AppState> {
       />
     );
     {
-    if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
-      toolbarButtons.push(
-        <Button
-          key="BuildAndRun"
-          icon={<GoCheck />}
-          label="Build &amp; Deploy"
-          title="Build &amp; Deploy Project: CtrlCmd + Alt + Enter"
-          isDisabled={this.toolbarButtonsAreDisabled()}
-          onClick={() => {
-            build().then(this.deploy.bind(this));
-          }}
-        />,
-        <Button
-          key="Call"
-          icon={<GoGist />}
-          label="Call"
-          title="Call Contract: CtrlCmd + Enter"
-          isDisabled={this.toolbarButtonsAreDisabled()}
-          onClick={() => {
-            this.callContract();
-          }}
-        />,
-        // <Button
-        //   key="Run"
-        //   icon={<GoGear />}
-        //   label="Run"
-        //   title="Run Project: CtrlCmd + Enter"
-        //   isDisabled={this.toolbarButtonsAreDisabled()}
-        //   onClick={() => {
-        //     run();
-        //   }}
-        // />,
-      );
-    }
+      if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
+        toolbarButtons.push(
+          <Button
+            key="BuildAndRun"
+            icon={<GoCheck />}
+            label="Build &amp; Deploy"
+            title="Build &amp; Deploy Project: CtrlCmd + Alt + Enter"
+            isDisabled={this.toolbarButtonsAreDisabled()}
+            onClick={() => {
+              build().then(this.deploy.bind(this));
+            }}
+          />,
+          <Button
+            key="Call"
+            icon={<GoGist />}
+            label="Call"
+            title="Call Contract: CtrlCmd + Enter"
+            isDisabled={this.toolbarButtonsAreDisabled()}
+            onClick={() => {
+              this.callContract();
+            }}
+          />,
+          // <Button
+          //   key="Run"
+          //   icon={<GoGear />}
+          //   label="Run"
+          //   title="Run Project: CtrlCmd + Enter"
+          //   isDisabled={this.toolbarButtonsAreDisabled()}
+          //   onClick={() => {
+          //     run();
+          //   }}
+          // />,
+        );
+      }
     }
     if (this.props.embeddingParams.type === EmbeddingType.Arc) {
       toolbarButtons.push(
@@ -880,7 +884,7 @@ export class App extends React.Component<AppProps, AppState> {
                 if (file instanceof Directory) {
                   message = `Are you sure you want to delete '${
                     file.name
-                  }' and its contents?`;
+                    }' and its contents?`;
                 } else {
                   message = `Are you sure you want to delete '${file.name}'?`;
                 }
