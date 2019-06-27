@@ -56,7 +56,7 @@ import {
   setViewType,
   logLn
 } from "../actions/AppActions";
-import { Project, File, FileType, Directory, ModelRef } from "../models";
+import { Project, File, FileType, Directory, ModelRef, IStatusProvider } from "../models";
 import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 
@@ -197,6 +197,7 @@ export interface AppWindowContext {
 export class App extends React.Component<AppProps, AppState> {
   fiddle: string;
   toastContainer: ToastContainer;
+  status: IStatusProvider;
   constructor(props: AppProps) {
     super(props);
     this.state = {
@@ -483,6 +484,12 @@ export class App extends React.Component<AppProps, AppState> {
     return this.state.hasStatus;
   }
 
+  saveToBuild() {
+    const activeGroup = this.state.activeTabGroup;
+    activeGroup.currentView.file.save(this.status);
+    build();
+  }
+
   makeToolbarButtons() {
     const toolbarButtons = [
       <Button
@@ -599,7 +606,7 @@ export class App extends React.Component<AppProps, AppState> {
         title="Build Project: CtrlCmd + B"
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
-          build();
+          this.saveToBuild();
         }}
       />
     );
@@ -625,7 +632,9 @@ export class App extends React.Component<AppProps, AppState> {
             title="Build &amp; Deploy Project: CtrlCmd + Alt + Enter"
             isDisabled={this.toolbarButtonsAreDisabled()}
             onClick={() => {
-              build().then(this.deploy.bind(this));
+              // build().then(this.deploy.bind(this));
+              this.saveToBuild();
+              this.deploy.call(this);
             }}
           />,
           <Button
