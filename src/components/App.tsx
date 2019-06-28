@@ -27,7 +27,7 @@ import { Workspace } from "./Workspace";
 import { EditorView, ViewTabs, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
-import { ViewType, defaultViewTypeForFileType } from "./editor/View";
+import { ViewType, defaultViewTypeForFileType, isViewFileDirty } from "./editor/View";
 import {
   build,
   deploy as deployTask,
@@ -56,7 +56,14 @@ import {
   setViewType,
   logLn
 } from "../actions/AppActions";
-import { Project, File, FileType, Directory, ModelRef, IStatusProvider } from "../models";
+import {
+  Project,
+  File,
+  FileType,
+  Directory,
+  ModelRef,
+  IStatusProvider
+} from "../models";
 import { Service, Language } from "../service";
 import { Split, SplitOrientation, SplitInfo } from "./Split";
 
@@ -103,6 +110,8 @@ import Group from "../utils/group";
 import { StatusBar } from "./StatusBar";
 import { publishArc, notifyArcAboutFork } from "../actions/ArcActions";
 import { RunTaskExternals } from "../utils/taskRunner";
+import { SaveCFDialog } from "./SaveCFDialog";
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "constants";
 
 export interface AppState {
   project: ModelRef<Project>;
@@ -130,7 +139,6 @@ export interface AppState {
    * If true, the call contract dialog is open.
    */
   callContractDialog: boolean;
-
 
   /**
    * If true, the new project dialog is open.
@@ -166,6 +174,10 @@ export interface AppState {
   hasStatus: boolean;
   isContentModified: boolean;
   windowDimensions: string;
+  /**
+   * If true, the confirm dialog is open.
+   */
+  confirmDialog: boolean;
 }
 
 export interface AppProps {
@@ -230,7 +242,8 @@ export class App extends React.Component<AppProps, AppState> {
       activeTabGroup: null,
       windowDimensions: App.getWindowDimensions(),
       hasStatus: false,
-      isContentModified: false
+      isContentModified: false,
+      confirmDialog: false
     };
   }
   private async initializeProject() {
@@ -249,7 +262,7 @@ export class App extends React.Component<AppProps, AppState> {
   private static getWindowDimensions(): string {
     return `${window.innerWidth}x${window.innerHeight}@${
       window.devicePixelRatio
-      }`;
+    }`;
   }
   private async loadProjectFromFiddle(uri: string) {
     const project = new Project();
@@ -339,29 +352,43 @@ export class App extends React.Component<AppProps, AppState> {
   private async deploy() {
     return deployTask().then(result => {
       if (result) {
-        const address = result.address || result
+        const address = result.address || result;
         if (address) {
-          this.state.deployedAddresses.unshift(address)
+          this.state.deployedAddresses.unshift(address);
           if (this.toastContainer) {
             const index = this.toastContainer.showToast(
               <span>
-                {" "}Deployed to <b>{address.slice(0, 12) + "..." + address.substr(-6)}</b> -{" "}
-                <a href={"https://devtools.icetea.io/contract.html?address=" + address} target="_blank" className="toast-span"
+                {" "}
+                Deployed to{" "}
+                <b>
+                  {address.slice(0, 12) + "..." + address.substr(-6)}
+                </b> -{" "}
+                <a
+                  href={
+                    "https://devtools.icetea.io/contract.html?address=" +
+                    address
+                  }
+                  target="_blank"
+                  className="toast-span"
                   onClick={() => {
-                    this.toastContainer.onDismiss(index)
-                  }}>
+                    this.toastContainer.onDismiss(index);
+                  }}
+                >
                   Call this contract
                 </a>
               </span>
             );
-            const timeout = this.props.embeddingParams.type === EmbeddingType.Default ? 15000 : 5000
+            const timeout =
+              this.props.embeddingParams.type === EmbeddingType.Default
+                ? 15000
+                : 5000;
             setTimeout(() => {
-              this.toastContainer.onDismiss(index)
-            }, timeout)
+              this.toastContainer.onDismiss(index);
+            }, timeout);
           }
         }
       }
-    })
+    });
   }
 
   registerShortcuts() {
@@ -371,7 +398,7 @@ export class App extends React.Component<AppProps, AppState> {
     Mousetrap.bind("command+enter", () => {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
         //run();
-        this.callContract()
+        this.callContract();
       } else {
         this.publishArc();
       }
@@ -485,9 +512,32 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   saveToBuild() {
+    // isViewFileDirty
+    const groups = this.state.activeTabGroup;
+    let view = groups.currentView;
+    if(isViewFileDirty(view)) {
+      this.setState({ confirmDialog: true });
+    } else {
+      build();
+    }
+  }
+
+  saveCurrentTab() {
     const activeGroup = this.state.activeTabGroup;
     activeGroup.currentView.file.save(this.status);
     build();
+    this.setState({ confirmDialog: false });
+  }
+
+  saveAllTab() {
+    const groups = this.state.tabGroups;
+    let views = groups[0].views.slice(0);
+    console.log("I want to show views", views);
+    for(let i=0; i< views.length; i++) {
+      views[i].file.save(this.status);
+    }
+    build();
+    this.setState({ confirmDialog: false });
   }
 
   makeToolbarButtons() {
@@ -618,7 +668,7 @@ export class App extends React.Component<AppProps, AppState> {
         title="Deploy"
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
-          this.deploy.call(this)
+          this.deploy.call(this);
         }}
       />
     );
@@ -646,7 +696,7 @@ export class App extends React.Component<AppProps, AppState> {
             onClick={() => {
               this.callContract();
             }}
-          />,
+          />
           // <Button
           //   key="Run"
           //   icon={<GoGear />}
@@ -714,6 +764,7 @@ export class App extends React.Component<AppProps, AppState> {
   }
   render() {
     const self = this;
+    console.log("state CK", this.state);
 
     const makeEditorPanes = () => {
       const groups = this.state.tabGroups;
@@ -867,6 +918,19 @@ export class App extends React.Component<AppProps, AppState> {
             }}
           />
         )}
+        {this.state.confirmDialog && (
+          <SaveCFDialog
+            isOpen={true}
+            onSave={() => {
+              this.saveCurrentTab();
+            }}
+            onSaveAll={()=>{this.saveAllTab();}}
+            onCancel={() => {
+              this.setState({ confirmDialog: false });
+            }}
+            content={(props: any) => <div>Are you sure?</div>}
+          />
+        )}
         <div style={{ height: "calc(100% - 22px)" }}>
           <Split
             name="Workspace"
@@ -893,7 +957,7 @@ export class App extends React.Component<AppProps, AppState> {
                 if (file instanceof Directory) {
                   message = `Are you sure you want to delete '${
                     file.name
-                    }' and its contents?`;
+                  }' and its contents?`;
                 } else {
                   message = `Are you sure you want to delete '${file.name}'?`;
                 }

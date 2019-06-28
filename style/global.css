@@ -500,6 +500,11 @@ a {
   padding-right: 4px;
 }
 
+.saveBtn {
+  width: 10em;
+  text-align: -webkit-center;
+}
+
 .help {
   float: right;
 }
@@ -559,6 +564,17 @@ a {
   left: calc(50% - 300px);
   width: 600px;
   height: 360px;
+  background-color: rgb(48, 48, 48);
+  outline: none;
+  box-shadow: 1px 1px 4px black;
+}
+
+.saveModal {
+  position: absolute;
+  top: calc(50% - 180px);
+  left: calc(50% - 300px);
+  width: 600px;
+  height: 220px;
   background-color: rgb(48, 48, 48);
   outline: none;
   box-shadow: 1px 1px 4px black;
