@@ -87,17 +87,14 @@ function createMockService() {
   const loadJSON = jest.fn();
   const loadFilesIntoProject = jest.fn();
   const saveProject = jest.fn();
-  const exportToGist = jest.fn();
   return {
     loadJSON,
     loadFilesIntoProject,
     saveProject,
-    exportToGist,
     clear: () => {
       loadJSON.mockClear();
       loadFilesIntoProject.mockClear();
       saveProject.mockClear();
-      exportToGist.mockClear();
     }
   };
 }
@@ -398,13 +395,12 @@ describe("Tests for App", () => {
     enum ButtonIndex {
       ViewWorkspace,
       Fork,
-      Gist,
       Download,
       Share,
       Build,
       Run,
       BuildAndRun,
-      Help = 9
+      Help = 8
     }
     enum UpdateButtonIndex {
       Update = 1
@@ -475,43 +471,6 @@ describe("Tests for App", () => {
         await (wrapper.instance() as App).fork();
         expect(notifyArcAboutFork).toHaveBeenCalledWith("fiddle-url");
         restore();
-      });
-    });
-    describe("Gist", () => {
-      it("should invoke App.gist when clicking the Gist button", () => {
-        const embeddingParams = { type: EmbeddingType.None } as EmbeddingParams;
-        const wrapper = setup({ embeddingParams });
-        const gist = jest.spyOn((wrapper.instance() as App), "gist");
-        gist.mockImplementation(() => {});
-        const toolbar = wrapper.find(Toolbar);
-        toolbar.find(Button).at(ButtonIndex.Gist).simulate("click");
-        expect(gist).toHaveBeenCalled();
-        gist.mockRestore();
-      });
-      it("should export the project to a Gist", async () => {
-        const { pushStatus, popStatus, restore } = createActionSpies();
-        const showToast = jest.fn();
-        App.prototype.toastContainer = { showToast } as any;
-        Service.exportToGist.mockImplementation(() => "gist-url");
-        const fiddle = "fiddle-url";
-        const embeddingParams = { type: EmbeddingType.None } as EmbeddingParams;
-        const wrapper = setup({ embeddingParams, fiddle });
-        await (wrapper.instance() as App).gist();
-        expect(pushStatus).toHaveBeenCalledWith("Exporting Project");
-        expect(Service.exportToGist).toHaveBeenCalledWith((wrapper.state() as any).project.getModel(), fiddle);
-        expect(popStatus).toHaveBeenCalled();
-        expect(shallow(showToast.mock.calls[1][0])).toContainReact(<span>"Gist Created!" <a href={"gist-url"} target="_blank" className="toast-span">Open in new tab.</a></span>);
-        App.prototype.toastContainer = undefined;
-        restore();
-      });
-      it("should export the provided file to a Gist", async () => {
-        Service.exportToGist.mockImplementation(() => "gist-url");
-        const file = new File("file", FileType.JavaScript);
-        const fiddle = "fiddle-url";
-        const embeddingParams = { type: EmbeddingType.None } as EmbeddingParams;
-        const wrapper = setup({ embeddingParams, fiddle });
-        await (wrapper.instance() as App).gist(file);
-        expect(Service.exportToGist).toHaveBeenCalledWith(file, fiddle);
       });
     });
     describe("Download", () => {
@@ -970,18 +929,6 @@ describe("Tests for App", () => {
       const directory = new Directory("src");
       onNewDirectory(directory);
       expect(wrapper).toHaveState({ newDirectoryDialog: ModelRef.getRef(directory) });
-    });
-    it("should handle onCreateGist", () => {
-      const embeddingParams = { type: EmbeddingType.None } as EmbeddingParams;
-      const wrapper = setup({ embeddingParams });
-      const gist = jest.spyOn((wrapper.instance() as App), "gist");
-      gist.mockImplementation(() => {});
-      const workspace = wrapper.find(Workspace);
-      const onCreateGist = workspace.prop("onCreateGist");
-      const file = new File("file", FileType.JavaScript);
-      onCreateGist(file);
-      expect(gist).toHaveBeenCalledWith(file);
-      gist.mockRestore();
     });
   });
   describe("Console", () => {

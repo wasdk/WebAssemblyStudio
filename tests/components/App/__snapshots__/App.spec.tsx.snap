@@ -37,7 +37,6 @@ exports[`Tests for App render should render correctly (arc) 1`] = `
       <Workspace
         file={null}
         onClickFile={[Function]}
-        onCreateGist={[Function]}
         onDeleteFile={[Function]}
         onDoubleClickFile={[Function]}
         onEditFile={[Function]}
@@ -299,7 +298,6 @@ exports[`Tests for App render should render correctly (embedded) 1`] = `
       <Workspace
         file={null}
         onClickFile={[Function]}
-        onCreateGist={[Function]}
         onDeleteFile={[Function]}
         onDoubleClickFile={[Function]}
         onEditFile={[Function]}
@@ -558,7 +556,6 @@ exports[`Tests for App render should render correctly (fiddle) 1`] = `
       <Workspace
         file={null}
         onClickFile={[Function]}
-        onCreateGist={[Function]}
         onDeleteFile={[Function]}
         onDoubleClickFile={[Function]}
         onEditFile={[Function]}
@@ -813,7 +810,6 @@ exports[`Tests for App render should render correctly (update) 1`] = `
       <Workspace
         file={null}
         onClickFile={[Function]}
-        onCreateGist={[Function]}
         onDeleteFile={[Function]}
         onDoubleClickFile={[Function]}
         onEditFile={[Function]}
@@ -955,14 +951,6 @@ exports[`Tests for App render should render correctly (update) 1`] = `
               label="Fork"
               onClick={[Function]}
               title="Fork Project"
-            />
-            <Button
-              icon={<GoGist />}
-              isDisabled={false}
-              key="CreateGist"
-              label="Create Gist"
-              onClick={[Function]}
-              title="Create GitHub Gist from Project"
             />
             <Button
               icon={<GoDesktopDownload />}
@@ -1125,7 +1113,6 @@ exports[`Tests for App render should render correctly 1`] = `
       <Workspace
         file={null}
         onClickFile={[Function]}
-        onCreateGist={[Function]}
         onDeleteFile={[Function]}
         onDoubleClickFile={[Function]}
         onEditFile={[Function]}
@@ -1259,14 +1246,6 @@ exports[`Tests for App render should render correctly 1`] = `
               label="Fork"
               onClick={[Function]}
               title="Fork Project"
-            />
-            <Button
-              icon={<GoGist />}
-              isDisabled={false}
-              key="CreateGist"
-              label="Create Gist"
-              onClick={[Function]}
-              title="Create GitHub Gist from Project"
             />
             <Button
               icon={<GoDesktopDownload />}
