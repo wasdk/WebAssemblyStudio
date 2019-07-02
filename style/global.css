@@ -569,6 +569,17 @@ a {
   box-shadow: 1px 1px 4px black;
 }
 
+.modalCallContract {
+  position: absolute;
+  top: calc(50% - 180px);
+  left: calc(50% - 300px);
+  width: 600px;
+  height: 600px;
+  background-color: rgb(48, 48, 48);
+  outline: none;
+  box-shadow: 1px 1px 4px black;
+}
+
 .saveModal {
   position: absolute;
   top: calc(50% - 180px);
@@ -578,6 +589,14 @@ a {
   background-color: rgb(48, 48, 48);
   outline: none;
   box-shadow: 1px 1px 4px black;
+}
+
+.funcList {
+  /* width: 100vw; */
+  height: 20vh;
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
 }
 
 .overlay {
@@ -590,6 +609,15 @@ a {
   z-index: 2;
 }
 
+.overlayCallContract {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 2;
+}
 
 .modal-title-bar {
   font-family: 'Zilla Slab', serif;
