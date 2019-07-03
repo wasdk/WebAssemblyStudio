@@ -23,7 +23,6 @@ import * as React from "react";
 import * as ReactModal from "react-modal";
 import { Button } from "./shared/Button";
 import { GoX } from "./shared/Icons";
-import { TextInputBox } from "./Widgets";
 import { IceteaWeb3 } from "@iceteachain/web3";
 const tweb3 = new IceteaWeb3("https://rpc.icetea.io");
 
@@ -48,13 +47,88 @@ export class CallContractDialog extends React.Component<
     this.setState({ isCallFuncs: true, funcs: funcs });
   }
 
+  tryStringifyJsonHelper(p, replacer, space) {
+    if (typeof p === "string") {
+      return p;
+    }
+    try {
+      return JSON.stringify(p, replacer, space);
+    } catch (e) {
+      return String(p);
+    }
+  }
+
+  tryStringifyJson(value) {
+    return this.tryStringifyJsonHelper(value, undefined, 2);
+  }
+
+  replaceAll(text, search, replacement) {
+    return text.split(search).join(replacement);
+  }
+
+  tryParseJson(p) {
+    try {
+      return JSON.parse(p);
+    } catch (e) {
+      return p;
+    }
+  }
+
+  parseParamsFromField(selector) {
+    return this.parseParamList(document.querySelector(selector).value.trim());
+  }
+
+  parseParamList(pText) {
+    pText = this.replaceAll(pText, "\r", "\n");
+    pText = this.replaceAll(pText, "\n\n", "\n");
+    let params = pText
+      .split("\n")
+      .filter(e => e.trim())
+      .map(this.tryParseJson);
+
+    return params;
+  }
+
+  formatResult(r, isError) {
+    const fail = isError || r.deliver_tx.code || r.check_tx.code;
+    let msg;
+    if (fail) {
+      msg =
+        '<b>Result</b>: <span class="Error":>ERROR</span><br><b>Message</b>: <span class="Error">' +
+        (r.deliver_tx.log || r.check_tx.log || this.tryStringifyJson(r)) +
+        "</span>" +
+        "<br><b>Hash</b>: ";
+      if (r.hash) {
+        msg += '<a href="/tx.html?hash=' + r.hash + '">' + r.hash + "</a>";
+      } else {
+        msg += "N/A";
+      }
+      return msg;
+    } else {
+      msg =
+        '<b>Result</b>: <span class="Success"><b>SUCCESS</b></span>' +
+        '<br><b>Returned Value</b>:  <span class="Success">' +
+        this.tryStringifyJson(r.returnValue) +
+        "</span>" +
+        '<br><b>Hash</b>: <a href="https://devtools.icetea.io/tx.html?hash=' +
+        r.hash +
+        '" target="_blank" rel="noopener noreferrer">' +
+        r.hash +
+        "</a>";
+      msg +=
+        "<br><b>Height</b>: " +
+        r.height +
+        "<br><b>Tags</b>: " +
+        this.tryStringifyJson(r.tags) +
+        "<br><b>Events:</b> " +
+        this.tryStringifyJson(r.events);
+      return msg;
+    }
+  }
+
   render() {
-    const urlPrefix = `${location.protocol}//${location.host}${
-      location.pathname
-    }`;
     console.log("state CK", this.state);
     const { funcs } = this.state;
-    const temp = 0;
     const funcsList = Object.keys(funcs).map(key => (
       <ul>
         <li>
@@ -66,7 +140,7 @@ export class CallContractDialog extends React.Component<
               marginLeft: "-10px"
             }}
           >
-            <div style={{ marginRight: "10em" }}>
+            <div style={{ marginRight: "2em" }}>
               <span>
                 {(function() {
                   if (key.indexOf("$") !== 0) {
@@ -89,10 +163,38 @@ export class CallContractDialog extends React.Component<
             </div>
             <div className="btnCall">
               <Button
-                customClassName="saveBtn"
+                customClassName="callCtBtn"
                 label="Call"
-                onClick={() => {
+                onClick={async () => {
                   document.getElementById("funcName").innerHTML = key;
+                  let name;
+                  if (key.includes("(")) {
+                    name = key.substring(0, key.indexOf("("));
+                  } else {
+                    name = key;
+                  }
+                  const params = this.parseParamsFromField("#params");
+
+                  const addr = (document.getElementById(
+                    "callContractAddr"
+                  ) as HTMLSelectElement).value;
+                  
+                  let result;
+                  try {
+                    document.getElementById("resultJson").innerHTML =
+                      "<span class='Error'>sending...</span>";
+                    const ct = tweb3.contract(addr);
+                    result = await ct.methods[name](...params).sendCommit();
+                    console.log(result);
+                    document.getElementById(
+                      "resultJson"
+                    ).innerHTML = this.formatResult(result, false);
+                  } catch (error) {
+                    console.log(error);
+                    document.getElementById(
+                      "resultJson"
+                    ).innerHTML = this.formatResult(error, true);
+                  }
                 }}
               />
             </div>
@@ -113,7 +215,10 @@ export class CallContractDialog extends React.Component<
         >
           <div className="modal-title-bar">Call Contract</div>
           {this.props.deployedAddresses.length > 0 ? (
-            <div style={{ flex: 1, padding: "8px" }}>
+            <div
+              className="callContractContent"
+              style={{ flex: 1, padding: "8px" }}
+            >
               <p>
                 Contract:&nbsp;
                 <select id="callContractAddr">

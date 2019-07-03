@@ -505,6 +505,14 @@ a {
   text-align: -webkit-center;
 }
 
+.callCtBtn {
+  width: 5em;
+  text-align: -webkit-center;
+  height: 25px;
+  padding: 1px;
+  border-radius: 10px;
+}
+
 .help {
   float: right;
 }
@@ -580,6 +588,13 @@ a {
   box-shadow: 1px 1px 4px black;
 }
 
+.callContractContent {
+  height: 500px;
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
 .saveModal {
   position: absolute;
   top: calc(50% - 180px);
@@ -611,7 +626,7 @@ a {
 
 .overlayCallContract {
   position: fixed;
-  top: 0;
+  top: -25em;
   left: 0;
   right: 0;
   bottom: 0;
