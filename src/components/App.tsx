@@ -1045,7 +1045,17 @@ export class App extends React.Component<AppProps, AppState> {
                 </Split>
               </div>
             </div>
-            <RightPanel />
+            <RightPanel
+              address="0x685c155bb26de65a3f00f9ecfbfe34eaae56584c"
+              contractName={"SimpleStore"}
+              listFunc={[
+                { name: "func1", isSet: true },
+                { name: "func2", isSet: false },
+                { name: "func3", isSet: false },
+                { name: "func4", isSet: true },
+                { name: "func5", isSet: false }
+              ]}
+            />
           </Split>
         </div>
         <StatusBar />

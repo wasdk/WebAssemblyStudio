@@ -26,24 +26,19 @@ import { Project, File, Directory, ModelRef } from "../models";
 import { SplitOrientation, SplitInfo, Split } from "./Split";
 import appStore from "../stores/AppStore";
 
+interface MethodInfo {
+  name?: string;
+  isSet?: boolean;
+}
+
 export interface RightPanelProps {
   /**
    * Active file.
    */
-  // file: ModelRef<File>;
-  // project: ModelRef<Project>;
-  // onEditFile?: (file: File) => void;
-  // onDeleteFile?: (file: File) => void;
-  // onMoveFile?: (file: File, directory: Directory) => void;
-  // onRenameFile?: (file: File) => void;
-  // onNewFile?: (directory: Directory) => void;
-  // onNewDirectory?: (directory: Directory) => void;
-  // onClickFile: (file: File) => void;
-  // onDoubleClickFile?: (file: File) => void;
-  // onUploadFile?: (directory: Directory) => void;
-  // onCreateGist: (fileOrDirectory: File) => void;
+  address: string;
+  contractName: string;
+  listFunc: MethodInfo[];
 }
-
 export interface RightPanelState {
   splits: SplitInfo[];
 }
@@ -56,7 +51,15 @@ export class RightPanel extends React.Component<
   constructor(props: any) {
     super(props);
     this.state = {
-      splits: []
+      splits: [
+        {},
+        {
+          value: 300
+        },
+        {
+          value: 400
+        }
+      ]
     };
   }
   componentDidMount() {
@@ -71,12 +74,39 @@ export class RightPanel extends React.Component<
     this.directoryTree.tree.refresh();
   };
   render() {
-    // const project = this.props.project;
+    const { contractName, address, listFunc } = this.props;
     const { splits } = this.state;
+
+    const makeMethodCallContract = () => {
+      return listFunc.map((func: MethodInfo, i: number) => {
+        return (
+          <li className="list-group-item row">
+            <div className="row">
+              <div className="col-7">
+                <span className="badge badge-warning d-inline">function</span>
+                <span className="mx-1 px-1 text-danger">
+                  {func.isSet ? "set" : "get"}
+                </span>
+              </div>
+              <div className="col-2">
+                <button
+                  type="button"
+                  className="btn btn-outline-warning py-0 px-3 ml-3"
+                >
+                  Call
+                </button>
+              </div>
+            </div>
+          </li>
+        );
+      });
+    };
 
     return (
       <div className="workspaceContainer">
-        <Header />
+        <div className="wasmStudioHeader">
+          <span className="waHeaderText"></span>
+        </div>
         <div style={{ height: "calc(100% - 41px)" }}>
           <Split
             name="Workspace"
@@ -87,74 +117,41 @@ export class RightPanel extends React.Component<
             }}
           >
             <div />
-            <div>
-              <div className="contract-item card bg-transparent">
-                <div className="card-header font-weight-bold border-light align-middle">
-                  Contracts:
-                </div>
-                <div className="mt-1">
-                  <div className="card-header border-bottom border-primary bg-black">
-                    <div className="row justify-content-around align-items-center">
-                      <div className="col">
-                        <span className="badge badge-success">Deployed</span>
-                        <span className="contract-name">:SimpleStore</span>
-                      </div>
-                      <div className="col-1">
-                        <span
-                          title="icon expand"
-                          aria-hidden="true"
-                          aria-controls="collapse_contract"
-                          aria-expanded="true"
-                          className="btn btn-black oi oi-caret-bottom"
-                        />
-                      </div>
+            <div className="contract-item card bg-transparent">
+              <div className="card-header font-weight-bold border-light align-middle">
+                Contracts:
+              </div>
+              <div className="mt-1">
+                <div className="card-header border-bottom border-primary bg-black">
+                  <div className="row justify-content-around align-items-center">
+                    <div className="col">
+                      <span className="badge badge-success">Deployed</span>
+                      <span className="contract-name">:{contractName}</span>
+                    </div>
+                    <div className="col-1">
+                      <span
+                        title="icon expand"
+                        aria-hidden="true"
+                        aria-controls="collapse_contract"
+                        aria-expanded="true"
+                        className="btn btn-black oi oi-caret-bottom"
+                      />
                     </div>
                   </div>
-                  <div id="collapse_contract" className="collapse show">
-                    <div className="row contract-instance-address bg-skyblue px-4 py-2 font-weight-bold text-pure-white">
-                      Contract address:
-                      0x685c155bb26de65a3f00f9ecfbfe34eaae56584c
-                    </div>
-                    <ul className="list-group list-group-flush bg-dark">
-                      <li className="list-group-item row">
-                        <div className="row">
-                          <div className="col-7">
-                            <span className="badge badge-warning d-inline">
-                              function
-                            </span>
-                            <span className="mx-1 px-1 text-danger">set</span>
-                          </div>
-                          <div className="col-2">
-                            <button
-                              type="button"
-                              className="btn btn-outline-warning py-0 px-3 ml-3"
-                            >
-                              Call
-                            </button>
-                          </div>
-                        </div>
-                      </li>
-                      <li className="list-group-item row">
-                        <div className="row">
-                          <div className="col-7">
-                            <span className="badge badge-warning d-inline">
-                              function
-                            </span>
-                            <span className="mx-1 px-1 text-danger">set</span>
-                          </div>
-                          <div className="col-2">
-                            <button
-                              type="button"
-                              className="btn btn-outline-warning py-0 px-3 ml-3"
-                            >
-                              Call
-                            </button>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
                 </div>
+                <div id="collapse_contract" className="collapse show">
+                  <div className="row contract-instance-address bg-skyblue px-4 py-2 font-weight-bold text-pure-white">
+                    Contract address: {address}
+                  </div>
+                  <ul className="list-group list-group-flush bg-dark">
+                    {makeMethodCallContract()}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="fill">
+              <div style={{ height: "calc(100% - 40px)" }}>
+                <span>Result</span>
               </div>
             </div>
           </Split>
