@@ -103,13 +103,13 @@ export class RightPanel extends React.Component<
     };
 
     return (
-      <div className="workspaceContainer">
+      <div className="CallContractContainer">
         <div className="wasmStudioHeader">
-          <span className="waHeaderText"></span>
+          <span className="waHeaderText" />
         </div>
         <div style={{ height: "calc(100% - 41px)" }}>
           <Split
-            name="Workspace"
+            name="CallContract"
             orientation={SplitOrientation.Horizontal}
             splits={this.state.splits}
             onChange={splits => {
