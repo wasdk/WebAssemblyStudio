@@ -24,6 +24,7 @@ import * as ReactDOM from "react-dom";
 import * as ReactModal from "react-modal";
 
 import { Workspace } from "./Workspace";
+import { RightPanel } from "./RightPanel";
 import { EditorView, ViewTabs, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
@@ -183,7 +184,7 @@ export interface AppState {
    * If true, the confirm dialog is open.
    */
   confirmDialog: boolean;
-  isDeploy : boolean;
+  isDeploy: boolean;
 }
 
 export interface AppProps {
@@ -236,6 +237,11 @@ export class App extends React.Component<AppProps, AppState> {
         },
         {
           min: 256
+        },
+        {
+          min: 300,
+          max: 500,
+          value: 400
         }
       ],
       controlCenterSplits: [{ min: 100 }, { min: 40, value: 256 }],
@@ -250,7 +256,7 @@ export class App extends React.Component<AppProps, AppState> {
       hasStatus: false,
       isContentModified: false,
       confirmDialog: false,
-      isDeploy: false,
+      isDeploy: false
     };
   }
   private async initializeProject() {
@@ -696,9 +702,9 @@ export class App extends React.Component<AppProps, AppState> {
               const groups = this.state.activeTabGroup;
               let view = groups.currentView;
               if (!isViewFileDirty(view)) {
-                this.saveToBuild(true)
+                this.saveToBuild(true);
               } else {
-                this.setState({isDeploy: true});
+                this.setState({ isDeploy: true });
                 this.saveToBuild();
               }
             }}
@@ -1039,6 +1045,7 @@ export class App extends React.Component<AppProps, AppState> {
                 </Split>
               </div>
             </div>
+            <RightPanel />
           </Split>
         </div>
         <StatusBar />
