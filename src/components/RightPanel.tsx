@@ -103,7 +103,7 @@ export class RightPanel extends React.Component<
     };
 
     return (
-      <div className="CallContractContainer">
+      <div className="rightPanelContainer">
         <div className="wasmStudioHeader">
           <span className="waHeaderText" />
         </div>
@@ -117,7 +117,7 @@ export class RightPanel extends React.Component<
             }}
           >
             <div />
-            <div className="contract-item card bg-transparent">
+            <div className="wrapper-method-list card">
               <div className="card-header font-weight-bold border-light align-middle">
                 Contracts:
               </div>

@@ -1,6 +1,7 @@
-.contract-item {
+.wrapper-method-list {
   overflow: hidden;
   font-size: 14px;
+  background-color: transparent !important;
 }
 .card {
   position: relative;
@@ -29,10 +30,6 @@
 .card > .list-group:last-child .list-group-item:last-child {
   border-bottom-right-radius: 0.25rem;
   border-bottom-left-radius: 0.25rem;
-}
-
-.bg-transparent {
-  background-color: transparent !important;
 }
 
 .card-header {
@@ -209,7 +206,7 @@ a.bg-black:hover {
 .badge {
   display: inline-block;
   padding: 0.25em 0.4em;
-  font-size: 75%;
+  font-size: 90%;
   font-weight: 700;
   line-height: 1;
   text-align: center;
