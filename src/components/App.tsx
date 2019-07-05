@@ -106,7 +106,6 @@ import { UploadFileDialog } from "./UploadFileDialog";
 import { ToastContainer } from "./Toasts";
 import { Spacer, Divider } from "./Widgets";
 import { ShareDialog } from "./ShareDialog";
-import { CallContractDialog } from "./CallContractDialog";
 import { NewProjectDialog, Template } from "./NewProjectDialog";
 import { NewDirectoryDialog } from "./NewDirectoryDialog";
 import { Errors } from "../errors";
@@ -900,7 +899,7 @@ export class App extends React.Component<AppProps, AppState> {
             }}
           />
         )}
-        {this.state.callContractDialog && (
+        {/* {this.state.callContractDialog && (
           <CallContractDialog
             isOpen={true}
             deployedAddresses={this.state.deployedAddresses}
@@ -908,7 +907,7 @@ export class App extends React.Component<AppProps, AppState> {
               this.setState({ callContractDialog: false });
             }}
           />
-        )}
+        )} */}
         {this.state.uploadFileDialogDirectory && (
           <UploadFileDialog
             isOpen={true}
@@ -1045,17 +1044,21 @@ export class App extends React.Component<AppProps, AppState> {
                 </Split>
               </div>
             </div>
-            <RightPanel
-              address="0x685c155bb26de65a3f00f9ecfbfe34eaae56584c"
+            {
+              this.state.callContractDialog &&
+              <RightPanel
+              address={this.state.deployedAddresses}
               contractName={"SimpleStore"}
-              listFunc={[
-                { name: "func1", isSet: true },
-                { name: "func2", isSet: false },
-                { name: "func3", isSet: false },
-                { name: "func4", isSet: true },
-                { name: "func5", isSet: false }
-              ]}
+              // listFunc={[
+              //   { name: "func1", isSet: true },
+              //   { name: "func2", isSet: false },
+              //   { name: "func3", isSet: false },
+              //   { name: "func4", isSet: true },
+              //   { name: "func5", isSet: false }
+              // ]}
             />
+            }
+            
           </Split>
         </div>
         <StatusBar />
