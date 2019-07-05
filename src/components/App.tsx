@@ -24,10 +24,15 @@ import * as ReactDOM from "react-dom";
 import * as ReactModal from "react-modal";
 
 import { Workspace } from "./Workspace";
+import { RightPanel } from "./RightPanel";
 import { EditorView, ViewTabs, View, Tab, Tabs } from "./editor";
 import { Header } from "./Header";
 import { Toolbar } from "./Toolbar";
-import { ViewType, defaultViewTypeForFileType, isViewFileDirty } from "./editor/View";
+import {
+  ViewType,
+  defaultViewTypeForFileType,
+  isViewFileDirty
+} from "./editor/View";
 import {
   build,
   deploy as deployTask,
@@ -112,6 +117,7 @@ import { publishArc, notifyArcAboutFork } from "../actions/ArcActions";
 import { RunTaskExternals } from "../utils/taskRunner";
 import { SaveCFDialog } from "./SaveCFDialog";
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "constants";
+import { isDeepStrictEqual } from "util";
 
 export interface AppState {
   project: ModelRef<Project>;
@@ -178,6 +184,7 @@ export interface AppState {
    * If true, the confirm dialog is open.
    */
   confirmDialog: boolean;
+  isDeploy: boolean;
 }
 
 export interface AppProps {
@@ -230,6 +237,11 @@ export class App extends React.Component<AppProps, AppState> {
         },
         {
           min: 256
+        },
+        {
+          min: 300,
+          max: 500,
+          value: 400
         }
       ],
       controlCenterSplits: [{ min: 100 }, { min: 40, value: 256 }],
@@ -243,7 +255,8 @@ export class App extends React.Component<AppProps, AppState> {
       windowDimensions: App.getWindowDimensions(),
       hasStatus: false,
       isContentModified: false,
-      confirmDialog: false
+      confirmDialog: false,
+      isDeploy: false
     };
   }
   private async initializeProject() {
@@ -511,33 +524,36 @@ export class App extends React.Component<AppProps, AppState> {
     return this.state.hasStatus;
   }
 
-  saveToBuild() {
+  async saveToBuild(isDeploy = false) {
     // isViewFileDirty
     const groups = this.state.activeTabGroup;
     let view = groups.currentView;
-    if(isViewFileDirty(view)) {
+    if (isViewFileDirty(view)) {
       this.setState({ confirmDialog: true });
     } else {
-      build();
+      await build();
+      isDeploy && (await this.deploy.call(this));
     }
   }
 
-  saveCurrentTab() {
+  async saveCurrentTab() {
     const activeGroup = this.state.activeTabGroup;
     activeGroup.currentView.file.save(this.status);
-    build();
-    this.setState({ confirmDialog: false });
+    await build();
+    this.state.isDeploy && (await this.deploy.call(this));
+    this.setState({ confirmDialog: false, isDeploy: false });
   }
 
-  saveAllTab() {
+  async saveAllTab() {
     const groups = this.state.tabGroups;
     let views = groups[0].views.slice(0);
-    console.log("I want to show views", views);
-    for(let i=0; i< views.length; i++) {
+    // console.log("I want to show views", views);
+    for (let i = 0; i < views.length; i++) {
       views[i].file.save(this.status);
     }
-    build();
-    this.setState({ confirmDialog: false });
+    await build();
+    this.state.isDeploy && (await this.deploy.call(this));
+    this.setState({ confirmDialog: false, isDeploy: false });
   }
 
   makeToolbarButtons() {
@@ -683,8 +699,14 @@ export class App extends React.Component<AppProps, AppState> {
             isDisabled={this.toolbarButtonsAreDisabled()}
             onClick={() => {
               // build().then(this.deploy.bind(this));
-              this.saveToBuild();
-              this.deploy.call(this);
+              const groups = this.state.activeTabGroup;
+              let view = groups.currentView;
+              if (!isViewFileDirty(view)) {
+                this.saveToBuild(true);
+              } else {
+                this.setState({ isDeploy: true });
+                this.saveToBuild();
+              }
             }}
           />,
           <Button
@@ -764,7 +786,7 @@ export class App extends React.Component<AppProps, AppState> {
   }
   render() {
     const self = this;
-    console.log("state CK", this.state);
+    // console.log("state CK", this.state);
 
     const makeEditorPanes = () => {
       const groups = this.state.tabGroups;
@@ -924,7 +946,9 @@ export class App extends React.Component<AppProps, AppState> {
             onSave={() => {
               this.saveCurrentTab();
             }}
-            onSaveAll={()=>{this.saveAllTab();}}
+            onSaveAll={() => {
+              this.saveAllTab();
+            }}
             onCancel={() => {
               this.setState({ confirmDialog: false });
             }}
@@ -1021,6 +1045,17 @@ export class App extends React.Component<AppProps, AppState> {
                 </Split>
               </div>
             </div>
+            <RightPanel
+              address="0x685c155bb26de65a3f00f9ecfbfe34eaae56584c"
+              contractName={"SimpleStore"}
+              listFunc={[
+                { name: "func1", isSet: true },
+                { name: "func2", isSet: false },
+                { name: "func3", isSet: false },
+                { name: "func4", isSet: true },
+                { name: "func5", isSet: false }
+              ]}
+            />
           </Split>
         </div>
         <StatusBar />
