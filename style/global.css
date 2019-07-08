@@ -25,7 +25,7 @@
 
 html,
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -49,7 +49,7 @@ body {
 }
 
 input {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -92,14 +92,15 @@ a {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.workspaceContainer,.rightPanelContainer {
+.workspaceContainer,
+.rightPanelContainer {
   background: var(--grey-950);
   width: 100%;
   height: 100%;
 }
 
 .workspaceContainer:after {
-  content: "alpha";
+  content: 'alpha';
   position: fixed;
   width: 80px;
   height: 20px;
@@ -137,12 +138,12 @@ a {
   user-select: none;
   font-weight: 700;
   font-style: italic;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI,
-    HelveticaNeue-Light, Ubuntu, Droid Sans, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
 }
 
 .wasmStudioHeader {
-  font-family: "Zilla Slab", serif;
+  font-family: 'Zilla Slab', serif;
   font-size: 16px;
   width: 100%;
   height: 40px;
@@ -178,7 +179,7 @@ a {
 
 .terminal {
   color: #fff;
-  font-family: "Roboto Mono", courier-new, courier, monospace;
+  font-family: 'Roboto Mono', courier-new, courier, monospace;
   font-size: 12px;
   font-weight: bold;
 }
@@ -192,8 +193,8 @@ a {
 }
 
 .monaco-tree {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI,
-    HelveticaNeue-Light, Ubuntu, Droid Sans, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
 }
 .monaco-tree-row {
   font-size: 14px;
@@ -201,8 +202,8 @@ a {
 }
 
 .directory-entry {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI,
-    HelveticaNeue-Light, Ubuntu, Droid Sans, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
   display: flex;
   width: calc(100% - 10px);
   min-width: fit-content;
@@ -372,8 +373,8 @@ a {
   -moz-user-select: none;
   user-select: none;
   font-weight: 700;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI,
-    HelveticaNeue-Light, Ubuntu, Droid Sans, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
   display: flex;
 }
 
@@ -580,7 +581,36 @@ a {
   outline: none;
   box-shadow: 1px 1px 4px black;
 }
+.modal-rightpanel {
+  height: auto;
+  max-height: 600px;
+}
 
+.modal-title-bar {
+  font-family: 'Zilla Slab', serif;
+  line-height: 22px;
+  color: rgb(255, 255, 255);
+  background-color: var(--title);
+  font-size: 16px;
+  font-weight: bold;
+  padding: 4px;
+}
+.modal-body {
+  position: relative;
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 15px;
+  max-height: 360px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+.modal-footer-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  border-top: 1px solid #e9ecef;
+}
 .modalCallContract {
   position: absolute;
   top: calc(50% - 180px);
@@ -629,23 +659,7 @@ a {
 }
 
 .overlayCallContract {
-  position: fixed;
   top: -25em;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75);
-  z-index: 2;
-}
-
-.modal-title-bar {
-  font-family: "Zilla Slab", serif;
-  line-height: 22px;
-  color: rgb(255, 255, 255);
-  background-color: var(--title);
-  font-size: 16px;
-  font-weight: bold;
-  padding: 4px;
 }
 
 .toast {
@@ -825,7 +839,7 @@ a {
 }
 
 .file-upload-input::before {
-  content: "Select some files";
+  content: 'Select some files';
   color: black;
   display: inline-block;
   background: #333;
@@ -846,7 +860,7 @@ a {
 
 .md {
   line-height: 1.5em;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 14px;
 }
 
@@ -871,7 +885,7 @@ a {
 
 .md h1,
 .md h2 {
-  font-family: "Zilla Slab", serif;
+  font-family: 'Zilla Slab', serif;
   line-height: normal;
 }
 
@@ -896,8 +910,8 @@ a {
   line-height: 1.2rem;
   color: rgb(255, 207, 118);
   border-width: 1px;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif;
   font-weight: normal;
 }
 
@@ -926,8 +940,8 @@ a {
 }
 
 .tree-view-item {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI,
-    HelveticaNeue-Light, Ubuntu, Droid Sans, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
   display: flex;
   width: calc(100% - 10px);
   min-width: fit-content;
@@ -967,8 +981,8 @@ a {
 }
 
 .action-label {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI,
-    HelveticaNeue-Light, Ubuntu, Droid Sans, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
   font-weight: bold;
 }
 
@@ -977,17 +991,17 @@ a {
 }
 
 .monaco-icon-label.dirty::after {
-  content: "M";
+  content: 'M';
   font-size: 10px;
 }
 
 .monaco-icon-label.transient::after {
-  content: "T";
+  content: 'T';
   font-size: 10px;
 }
 
 .monaco-icon-label.dirty.transient::after {
-  content: "M T";
+  content: 'M T';
   font-size: 10px;
 }
 
@@ -1020,87 +1034,87 @@ a {
 
 .action-label.octicon-file-add::before {
   font-family: octicons;
-  content: "\f05d";
+  content: '\f05d';
 }
 
 .action-label.octicon-cloud-download::before {
   font-family: octicons;
-  content: "\f00b";
+  content: '\f00b';
 }
 
 .action-label.octicon-cloud-upload::before {
   font-family: octicons;
-  content: "\f00c";
+  content: '\f00c';
 }
 
 .action-label.octicon-pencil::before {
   font-family: octicons;
-  content: "\f058";
+  content: '\f058';
 }
 
 .action-label.octicon-x::before {
   font-family: octicons;
-  content: "\f081";
+  content: '\f081';
 }
 
 .action-label.octicon-quote::before {
   font-family: octicons;
-  content: "\f063";
+  content: '\f063';
 }
 
 .action-label.octicon-gear::before {
   font-family: octicons;
-  content: "\f02f";
+  content: '\f02f';
 }
 
 .action-label.octicon-verified::before {
   font-family: octicons;
-  content: "\f02f";
+  content: '\f02f';
 }
 
 .action-label.octicon-file-code::before {
   font-family: octicons;
-  content: "\f010";
+  content: '\f010';
 }
 
 .action-label.octicon-file-binary::before {
   font-family: octicons;
-  content: "\f094";
+  content: '\f094';
 }
 
 .action-label.octicon-check::before {
   font-family: octicons;
-  content: "\f03a";
+  content: '\f03a';
 }
 
 .action-label.octicon-gist::before {
   font-family: octicons;
-  content: "\f00e";
+  content: '\f00e';
 }
 
 .label-name.error-dark::before {
-  content: url("../svg/error-dark.svg");
+  content: url('../svg/error-dark.svg');
   padding-right: 4px;
   position: relative;
   top: 4px;
 }
 
 .label-name.warning-dark::before {
-  content: url("../svg/warning-dark.svg");
+  content: url('../svg/warning-dark.svg');
   padding-right: 4px;
   position: relative;
   top: 4px;
 }
 
 .label-name.info-dark::before {
-  content: url("../svg/info-dark.svg");
+  content: url('../svg/info-dark.svg');
   padding-right: 4px;
   position: relative;
   top: 4px;
 }
 
 .browser-not-supported-description {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   padding: 8px;
   line-height: 1.5em;
   font-size: 18px;
@@ -1111,8 +1125,8 @@ a {
 
 .binary {
   font-size: 12px;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif;
   font-weight: normal;
   padding: 8px;
   height: 100%;
