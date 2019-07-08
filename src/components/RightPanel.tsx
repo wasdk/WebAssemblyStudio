@@ -150,14 +150,13 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     // appStore.onDidChangeDirty.register(this.refreshTree);
     // appStore.onDidChangeChildren.register(this.refreshTree);
     const { address } = this.props;
     if (address.length > 0) {
       this.setState({ addr: address[0] });
-      const funcs = await tweb3.getMetadata(address[0]);
-      this.getFuncList(funcs);
+      this.getFuncList(address[0]);
     }
   }
 
@@ -182,18 +181,20 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     this.directoryTree.tree.refresh();
   };
 
-  getFuncList(funcs) {
-    console.log('funcs', funcs);
-    const newFunc = Object.keys(funcs).map(item => {
-      const meta = funcs[item];
-      return {
-        name: item,
-        decorators: meta.decorators || [],
-        params: meta.params || [],
-      };
-    });
+  getFuncList(address) {
+    tweb3.getMetadata(address).then(funcs => {
+      console.log('funcs', funcs);
+      const newFunc = Object.keys(funcs).map(item => {
+        const meta = funcs[item];
+        return {
+          name: item,
+          decorators: meta.decorators || [],
+          params: meta.params || [],
+        };
+      });
 
-    this.setState({ listFunc: newFunc });
+      this.setState({ listFunc: newFunc });
+    });
   }
 
   callContractMethod = async func => {
@@ -217,6 +218,19 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
       document.getElementById('resultJson').innerHTML = formatResult(error, true);
     }
   };
+
+  changeAddress(event: React.FormEvent) {
+    const address = (event.target as any).value;
+    console.log(address); // in chrome => B
+    this.setState(
+      {
+        addr: address,
+      },
+      () => {
+        this.getFuncList(address);
+      }
+    );
+  }
 
   render() {
     const { contractName, address } = this.props;
@@ -264,9 +278,9 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
             >
               <div />
               <div className="wrapper-method-list card">
-                <div className="card-header font-weight-bold border-light align-middle">Contracts:</div>
+                {/* <div className="card-header font-weight-bold border-light align-middle">Contracts:</div> */}
                 <div className="mt-1">
-                  <div className="card-header border-bottom border-primary bg-black">
+                  {/* <div className="card-header border-bottom border-primary bg-black">
                     <div className="row justify-content-around align-items-center">
                       <div className="col">
                         <span className="badge badge-success">Deployed</span>
@@ -282,17 +296,19 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                         />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div id="collapse_contract" className="collapse show">
-                    <div className="row contract-instance-address bg-skyblue px-4 py-2 font-weight-bold text-pure-white">
-                      Contract address:{' '}
-                      <select id="callContractAddr">
-                        {address.map((addr, i) => (
-                          <option key={i} value={addr}>
-                            {addr}
-                          </option>
-                        ))}
-                      </select>
+                    <div className="row contract-instance-address px-4 py-2 font-weight-bold text-pure-white">
+                      <span className="badge badge-success">Deployed contract address: </span>
+                      <div className="py-1">
+                        <select id="callContractAddr" onChange={e => this.changeAddress(e)}>
+                          {address.map((addr, i) => (
+                            <option key={i} value={addr}>
+                              {addr}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                     <ul className="list-group list-group-flush bg-dark">{makeMethodCallContract()}</ul>
                   </div>
