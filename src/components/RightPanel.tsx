@@ -301,7 +301,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                     <div className="row contract-instance-address px-4 py-2 font-weight-bold text-pure-white">
                       <span className="badge badge-success">Deployed contract address: </span>
                       <div className="py-1">
-                        <select id="callContractAddr" onChange={e => this.changeAddress(e)}>
+                        <select className="custom-select" id="callContractAddr" onChange={e => this.changeAddress(e)}>
                           {address.map((addr, i) => (
                             <option key={i} value={addr}>
                               {addr}
