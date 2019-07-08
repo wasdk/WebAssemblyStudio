@@ -19,13 +19,13 @@
  * SOFTWARE.
  */
 
-import * as React from "react";
-import * as ReactModal from "react-modal";
-import { Button } from "./shared/Button";
-import { GoX, GoCheck } from "./shared/Icons";
-import { IceteaWeb3 } from "@iceteachain/web3";
-import { MethodInfo, parseParamsFromField, formatResult } from "./RightPanel";
-const tweb3 = new IceteaWeb3("https://rpc.icetea.io");
+import * as React from 'react';
+import * as ReactModal from 'react-modal';
+import { Button } from './shared/Button';
+import { GoX, GoCheck } from './shared/Icons';
+import { IceteaWeb3 } from '@iceteachain/web3';
+import { MethodInfo, parseParamsFromField, formatResult } from './RightPanel';
+const tweb3 = new IceteaWeb3('https://rpc.icetea.io');
 
 export default class CallContractDialog extends React.Component<
   {
@@ -40,7 +40,7 @@ export default class CallContractDialog extends React.Component<
     super(props);
     this.state = {
       isCallFuncs: false,
-      funcs: {}
+      funcs: {},
     };
   }
 
@@ -48,108 +48,84 @@ export default class CallContractDialog extends React.Component<
     this.props.onCancel();
   };
 
-  call = async () => {
+  exContractMethod = async () => {
     const { funcInfo, address } = this.props;
     if (funcInfo) {
       let result;
       try {
-        //Can xem lai param0
-        const params = parseParamsFromField('#param0');
-        document.getElementById("funcName").innerHTML = funcInfo.name;
-        document.getElementById("resultJson").innerHTML =
-          "<span class='Error'>sending...</span>";
+        const params = (funcInfo && funcInfo.params) || [];
+        const paramsValue = Object.keys(params).map(key => {
+          return parseParamsFromField('#param' + key);
+        });
+        document.getElementById('funcName').innerHTML = funcInfo.name;
+        document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
         const name = funcInfo.name;
         const ct = tweb3.contract(address);
-        result = await ct.methods[name](...params).sendCommit();
-        console.log(result);
-        document.getElementById("resultJson").innerHTML = formatResult(
-          result,
-          false
-        );
+        result = await ct.methods[name](...paramsValue).sendCommit();
+
+        // console.log(result);
+        document.getElementById('resultJson').innerHTML = formatResult(result, false);
       } catch (error) {
         console.log(error);
-        document.getElementById("resultJson").innerHTML = formatResult(
-          error,
-          true
-        );
+        document.getElementById('resultJson').innerHTML = formatResult(error, true);
       }
     }
+
     this.props.onCancel();
   };
 
   render() {
     const { funcInfo, isOpen } = this.props;
-    // console.log("funcInfo", funcInfo);
-    let funcDes = "LuongHV";
-    if (funcInfo) {
-      const params = funcInfo.params;
-      // const { name } = params[0];
-      // const { type } = params[0];
-      // console.log("params name", params[0]['name']);
-      // console.log("name", name);
-      // console.log("type", type[0]);
+    const params = (funcInfo && funcInfo.params) || [];
 
-      for (let i = 0; i < params.length; i++) {
-        const name = params[i].name;
-        const type = params[i].type[0];
-        funcDes = name + ": " + type;
-      }
-    }
-
-    let pramsDes;
-
-    if (funcInfo) {
-      const params = funcInfo.params;
-      console.log("params", params);
-      pramsDes = Object.keys(params).map((key, i) => {
-        return (
-          <li>
-            <div>{params[i].name + ": " + params[i].type[0]}</div>
-            {params[i].type[0] === "any" ? (
-              <textarea id={"param" + [i]} />
-            ) : (
-              <input id={"param" + [i]} />
-            )}
-          </li>
-        );
-      });
-    }
+    const pramsDes = Object.keys(params).map(key => {
+      return (
+        <li className="list-group-item item-contract-method">
+          <div className="row">
+            <div className="py-1 col">
+              <span className="input-name">{params[key].name}</span>:
+              <span className="px-1 input-type">{params[key].type}</span>
+            </div>
+            <div className="py-1 col">
+              {params[key].type === 'any' ? (
+                <textarea
+                  placeholder={params[key].type}
+                  className="input-value input-value-textarea"
+                  id={'param' + [key]}
+                />
+              ) : (
+                <input placeholder={params[key].type} className="input-value" id={'param' + [key]} />
+              )}
+            </div>
+          </div>
+        </li>
+      );
+    });
 
     return (
       <ReactModal
         isOpen={isOpen}
         contentLabel="Call Contract"
-        className="modalCallContract"
-        overlayClassName="overlayCallContract"
+        className="modal modal-rightpanel "
+        overlayClassName="overlay overlayCallContract"
         ariaHideApp={false}
       >
-        <div
-          style={{ display: "flex", flexDirection: "column", height: "100%" }}
-        >
-          <div className="modal-title-bar">
-            Call function :{funcInfo && funcInfo.name}
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <header className="modal-title-bar">Call function :{funcInfo && funcInfo.name}</header>
+          <div className="modal-body">
+            <ul className="list-group list-group-flush">{pramsDes}</ul>
           </div>
-          <div>
-            <ul>{pramsDes}</ul>
-          </div>
-          <Button
-            customClassName="saveBtn"
-            icon={<GoCheck />}
-            label="Call"
-            title="call"
-            onClick={() => {
-              this.call();
-            }}
-          />
-          <Button
-            customClassName="saveBtn"
-            icon={<GoX />}
-            label="Cancel"
-            title="Cancel"
-            onClick={() => {
-              this.cancel();
-            }}
-          />
+          <div style={{ flex: 1, padding: '8px' }} />
+          <footer className="modal-footer-bar">
+            <Button customClassName="saveBtn" icon={<GoX />} label="Cancel" title="Cancel" onClick={this.cancel} />
+            <Button
+              customClassName="saveBtn"
+              icon={<GoCheck />}
+              label="Call"
+              title="call"
+              onClick={this.exContractMethod}
+            />
+          </footer>
         </div>
       </ReactModal>
     );

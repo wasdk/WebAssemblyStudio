@@ -19,20 +19,20 @@
  * SOFTWARE.
  */
 
-import * as React from "react";
-import { Header } from "./Header";
-import { DirectoryTree } from "./DirectoryTree";
-import { Project, File, Directory, ModelRef } from "../models";
-import { SplitOrientation, SplitInfo, Split } from "./Split";
-import appStore from "../stores/AppStore";
-import CallContractDialog from "./CallContractDialog";
-import { IceteaWeb3 } from "@iceteachain/web3";
-const tweb3 = new IceteaWeb3("https://rpc.icetea.io");
+import * as React from 'react';
+import { Header } from './Header';
+import { DirectoryTree } from './DirectoryTree';
+import { Project, File, Directory, ModelRef } from '../models';
+import { SplitOrientation, SplitInfo, Split } from './Split';
+import appStore from '../stores/AppStore';
+import CallContractDialog from './CallContractDialog';
+import { IceteaWeb3 } from '@iceteachain/web3';
+const tweb3 = new IceteaWeb3('https://rpc.icetea.io');
 
 export interface MethodInfo {
   name?: string;
   decorators?: string[];
-  params?: { name?: string; type?: string[] }[];
+  params?: { name?: string; type?: string }[];
 }
 
 export interface RightPanelProps {
@@ -45,12 +45,13 @@ export interface RightPanelProps {
 export interface RightPanelState {
   splits: SplitInfo[];
   listFunc: MethodInfo[];
+  funcInfo: {};
   addr: String;
   isCallParam: boolean;
 }
 
 export function tryStringifyJsonHelper(p, replacer, space) {
-  if (typeof p === "string") {
+  if (typeof p === 'string') {
     return p;
   }
   try {
@@ -81,10 +82,10 @@ export function parseParamsFromField(selector) {
 }
 
 export function parseParamList(pText) {
-  pText = replaceAll(pText, "\r", "\n");
-  pText = replaceAll(pText, "\n\n", "\n");
+  pText = replaceAll(pText, '\r', '\n');
+  pText = replaceAll(pText, '\n\n', '\n');
   let params = pText
-    .split("\n")
+    .split('\n')
     .filter(e => e.trim())
     .map(tryParseJson);
 
@@ -98,12 +99,12 @@ export function formatResult(r, isError) {
     msg =
       '<b>Result</b>: <span class="Error":>ERROR</span><br><b>Message</b>: <span class="Error">' +
       (r.deliver_tx.log || r.check_tx.log || tryStringifyJson(r)) +
-      "</span>" +
-      "<br><b>Hash</b>: ";
+      '</span>' +
+      '<br><b>Hash</b>: ';
     if (r.hash) {
-      msg += '<a href="/tx.html?hash=' + r.hash + '">' + r.hash + "</a>";
+      msg += '<a href="/tx.html?hash=' + r.hash + '">' + r.hash + '</a>';
     } else {
-      msg += "N/A";
+      msg += 'N/A';
     }
     return msg;
   } else {
@@ -111,27 +112,24 @@ export function formatResult(r, isError) {
       '<b>Result</b>: <span class="Success"><b>SUCCESS</b></span>' +
       '<br><b>Returned Value</b>:  <span class="Success">' +
       tryStringifyJson(r.returnValue) +
-      "</span>" +
+      '</span>' +
       '<br><b>Hash</b>: <a href="https://devtools.icetea.io/tx.html?hash=' +
       r.hash +
       '" target="_blank" rel="noopener noreferrer">' +
       r.hash +
-      "</a>";
+      '</a>';
     msg +=
-      "<br><b>Height</b>: " +
+      '<br><b>Height</b>: ' +
       r.height +
-      "<br><b>Tags</b>: " +
+      '<br><b>Tags</b>: ' +
       tryStringifyJson(r.tags) +
-      "<br><b>Events:</b> " +
+      '<br><b>Events:</b> ' +
       tryStringifyJson(r.events);
     return msg;
   }
 }
 
-export class RightPanel extends React.Component<
-  RightPanelProps,
-  RightPanelState
-> {
+export class RightPanel extends React.Component<RightPanelProps, RightPanelState> {
   directoryTree: DirectoryTree;
   constructor(props: any) {
     super(props);
@@ -139,15 +137,16 @@ export class RightPanel extends React.Component<
       splits: [
         {},
         {
-          value: 300
+          value: 300,
         },
         {
-          value: 400
-        }
+          value: 400,
+        },
       ],
       listFunc: [],
-      addr: "",
-      isCallParam: false
+      funcInfo: {},
+      addr: '',
+      isCallParam: false,
     };
   }
 
@@ -184,13 +183,13 @@ export class RightPanel extends React.Component<
   };
 
   getFuncList(funcs) {
-    console.log("funcs", funcs);
+    console.log('funcs', funcs);
     const newFunc = Object.keys(funcs).map(item => {
       const meta = funcs[item];
       return {
         name: item,
         decorators: meta.decorators || [],
-        params: meta.params || []
+        params: meta.params || [],
       };
     });
 
@@ -202,34 +201,27 @@ export class RightPanel extends React.Component<
     try {
       const params = func.params;
       if (params.length > 0) {
-        this.setState({ isCallParam: true });
+        this.setState({ isCallParam: true, funcInfo: func });
       } else {
-        document.getElementById("funcName").innerHTML = func.name;
-        document.getElementById("resultJson").innerHTML =
-          "<span class='Error'>sending...</span>";
+        document.getElementById('funcName').innerHTML = func.name;
+        document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
         const addr = this.state.addr;
         const name = func.name;
         const ct = tweb3.contract(addr);
         result = await ct.methods[name](...params).sendCommit();
         console.log(result);
-        document.getElementById("resultJson").innerHTML = formatResult(
-          result,
-          false
-        );
+        document.getElementById('resultJson').innerHTML = formatResult(result, false);
       }
     } catch (error) {
       console.log(error);
-      document.getElementById("resultJson").innerHTML = formatResult(
-        error,
-        true
-      );
+      document.getElementById('resultJson').innerHTML = formatResult(error, true);
     }
   };
 
   render() {
     const { contractName, address } = this.props;
-    const { splits, listFunc, isCallParam, addr } = this.state;
-    console.log("Function List", this.state);
+    const { funcInfo, listFunc, isCallParam, addr } = this.state;
+    console.log('RightPanel');
 
     const makeMethodCallContract = () => {
       return listFunc.map((func: MethodInfo, i: number) => {
@@ -261,7 +253,7 @@ export class RightPanel extends React.Component<
           <span className="waHeaderText" />
         </div>
         {address ? (
-          <div style={{ height: "calc(100% - 41px)" }}>
+          <div style={{ height: 'calc(100% - 41px)' }}>
             <Split
               name="CallContract"
               orientation={SplitOrientation.Horizontal}
@@ -272,9 +264,7 @@ export class RightPanel extends React.Component<
             >
               <div />
               <div className="wrapper-method-list card">
-                <div className="card-header font-weight-bold border-light align-middle">
-                  Contracts:
-                </div>
+                <div className="card-header font-weight-bold border-light align-middle">Contracts:</div>
                 <div className="mt-1">
                   <div className="card-header border-bottom border-primary bg-black">
                     <div className="row justify-content-around align-items-center">
@@ -295,7 +285,7 @@ export class RightPanel extends React.Component<
                   </div>
                   <div id="collapse_contract" className="collapse show">
                     <div className="row contract-instance-address bg-skyblue px-4 py-2 font-weight-bold text-pure-white">
-                      Contract address:{" "}
+                      Contract address:{' '}
                       <select id="callContractAddr">
                         {address.map((addr, i) => (
                           <option key={i} value={addr}>
@@ -304,14 +294,12 @@ export class RightPanel extends React.Component<
                         ))}
                       </select>
                     </div>
-                    <ul className="list-group list-group-flush bg-dark">
-                      {makeMethodCallContract()}
-                    </ul>
+                    <ul className="list-group list-group-flush bg-dark">{makeMethodCallContract()}</ul>
                   </div>
                 </div>
               </div>
               <div className="fill">
-                <div style={{ height: "calc(100% - 40px)" }}>
+                <div style={{ height: 'calc(100% - 40px)' }}>
                   <span>Result</span>
                   <section id="result">
                     <div>
@@ -324,19 +312,19 @@ export class RightPanel extends React.Component<
                 </div>
               </div>
             </Split>
-            <CallContractDialog
-              isOpen={isCallParam}
-              funcInfo={listFunc[1]}
-              address={addr}
-              onCancel={() => {
-                this.setState({ isCallParam: false });
-              }}
-            />
+            {isCallParam && (
+              <CallContractDialog
+                isOpen={isCallParam}
+                funcInfo={funcInfo}
+                address={addr}
+                onCancel={() => {
+                  this.setState({ isCallParam: false });
+                }}
+              />
+            )}
           </div>
         ) : (
-          <p style={{ flex: 1, padding: "8px" }}>
-            No deployed contract. Deploy one first.
-          </p>
+          <p style={{ flex: 1, padding: '8px' }}>No deployed contract. Deploy one first.</p>
         )}
       </div>
     );

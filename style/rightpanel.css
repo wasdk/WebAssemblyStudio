@@ -254,10 +254,10 @@ a.bg-black:hover {
   user-select: none;
   border: 1px solid transparent;
   /* padding: .375rem .75rem; */
-  font-size: .8rem;
+  font-size: 0.8rem;
   line-height: 1.5;
-  border-radius: .25rem;
-  transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 .btn {
   border-radius: 0.65rem;
@@ -326,6 +326,14 @@ a.text-pure-white:hover {
 .pb-2,
 .py-2 {
   padding-bottom: 0.5rem !important;
+}
+.pt-1,
+.py-1 {
+  padding-top: 0.25rem !important;
+}
+.pb-1,
+.py-1 {
+  padding-bottom: 0.25rem !important;
 }
 .list-group {
   display: -webkit-box;
@@ -460,4 +468,66 @@ a.text-danger:hover {
   background-color: #e4d836;
   border-color: #e4d836;
   box-shadow: 0 0 0 0.2rem rgba(228, 216, 54, 0.5);
+}
+
+.list-group {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding-left: 0;
+  margin: 0;
+}
+.list-group-item {
+  position: relative;
+  display: block;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: -1px;
+  background-color: transparent;
+  border: 1px solid #434857;
+}
+.item-contract-method {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+.list-group-flush .list-group-item {
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+}
+.list-group-flush:first-child .list-group-item:first-child {
+  border-top: 0;
+}
+.list-group-flush:last-child .list-group-item:last-child {
+  border-bottom: 0;
+}
+.input-name {
+  font-weight: 700;
+  color: #fff;
+}
+.input-type {
+  font-weight: 400;
+  color: #e64759;
+}
+.input-value {
+  display: block;
+  width: 100%;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  background-color: #fff;
+  background-image: none;
+  background-clip: padding-box;
+  border: 1px solid #434857;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-radius: 0.25rem;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.input-value-textarea {
+  max-width: 100%;
 }
