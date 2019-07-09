@@ -998,7 +998,14 @@ export class App extends React.Component<AppProps, AppState> {
             {deployedAddresses.length > 0 ? (
               <RightPanel address={deployedAddresses} />
             ) : (
-              <p style={{ flex: 1, padding: '8px' }}>No deployed contract. Deploy one first.</p>
+              <div>
+                <div className="wasmStudioHeader">
+                  <span className="waHeaderText" />
+                </div>
+                <p style={{ flex: 1, padding: '8px' }}>
+                  <span className="badge badge-danger">Not contract deployed</span>
+                </p>
+              </div>
             )}
           </Split>
         </div>
