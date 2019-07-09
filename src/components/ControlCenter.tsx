@@ -169,7 +169,7 @@ export class ControlCenter extends React.Component<{
             }}
           >
             {this.createPane()}
-            <Sandbox />
+            {/* <Sandbox />  */}
           </Split> : this.createPane()
           }
       </div>

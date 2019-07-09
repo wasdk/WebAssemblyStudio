@@ -310,11 +310,13 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                         </select>
                       </div>
                     </div>
-                    <ul className="list-group list-group-flush bg-dark">{makeMethodCallContract()}</ul>
+                    <div className="rightPanelfill">
+                      <ul className="list-group list-group-flush bg-dark">{makeMethodCallContract()}</ul>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="fill">
+              <div className="rightPanelfill">
                 <div style={{ height: 'calc(100% - 40px)' }}>
                   <span>Result</span>
                   <section id="result">

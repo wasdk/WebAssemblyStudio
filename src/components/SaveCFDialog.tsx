@@ -33,10 +33,10 @@
  *
  */
 
-import * as React from "react";
-import * as ReactModal from "react-modal";
-import { Button } from "./shared/Button";
-import { GoX, GoCheck } from "./shared/Icons";
+import * as React from 'react';
+import * as ReactModal from 'react-modal';
+import { Button } from './shared/Button';
+import { GoX, GoCheck } from './shared/Icons';
 
 interface SaveCFDialogProps<ContentProps> {
   onSave: () => void;
@@ -55,35 +55,32 @@ interface SaveCFDialogState {
   cancelOnClickOutside: boolean;
 }
 
-export class SaveCFDialog<ContentProps> extends React.Component<
-  SaveCFDialogProps<ContentProps>,
-  SaveCFDialogState
-> {
+export class SaveCFDialog<ContentProps> extends React.Component<SaveCFDialogProps<ContentProps>, SaveCFDialogState> {
   constructor(props: SaveCFDialogProps<ContentProps>) {
     super(props);
 
     this.state = {
       hidden: true,
-      cancelOnClickOutside: this.props.cancelOnClickOutside || false
+      cancelOnClickOutside: this.props.cancelOnClickOutside || false,
     };
   }
 
   componentWillUnmount() {
-    window.removeEventListener("mousedown", this.windowMouseDown);
+    window.removeEventListener('mousedown', this.windowMouseDown);
   }
 
   show = () => {
     this.setState({
-      hidden: false
+      hidden: false,
     } as any);
     this.mouseOver = false;
   };
 
   hide = () => {
     this.setState({
-      hidden: true
+      hidden: true,
     } as any);
-    window.removeEventListener("mousedown", this.windowMouseDown);
+    window.removeEventListener('mousedown', this.windowMouseDown);
     this.mouseOver = false;
   };
 
@@ -112,11 +109,7 @@ export class SaveCFDialog<ContentProps> extends React.Component<
   };
 
   windowMouseDown = () => {
-    if (
-      this.state.cancelOnClickOutside &&
-      !this.state.hidden &&
-      !this.mouseOver
-    ) {
+    if (this.state.cancelOnClickOutside && !this.state.hidden && !this.mouseOver) {
       this.cancel();
     }
   };
@@ -124,7 +117,7 @@ export class SaveCFDialog<ContentProps> extends React.Component<
   clicked = () => {
     if (!this.state.hidden) return;
     this.show();
-    window.addEventListener("mousedown", this.windowMouseDown);
+    window.addEventListener('mousedown', this.windowMouseDown);
   };
 
   render() {
@@ -136,74 +129,27 @@ export class SaveCFDialog<ContentProps> extends React.Component<
         overlayClassName="overlay"
         ariaHideApp={false}
       >
-        <div
-          style={{ display: "flex", flexDirection: "column", height: "100%" }}
-        >
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <div className="modal-title-bar">Confirm Save</div>
-          <div
-            style={{
-              fontSize: "1.5em",
-              fontWeight: "bold",
-              height: "4em",
-              flex: 1,
-              padding: "20px",
-            }}
-          >
+          <div style={{ fontSize: '1.2em', fontWeight: 'bold', flex: 1, padding: '20px' }}>
             Do you want to save your changes?
           </div>
-          <div
-            style={{
-              marginLeft: "8em",
-              flex: 1,
-              padding: "10px",
-              display: "flex"
-            }}
-          >
-            <div
-              style={{
-                margin: "1em"
-              }}
-            >
-              <Button
-                customClassName="saveBtn"
-                icon={<GoCheck />}
-                label="Save"
-                title="save"
-                onClick={() => {
-                  this.save();
-                }}
-              />
-            </div>
-            <div
-              style={{
-                margin: "1em"
-              }}
-            >
-              <Button
-                customClassName="saveBtn"
-                icon={<GoCheck />}
-                label="Save All"
-                title="saveAll"
-                onClick={() => {
-                  this.saveAll();
-                }}
-              />
-            </div>
-            <div
-              style={{
-                margin: "1em"
-              }}
-            >
-              <Button
-                customClassName="saveBtn"
-                icon={<GoX />}
-                label="Cancel"
-                title="Cancel"
-                onClick={() => {
-                  this.cancel();
-                }}
-              />
-            </div>
+          <div style={{ borderTop: 0, marginLeft: '4em' }} className="modal-footer-bar">
+            <Button customClassName="saveBtn" icon={<GoX />} label="Cancel" title="Cancel" onClick={this.cancel} />
+            <Button
+              customClassName="saveBtn"
+              icon={<GoCheck />}
+              label="Save All"
+              title="saveAll"
+              onClick={this.saveAll}
+            />
+            <Button
+              customClassName="saveBtn"
+              icon={<GoCheck />}
+              label="Save"
+              title="save"
+              onClick={this.save}
+            />
           </div>
         </div>
       </ReactModal>

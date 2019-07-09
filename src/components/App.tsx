@@ -495,14 +495,16 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   async saveCurrentTab() {
+    this.setState({ confirmDialog: false });
     const activeGroup = this.state.activeTabGroup;
     activeGroup.currentView.file.save(this.status);
     await build();
     this.state.isDeploy && (await this.deploy.call(this));
-    this.setState({ confirmDialog: false, isDeploy: false });
+    this.setState({ isDeploy: false });
   }
 
   async saveAllTab() {
+    this.setState({ confirmDialog: false});
     const groups = this.state.tabGroups;
     let views = groups[0].views.slice(0);
     // console.log("I want to show views", views);
@@ -511,7 +513,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
     await build();
     this.state.isDeploy && (await this.deploy.call(this));
-    this.setState({ confirmDialog: false, isDeploy: false });
+    this.setState({ isDeploy: false });
   }
 
   makeToolbarButtons() {
