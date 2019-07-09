@@ -266,6 +266,12 @@ a {
   height: 100%;
 }
 
+.rightPanelfill {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
 .blurred .tab {
   color: #868686 !important;
 }

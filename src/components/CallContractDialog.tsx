@@ -55,8 +55,11 @@ export default class CallContractDialog extends React.Component<
       try {
         const params = (funcInfo && funcInfo.params) || [];
         const paramsValue = Object.keys(params).map(key => {
-          return parseParamsFromField('#param' + key);
+          const params = parseParamsFromField('#param' + key);
+          // console.log('Get params', params)
+          return params[0]
         });
+        
         document.getElementById('funcName').innerHTML = funcInfo.name;
         document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
         const name = funcInfo.name;
