@@ -639,8 +639,8 @@ a {
   position: absolute;
   top: calc(50% - 180px);
   left: calc(50% - 300px);
-  width: 600px;
-  height: 220px;
+  width: 500px;
+  height: 175px;
   background-color: rgb(48, 48, 48);
   outline: none;
   box-shadow: 1px 1px 4px black;
