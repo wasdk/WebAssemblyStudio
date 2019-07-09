@@ -504,7 +504,7 @@ export class App extends React.Component<AppProps, AppState> {
   }
 
   async saveAllTab() {
-    this.setState({ confirmDialog: false});
+    this.setState({ confirmDialog: false });
     const groups = this.state.tabGroups;
     let views = groups[0].views.slice(0);
     // console.log("I want to show views", views);
@@ -661,7 +661,7 @@ export class App extends React.Component<AppProps, AppState> {
                 this.saveToBuild();
               }
             }}
-          />,
+          />
           // <Button
           //   key="Call"
           //   icon={<GoGist />}
@@ -995,18 +995,10 @@ export class App extends React.Component<AppProps, AppState> {
                 </Split>
               </div>
             </div>
-            {deployedAddresses.length > 0 && (
-              <RightPanel
-                address={deployedAddresses}
-                contractName={'SimpleStore'}
-                // listFunc={[
-                //   { name: "func1", isSet: true },
-                //   { name: "func2", isSet: false },
-                //   { name: "func3", isSet: false },
-                //   { name: "func4", isSet: true },
-                //   { name: "func5", isSet: false }
-                // ]}
-              />
+            {deployedAddresses.length > 0 ? (
+              <RightPanel address={deployedAddresses} />
+            ) : (
+              <p style={{ flex: 1, padding: '8px' }}>No deployed contract. Deploy one first.</p>
             )}
           </Split>
         </div>

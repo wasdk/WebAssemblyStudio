@@ -40,7 +40,6 @@ export interface RightPanelProps {
    * Active file.
    */
   address: string[];
-  contractName: string;
 }
 export interface RightPanelState {
   splits: SplitInfo[];
@@ -48,6 +47,7 @@ export interface RightPanelState {
   funcInfo: {};
   addr: String;
   isCallParam: boolean;
+  isWasmFuncs: boolean;
 }
 
 export function tryStringifyJsonHelper(p, replacer, space) {
@@ -147,6 +147,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
       funcInfo: {},
       addr: '',
       isCallParam: false,
+      isWasmFuncs: false,
     };
   }
 
@@ -154,7 +155,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     // appStore.onDidChangeDirty.register(this.refreshTree);
     // appStore.onDidChangeChildren.register(this.refreshTree);
     const { address } = this.props;
-    if (address.length > 0) {
+    if (address && address.length > 0) {
       this.setState({ addr: address[0] });
       this.getFuncList(address[0]);
     }
@@ -183,14 +184,21 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
 
   getFuncList(address) {
     tweb3.getMetadata(address).then(funcs => {
-      console.log('funcs', funcs);
+      // console.log('funcs', funcs);
       const newFunc = Object.keys(funcs).map(item => {
         const meta = funcs[item];
-        return {
-          name: item,
-          decorators: meta.decorators || [],
-          params: meta.params || [],
-        };
+        if (meta.type === 'unknown') {
+          return {
+            name: item,
+            decorators: 'unknown',
+            params: 'unknown',
+          };
+        } else
+          return {
+            name: item,
+            decorators: meta.decorators || [],
+            params: meta.params || [],
+          };
       });
 
       this.setState({ listFunc: newFunc });
@@ -199,6 +207,17 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
 
   callContractMethod = async func => {
     let result;
+    const { addr } = this.state;
+    const decotator = func.decorators[0];
+    // console.log('func', func)
+
+    func.decorators === 'unknown' &&
+      this.setState({
+        isWasmFuncs: true,
+        isCallParam: true,
+        funcInfo: func,
+      });
+
     try {
       const params = func.params;
       if (params.length > 0) {
@@ -208,20 +227,31 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
         document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
         const addr = this.state.addr;
         const name = func.name;
-        const ct = tweb3.contract(addr);
-        result = await ct.methods[name](...params).sendCommit();
-        console.log(result);
-        document.getElementById('resultJson').innerHTML = formatResult(result, false);
+        if (decotator === 'transaction') {
+          const ct = tweb3.contract(addr);
+          result = await ct.methods[name](...params).sendCommit();
+          // console.log(result);
+          document.getElementById('resultJson').innerHTML = formatResult(result, false);
+        } else if (decotator === 'pure' || decotator === 'view') {
+          const method = decotator === 'view' ? 'callReadonlyContractMethod' : 'callPureContractMethod';
+          result = await tweb3[method](addr, name, params);
+          // console.log(result);
+          document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
+        }
       }
     } catch (error) {
       console.log(error);
-      document.getElementById('resultJson').innerHTML = formatResult(error, true);
+      if (decotator === 'transaction') {
+        document.getElementById('resultJson').innerHTML = formatResult(error, true);
+      } else if (decotator === 'pure' || decotator === 'view') {
+        document.getElementById('resultJson').innerHTML = tryStringifyJson(error);
+      }
     }
   };
 
   changeAddress(event: React.FormEvent) {
     const address = (event.target as any).value;
-    console.log(address); // in chrome => B
+    // console.log(address); // in chrome => B
     this.setState(
       {
         addr: address,
@@ -233,9 +263,9 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   }
 
   render() {
-    const { contractName, address } = this.props;
-    const { funcInfo, listFunc, isCallParam, addr } = this.state;
-    console.log('RightPanel');
+    const { address } = this.props;
+    const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs } = this.state;
+    // console.log('RightPanel', this.state);
 
     const makeMethodCallContract = () => {
       return listFunc.map((func: MethodInfo, i: number) => {
@@ -266,17 +296,18 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
         <div className="wasmStudioHeader">
           <span className="waHeaderText" />
         </div>
-        {address ? (
-          <div style={{ height: 'calc(100% - 41px)' }}>
-            <Split
-              name="CallContract"
-              orientation={SplitOrientation.Horizontal}
-              splits={this.state.splits}
-              onChange={splits => {
-                this.setState({ splits: splits });
-              }}
-            >
-              <div />
+
+        <div style={{ height: 'calc(100% - 41px)' }}>
+          <Split
+            name="CallContract"
+            orientation={SplitOrientation.Horizontal}
+            splits={this.state.splits}
+            onChange={splits => {
+              this.setState({ splits: splits });
+            }}
+          >
+            <div />
+            <div className="rightPanelfill">
               <div className="wrapper-method-list card">
                 {/* <div className="card-header font-weight-bold border-light align-middle">Contracts:</div> */}
                 <div className="mt-1">
@@ -310,40 +341,37 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                         </select>
                       </div>
                     </div>
-                    <div className="rightPanelfill">
-                      <ul className="list-group list-group-flush bg-dark">{makeMethodCallContract()}</ul>
-                    </div>
+                    <ul className="list-group list-group-flush bg-dark">{makeMethodCallContract()}</ul>
                   </div>
                 </div>
               </div>
-              <div className="rightPanelfill">
-                <div style={{ height: 'calc(100% - 40px)' }}>
-                  <span>Result</span>
-                  <section id="result">
-                    <div>
-                      <b id="funcName" />
-                    </div>
-                    <div>
-                      <code id="resultJson" />
-                    </div>
-                  </section>
-                </div>
+            </div>
+            <div className="rightPanelfill">
+              <div style={{ height: 'calc(100% - 40px)' }}>
+                <span>Result</span>
+                <section id="result">
+                  <div>
+                    <b id="funcName" />
+                  </div>
+                  <div>
+                    <code id="resultJson" />
+                  </div>
+                </section>
               </div>
-            </Split>
-            {isCallParam && (
-              <CallContractDialog
-                isOpen={isCallParam}
-                funcInfo={funcInfo}
-                address={addr}
-                onCancel={() => {
-                  this.setState({ isCallParam: false });
-                }}
-              />
-            )}
-          </div>
-        ) : (
-          <p style={{ flex: 1, padding: '8px' }}>No deployed contract. Deploy one first.</p>
-        )}
+            </div>
+          </Split>
+          {isCallParam && (
+            <CallContractDialog
+              isOpen={isCallParam}
+              isWasmFuncs={isWasmFuncs}
+              funcInfo={funcInfo}
+              address={addr}
+              onCancel={() => {
+                this.setState({ isCallParam: false, isWasmFuncs: false });
+              }}
+            />
+          )}
+        </div>
       </div>
     );
   }
