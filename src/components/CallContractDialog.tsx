@@ -24,12 +24,13 @@ import * as ReactModal from 'react-modal';
 import { Button } from './shared/Button';
 import { GoX, GoCheck } from './shared/Icons';
 import { IceteaWeb3 } from '@iceteachain/web3';
-import { MethodInfo, parseParamsFromField, formatResult } from './RightPanel';
+import { MethodInfo, parseParamsFromField, formatResult, tryStringifyJson } from './RightPanel';
 const tweb3 = new IceteaWeb3('https://rpc.icetea.io');
 
 export default class CallContractDialog extends React.Component<
   {
     isOpen: boolean;
+    isWasmFuncs: boolean;
     funcInfo: MethodInfo;
     address: String;
     onCancel: () => void;
@@ -52,36 +53,99 @@ export default class CallContractDialog extends React.Component<
     const { funcInfo, address } = this.props;
     if (funcInfo) {
       let result;
+      const decotator = funcInfo.decorators[0];
       try {
         const params = (funcInfo && funcInfo.params) || [];
         const paramsValue = Object.keys(params).map(key => {
           const params = parseParamsFromField('#param' + key);
           // console.log('Get params', params)
-          return params[0]
+          return params[0];
         });
-        
-        document.getElementById('funcName').innerHTML = funcInfo.name;
-        document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
         const name = funcInfo.name;
-        const ct = tweb3.contract(address);
-        result = await ct.methods[name](...paramsValue).sendCommit();
 
-        // console.log(result);
-        document.getElementById('resultJson').innerHTML = formatResult(result, false);
+        document.getElementById('funcName').innerHTML = name;
+        document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
+        if (decotator === 'transaction') {
+          const ct = tweb3.contract(address);
+          result = await ct.methods[name](...paramsValue).sendCommit();
+
+          // console.log(result);
+          document.getElementById('resultJson').innerHTML = formatResult(result, false);
+        } else if (decotator === 'pure') {
+          const method = 'callPureContractMethod';
+          result = await tweb3[method](address, name, paramsValue);
+          // console.log(result);
+          document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
+        }
       } catch (error) {
-        console.log(error);
-        document.getElementById('resultJson').innerHTML = formatResult(error, true);
+        // console.log(error);
+        if (decotator === 'transaction') {
+          document.getElementById('resultJson').innerHTML = formatResult(error, true);
+        } else if (decotator === 'pure') {
+          document.getElementById('resultJson').innerHTML = tryStringifyJson(error);
+        }
       }
     }
 
     this.props.onCancel();
   };
 
-  render() {
-    const { funcInfo, isOpen } = this.props;
-    const params = (funcInfo && funcInfo.params) || [];
+  callSendMethod = async () => {
+    const { funcInfo, address } = this.props;
+    try {
+      const name = funcInfo.name;
+      document.getElementById('funcName').innerHTML = name;
+      const params = parseParamsFromField('#params');
+      document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
+      const ct = tweb3.contract(address);
+      const result = await ct.methods[name](...params).sendCommit();
+      document.getElementById('resultJson').innerHTML = formatResult(result, false);
+    } catch (error) {
+      // console.log(error);
+      document.getElementById('resultJson').innerHTML = formatResult(error, true);
+    }
+    this.props.onCancel();
+  };
 
-    const pramsDes = Object.keys(params).map(key => {
+  callViewMethod = async () => {
+    const { funcInfo, address } = this.props;
+    try {
+      const name = funcInfo.name;
+      document.getElementById('funcName').innerHTML = name;
+      const params = parseParamsFromField('#params');
+      document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
+      const method = 'callReadonlyContractMethod';
+      const result = await tweb3[method](address, name, params);
+      document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
+    } catch (error) {
+      // console.log(error);
+      document.getElementById('resultJson').innerHTML = tryStringifyJson(error);
+    }
+    this.props.onCancel();
+  };
+
+  callPureMethod = async () => {
+    const { funcInfo, address } = this.props;
+    try {
+      const name = funcInfo.name;
+      document.getElementById('funcName').innerHTML = name;
+      const params = parseParamsFromField('#params');
+      document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
+      const method = 'callPureContractMethod';
+      const result = await tweb3[method](address, name, params);
+      document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
+    } catch (error) {
+      // console.log(error);
+      document.getElementById('resultJson').innerHTML = tryStringifyJson(error);
+    }
+    this.props.onCancel();
+  };
+
+  render() {
+    const { funcInfo, isOpen, isWasmFuncs } = this.props;
+    // console.log('funcInfo', this.props);
+    const params = (funcInfo && funcInfo.params) || [];
+    const paramsDes = Object.keys(params).map(key => {
       return (
         <li className="list-group-item item-contract-method">
           <div className="row">
@@ -116,18 +180,55 @@ export default class CallContractDialog extends React.Component<
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <header className="modal-title-bar">Call function :{funcInfo && funcInfo.name}</header>
           <div className="modal-body">
-            <ul className="list-group list-group-flush">{pramsDes}</ul>
+            {isWasmFuncs ? (
+              <div>
+                <p>
+                  <label>Params (each param 1 row, JSON accepted, use " to denote string)</label>
+                </p>
+                <p>
+                  <textarea id="params" className="input-value input-value-textarea" rows={7} />
+                </p>
+              </div>
+            ) : (
+              <ul className="list-group list-group-flush">{paramsDes}</ul>
+            )}
           </div>
           <div style={{ flex: 1, padding: '8px' }} />
           <footer className="modal-footer-bar">
             <Button customClassName="saveBtn" icon={<GoX />} label="Cancel" title="Cancel" onClick={this.cancel} />
-            <Button
-              customClassName="saveBtn"
-              icon={<GoCheck />}
-              label="Call"
-              title="call"
-              onClick={this.exContractMethod}
-            />
+            {isWasmFuncs ? (
+              <React.Fragment>
+                <Button
+                  customClassName="saveBtn"
+                  icon={<GoCheck />}
+                  label="Send(Write)"
+                  title="Send(Write)"
+                  onClick={this.callSendMethod}
+                />
+                <Button
+                  customClassName="saveBtn"
+                  icon={<GoCheck />}
+                  label="Call(View)"
+                  title="call(View)"
+                  onClick={this.callViewMethod}
+                />
+                <Button
+                  customClassName="saveBtn"
+                  icon={<GoCheck />}
+                  label="Call(Pure)"
+                  title="call(Pure)"
+                  onClick={this.callPureMethod}
+                />
+              </React.Fragment>
+            ) : (
+              <Button
+                customClassName="saveBtn"
+                icon={<GoCheck />}
+                label="Call"
+                title="call"
+                onClick={this.exContractMethod}
+              />
+            )}
           </footer>
         </div>
       </ReactModal>

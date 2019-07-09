@@ -452,10 +452,10 @@ a.text-danger:hover {
   background-color: #e4d836;
   border-color: #e4d836;
 }
-.btn-outline-warning.focus,
+/* .btn-outline-warning.focus,
 .btn-outline-warning:focus {
   box-shadow: 0 0 0 0.2rem rgba(228, 216, 54, 0.5);
-}
+} */
 .btn-outline-warning.disabled,
 .btn-outline-warning:disabled {
   color: #e4d836;
