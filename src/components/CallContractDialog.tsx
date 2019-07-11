@@ -21,6 +21,7 @@
 
 import * as React from 'react';
 import * as ReactModal from 'react-modal';
+import QueueAnim from 'rc-queue-anim';
 import { Button } from './shared/Button';
 import { GoX, GoCheck } from './shared/Icons';
 import { IceteaWeb3 } from '@iceteachain/web3';

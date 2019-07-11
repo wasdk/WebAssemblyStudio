@@ -1,5 +1,5 @@
 import * as gulp from "gulp";
-import { Service, project } from "@wasm/studio-utils";
+import { Service, project, activeTab } from "@wasm/studio-utils";
 import { IceteaWeb3 } from "@iceteachain/web3";
 import * as base64ArrayBuffer from "base64-arraybuffer";
 
@@ -39,11 +39,11 @@ const deployWasm = async (file: string) => {
 }
 
 gulp.task("build", () => {
-  return buildWasm('store');
+  return buildWasm(activeTab);
 })
 
 gulp.task("deploy", () => {
-  return deployWasm('store');
+  return deployWasm(activeTab);
 })
 
 gulp.task("default", ["build"], async () => { });

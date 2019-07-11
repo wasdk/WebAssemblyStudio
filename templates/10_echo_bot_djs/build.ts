@@ -1,5 +1,5 @@
 import * as gulp from "gulp";
-import { project } from "@wasm/studio-utils";
+import { project, activeTab } from "@wasm/studio-utils";
 import { transpile } from "@iceteachain/sunseed";
 import { IceteaWeb3 } from "@iceteachain/web3";
 
@@ -42,11 +42,11 @@ const deployJs = async (file: string) => {
 }
 
 gulp.task("build", () => {
-  return buildJs('echo');
+  return buildJs(activeTab);
 })
 
 gulp.task("deploy", () => {
-  return deployJs('echo');
+  return deployJs(activeTab);
 })
 
 gulp.task("default", ["build"], async () => { });
