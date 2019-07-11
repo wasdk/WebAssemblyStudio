@@ -296,10 +296,13 @@ export async function runTask(
   optional: boolean = false,
   externals: RunTaskExternals = RunTaskExternals.Default
 ) {
+
   // Runs the provided source in our fantasy gulp context
   const run = async (src: string) => {
     const project = appStore.getProject().getModel();
-    return await runGulpTask(src, name, optional, project, logLn, externals);
+    const activeTabGroup = appStore.getActiveTabGroup();
+    const activeTab = activeTabGroup.currentView.file.name.split(".")[0];
+    return await runGulpTask(src, name, optional, project, activeTab, logLn, externals);
   };
   let gulpfile = appStore.getFileByName("gulpfile.js");
   if (gulpfile) {
