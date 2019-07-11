@@ -301,7 +301,7 @@ export async function runTask(
   const run = async (src: string) => {
     const project = appStore.getProject().getModel();
     const activeTabGroup = appStore.getActiveTabGroup();
-    const activeTab = activeTabGroup.currentView.file.name.split(".")[0];
+    const activeTab = activeTabGroup.currentView.file.name;
     return await runGulpTask(src, name, optional, project, activeTab, logLn, externals);
   };
   let gulpfile = appStore.getFileByName("gulpfile.js");
