@@ -22,7 +22,8 @@
 import * as React from 'react';
 import * as ReactModal from 'react-modal';
 import { Button } from './shared/Button';
-import { GoX, GoCheck, GoEye } from './shared/Icons';
+import { GoX, GoCheck } from './shared/Icons';
+import { parseParamsFromField } from './RightPanel';
 import { IceteaWeb3 } from '@iceteachain/web3';
 const tweb3 = new IceteaWeb3('https://rpc.icetea.io');
 
@@ -31,14 +32,28 @@ export class DeployContractDialog extends React.Component<
     isOpen: boolean;
     signer: string[];
     onCancel: () => void;
-    onDeploy: () => void;
+    onDeploy: (arg0: object) => void;
   },
-  { showMore: boolean }
+  {
+    showMore: boolean;
+    addr: string;
+    from: string;
+    payer: string;
+    value: string;
+    fee: string;
+    params: [];
+  }
 > {
   constructor(props: any) {
     super(props);
     this.state = {
       showMore: false,
+      addr: this.props.signer[0],
+      from: '',
+      payer: '',
+      value: '',
+      fee: '',
+      params: [],
     };
   }
 
@@ -47,7 +62,16 @@ export class DeployContractDialog extends React.Component<
   };
 
   deploy = () => {
-    this.props.onDeploy();
+    const params = parseParamsFromField('#params');
+    this.setState(
+      {
+        showMore: false,
+        params: params,
+      },
+      () => {
+        this.props.onDeploy && this.props.onDeploy(this.state);
+      }
+    );
   };
 
   showMore = () => {
@@ -56,9 +80,45 @@ export class DeployContractDialog extends React.Component<
     });
   };
 
+  changeAddress(event: React.FormEvent) {
+    const address = (event.target as any).value;
+    this.setState({
+      addr: address,
+    });
+  }
+
+  changeFrom = e => {
+    const value = e.currentTarget.value.trim();
+    this.setState({
+      from: value,
+    });
+  };
+
+  changePayer = e => {
+    const value = e.currentTarget.value.trim();
+    this.setState({
+      payer: value,
+    });
+  };
+
+  changeValue = e => {
+    const value = e.currentTarget.value.trim();
+    this.setState({
+      value: value,
+    });
+  };
+
+  changeFee = e => {
+    const value = e.currentTarget.value.trim();
+    this.setState({
+      fee: value,
+    });
+  };
+
   render() {
     const { isOpen, signer } = this.props;
-    const { showMore } = this.state;
+    const { showMore, addr } = this.state;
+    // console.log('State CK', this.state);
 
     return (
       <ReactModal
@@ -75,7 +135,7 @@ export class DeployContractDialog extends React.Component<
             <p>
               <span>From Account: </span>
             </p>
-            <select className="custom-select">
+            <select className="custom-select" onChange={e => this.changeAddress(e)}>
               {signer.map((signer, i) => (
                 <option key={i} value={signer}>
                   {signer}
@@ -97,7 +157,12 @@ export class DeployContractDialog extends React.Component<
                     </div>
                     <div className="col">
                       <div className="row">
-                        <input type="text" placeholder="Leave blank if same as signer" className="deployContract" />
+                        <input
+                          type="text"
+                          placeholder="Leave blank if same as signer"
+                          className="deployContract"
+                          onChange={this.changeFrom}
+                        />
                       </div>
                     </div>
                   </div>
@@ -109,7 +174,12 @@ export class DeployContractDialog extends React.Component<
                     </div>
                     <div className="col">
                       <div className="row">
-                        <input type="text" placeholder="Leave blank if same as from" className="deployContract" />
+                        <input
+                          type="text"
+                          placeholder="Leave blank if same as from"
+                          className="deployContract"
+                          onChange={this.changePayer}
+                        />
                       </div>
                     </div>
                   </div>
@@ -121,7 +191,13 @@ export class DeployContractDialog extends React.Component<
                     </div>
                     <div className="col">
                       <div className="row">
-                        <input type="nunmber" placeholder="Value (TEA)" className="deployContract" step="0.01" />
+                        <input
+                          type="nunmber"
+                          placeholder="Value (TEA)"
+                          className="deployContract"
+                          step="0.01"
+                          onChange={this.changeValue}
+                        />
                       </div>
                     </div>
                   </div>
@@ -129,11 +205,17 @@ export class DeployContractDialog extends React.Component<
                 <li className="list-group-item row">
                   <div className="row">
                     <div className="col">
-                      <span className="badge badge-light-grey d-inline">Gas:</span>
+                      <span className="badge badge-light-grey d-inline">Fee:</span>
                     </div>
                     <div className="col">
                       <div className="row">
-                        <input type="nunmber" placeholder="Gas limit (MicroTEA)" className="deployContract" step="1" />
+                        <input
+                          type="nunmber"
+                          placeholder="Gas limit (MicroTEA)"
+                          className="deployContract"
+                          step="1"
+                          onChange={this.changeFee}
+                        />
                       </div>
                     </div>
                   </div>

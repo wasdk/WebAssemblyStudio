@@ -764,7 +764,7 @@ export class App extends React.Component<AppProps, AppState> {
     const { deployedAddresses } = this.state;
     // console.log('deployedAddresses', deployedAddresses);
     const self = this;
-    // console.log("state CK", this.state.isDeploy);
+    console.log("state CK", this.state);
 
     const makeEditorPanes = () => {
       const groups = this.state.tabGroups;
@@ -937,7 +937,8 @@ export class App extends React.Component<AppProps, AppState> {
             onCancel={() => {
               this.setState({ deployDialog: false });
             }}
-            onDeploy={() => {
+            onDeploy={(e) => {
+              this.setState(Object.assign({}, e));
               this.deploy.call(this);
               this.setState({ deployDialog: false });
             }}
