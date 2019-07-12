@@ -96,8 +96,11 @@ import { StatusBar } from './StatusBar';
 import { publishArc, notifyArcAboutFork } from '../actions/ArcActions';
 import { RunTaskExternals } from '../utils/taskRunner';
 import { SaveCFDialog } from './SaveCFDialog';
+import { DeployContractDialog } from './DeployContractDialog';
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 import { isDeepStrictEqual } from 'util';
+import { IceteaWeb3 } from '@iceteachain/web3';
+const tweb3 = new IceteaWeb3('https://rpc.icetea.io');
 
 export interface AppState {
   project: ModelRef<Project>;
@@ -165,6 +168,11 @@ export interface AppState {
    */
   confirmDialog: boolean;
   isDeploy: boolean;
+  deployDialog: boolean;
+   /**
+   * Contract deploy signer(may be Payer)
+   */
+  signer: string[];
 }
 
 export interface AppProps {
@@ -237,6 +245,8 @@ export class App extends React.Component<AppProps, AppState> {
       isContentModified: false,
       confirmDialog: false,
       isDeploy: false,
+      deployDialog: false,
+      signer: [],
     };
   }
   private async initializeProject() {
@@ -251,6 +261,15 @@ export class App extends React.Component<AppProps, AppState> {
     if (this.state.fiddle) {
       this.loadProjectFromFiddle(this.state.fiddle);
     }
+    let address;
+    let account = [];
+    for (let i = 0; i < 10; i++) {
+      address = tweb3.wallet.createAccount().address;
+      account.push(address);
+    }
+    this.setState({
+      signer: account,
+    });
   }
   private static getWindowDimensions(): string {
     return `${window.innerWidth}x${window.innerHeight}@${window.devicePixelRatio}`;
@@ -490,7 +509,8 @@ export class App extends React.Component<AppProps, AppState> {
       this.setState({ confirmDialog: true });
     } else {
       await build();
-      isDeploy && (await this.deploy.call(this));
+      // isDeploy && (await this.deploy.call(this));
+      isDeploy && this.setState({ deployDialog: true });
     }
   }
 
@@ -499,7 +519,8 @@ export class App extends React.Component<AppProps, AppState> {
     const activeGroup = this.state.activeTabGroup;
     activeGroup.currentView.file.save(this.status);
     await build();
-    this.state.isDeploy && (await this.deploy.call(this));
+    // this.state.isDeploy && (await this.deploy.call(this));
+    this.state.isDeploy && this.setState({ deployDialog: true });
     this.setState({ isDeploy: false });
   }
 
@@ -512,7 +533,8 @@ export class App extends React.Component<AppProps, AppState> {
       views[i].file.save(this.status);
     }
     await build();
-    this.state.isDeploy && (await this.deploy.call(this));
+    // this.state.isDeploy && (await this.deploy.call(this));
+    this.state.isDeploy && this.setState({ deployDialog: true });
     this.setState({ isDeploy: false });
   }
 
@@ -637,7 +659,8 @@ export class App extends React.Component<AppProps, AppState> {
         title="Deploy"
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
-          this.deploy.call(this);
+          this.setState({ deployDialog: true}); 
+          // this.deploy.call(this);
         }}
       />
     );
@@ -741,7 +764,7 @@ export class App extends React.Component<AppProps, AppState> {
     const { deployedAddresses } = this.state;
     // console.log('deployedAddresses', deployedAddresses);
     const self = this;
-    // console.log("state CK", this.state);
+    // console.log("state CK", this.state.isDeploy);
 
     const makeEditorPanes = () => {
       const groups = this.state.tabGroups;
@@ -907,6 +930,19 @@ export class App extends React.Component<AppProps, AppState> {
             content={(props: any) => <div>Are you sure?</div>}
           />
         )}
+        {this.state.deployDialog && (
+          <DeployContractDialog
+            isOpen={true}
+            signer={this.state.signer}
+            onCancel={() => {
+              this.setState({ deployDialog: false });
+            }}
+            onDeploy={() => {
+              this.deploy.call(this);
+              this.setState({ deployDialog: false });
+            }}
+          />
+        )}
         <div style={{ height: 'calc(100% - 22px)' }}>
           <Split
             name="Workspace"
@@ -995,18 +1031,7 @@ export class App extends React.Component<AppProps, AppState> {
                 </Split>
               </div>
             </div>
-            {deployedAddresses.length > 0 ? (
-              <RightPanel address={deployedAddresses} />
-            ) : (
-              <div>
-                <div className="wasmStudioHeader">
-                  <span className="waHeaderText" />
-                </div>
-                <p style={{ flex: 1, padding: '8px' }}>
-                  <span className="badge badge-danger">Not contract deployed</span>
-                </p>
-              </div>
-            )}
+            <RightPanel address={deployedAddresses} />
           </Split>
         </div>
         <StatusBar />

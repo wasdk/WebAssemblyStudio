@@ -600,6 +600,7 @@ a {
   font-size: 16px;
   font-weight: bold;
   padding: 4px;
+  border-bottom: 1px solid #e9ecef;
 }
 .modal-body {
   position: relative;

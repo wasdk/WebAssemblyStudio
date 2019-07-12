@@ -299,12 +299,60 @@ a.bg-black:hover {
   border-color: #000;
   box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.5);
 }
+
+.btn-smoke-grey {
+  color: #fff;
+  background-color: #312e2e;
+  border-color: #312e2e;
+}
+
+.btn-smoke-grey:hover {
+  color: #fff;
+  background-color: #1d1b1b;
+  border-color: #171515;
+}
+
+.oi {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: Icons;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.oi.oi-align-center:before,
+.oi:empty:before {
+  text-align: center;
+}
+
+.oi:empty:before {
+  width: 1em;
+  box-sizing: content-box;
+}
+
+.oi-caret-left:before {
+  content: '\E02E';
+}
+
+.oi-caret-bottom:before {
+  content: "\E02D";
+}
+
 .collapse {
   display: none;
 }
 .collapse.show {
   display: block;
 }
+
+.showMore {
+  transition: all 2s;
+}
+
 .bg-skyblue {
   background-color: #4a90e2 !important;
 }
@@ -375,6 +423,29 @@ a.text-pure-white:hover {
 .list-group-flush:last-child .list-group-item:last-child {
   border-bottom: 0;
 }
+
+li {
+  display: flex;
+  text-align: -webkit-match-parent;
+}
+
+.deployContract {
+  display: block;
+  width: 200%;
+  font-size: 0.8rem;
+  line-height: 2.0;
+  background-color: #fff;
+  background-image: none;
+  background-clip: padding-box;
+  border: 1px solid #434857;
+  border-color: rgba(0, 0, 0, 0.2);
+  border-radius: 0.25rem;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
 .bg-dark {
   background-color: #1a1c22 !important;
 }
@@ -554,4 +625,30 @@ a.text-danger:hover {
 }
 .custom-select {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAUCAMAAACzvE1FAAAADFBMVEX////////////////1pQ5zAAAAA3RSTlMAf4C/aSLHAAAAPElEQVR42q3NMQ4AIAgEQTn//2cLdRKppSGzBYwzVXvznNWs8C58CiussPJj8h6NwgorrKRdTvuV9v16Afn0AYFOB7aYAAAAAElFTkSuQmCC);
+}
+
+.arrow-down {
+  width: 0; 
+  height: 0; 
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid white;
+}
+
+.arrow-down:hover {
+  border-top: 10px solid #15b5dd;
+  cursor: pointer;
+}
+
+.arrow-left {
+  width: 0; 
+  height: 0; 
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent; 
+  border-right:10px solid white; 
+}
+
+.arrow-left:hover {
+  border-right:10px solid #15b5dd;
+  cursor: pointer;
 }
