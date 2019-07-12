@@ -163,8 +163,6 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
 
   componentWillReceiveProps(nextProps) {
     const { address } = this.props;
-    console.log('view address', address);
-    console.log('view next address', nextProps.address);
     if (address != nextProps.address) {
       this.setState({ addr: nextProps.address[0] });
       this.getFuncList(nextProps.address[0]);
@@ -263,7 +261,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   render() {
     const { address } = this.props;
     const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs } = this.state;
-    console.log('RightPanel', addr);
+    // console.log('RightPanel', addr);
 
     const makeMethodCallContract = () => {
       return listFunc.map((func: MethodInfo, i: number) => {
