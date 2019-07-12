@@ -161,16 +161,14 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     }
   }
 
-  componentWillReceiveProps(nextState) {
-    const { addr } = this.state;
-    // console.log("view address", addr);
-    // console.log("view next address", nextState.address);
-    // if (addr != nextState.addr) {
-    //   tweb3.getMetadata(nextState.addr).then(funcs => {
-    //     console.log('Funcs from Metadata',funcs);
-    //     this.setState({ listFunc: funcs });
-    //   });
-    // }
+  componentWillReceiveProps(nextProps) {
+    const { address } = this.props;
+    console.log('view address', address);
+    console.log('view next address', nextProps.address);
+    if (address != nextProps.address) {
+      this.setState({ addr: nextProps.address[0] });
+      this.getFuncList(nextProps.address[0]);
+    }
   }
 
   componentWillUnmount() {
@@ -265,7 +263,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   render() {
     const { address } = this.props;
     const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs } = this.state;
-    // console.log('RightPanel', this.state);
+    console.log('RightPanel', addr);
 
     const makeMethodCallContract = () => {
       return listFunc.map((func: MethodInfo, i: number) => {
@@ -329,18 +327,24 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                     </div>
                   </div> */}
                   <div id="collapse_contract" className="collapse show">
-                    <div className="row contract-instance-address px-4 py-2 font-weight-bold text-pure-white">
-                      <span className="badge badge-success">Deployed contract address: </span>
-                      <div className="py-1">
-                        <select className="custom-select" id="callContractAddr" onChange={e => this.changeAddress(e)}>
-                          {address.map((addr, i) => (
-                            <option key={i} value={addr}>
-                              {addr}
-                            </option>
-                          ))}
-                        </select>
+                    {address.length > 0 ? (
+                      <div className="row contract-instance-address px-4 py-2 font-weight-bold text-pure-white">
+                        <span className="badge badge-success">Deployed contract address: </span>
+                        <div className="py-1">
+                          <select className="custom-select" id="callContractAddr" onChange={e => this.changeAddress(e)}>
+                            {address.map((addr, i) => (
+                              <option key={i} value={addr}>
+                                {addr}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <p style={{ flex: 1, padding: '8px' }}>
+                        <span className="badge badge-danger">Not contract deployed</span>
+                      </p>
+                    )}
                     <ul className="list-group list-group-flush bg-dark">{makeMethodCallContract()}</ul>
                   </div>
                 </div>
