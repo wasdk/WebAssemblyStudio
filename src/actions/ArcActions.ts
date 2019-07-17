@@ -25,7 +25,7 @@ import { notifyAboutFork } from "../arc";
 
 export async function publishArc() {
   pushStatus("Previewing Arc Project");
-  await runTask("publish", false, RunTaskExternals.Arc);
+  await runTask("publish", false, RunTaskExternals.Arc, [], {});
   popStatus();
 }
 
