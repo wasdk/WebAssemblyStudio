@@ -169,7 +169,7 @@ export interface AppState {
   confirmDialog: boolean;
   isDeploy: boolean;
   deployDialog: boolean;
-   /**
+  /**
    * Contract deploy signer(may be Payer)
    */
   signer: string[];
@@ -372,9 +372,8 @@ export class App extends React.Component<AppProps, AppState> {
           if (this.toastContainer) {
             const index = this.toastContainer.showToast(
               <span>
-                {' '}
-                Deployed to <b>{address.slice(0, 12) + '...' + address.substr(-6)}</b> -{' '}
-                <a
+                Deployed to <b>{address}</b>
+                {/* <a
                   href={'https://devtools.icetea.io/contract.html?address=' + address}
                   target="_blank"
                   className="toast-span"
@@ -383,7 +382,7 @@ export class App extends React.Component<AppProps, AppState> {
                   }}
                 >
                   Call this contract
-                </a>
+                </a> */}
               </span>
             );
             const timeout = this.props.embeddingParams.type === EmbeddingType.Default ? 15000 : 5000;
@@ -666,7 +665,7 @@ export class App extends React.Component<AppProps, AppState> {
         title="Deploy"
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
-          this.setState({ deployDialog: true}); 
+          this.setState({ deployDialog: true });
           // this.deploy.call(this);
         }}
       />
@@ -768,8 +767,8 @@ export class App extends React.Component<AppProps, AppState> {
     return toolbarButtons;
   }
   render() {
-    const { deployedAddresses} = this.state;
-    //params, addr, from, payer, value, fee 
+    const { deployedAddresses } = this.state;
+    //params, addr, from, payer, value, fee
     // console.log('deployedAddresses', deployedAddresses);
     const self = this;
 
@@ -944,7 +943,7 @@ export class App extends React.Component<AppProps, AppState> {
             onCancel={() => {
               this.setState({ deployDialog: false });
             }}
-            onDeploy={(e) => {
+            onDeploy={e => {
               // this.setState(Object.assign({}, e));
               const params = e['params'];
               const addr = e['addr'];
@@ -957,8 +956,8 @@ export class App extends React.Component<AppProps, AppState> {
                 from,
                 payer,
                 value,
-                fee
-              }
+                fee,
+              };
               this.deploy(params, options);
               this.setState({ deployDialog: false });
             }}
