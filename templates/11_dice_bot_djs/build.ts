@@ -8,7 +8,7 @@ const buildJs = async (file: string) => {
 
   const inFile = project.getFile("src/" + file + ".djs");
   if(!inFile){
-    throw new Error("Please select contract in folder source!!!");
+    throw new Error("Please select a contract file in 'src' folder.");
   }
   const compiledSrc = await transpile(inFile.getData(), {
     prettier: true,
@@ -38,10 +38,8 @@ const deployJs = async (file: string) => {
   }
   const deployResult = await tweb3.deployJs(inFile.getData(), params, options);
 
-  logLn("TxHash: " + deployResult.hash);
-  logLn("Address: " + deployResult.address)
-  logLn("Test URL: https://devtools.icetea.io/contract.html?address=" + deployResult.address);
-
+  logLn("TxHash: https://scan.icetea.io/tx/hash" + deployResult.hash);
+  
   return deployResult;
 }
 
@@ -73,9 +71,7 @@ const deployWasm = async (file: string) => {
   }
   const deployResult = await tweb3.deployWasm(base64ArrayBuffer.encode(inFile.getData()), params, options);
 
-  logLn("TxHash: " + deployResult.hash);
-  logLn("Address: " + deployResult.address);
-  logLn("Test URL: https://devtools.icetea.io/contract.html?address=" + deployResult.address);
+  logLn("TxHash: https://scan.icetea.io/tx/hash" + deployResult.hash);
 
   return deployResult;
 }
@@ -89,7 +85,7 @@ gulp.task("build", () => {
   } else if(fileEx === "rs") {
     return buildWasm(fileBuild);
   } else {
-    throw new Error("Please select contract file!!!");
+    throw new Error("Please select contract file.");
   }
   
 })

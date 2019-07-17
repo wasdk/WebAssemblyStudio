@@ -340,7 +340,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                       </div>
                     ) : (
                       <p style={{ flex: 1, padding: '8px' }}>
-                        <span className="badge badge-danger">Not contract deployed</span>
+                        <span className="badge badge-danger">No contract deployed</span>
                       </p>
                     )}
                     <ul className="list-group list-group-flush bg-dark">{makeMethodCallContract()}</ul>
