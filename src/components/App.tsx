@@ -201,6 +201,13 @@ export interface AppWindowContext {
   promptWhenClosing: boolean;
 }
 
+export const decimal = 6;
+
+export function toUNIT(tea) {
+  const resp = tea.toFixed(decimal);
+  return resp * 10 ** decimal;
+}
+
 export class App extends React.Component<AppProps, AppState> {
   fiddle: string;
   toastContainer: ToastContainer;
@@ -294,7 +301,7 @@ export class App extends React.Component<AppProps, AppState> {
   bindAppStoreEvents() {
     appStore.onLoadProject.register(() => {
       this.setState({ project: appStore.getProject() });
-      runTask('project:load', true, RunTaskExternals.Setup);
+      runTask('project:load', true, RunTaskExternals.Setup, [], {});
     });
     appStore.onDirtyFileUsed.register((file: File) => {
       this.logLn(`Changes in ${file.getPath()} were ignored, save your changes.`, 'warn');
@@ -353,10 +360,10 @@ export class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  private async deploy() {
+  private async deploy(params, options) {
     const { deployedAddresses } = this.state;
 
-    return deployTask().then(result => {
+    return deployTask(params, options).then(result => {
       if (result) {
         const address = result.address || result;
         if (address) {
@@ -761,10 +768,10 @@ export class App extends React.Component<AppProps, AppState> {
     return toolbarButtons;
   }
   render() {
-    const { deployedAddresses } = this.state;
+    const { deployedAddresses} = this.state;
+    //params, addr, from, payer, value, fee 
     // console.log('deployedAddresses', deployedAddresses);
     const self = this;
-    console.log("state CK", this.state);
 
     const makeEditorPanes = () => {
       const groups = this.state.tabGroups;
@@ -938,8 +945,21 @@ export class App extends React.Component<AppProps, AppState> {
               this.setState({ deployDialog: false });
             }}
             onDeploy={(e) => {
-              this.setState(Object.assign({}, e));
-              this.deploy.call(this);
+              // this.setState(Object.assign({}, e));
+              const params = e['params'];
+              const addr = e['addr'];
+              const from = e['from'];
+              const payer = e['payer'];
+              const value = toUNIT(parseFloat(e['value']));
+              const fee = parseInt(e['fee']);
+              const options = {
+                addr,
+                from,
+                payer,
+                value,
+                fee
+              }
+              this.deploy(params, options);
               this.setState({ deployDialog: false });
             }}
           />

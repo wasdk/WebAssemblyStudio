@@ -1,5 +1,5 @@
 import * as gulp from "gulp";
-import { Service, project, activeTab } from "@wasm/studio-utils";
+import { Service, project, activeTab, params, options } from "@wasm/studio-utils";
 import { transpile } from "@iceteachain/sunseed";
 import { IceteaWeb3 } from "@iceteachain/web3";
 import * as base64ArrayBuffer from "base64-arraybuffer";
@@ -36,7 +36,7 @@ const deployJs = async (file: string) => {
   if (!inFile) {
     throw new Error("You need to build the project first.");
   }
-  const deployResult = await tweb3.deployJs(inFile.getData());
+  const deployResult = await tweb3.deployJs(inFile.getData(), params, options);
 
   logLn("TxHash: " + deployResult.hash);
   logLn("Address: " + deployResult.address)
@@ -71,7 +71,7 @@ const deployWasm = async (file: string) => {
   if (!inFile) {
     throw new Error("You need to build the project first.");
   }
-  const deployResult = await tweb3.deployWasm(base64ArrayBuffer.encode(inFile.getData()));
+  const deployResult = await tweb3.deployWasm(base64ArrayBuffer.encode(inFile.getData()), params, options);
 
   logLn("TxHash: " + deployResult.hash);
   logLn("Address: " + deployResult.address);

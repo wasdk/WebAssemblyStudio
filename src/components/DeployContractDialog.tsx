@@ -62,7 +62,13 @@ export class DeployContractDialog extends React.Component<
   };
 
   deploy = () => {
-    const params = parseParamsFromField('#params');
+    let params;
+    const element = document.getElementById('cal_preview');
+    if (element != null) {
+      params = parseParamsFromField('#params');
+    } else {
+      params = [];
+    }
     this.setState(
       {
         showMore: false,

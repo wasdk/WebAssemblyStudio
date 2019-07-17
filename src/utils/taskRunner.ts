@@ -163,6 +163,8 @@ export async function runTask(
   optional: boolean,
   project: Project,
   activeTab: string,
+  params: [],
+  options: {},
   logLn: (...args: any[]) => void,
   externals: RunTaskExternals,
   
@@ -198,6 +200,8 @@ export async function runTask(
         project,
         logLn,
         activeTab,
+        params,
+        options,
         fileTypeForExtension,
         Arc: externals === RunTaskExternals.Arc ? Arc : undefined,
         eval: externals === RunTaskExternals.Setup ? unsafeEval : undefined
