@@ -355,8 +355,10 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                   <div>
                     <b id="funcName" />
                   </div>
-                  <div>
-                    <code id="resultJson" />
+                  <div className="callCtRes">
+                    <pre>
+                      <code id="resultJson" />
+                    </pre>
                   </div>
                 </section>
               </div>
