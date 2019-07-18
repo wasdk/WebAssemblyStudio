@@ -77,12 +77,17 @@ export default class CallContractDialog extends React.Component<
           result = await tweb3[method](address, name, paramsValue);
           // console.log(result);
           document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
+        } else if (decotator === 'view') {
+          const method = 'callReadonlyContractMethod';
+          result = await tweb3[method](address, name, paramsValue);
+          // console.log(result);
+          document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
         }
       } catch (error) {
         // console.log(error);
         if (decotator === 'transaction') {
           document.getElementById('resultJson').innerHTML = formatResult(error, true);
-        } else if (decotator === 'pure') {
+        } else if (decotator === 'pure' || decotator === 'view') {
           document.getElementById('resultJson').innerHTML = tryStringifyJson(error);
         }
       }
