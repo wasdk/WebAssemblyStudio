@@ -339,7 +339,7 @@ a.bg-black:hover {
 }
 
 .oi-caret-bottom:before {
-  content: "\E02D";
+  content: '\E02D';
 }
 
 .collapse {
@@ -433,7 +433,7 @@ li {
   display: block;
   width: 200%;
   font-size: 0.8rem;
-  line-height: 2.0;
+  line-height: 2;
   background-color: #fff;
   background-image: none;
   background-clip: padding-box;
@@ -628,8 +628,8 @@ a.text-danger:hover {
 }
 
 .arrow-down {
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-top: 10px solid white;
@@ -641,14 +641,20 @@ a.text-danger:hover {
 }
 
 .arrow-left {
-  width: 0; 
-  height: 0; 
+  width: 0;
+  height: 0;
   border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent; 
-  border-right:10px solid white; 
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid white;
 }
 
 .arrow-left:hover {
-  border-right:10px solid #15b5dd;
+  border-right: 10px solid #15b5dd;
   cursor: pointer;
+}
+
+.callCtRes {
+  position: relative;
+  overflow: auto;
+  padding: 10px;
 }
