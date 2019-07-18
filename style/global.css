@@ -3,12 +3,12 @@
 @import url(../fonts/zilla.css);
 
 :root {
-   --grey-50: #FAFAFA;
-  --grey-100: #F5F5F5;
-  --grey-200: #EEEEEE;
-  --grey-300: #E0E0E0;
-  --grey-400: #BDBDBD;
-  --grey-500: #9E9E9E;
+  --grey-50: #fafafa;
+  --grey-100: #f5f5f5;
+  --grey-200: #eeeeee;
+  --grey-300: #e0e0e0;
+  --grey-400: #bdbdbd;
+  --grey-500: #9e9e9e;
   --grey-600: #757575;
   --grey-700: #616161;
   --grey-800: #424242;
@@ -18,11 +18,10 @@
   --grey-950: #1d1d1d;
   --grey-1000: #1a1a1a;
 
-  --title: #15B5DD;
+  --title: #15b5dd;
   --title-light: #c0b9f0;
   --title-complement: #f0db4f;
 }
-
 
 html,
 body {
@@ -93,30 +92,31 @@ a {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.workspaceContainer {
+.workspaceContainer,
+.rightPanelContainer {
   background: var(--grey-950);
   width: 100%;
   height: 100%;
 }
 
 .workspaceContainer:after {
-    content: "alpha";
-    position: fixed;
-    width: 80px;
-    height: 20px;
-    background: #191f23;
-    top: 7px;
-    left: -20px;
-    text-align: center;
-    font-size: 10px;
-    font-family: sans-serif;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: #fff;
-    line-height: 22px;
-    -ms-transform:rotate(-45deg);
-    -webkit-transform:rotate(-45deg);
-    transform:rotate(-45deg);
+  content: 'alpha';
+  position: fixed;
+  width: 80px;
+  height: 20px;
+  background: #191f23;
+  top: 7px;
+  left: -20px;
+  text-align: center;
+  font-size: 10px;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #fff;
+  line-height: 22px;
+  -ms-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 .consoleContainer {
@@ -138,7 +138,8 @@ a {
   user-select: none;
   font-weight: 700;
   font-style: italic;
-  font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
 }
 
 .wasmStudioHeader {
@@ -166,9 +167,8 @@ a {
   line-height: 40px;
 }
 
-
 .terminal .xterm-viewport {
-  background-color: #24282A;
+  background-color: #24282a;
 }
 
 .consoleContainer {
@@ -193,7 +193,8 @@ a {
 }
 
 .monaco-tree {
-  font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
 }
 .monaco-tree-row {
   font-size: 14px;
@@ -201,7 +202,8 @@ a {
 }
 
 .directory-entry {
-  font-family:  -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
   display: flex;
   width: calc(100% - 10px);
   min-width: fit-content;
@@ -221,23 +223,24 @@ a {
   background: var(--grey-800);
 }
 
-.directory-entry>.icon {
+.directory-entry > .icon {
   width: 16px;
   height: 16px;
 }
 
-.directory-entry>.label {
+.directory-entry > .label {
   font-size: 14px;
   padding-left: 4px;
   flex: 1;
 }
-.directory-entry>.close {
+.directory-entry > .close {
   width: 16px;
   height: 16px;
   padding-right: 10px;
 }
-.directory-entry.marked>.close {
-  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' height='16' width='16'%3E%3Ccircle fill='%23C5C5C5' cx='8' cy='8' r='4'/%3E%3C/svg%3E") 50% no-repeat;
+.directory-entry.marked > .close {
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' height='16' width='16'%3E%3Ccircle fill='%23C5C5C5' cx='8' cy='8' r='4'/%3E%3C/svg%3E")
+    50% no-repeat;
 }
 
 .workspaceEntry {
@@ -263,8 +266,14 @@ a {
   height: 100%;
 }
 
+.rightPanelfill {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
 .blurred .tab {
-  color:#868686 !important;
+  color: #868686 !important;
 }
 
 .tabs {
@@ -293,7 +302,7 @@ a {
   cursor: pointer;
   padding-left: 10px;
   align-items: center;
-  color:#868686;
+  color: #868686;
   -moz-user-select: none;
   user-select: none;
 }
@@ -302,34 +311,38 @@ a {
   border-right: 1px solid #1f2325;
 }
 
-.tab>.file-icon {
+.tab > .file-icon {
   font-size: 90%;
   min-width: 20px;
   max-height: 20px;
 }
 
-.tab>.label {
+.tab > .label {
   font-size: 14px;
   padding-left: 4px;
   flex: 1;
 }
 
-.tab>.close {
+.tab > .close {
   width: 16px;
   height: 16px;
   padding-right: 10px;
 }
 
-.tab.active.marked>.close, .tab.marked>.close {
-  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' height='16' width='16'%3E%3Ccircle fill='%23C5C5C5' cx='8' cy='8' r='4'/%3E%3C/svg%3E") 50% no-repeat;
+.tab.active.marked > .close,
+.tab.marked > .close {
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' height='16' width='16'%3E%3Ccircle fill='%23C5C5C5' cx='8' cy='8' r='4'/%3E%3C/svg%3E")
+    50% no-repeat;
 }
 
-.tab:hover>.close {
-  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16'%3E%3Cpath fill='%23aaaaaa' d='M12.597 11.042l2.803 2.803-1.556 1.555-2.802-2.802L8.239 15.4l-1.556-1.555 2.802-2.803-2.802-2.803 1.555-1.556 2.804 2.803 2.803-2.803L15.4 8.239z'/%3E%3C/svg%3E") 50% no-repeat;
+.tab:hover > .close {
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16'%3E%3Cpath fill='%23aaaaaa' d='M12.597 11.042l2.803 2.803-1.556 1.555-2.802-2.802L8.239 15.4l-1.556-1.555 2.802-2.803-2.802-2.803 1.555-1.556 2.804 2.803 2.803-2.803L15.4 8.239z'/%3E%3C/svg%3E")
+    50% no-repeat;
 }
 
-.tab>.close:hover {
-  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16'%3E%3Cpath fill='%23ffffff' d='M12.597 11.042l2.803 2.803-1.556 1.555-2.802-2.802L8.239 15.4l-1.556-1.555 2.802-2.803-2.802-2.803 1.555-1.556 2.804 2.803 2.803-2.803L15.4 8.239z'/%3E%3C/svg%3E") 50% no-repeat
+.tab > .close:hover {
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='3 3 16 16'%3E%3Cpath fill='%23ffffff' d='M12.597 11.042l2.803 2.803-1.556 1.555-2.802-2.802L8.239 15.4l-1.556-1.555 2.802-2.803-2.802-2.803 1.555-1.556 2.804 2.803 2.803-2.803L15.4 8.239z'/%3E%3C/svg%3E")
+    50% no-repeat;
 }
 
 .tab:hover {
@@ -338,7 +351,7 @@ a {
 
 .tab.active {
   background: var(--grey-1000);
-  color:#ffffff;
+  color: #ffffff;
 }
 
 .tab.italic {
@@ -366,7 +379,8 @@ a {
   -moz-user-select: none;
   user-select: none;
   font-weight: 700;
-  font-family: -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
   display: flex;
 }
 
@@ -387,8 +401,6 @@ a {
     background-color: #222;
   }
 }
-
-
 
 .status-bar-item {
   line-height: 22px;
@@ -413,7 +425,7 @@ a {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   background: rgb(65, 65, 65);
-  opacity: .4;
+  opacity: 0.4;
   z-index: 1;
   -moz-background-clip: padding;
   -webkit-background-clip: padding;
@@ -492,12 +504,25 @@ a {
   cursor: pointer;
 }
 .button:active {
-  color: rgb(255, 255, 255)
+  color: rgb(255, 255, 255);
 }
 
 .button .octicon {
   padding-left: 4px;
   padding-right: 4px;
+}
+
+.saveBtn {
+  width: 10em;
+  text-align: -webkit-center;
+}
+
+.callCtBtn {
+  width: 5em;
+  text-align: -webkit-center;
+  height: 25px;
+  padding: 1px;
+  border-radius: 10px;
 }
 
 .help {
@@ -515,7 +540,6 @@ a {
 }
 
 .menu {
-
 }
 
 .menu.popup {
@@ -542,12 +566,12 @@ a {
   background-color: var(--grey-1000);
 }
 
-.menu-entry>.icon {
+.menu-entry > .icon {
   width: 16px;
   height: 16px;
 }
 
-.menu-entry>.label {
+.menu-entry > .label {
   font-size: 12px;
   padding-left: 4px;
   flex: 1;
@@ -563,6 +587,73 @@ a {
   outline: none;
   box-shadow: 1px 1px 4px black;
 }
+.modal-rightpanel {
+  height: auto;
+  max-height: 600px;
+}
+
+.modal-title-bar {
+  font-family: 'Zilla Slab', serif;
+  line-height: 22px;
+  color: rgb(255, 255, 255);
+  background-color: var(--title);
+  font-size: 16px;
+  font-weight: bold;
+  padding: 4px;
+  border-bottom: 1px solid #e9ecef;
+}
+.modal-body {
+  position: relative;
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 15px;
+  max-height: 360px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+.modal-footer-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  border-top: 1px solid #e9ecef;
+}
+.modalCallContract {
+  position: absolute;
+  top: calc(50% - 180px);
+  left: calc(50% - 300px);
+  width: 600px;
+  height: 600px;
+  background-color: rgb(48, 48, 48);
+  outline: none;
+  box-shadow: 1px 1px 4px black;
+}
+
+.callContractContent {
+  height: 500px;
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+.saveModal {
+  position: absolute;
+  top: calc(50% - 180px);
+  left: calc(50% - 300px);
+  width: 500px;
+  height: 175px;
+  background-color: rgb(48, 48, 48);
+  outline: none;
+  box-shadow: 1px 1px 4px black;
+}
+
+.funcList {
+  /* width: 100vw; */
+  height: 20vh;
+  max-width: calc(100vw - 2rem);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
 
 .overlay {
   position: fixed;
@@ -574,27 +665,20 @@ a {
   z-index: 2;
 }
 
-
-.modal-title-bar {
-  font-family: 'Zilla Slab', serif;
-  line-height: 22px;
-  color: rgb(255, 255, 255);
-  background-color: var(--title);
-  font-size: 16px;
-  font-weight: bold;
-  padding: 4px;
+.overlayCallContract {
+  top: -25em;
 }
 
 .toast {
-    position: relative;
-    margin-right: auto;
-    margin-left: auto;
-    width: 500px;
-    height: 40px;
-    opacity: 1;
-    background-color: var(--title);
-    vertical-align: middle;
-    box-shadow: 1px 2px 10px black;
+  position: relative;
+  margin-right: auto;
+  margin-left: auto;
+  width: 500px;
+  height: 40px;
+  opacity: 1;
+  background-color: var(--title);
+  vertical-align: middle;
+  box-shadow: 1px 2px 10px black;
 }
 
 .toast.error {
@@ -606,36 +690,36 @@ a {
 }
 
 .toast-container {
-    position: fixed;
-    bottom: 32px;
-    left: 0;
-    right: 0;
-    z-index: 99;
-    outline: none;
+  position: fixed;
+  bottom: 32px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  outline: none;
 }
 
-.toast-container>div {
-    margin-bottom: 6px;
-    position: relative;
+.toast-container > div {
+  margin-bottom: 6px;
+  position: relative;
 }
 
 .toast-header {
-    color: white;
-    height: 32px;
-    line-height: 40px;
-    padding-left: 4px;
-    font-size: 14px;
+  color: white;
+  height: 32px;
+  line-height: 40px;
+  padding-left: 4px;
+  font-size: 14px;
 }
 
 .toast-span {
-    padding-top: 4px;
-    text-decoration: underline;
-    color: #fff;
+  padding-top: 4px;
+  text-decoration: underline;
+  color: #fff;
 }
 
 .button-toast {
-    float: right;
-    background-color: var(--grey-800);
+  float: right;
+  background-color: var(--grey-800);
 }
 
 .list-box {
@@ -644,13 +728,13 @@ a {
 }
 
 .list-box::-webkit-scrollbar-corner {
-  background: rgba(0,0,0,0);
+  background: rgba(0, 0, 0, 0);
 }
 
-.list-item-flex{
-    display: flex;
-    flex-direction: column;
-    margin-left: 7px;
+.list-item-flex {
+  display: flex;
+  flex-direction: column;
+  margin-left: 7px;
 }
 
 .list-item {
@@ -674,7 +758,7 @@ a {
   background-color: var(--grey-900);
 }
 
-.list-item>.icon {
+.list-item > .icon {
   width: 16px;
   height: 16px;
 }
@@ -685,13 +769,13 @@ a {
   flex: 1;
 }
 
-.list-item-flex>.label {
-    padding-left: 0px;
+.list-item-flex > .label {
+  padding-left: 0px;
 }
 
-.error{
-    font-size:11px;
-    color: #ff0000;
+.error {
+  font-size: 11px;
+  color: #ff0000;
 }
 
 #task-runner-content {
@@ -715,7 +799,7 @@ a {
 }
 
 .new-project-dialog-description::-webkit-scrollbar-corner {
-  background: rgba(0,0,0,0);
+  background: rgba(0, 0, 0, 0);
 }
 
 .text-input-box {
@@ -754,26 +838,26 @@ a {
 }
 
 .file-upload-input {
-    color: transparent;
+  color: transparent;
 }
 
 .file-upload-input::-webkit-file-upload-button {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .file-upload-input::before {
-    content: 'Select some files';
-    color: black;
-    display: inline-block;
-    background: #333;
-    border: 1px solid #292929;
-    padding: 5px 8px;
-    outline: none;
-    white-space: nowrap;
-    -moz-user-select: none;
-    user-select: none;
-    cursor: pointer;
-    color: #fff;
+  content: 'Select some files';
+  color: black;
+  display: inline-block;
+  background: #333;
+  border: 1px solid #292929;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  -moz-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  color: #fff;
 }
 
 .divider {
@@ -790,16 +874,33 @@ a {
 .md a {
   color: cornflowerblue;
 }
-.md footer, .md h1, .md h2, .md h3, .md h4, .md h5, .md h6, .md header, .md li, .md ol, .md p, .md section, .md ul {
+.md footer,
+.md h1,
+.md h2,
+.md h3,
+.md h4,
+.md h5,
+.md h6,
+.md header,
+.md li,
+.md ol,
+.md p,
+.md section,
+.md ul {
   float: none;
 }
 
-.md h1, .md h2 {
+.md h1,
+.md h2 {
   font-family: 'Zilla Slab', serif;
   line-height: normal;
 }
 
-.md blockquote, .md h1, .md ol, .md p, .md ul {
+.md blockquote,
+.md h1,
+.md ol,
+.md p,
+.md ul {
   margin-top: 8px;
   margin-bottom: 16px;
 }
@@ -816,7 +917,8 @@ a {
   line-height: 1.2rem;
   color: rgb(255, 207, 118);
   border-width: 1px;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif;
   font-weight: normal;
 }
 
@@ -826,7 +928,8 @@ a {
   margin: 1.75rem 0;
 }
 
-.md td, .md th {
+.md td,
+.md th {
   padding-left: 8px;
 }
 
@@ -840,11 +943,12 @@ a {
 }
 
 .tree-view::-webkit-scrollbar-corner {
-  background: rgba(0,0,0,0);
+  background: rgba(0, 0, 0, 0);
 }
 
 .tree-view-item {
-  font-family:  -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
   display: flex;
   width: calc(100% - 10px);
   min-width: fit-content;
@@ -864,12 +968,12 @@ a {
   background: var(--grey-800);
 }
 
-.tree-view-item>.icon {
+.tree-view-item > .icon {
   width: 16px;
   height: 16px;
 }
 
-.tree-view-item>.label {
+.tree-view-item > .label {
   font-size: 14px;
   padding-left: 4px;
   flex: 1;
@@ -884,7 +988,8 @@ a {
 }
 
 .action-label {
-  font-family:  -apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,Ubuntu,Droid Sans,sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI, HelveticaNeue-Light, Ubuntu, Droid Sans,
+    sans-serif;
   font-weight: bold;
 }
 
@@ -893,17 +998,17 @@ a {
 }
 
 .monaco-icon-label.dirty::after {
-  content: "M";
+  content: 'M';
   font-size: 10px;
 }
 
 .monaco-icon-label.transient::after {
-  content: "T";
+  content: 'T';
   font-size: 10px;
 }
 
 .monaco-icon-label.dirty.transient::after {
-  content: "M T";
+  content: 'M T';
   font-size: 10px;
 }
 
@@ -995,21 +1100,21 @@ a {
 }
 
 .label-name.error-dark::before {
-  content: url("../svg/error-dark.svg");
+  content: url('../svg/error-dark.svg');
   padding-right: 4px;
   position: relative;
   top: 4px;
 }
 
 .label-name.warning-dark::before {
-  content: url("../svg/warning-dark.svg");
+  content: url('../svg/warning-dark.svg');
   padding-right: 4px;
   position: relative;
   top: 4px;
 }
 
 .label-name.info-dark::before {
-  content: url("../svg/info-dark.svg");
+  content: url('../svg/info-dark.svg');
   padding-right: 4px;
   position: relative;
   top: 4px;
@@ -1027,7 +1132,8 @@ a {
 
 .binary {
   font-size: 12px;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New,
+    monospace, serif;
   font-weight: normal;
   padding: 8px;
   height: 100%;
@@ -1083,4 +1189,17 @@ a {
   font-size: 8px;
   display: block;
   background-color: #484848;
- }
+}
+
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open{
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close{
+  opacity: 0;
+}

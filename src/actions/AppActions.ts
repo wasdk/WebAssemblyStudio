@@ -294,12 +294,17 @@ export interface SandboxRunAction extends AppAction {
 export async function runTask(
   name: string,
   optional: boolean = false,
-  externals: RunTaskExternals = RunTaskExternals.Default
+  externals: RunTaskExternals = RunTaskExternals.Default,
+  params: [],
+  options: {},
 ) {
+
   // Runs the provided source in our fantasy gulp context
   const run = async (src: string) => {
     const project = appStore.getProject().getModel();
-    return await runGulpTask(src, name, optional, project, logLn, externals);
+    const activeTabGroup = appStore.getActiveTabGroup();
+    const activeTab = activeTabGroup.currentView.file.name;
+    return await runGulpTask(src, name, optional, project, activeTab, params, options, logLn, externals);
   };
   let gulpfile = appStore.getFileByName("gulpfile.js");
   if (gulpfile) {
@@ -342,13 +347,13 @@ export async function run() {
 
 export async function build() {
   pushStatus("Building Project");
-  await runTask("build");
+  await runTask("build", false, RunTaskExternals.Default, [] , {});
   popStatus();
 }
 
-export async function deploy() : Promise<any> {
+export async function deploy(params, options) : Promise<any> {
   pushStatus("Deploying Project");
-  const result = await runTask("deploy");
+  const result = await runTask("deploy", false, RunTaskExternals.Default, params, options);
   popStatus();
   return result;
 }

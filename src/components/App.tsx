@@ -19,26 +19,19 @@
  * SOFTWARE.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as ReactModal from "react-modal";
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import * as ReactModal from 'react-modal';
 
-import { Workspace } from "./Workspace";
-import { EditorView, ViewTabs, View, Tab, Tabs } from "./editor";
-import { Header } from "./Header";
-import { Toolbar } from "./Toolbar";
-import { ViewType, defaultViewTypeForFileType } from "./editor/View";
-import {
-  build,
-  deploy as deployTask,
-  run,
-  runTask,
-  openFiles,
-  pushStatus,
-  popStatus
-} from "../actions/AppActions";
+import { Workspace } from './Workspace';
+import { RightPanel } from './RightPanel';
+import { EditorView, ViewTabs, View, Tab, Tabs } from './editor';
+import { Header } from './Header';
+import { Toolbar } from './Toolbar';
+import { ViewType, defaultViewTypeForFileType, isViewFileDirty } from './editor/View';
+import { build, deploy as deployTask, run, runTask, openFiles, pushStatus, popStatus } from '../actions/AppActions';
 
-import appStore from "../stores/AppStore";
+import appStore from '../stores/AppStore';
 import {
   addFileTo,
   loadProject,
@@ -54,17 +47,17 @@ import {
   saveProject,
   focusTabGroup,
   setViewType,
-  logLn
-} from "../actions/AppActions";
-import { Project, File, FileType, Directory, ModelRef } from "../models";
-import { Service, Language } from "../service";
-import { Split, SplitOrientation, SplitInfo } from "./Split";
+  logLn,
+} from '../actions/AppActions';
+import { Project, File, FileType, Directory, ModelRef, IStatusProvider } from '../models';
+import { Service, Language } from '../service';
+import { Split, SplitOrientation, SplitInfo } from './Split';
 
-import { layout, assert, resetDOMSelection } from "../util";
+import { layout, assert, resetDOMSelection } from '../util';
 
-import * as Mousetrap from "mousetrap";
-import { Sandbox } from "./Sandbox";
-import { Gulpy } from "../gulpy";
+import * as Mousetrap from 'mousetrap';
+import { Sandbox } from './Sandbox';
+import { Gulpy } from '../gulpy';
 import {
   GoDelete,
   GoPencil,
@@ -84,25 +77,30 @@ import {
   GoGist,
   GoCheck,
   GoOpenIssue,
-  GoQuestion
-} from "./shared/Icons";
-import { Button } from "./shared/Button";
+  GoQuestion,
+} from './shared/Icons';
+import { Button } from './shared/Button';
 
-import { NewFileDialog } from "./NewFileDialog";
-import { EditFileDialog } from "./EditFileDialog";
-import { UploadFileDialog } from "./UploadFileDialog";
-import { ToastContainer } from "./Toasts";
-import { Spacer, Divider } from "./Widgets";
-import { ShareDialog } from "./ShareDialog";
-import { CallContractDialog } from "./CallContractDialog";
-import { NewProjectDialog, Template } from "./NewProjectDialog";
-import { NewDirectoryDialog } from "./NewDirectoryDialog";
-import { Errors } from "../errors";
-import { ControlCenter } from "./ControlCenter";
-import Group from "../utils/group";
-import { StatusBar } from "./StatusBar";
-import { publishArc, notifyArcAboutFork } from "../actions/ArcActions";
-import { RunTaskExternals } from "../utils/taskRunner";
+import { NewFileDialog } from './NewFileDialog';
+import { EditFileDialog } from './EditFileDialog';
+import { UploadFileDialog } from './UploadFileDialog';
+import { ToastContainer } from './Toasts';
+import { Spacer, Divider } from './Widgets';
+import { ShareDialog } from './ShareDialog';
+import { NewProjectDialog, Template } from './NewProjectDialog';
+import { NewDirectoryDialog } from './NewDirectoryDialog';
+import { Errors } from '../errors';
+import { ControlCenter } from './ControlCenter';
+import Group from '../utils/group';
+import { StatusBar } from './StatusBar';
+import { publishArc, notifyArcAboutFork } from '../actions/ArcActions';
+import { RunTaskExternals } from '../utils/taskRunner';
+import { SaveCFDialog } from './SaveCFDialog';
+import { DeployContractDialog } from './DeployContractDialog';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
+import { isDeepStrictEqual } from 'util';
+import { IceteaWeb3 } from '@iceteachain/web3';
+const tweb3 = new IceteaWeb3('https://rpc.icetea.io');
 
 export interface AppState {
   project: ModelRef<Project>;
@@ -130,7 +128,6 @@ export interface AppState {
    * If true, the call contract dialog is open.
    */
   callContractDialog: boolean;
-
 
   /**
    * If true, the new project dialog is open.
@@ -166,6 +163,16 @@ export interface AppState {
   hasStatus: boolean;
   isContentModified: boolean;
   windowDimensions: string;
+  /**
+   * If true, the confirm dialog is open.
+   */
+  confirmDialog: boolean;
+  isDeploy: boolean;
+  deployDialog: boolean;
+  /**
+   * Contract deploy signer(may be Payer)
+   */
+  signer: string[];
 }
 
 export interface AppProps {
@@ -182,7 +189,7 @@ export interface AppProps {
 export enum EmbeddingType {
   None,
   Default,
-  Arc
+  Arc,
 }
 
 export interface EmbeddingParams {
@@ -194,9 +201,17 @@ export interface AppWindowContext {
   promptWhenClosing: boolean;
 }
 
+export const decimal = 6;
+
+export function toUNIT(tea) {
+  const resp = tea.toFixed(decimal);
+  return resp * 10 ** decimal;
+}
+
 export class App extends React.Component<AppProps, AppState> {
   fiddle: string;
   toastContainer: ToastContainer;
+  status: IStatusProvider;
   constructor(props: AppProps) {
     super(props);
     this.state = {
@@ -213,11 +228,16 @@ export class App extends React.Component<AppProps, AppState> {
         {
           min: 200,
           max: 400,
-          value: 200
+          value: 200,
         },
         {
-          min: 256
-        }
+          min: 256,
+        },
+        {
+          min: 300,
+          max: 500,
+          value: 400,
+        },
       ],
       controlCenterSplits: [{ min: 100 }, { min: 40, value: 256 }],
       editorSplits: [],
@@ -229,7 +249,11 @@ export class App extends React.Component<AppProps, AppState> {
       activeTabGroup: null,
       windowDimensions: App.getWindowDimensions(),
       hasStatus: false,
-      isContentModified: false
+      isContentModified: false,
+      confirmDialog: false,
+      isDeploy: false,
+      deployDialog: false,
+      signer: [],
     };
   }
   private async initializeProject() {
@@ -238,66 +262,67 @@ export class App extends React.Component<AppProps, AppState> {
       project: appStore.getProject(),
       tabGroups: appStore.getTabGroups(),
       activeTabGroup: appStore.getActiveTabGroup(),
-      hasStatus: appStore.hasStatus()
+      hasStatus: appStore.hasStatus(),
     });
     this.bindAppStoreEvents();
     if (this.state.fiddle) {
       this.loadProjectFromFiddle(this.state.fiddle);
     }
+    let address;
+    let account = [];
+    for (let i = 0; i < 10; i++) {
+      address = tweb3.wallet.createAccount().address;
+      account.push(address);
+    }
+    this.setState({
+      signer: account,
+    });
   }
   private static getWindowDimensions(): string {
-    return `${window.innerWidth}x${window.innerHeight}@${
-      window.devicePixelRatio
-      }`;
+    return `${window.innerWidth}x${window.innerHeight}@${window.devicePixelRatio}`;
   }
   private async loadProjectFromFiddle(uri: string) {
     const project = new Project();
-    pushStatus("Downloading Project");
+    pushStatus('Downloading Project');
     const fiddle = await Service.loadJSON(uri);
     popStatus();
     if (fiddle.success) {
       await Service.loadFilesIntoProject(fiddle.files, project);
       loadProject(project);
-      if (project.getFile("README.md")) {
-        openFiles([["README.md"]]);
+      if (project.getFile('README.md')) {
+        openFiles([['README.md']]);
       }
     } else {
       if (this.toastContainer) {
-        this.toastContainer.showToast(
-          <span>Project {uri} was not found.</span>,
-          "error"
-        );
+        this.toastContainer.showToast(<span>Project {uri} was not found.</span>, 'error');
       }
     }
   }
   bindAppStoreEvents() {
     appStore.onLoadProject.register(() => {
       this.setState({ project: appStore.getProject() });
-      runTask("project:load", true, RunTaskExternals.Setup);
+      runTask('project:load', true, RunTaskExternals.Setup, [], {});
     });
     appStore.onDirtyFileUsed.register((file: File) => {
-      this.logLn(
-        `Changes in ${file.getPath()} were ignored, save your changes.`,
-        "warn"
-      );
+      this.logLn(`Changes in ${file.getPath()} were ignored, save your changes.`, 'warn');
     });
     appStore.onTabsChange.register(() => {
       this.setState({
         tabGroups: appStore.getTabGroups(),
-        activeTabGroup: appStore.getActiveTabGroup()
+        activeTabGroup: appStore.getActiveTabGroup(),
       });
       layout();
     });
     appStore.onDidChangeStatus.register(() => {
       this.setState({
-        hasStatus: appStore.hasStatus()
+        hasStatus: appStore.hasStatus(),
       });
     });
     appStore.onDidChangeIsContentModified.register(() => {
       this.props.windowContext.promptWhenClosing = appStore.getIsContentModified();
 
       this.setState({
-        isContentModified: appStore.getIsContentModified()
+        isContentModified: appStore.getIsContentModified(),
       });
     });
   }
@@ -312,17 +337,17 @@ export class App extends React.Component<AppProps, AppState> {
   // }
 
   async loadReleaseNotes() {
-    const response = await fetch("notes/notes.md");
+    const response = await fetch('notes/notes.md');
     const src = await response.text();
-    const notes = new File("Release Notes", FileType.Markdown);
+    const notes = new File('Release Notes', FileType.Markdown);
     notes.setData(src);
     openFile(notes, defaultViewTypeForFileType(notes.type));
   }
 
   async loadHelp() {
-    const response = await fetch("notes/help.md");
+    const response = await fetch('notes/help.md');
     const src = await response.text();
-    const help = new File("Help", FileType.Markdown);
+    const help = new File('Help', FileType.Markdown);
     help.setData(src);
     openFile(help, defaultViewTypeForFileType(help.type));
   }
@@ -335,47 +360,54 @@ export class App extends React.Component<AppProps, AppState> {
     }
   }
 
-  private async deploy() {
-    return deployTask().then(result => {
+  private async deploy(params, options) {
+    const { deployedAddresses } = this.state;
+
+    return deployTask(params, options).then(result => {
       if (result) {
-        const address = result.address || result
+        const address = result.address || result;
         if (address) {
-          this.state.deployedAddresses.unshift(address)
+          // this.state.deployedAddresses.unshift(address);
+          this.setState({ deployedAddresses: [...deployedAddresses, address] });
           if (this.toastContainer) {
             const index = this.toastContainer.showToast(
               <span>
-                {" "}Deployed to <b>{address.slice(0, 12) + "..." + address.substr(-6)}</b> -{" "}
-                <a href={"https://devtools.icetea.io/contract.html?address=" + address} target="_blank" className="toast-span"
+                Deployed to <b>{address}</b>
+                {/* <a
+                  href={'https://devtools.icetea.io/contract.html?address=' + address}
+                  target="_blank"
+                  className="toast-span"
                   onClick={() => {
-                    this.toastContainer.onDismiss(index)
-                  }}>
+                    this.toastContainer.onDismiss(index);
+                  }}
+                >
                   Call this contract
-                </a>
+                </a> */}
               </span>
             );
-            const timeout = this.props.embeddingParams.type === EmbeddingType.Default ? 15000 : 5000
+            const timeout = this.props.embeddingParams.type === EmbeddingType.Default ? 15000 : 5000;
             setTimeout(() => {
-              this.toastContainer.onDismiss(index)
-            }, timeout)
+              this.toastContainer.onDismiss(index);
+            }, timeout);
           }
         }
       }
-    })
+    });
   }
 
   registerShortcuts() {
-    Mousetrap.bind("command+b", () => {
+    Mousetrap.bind('command+b', () => {
       build();
     });
-    Mousetrap.bind("command+enter", () => {
+    Mousetrap.bind('command+enter', () => {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
         //run();
-        this.callContract()
+        this.callContract();
       } else {
         this.publishArc();
       }
     });
-    Mousetrap.bind("command+alt+enter", () => {
+    Mousetrap.bind('command+alt+enter', () => {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
         build().then(this.deploy.bind(this));
       } else {
@@ -383,7 +415,7 @@ export class App extends React.Component<AppProps, AppState> {
       }
     });
   }
-  logLn(message: string, kind: "" | "info" | "warn" | "error" = "") {
+  logLn(message: string, kind: '' | 'info' | 'warn' | 'error' = '') {
     logLn(message, kind);
   }
   componentWillMount() {
@@ -393,21 +425,17 @@ export class App extends React.Component<AppProps, AppState> {
     layout();
     this.registerShortcuts();
     window.addEventListener(
-      "resize",
+      'resize',
       () => {
         this.setState({
-          windowDimensions: App.getWindowDimensions()
+          windowDimensions: App.getWindowDimensions(),
         });
       },
       false
     );
     if (this.props.embeddingParams.type === EmbeddingType.Arc) {
-      window.addEventListener("message", e => {
-        if (
-          typeof e.data === "object" &&
-          e.data !== null &&
-          e.data.type === "arc/fork"
-        ) {
+      window.addEventListener('message', e => {
+        if (typeof e.data === 'object' && e.data !== null && e.data.type === 'arc/fork') {
           this.fork();
         }
       });
@@ -426,19 +454,15 @@ export class App extends React.Component<AppProps, AppState> {
     saveProject(this.state.fiddle);
   }
   async fork() {
-    pushStatus("Forking Project");
-    const fiddle = await saveProject("");
+    pushStatus('Forking Project');
+    const fiddle = await saveProject('');
     popStatus();
     const search = window.location.search;
     if (this.state.fiddle) {
       assert(search.indexOf(this.state.fiddle) >= 0);
-      history.replaceState(
-        {},
-        fiddle,
-        search.replace(this.state.fiddle, fiddle)
-      );
+      history.replaceState({}, fiddle, search.replace(this.state.fiddle, fiddle));
     } else {
-      const prefix = search ? search + "&" : "?";
+      const prefix = search ? search + '&' : '?';
       history.pushState({}, fiddle, `${prefix}f=${fiddle}`);
     }
     this.setState({ fiddle });
@@ -447,7 +471,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
   }
   async gist(fileOrDirectory?: File) {
-    pushStatus("Exporting Project");
+    pushStatus('Exporting Project');
     const target: File = fileOrDirectory || this.state.project.getModel();
     const gistURI = await Service.exportToGist(target, this.state.fiddle);
     popStatus();
@@ -455,7 +479,7 @@ export class App extends React.Component<AppProps, AppState> {
       if (this.toastContainer) {
         this.toastContainer.showToast(
           <span>
-            "Gist Created!"{" "}
+            "Gist Created!"{' '}
             <a href={gistURI} target="_blank" className="toast-span">
               Open in new tab.
             </a>
@@ -464,15 +488,15 @@ export class App extends React.Component<AppProps, AppState> {
       }
       console.log(`Gist created: ${gistURI}`);
     } else {
-      console.log("Failed!");
+      console.log('Failed!');
     }
   }
   async download() {
-    this.logLn("Downloading Project ...");
-    const downloadService = await import("../utils/download");
+    this.logLn('Downloading Project ...');
+    const downloadService = await import('../utils/download');
     const projectModel = this.state.project.getModel();
     await downloadService.downloadProject(projectModel, this.state.fiddle);
-    this.logLn("Project Zip CREATED ");
+    this.logLn('Project Zip CREATED ');
   }
   /**
    * Remember workspace split.
@@ -481,6 +505,43 @@ export class App extends React.Component<AppProps, AppState> {
 
   toolbarButtonsAreDisabled() {
     return this.state.hasStatus;
+  }
+
+  async saveToBuild(isDeploy = false) {
+    // isViewFileDirty
+    const groups = this.state.activeTabGroup;
+    let view = groups.currentView;
+    if (isViewFileDirty(view)) {
+      this.setState({ confirmDialog: true });
+    } else {
+      await build();
+      // isDeploy && (await this.deploy.call(this));
+      isDeploy && this.setState({ deployDialog: true });
+    }
+  }
+
+  async saveCurrentTab() {
+    this.setState({ confirmDialog: false });
+    const activeGroup = this.state.activeTabGroup;
+    activeGroup.currentView.file.save(this.status);
+    await build();
+    // this.state.isDeploy && (await this.deploy.call(this));
+    this.state.isDeploy && this.setState({ deployDialog: true });
+    this.setState({ isDeploy: false });
+  }
+
+  async saveAllTab() {
+    this.setState({ confirmDialog: false });
+    const groups = this.state.tabGroups;
+    let views = groups[0].views.slice(0);
+    // console.log("I want to show views", views);
+    for (let i = 0; i < views.length; i++) {
+      views[i].file.save(this.status);
+    }
+    await build();
+    // this.state.isDeploy && (await this.deploy.call(this));
+    this.state.isDeploy && this.setState({ deployDialog: true });
+    this.setState({ isDeploy: false });
   }
 
   makeToolbarButtons() {
@@ -503,7 +564,7 @@ export class App extends React.Component<AppProps, AppState> {
           }
           this.setState({ workspaceSplits });
         }}
-      />
+      />,
     ];
     if (this.props.embeddingParams.type === EmbeddingType.Default) {
       toolbarButtons.push(
@@ -519,10 +580,7 @@ export class App extends React.Component<AppProps, AppState> {
         />
       );
     }
-    if (
-      this.props.embeddingParams.type === EmbeddingType.None &&
-      this.props.update
-    ) {
+    if (this.props.embeddingParams.type === EmbeddingType.None && this.props.update) {
       toolbarButtons.push(
         <Button
           key="UpdateProject"
@@ -579,11 +637,7 @@ export class App extends React.Component<AppProps, AppState> {
           key="Share"
           icon={<GoRocket />}
           label="Share"
-          title={
-            this.state.fiddle
-              ? "Share & Embed Project"
-              : "Please fork the project first."
-          }
+          title={this.state.fiddle ? 'Share & Embed Project' : 'Please fork the project first.'}
           isDisabled={this.toolbarButtonsAreDisabled() || !this.state.fiddle}
           onClick={() => {
             this.share();
@@ -599,7 +653,7 @@ export class App extends React.Component<AppProps, AppState> {
         title="Build Project: CtrlCmd + B"
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
-          build();
+          this.saveToBuild();
         }}
       />
     );
@@ -611,7 +665,8 @@ export class App extends React.Component<AppProps, AppState> {
         title="Deploy"
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
-          this.deploy.call(this)
+          this.setState({ deployDialog: true });
+          // this.deploy.call(this);
         }}
       />
     );
@@ -625,19 +680,27 @@ export class App extends React.Component<AppProps, AppState> {
             title="Build &amp; Deploy Project: CtrlCmd + Alt + Enter"
             isDisabled={this.toolbarButtonsAreDisabled()}
             onClick={() => {
-              build().then(this.deploy.bind(this));
+              // build().then(this.deploy.bind(this));
+              const groups = this.state.activeTabGroup;
+              let view = groups.currentView;
+              if (!isViewFileDirty(view)) {
+                this.saveToBuild(true);
+              } else {
+                this.setState({ isDeploy: true });
+                this.saveToBuild();
+              }
             }}
-          />,
-          <Button
-            key="Call"
-            icon={<GoGist />}
-            label="Call"
-            title="Call Contract: CtrlCmd + Enter"
-            isDisabled={this.toolbarButtonsAreDisabled()}
-            onClick={() => {
-              this.callContract();
-            }}
-          />,
+          />
+          // <Button
+          //   key="Call"
+          //   icon={<GoGist />}
+          //   label="Call"
+          //   title="Call Contract: CtrlCmd + Enter"
+          //   isDisabled={this.toolbarButtonsAreDisabled()}
+          //   onClick={() => {
+          //     this.callContract();
+          //   }}
+          // />
           // <Button
           //   key="Run"
           //   icon={<GoGear />}
@@ -704,6 +767,9 @@ export class App extends React.Component<AppProps, AppState> {
     return toolbarButtons;
   }
   render() {
+    const { deployedAddresses } = this.state;
+    //params, addr, from, payer, value, fee
+    // console.log('deployedAddresses', deployedAddresses);
     const self = this;
 
     const makeEditorPanes = () => {
@@ -754,7 +820,7 @@ export class App extends React.Component<AppProps, AppState> {
         name="Editors"
         orientation={SplitOrientation.Vertical}
         defaultSplit={{
-          min: 128
+          min: 128,
         }}
         splits={this.state.editorSplits}
         onChange={splits => {
@@ -818,7 +884,7 @@ export class App extends React.Component<AppProps, AppState> {
             }}
           />
         )}
-        {this.state.callContractDialog && (
+        {/* {this.state.callContractDialog && (
           <CallContractDialog
             isOpen={true}
             deployedAddresses={this.state.deployedAddresses}
@@ -826,7 +892,7 @@ export class App extends React.Component<AppProps, AppState> {
               this.setState({ callContractDialog: false });
             }}
           />
-        )}
+        )} */}
         {this.state.uploadFileDialogDirectory && (
           <UploadFileDialog
             isOpen={true}
@@ -836,10 +902,7 @@ export class App extends React.Component<AppProps, AppState> {
             }}
             onUpload={(files: File[]) => {
               files.map((file: File) => {
-                addFileTo(
-                  file,
-                  this.state.uploadFileDialogDirectory.getModel()
-                );
+                addFileTo(file, this.state.uploadFileDialogDirectory.getModel());
               });
               this.setState({ uploadFileDialogDirectory: null });
             }}
@@ -858,7 +921,49 @@ export class App extends React.Component<AppProps, AppState> {
             }}
           />
         )}
-        <div style={{ height: "calc(100% - 22px)" }}>
+        {this.state.confirmDialog && (
+          <SaveCFDialog
+            isOpen={true}
+            onSave={() => {
+              this.saveCurrentTab();
+            }}
+            onSaveAll={() => {
+              this.saveAllTab();
+            }}
+            onCancel={() => {
+              this.setState({ confirmDialog: false });
+            }}
+            content={(props: any) => <div>Are you sure?</div>}
+          />
+        )}
+        {this.state.deployDialog && (
+          <DeployContractDialog
+            isOpen={true}
+            signer={this.state.signer}
+            onCancel={() => {
+              this.setState({ deployDialog: false });
+            }}
+            onDeploy={e => {
+              // this.setState(Object.assign({}, e));
+              const params = e['params'];
+              const addr = e['addr'];
+              const from = e['from'];
+              const payer = e['payer'];
+              const value = toUNIT(parseFloat(e['value']));
+              const fee = parseInt(e['fee']);
+              const options = {
+                addr,
+                from,
+                payer,
+                value,
+                fee,
+              };
+              this.deploy(params, options);
+              this.setState({ deployDialog: false });
+            }}
+          />
+        )}
+        <div style={{ height: 'calc(100% - 22px)' }}>
           <Split
             name="Workspace"
             orientation={SplitOrientation.Vertical}
@@ -873,18 +978,16 @@ export class App extends React.Component<AppProps, AppState> {
               file={this.state.file}
               onNewFile={(directory: Directory) => {
                 this.setState({
-                  newFileDialogDirectory: ModelRef.getRef(directory)
+                  newFileDialogDirectory: ModelRef.getRef(directory),
                 });
               }}
               onEditFile={(file: File) => {
                 this.setState({ editFileDialogFile: ModelRef.getRef(file) });
               }}
               onDeleteFile={(file: File) => {
-                let message = "";
+                let message = '';
                 if (file instanceof Directory) {
-                  message = `Are you sure you want to delete '${
-                    file.name
-                    }' and its contents?`;
+                  message = `Are you sure you want to delete '${file.name}' and its contents?`;
                 } else {
                   message = `Are you sure you want to delete '${file.name}'?`;
                 }
@@ -909,12 +1012,12 @@ export class App extends React.Component<AppProps, AppState> {
               }}
               onUploadFile={(directory: Directory) => {
                 this.setState({
-                  uploadFileDialogDirectory: ModelRef.getRef(directory)
+                  uploadFileDialogDirectory: ModelRef.getRef(directory),
                 });
               }}
               onNewDirectory={(directory: Directory) => {
                 this.setState({
-                  newDirectoryDialog: ModelRef.getRef(directory)
+                  newDirectoryDialog: ModelRef.getRef(directory),
                 });
               }}
               onCreateGist={(fileOrDirectory: File) => {
@@ -922,10 +1025,10 @@ export class App extends React.Component<AppProps, AppState> {
               }}
             />
             <div className="fill">
-              <div style={{ height: "40px" }}>
+              <div style={{ height: '40px' }}>
                 <Toolbar>{this.makeToolbarButtons()}</Toolbar>
               </div>
-              <div style={{ height: "calc(100% - 40px)" }}>
+              <div style={{ height: 'calc(100% - 40px)' }}>
                 <Split
                   name="Console"
                   orientation={SplitOrientation.Horizontal}
@@ -948,6 +1051,7 @@ export class App extends React.Component<AppProps, AppState> {
                 </Split>
               </div>
             </div>
+            <RightPanel address={deployedAddresses} />
           </Split>
         </div>
         <StatusBar />

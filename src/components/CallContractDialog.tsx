@@ -19,68 +19,225 @@
  * SOFTWARE.
  */
 
-import * as React from "react";
-import * as ReactModal from "react-modal";
-import { Button } from "./shared/Button";
-import { GoX } from "./shared/Icons";
-import { TextInputBox } from "./Widgets";
+import * as React from 'react';
+import * as ReactModal from 'react-modal';
+import QueueAnim from 'rc-queue-anim';
+import { Button } from './shared/Button';
+import { GoX, GoCheck } from './shared/Icons';
+import { IceteaWeb3 } from '@iceteachain/web3';
+import { MethodInfo, parseParamsFromField, formatResult, tryStringifyJson } from './RightPanel';
+const tweb3 = new IceteaWeb3('https://rpc.icetea.io');
 
-export class CallContractDialog extends React.Component<{
-  isOpen: boolean;
-  deployedAddresses: string[];
-  onCancel: () => void;
-}, {
-  }> {
+export default class CallContractDialog extends React.Component<
+  {
+    isOpen: boolean;
+    isWasmFuncs: boolean;
+    funcInfo: MethodInfo;
+    address: String;
+    onCancel: () => void;
+  },
+  { isCallFuncs: boolean; funcs: object }
+> {
   constructor(props: any) {
     super(props);
     this.state = {
+      isCallFuncs: false,
+      funcs: {},
     };
   }
 
+  cancel = () => {
+    this.props.onCancel();
+  };
+
+  exContractMethod = async () => {
+    const { funcInfo, address } = this.props;
+    if (funcInfo) {
+      let result;
+      const decotator = funcInfo.decorators[0];
+      try {
+        const params = (funcInfo && funcInfo.params) || [];
+        const paramsValue = Object.keys(params).map(key => {
+          const params = parseParamsFromField('#param' + key);
+          // console.log('Get params', params)
+          return params[0];
+        });
+        const name = funcInfo.name;
+
+        document.getElementById('funcName').innerHTML = name;
+        document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
+        if (decotator === 'transaction') {
+          const ct = tweb3.contract(address);
+          result = await ct.methods[name](...paramsValue).sendCommit();
+
+          // console.log(result);
+          document.getElementById('resultJson').innerHTML = formatResult(result, false);
+        } else if (decotator === 'pure') {
+          const method = 'callPureContractMethod';
+          result = await tweb3[method](address, name, paramsValue);
+          // console.log(result);
+          document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
+        } else if (decotator === 'view') {
+          const method = 'callReadonlyContractMethod';
+          result = await tweb3[method](address, name, paramsValue);
+          // console.log(result);
+          document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
+        }
+      } catch (error) {
+        // console.log(error);
+        if (decotator === 'transaction') {
+          document.getElementById('resultJson').innerHTML = formatResult(error, true);
+        } else if (decotator === 'pure' || decotator === 'view') {
+          document.getElementById('resultJson').innerHTML = tryStringifyJson(error);
+        }
+      }
+    }
+
+    this.props.onCancel();
+  };
+
+  callSendMethod = async () => {
+    const { funcInfo, address } = this.props;
+    try {
+      const name = funcInfo.name;
+      document.getElementById('funcName').innerHTML = name;
+      const params = parseParamsFromField('#params');
+      document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
+      const ct = tweb3.contract(address);
+      const result = await ct.methods[name](...params).sendCommit();
+      document.getElementById('resultJson').innerHTML = formatResult(result, false);
+    } catch (error) {
+      // console.log(error);
+      document.getElementById('resultJson').innerHTML = formatResult(error, true);
+    }
+    this.props.onCancel();
+  };
+
+  callViewMethod = async () => {
+    const { funcInfo, address } = this.props;
+    try {
+      const name = funcInfo.name;
+      document.getElementById('funcName').innerHTML = name;
+      const params = parseParamsFromField('#params');
+      document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
+      const method = 'callReadonlyContractMethod';
+      const result = await tweb3[method](address, name, params);
+      document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
+    } catch (error) {
+      // console.log(error);
+      document.getElementById('resultJson').innerHTML = tryStringifyJson(error);
+    }
+    this.props.onCancel();
+  };
+
+  callPureMethod = async () => {
+    const { funcInfo, address } = this.props;
+    try {
+      const name = funcInfo.name;
+      document.getElementById('funcName').innerHTML = name;
+      const params = parseParamsFromField('#params');
+      document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
+      const method = 'callPureContractMethod';
+      const result = await tweb3[method](address, name, params);
+      document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
+    } catch (error) {
+      // console.log(error);
+      document.getElementById('resultJson').innerHTML = tryStringifyJson(error);
+    }
+    this.props.onCancel();
+  };
+
   render() {
-    const urlPrefix = `${location.protocol}//${location.host}${location.pathname}`;
-    return <ReactModal
-      isOpen={this.props.isOpen}
-      contentLabel="Call Contract"
-      className="modal"
-      overlayClassName="overlay"
-      ariaHideApp={false}
-    >
-      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <div className="modal-title-bar">
-          Call Contract
+    const { funcInfo, isOpen, isWasmFuncs } = this.props;
+    // console.log('funcInfo', this.props);
+    const params = (funcInfo && funcInfo.params) || [];
+    const paramsDes = Object.keys(params).map(key => {
+      return (
+        <li className="list-group-item item-contract-method">
+          <div className="row">
+            <div className="py-1 col">
+              <span className="input-name">{params[key].name}</span>:
+              <span className="px-1 input-type">{params[key].type}</span>
+            </div>
+            <div className="py-1 col">
+              {params[key].type === 'any' ? (
+                <textarea
+                  placeholder={params[key].type}
+                  className="input-value input-value-textarea"
+                  id={'param' + [key]}
+                />
+              ) : (
+                <input placeholder={params[key].type} className="input-value" id={'param' + [key]} />
+              )}
+            </div>
+          </div>
+        </li>
+      );
+    });
+
+    return (
+      <ReactModal
+        isOpen={isOpen}
+        contentLabel="Call Contract"
+        className="modal modal-rightpanel "
+        overlayClassName="overlay overlayCallContract"
+        ariaHideApp={false}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <header className="modal-title-bar">Call function :{funcInfo && funcInfo.name}</header>
+          <div className="modal-body">
+            {isWasmFuncs ? (
+              <div>
+                <p>
+                  <label>Params (each param 1 row, JSON accepted, use " to denote string)</label>
+                </p>
+                <p>
+                  <textarea id="params" className="input-value input-value-textarea" rows={7} />
+                </p>
+              </div>
+            ) : (
+              <ul className="list-group list-group-flush">{paramsDes}</ul>
+            )}
+          </div>
+          <div style={{ flex: 1, padding: '8px' }} />
+          <footer className="modal-footer-bar">
+            <Button customClassName="saveBtn" icon={<GoX />} label="Cancel" title="Cancel" onClick={this.cancel} />
+            {isWasmFuncs ? (
+              <React.Fragment>
+                <Button
+                  customClassName="saveBtn"
+                  icon={<GoCheck />}
+                  label="Send(Write)"
+                  title="Send(Write)"
+                  onClick={this.callSendMethod}
+                />
+                <Button
+                  customClassName="saveBtn"
+                  icon={<GoCheck />}
+                  label="Call(View)"
+                  title="call(View)"
+                  onClick={this.callViewMethod}
+                />
+                <Button
+                  customClassName="saveBtn"
+                  icon={<GoCheck />}
+                  label="Call(Pure)"
+                  title="call(Pure)"
+                  onClick={this.callPureMethod}
+                />
+              </React.Fragment>
+            ) : (
+              <Button
+                customClassName="saveBtn"
+                icon={<GoCheck />}
+                label="Call"
+                title="call"
+                onClick={this.exContractMethod}
+              />
+            )}
+          </footer>
         </div>
-        { this.props.deployedAddresses.length > 0 ? (
-        <div style={{ flex: 1, padding: "8px" }}>
-          <p>Contract:&nbsp;
-            <select id="callContractAddr">
-              { this.props.deployedAddresses.map((addr, i) => <option key={i} value={addr}>{addr}</option>) }
-            </select>
-          </p>
-          <Button
-            label=" Call this contract "
-            title="Go to DevTools to call contract"
-            onClick={() => {
-              const addr = (document.getElementById("callContractAddr") as HTMLSelectElement).value;
-              const url = "https://devtools.icetea.io/contract.html?address=" + addr;
-              this.props.onCancel();
-              const win = window.open(url, '_blank');
-              win.focus();
-            }}
-            />
-        </div>
-        ) : (<p style={{ flex: 1, padding: "8px" }}>No deployed contract. Deploy one first.</p>) }
-        <div>
-          <Button
-            icon={<GoX />}
-            label="Cancel"
-            title="Cancel"
-            onClick={() => {
-              this.props.onCancel();
-            }}
-          />
-        </div>
-      </div>
-    </ReactModal>;
+      </ReactModal>
+    );
   }
 }

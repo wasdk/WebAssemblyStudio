@@ -162,8 +162,12 @@ export async function runTask(
   name: string,
   optional: boolean,
   project: Project,
+  activeTab: string,
+  params: [],
+  options: {},
   logLn: (...args: any[]) => void,
-  externals: RunTaskExternals
+  externals: RunTaskExternals,
+  
 ) {
   const currentRunnerGlobal = await createSandboxIFrame();
   currentRunnerInfo = {
@@ -172,6 +176,7 @@ export async function runTask(
   };
   // Runs the provided source in our fantasy gulp context
   const gulp = new Gulpy();
+
   contextify(
     src,
     currentRunnerGlobal,
@@ -182,6 +187,7 @@ export async function runTask(
       gulp,
       Service,
       project,
+      activeTab,
       logLn,
       fileTypeForExtension,
       monaco: externals === RunTaskExternals.Setup ? monaco : undefined
@@ -193,6 +199,9 @@ export async function runTask(
         Service,
         project,
         logLn,
+        activeTab,
+        params,
+        options,
         fileTypeForExtension,
         Arc: externals === RunTaskExternals.Arc ? Arc : undefined,
         eval: externals === RunTaskExternals.Setup ? unsafeEval : undefined

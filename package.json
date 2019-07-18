@@ -49,7 +49,9 @@
     "url": "git+https://github.com/TradaTech/icetea-studio.git"
   },
   "author": "Trada Tech <iceteachain@gmail.com> (https://icetea.io)",
-  "contributors": ["Mozilla Foundation"],
+  "contributors": [
+    "Mozilla Foundation"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/TradaTech/icetea-studio/issues"
