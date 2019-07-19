@@ -184,7 +184,7 @@ export default class CallContractDialog extends React.Component<
         ariaHideApp={false}
       >
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          <header className="modal-title-bar">Call function :{funcInfo && funcInfo.name}</header>
+          <header className="modal-title-bar">Call function: {funcInfo && funcInfo.name}</header>
           <div className="modal-body">
             {isWasmFuncs ? (
               <div>

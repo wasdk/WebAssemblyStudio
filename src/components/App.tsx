@@ -397,7 +397,8 @@ export class App extends React.Component<AppProps, AppState> {
 
   registerShortcuts() {
     Mousetrap.bind('command+b', () => {
-      build();
+      // build();
+      this.saveToBuild();
     });
     Mousetrap.bind('command+enter', () => {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
@@ -409,7 +410,7 @@ export class App extends React.Component<AppProps, AppState> {
     });
     Mousetrap.bind('command+alt+enter', () => {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
-        build().then(this.deploy.bind(this));
+        build().then(this.deploy.bind(this)); // need edit
       } else {
         build().then(() => this.publishArc());
       }
@@ -499,9 +500,14 @@ export class App extends React.Component<AppProps, AppState> {
     this.logLn('Project Zip CREATED ');
   }
   /**
-   * Remember workspace split.
+   * Remember workspace split(view project + main).
    */
   private workspaceSplit: SplitInfo = null;
+
+  /**
+   * Remember workspace split(main + call contract).
+   */
+  private workspaceSplitCallCt: SplitInfo = null;
 
   toolbarButtonsAreDisabled() {
     return this.state.hasStatus;
@@ -514,7 +520,8 @@ export class App extends React.Component<AppProps, AppState> {
     if (isViewFileDirty(view)) {
       this.setState({ confirmDialog: true });
     } else {
-      await build();
+      const waitBuild = await build();
+      console.log('view waitBuild', waitBuild);
       // isDeploy && (await this.deploy.call(this));
       isDeploy && this.setState({ deployDialog: true });
     }
@@ -743,25 +750,45 @@ export class App extends React.Component<AppProps, AppState> {
     if (this.props.embeddingParams.type === EmbeddingType.None) {
       toolbarButtons.push(
         <Button
-          key="GithubIssues"
-          icon={<GoOpenIssue />}
-          label="GitHub Issues"
-          title="GitHub Issues"
-          customClassName="issue"
-          href="https://github.com/TradaTech/icetea-studio"
-          target="_blank"
-          rel="noopener noreferrer"
-        />,
-        <Button
-          key="HelpAndPrivacy"
-          icon={<GoQuestion />}
-          label="Help & Privacy"
-          title="Help & Privacy"
-          customClassName="help"
+          key="Call"
+          icon={<GoThreeBars />}
+          title="Call Contracts"
+          customClassName="calCt"
           onClick={() => {
-            this.loadHelp();
+            const workspaceSplits = this.state.workspaceSplits;
+            const second = workspaceSplits[1];
+            const third = workspaceSplits[2];
+            if (this.workspaceSplitCallCt) {
+              Object.assign(third, this.workspaceSplitCallCt);
+              this.workspaceSplitCallCt = null;
+              delete second.value;
+            } else {
+              this.workspaceSplitCallCt = Object.assign({}, third);
+              third.min = third.max = 0;
+            }
+            this.setState({ workspaceSplits });
           }}
-        />
+        />,
+        // <Button
+        //   key="GithubIssues"
+        //   icon={<GoOpenIssue />}
+        //   label="GitHub Issues"
+        //   title="GitHub Issues"
+        //   customClassName="issue"
+        //   href="https://github.com/TradaTech/icetea-studio"
+        //   target="_blank"
+        //   rel="noopener noreferrer"
+        // />,
+        // <Button
+        //   key="HelpAndPrivacy"
+        //   icon={<GoQuestion />}
+        //   label="Help & Privacy"
+        //   title="Help & Privacy"
+        //   customClassName="help"
+        //   onClick={() => {
+        //     this.loadHelp();
+        //   }}
+        // />
       );
     }
     return toolbarButtons;
@@ -769,7 +796,7 @@ export class App extends React.Component<AppProps, AppState> {
   render() {
     const { deployedAddresses } = this.state;
     //params, addr, from, payer, value, fee
-    // console.log('deployedAddresses', deployedAddresses);
+    // console.log('wss render', this.state.workspaceSplits);
     const self = this;
 
     const makeEditorPanes = () => {
