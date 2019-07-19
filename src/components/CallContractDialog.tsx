@@ -162,9 +162,10 @@ export default class CallContractDialog extends React.Component<
             <div className="py-1 col">
               {params[key].type === 'any' ? (
                 <textarea
-                  placeholder={params[key].type}
+                  // placeholder={params[key].type}
                   className="input-value input-value-textarea"
                   id={'param' + [key]}
+                  rows={4}
                 />
               ) : (
                 <input placeholder={params[key].type} className="input-value" id={'param' + [key]} />

@@ -168,7 +168,7 @@ export interface AppState {
    */
   confirmDialog: boolean;
   isDeploy: boolean;
-  deployDialog: boolean;
+  isBuildSuccess: boolean;
   /**
    * Contract deploy signer(may be Payer)
    */
@@ -252,7 +252,7 @@ export class App extends React.Component<AppProps, AppState> {
       isContentModified: false,
       confirmDialog: false,
       isDeploy: false,
-      deployDialog: false,
+      isBuildSuccess: false,
       signer: [],
     };
   }
@@ -365,6 +365,7 @@ export class App extends React.Component<AppProps, AppState> {
 
     return deployTask(params, options).then(result => {
       if (result) {
+        // console.log('deploy result', result)
         const address = result.address || result;
         if (address) {
           // this.state.deployedAddresses.unshift(address);
@@ -520,10 +521,12 @@ export class App extends React.Component<AppProps, AppState> {
     if (isViewFileDirty(view)) {
       this.setState({ confirmDialog: true });
     } else {
-      const waitBuild = await build();
-      console.log('view waitBuild', waitBuild);
+      const res = await build();
+      console.log('waitBuild', res)
+ 
+      console.log('isDeploy', isDeploy)
       // isDeploy && (await this.deploy.call(this));
-      isDeploy && this.setState({ deployDialog: true });
+      isDeploy && this.setState({ isBuildSuccess: !!res });
     }
   }
 
@@ -531,9 +534,12 @@ export class App extends React.Component<AppProps, AppState> {
     this.setState({ confirmDialog: false });
     const activeGroup = this.state.activeTabGroup;
     activeGroup.currentView.file.save(this.status);
-    await build();
+    const waitBuild = await build();
+    // if (waitBuild === 'build') {
+    //   this.setState({ isDeploy: false });
+    // }
     // this.state.isDeploy && (await this.deploy.call(this));
-    this.state.isDeploy && this.setState({ deployDialog: true });
+    this.state.isDeploy && this.setState({ isBuildSuccess: true });
     this.setState({ isDeploy: false });
   }
 
@@ -545,9 +551,12 @@ export class App extends React.Component<AppProps, AppState> {
     for (let i = 0; i < views.length; i++) {
       views[i].file.save(this.status);
     }
-    await build();
+    const waitBuild = await build();
+    // if (waitBuild === 'build') {
+    //   this.setState({ isDeploy: false });
+    // }
     // this.state.isDeploy && (await this.deploy.call(this));
-    this.state.isDeploy && this.setState({ deployDialog: true });
+    this.state.isDeploy && this.setState({ isBuildSuccess: true });
     this.setState({ isDeploy: false });
   }
 
@@ -672,7 +681,7 @@ export class App extends React.Component<AppProps, AppState> {
         title="Deploy"
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
-          this.setState({ deployDialog: true });
+          this.setState({ isBuildSuccess: true });
           // this.deploy.call(this);
         }}
       />
@@ -768,7 +777,7 @@ export class App extends React.Component<AppProps, AppState> {
             }
             this.setState({ workspaceSplits });
           }}
-        />,
+        />
         // <Button
         //   key="GithubIssues"
         //   icon={<GoOpenIssue />}
@@ -796,7 +805,7 @@ export class App extends React.Component<AppProps, AppState> {
   render() {
     const { deployedAddresses } = this.state;
     //params, addr, from, payer, value, fee
-    // console.log('wss render', this.state.workspaceSplits);
+    // console.log('deployedAddresses', deployedAddresses);
     const self = this;
 
     const makeEditorPanes = () => {
@@ -963,12 +972,12 @@ export class App extends React.Component<AppProps, AppState> {
             content={(props: any) => <div>Are you sure?</div>}
           />
         )}
-        {this.state.deployDialog && (
+        {this.state.isBuildSuccess && (
           <DeployContractDialog
             isOpen={true}
             signer={this.state.signer}
             onCancel={() => {
-              this.setState({ deployDialog: false });
+              this.setState({ isBuildSuccess: false });
             }}
             onDeploy={e => {
               // this.setState(Object.assign({}, e));
@@ -986,7 +995,7 @@ export class App extends React.Component<AppProps, AppState> {
                 fee,
               };
               this.deploy(params, options);
-              this.setState({ deployDialog: false });
+              this.setState({ isBuildSuccess: false });
             }}
           />
         )}

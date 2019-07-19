@@ -261,7 +261,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   render() {
     const { address } = this.props;
     const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs } = this.state;
-    // console.log('RightPanel', addr);
+    // console.log('RightPanel', address);
 
     const makeMethodCallContract = () => {
       return listFunc.map((func: MethodInfo, i: number) => {
