@@ -65,7 +65,7 @@ input {
 }
 
 a {
-  /* color: #6caedd; */
+  color: #6caedd;
 }
 
 ::-webkit-scrollbar {
@@ -537,6 +537,10 @@ a {
   border-bottom: 2px solid #1a1a1a;
   color: #1a1a1a;
   cursor: pointer;
+}
+
+.calCt {
+  float: right;
 }
 
 .menu {

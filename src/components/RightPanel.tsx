@@ -261,7 +261,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   render() {
     const { address } = this.props;
     const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs } = this.state;
-    // console.log('RightPanel', addr);
+    // console.log('RightPanel', address);
 
     const makeMethodCallContract = () => {
       return listFunc.map((func: MethodInfo, i: number) => {
@@ -290,7 +290,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     return (
       <div className="rightPanelContainer">
         <div className="wasmStudioHeader">
-          <span className="waHeaderText" />
+          <span className="waHeaderText">Call Contracts</span>
         </div>
 
         <div style={{ height: 'calc(100% - 41px)' }}>
@@ -340,7 +340,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                       </div>
                     ) : (
                       <p style={{ flex: 1, padding: '8px' }}>
-                        <span className="badge badge-danger">No contract deployed</span>
+                        <span className="badge badge-danger">No contract deployed.</span>
                       </p>
                     )}
                     <ul className="list-group list-group-flush bg-dark">{makeMethodCallContract()}</ul>
@@ -348,21 +348,23 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                 </div>
               </div>
             </div>
-            <div className="rightPanelfill">
-              <div style={{ height: 'calc(100% - 40px)' }}>
-                <span>Result</span>
-                <section id="result">
-                  <div>
-                    <b id="funcName" />
-                  </div>
-                  <div className="callCtRes">
-                    <pre>
-                      <code id="resultJson" />
-                    </pre>
-                  </div>
-                </section>
+            {address.length > 0 && (
+              <div className="rightPanelfill">
+                <div style={{ height: 'calc(100% - 40px)' }}>
+                  <span>Result</span>
+                  <section id="result">
+                    <div>
+                      <b id="funcName" />
+                    </div>
+                    <div className="callCtRes">
+                      <pre>
+                        <code id="resultJson" />
+                      </pre>
+                    </div>
+                  </section>
+                </div>
               </div>
-            </div>
+            )}
           </Split>
           {isCallParam && (
             <CallContractDialog
