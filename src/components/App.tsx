@@ -521,7 +521,7 @@ export class App extends React.Component<AppProps, AppState> {
     return isDirty;
   }
 
-  async saveToBuild(isSaveAll = false) {
+  async saveToBuild() {
     const { isBuildAndDeploy } = this.state;
     const isDirty = this.isUpdateFile();
     if (isDirty) {
@@ -544,14 +544,14 @@ export class App extends React.Component<AppProps, AppState> {
     });
   }
 
-  async saveCurrentTab() {
+  saveCurrentTab() {
     this.setState({ confirmDialog: false });
     const activeGroup = this.state.activeTabGroup;
     activeGroup.currentView.file.save(this.status);
     this.saveToBuild();
   }
 
-  async saveAllTab() {
+  saveAllTab() {
     this.setState({ confirmDialog: false });
     const groups = this.state.tabGroups;
     let views = groups[0].views.slice(0);
