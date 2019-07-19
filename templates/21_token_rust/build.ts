@@ -20,6 +20,7 @@ const buildJs = async (file: string) => {
   const outFile = project.newFile(outFileName, "javascript", true);
   outFile.setData(compiledSrc);
   logLn("Output file: " + outFileName);
+  return outFile;
 }
 
 const deployJs = async (file: string) => {
@@ -38,7 +39,7 @@ const deployJs = async (file: string) => {
   }
   const deployResult = await tweb3.deployJs(inFile.getData(), params, options);
 
-  logLn("TxHash: https://scan.icetea.io/tx/hash" + deployResult.hash);
+  logLn("TxHash: https://scan.icetea.io/tx/" + deployResult.hash);
   
   return deployResult;
 }
@@ -71,7 +72,7 @@ const deployWasm = async (file: string) => {
   }
   const deployResult = await tweb3.deployWasm(base64ArrayBuffer.encode(inFile.getData()), params, options);
 
-  logLn("TxHash: https://scan.icetea.io/tx/hash" + deployResult.hash);
+  logLn("TxHash: https://scan.icetea.io/tx/" + deployResult.hash);
 
   return deployResult;
 }

@@ -168,7 +168,7 @@ export interface AppState {
    */
   confirmDialog: boolean;
   isDeploy: boolean;
-  deployDialog: boolean;
+  isBuildAndDeploy: boolean;
   /**
    * Contract deploy signer(may be Payer)
    */
@@ -252,7 +252,7 @@ export class App extends React.Component<AppProps, AppState> {
       isContentModified: false,
       confirmDialog: false,
       isDeploy: false,
-      deployDialog: false,
+      isBuildAndDeploy: false,
       signer: [],
     };
   }
@@ -397,7 +397,8 @@ export class App extends React.Component<AppProps, AppState> {
 
   registerShortcuts() {
     Mousetrap.bind('command+b', () => {
-      build();
+      // build();
+      this.saveToBuild();
     });
     Mousetrap.bind('command+enter', () => {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
@@ -409,7 +410,8 @@ export class App extends React.Component<AppProps, AppState> {
     });
     Mousetrap.bind('command+alt+enter', () => {
       if (this.props.embeddingParams.type !== EmbeddingType.Arc) {
-        build().then(this.deploy.bind(this));
+        // build().then(this.deploy.bind(this));
+        this.buildAndDeploy();
       } else {
         build().then(() => this.publishArc());
       }
@@ -499,49 +501,64 @@ export class App extends React.Component<AppProps, AppState> {
     this.logLn('Project Zip CREATED ');
   }
   /**
-   * Remember workspace split.
+   * Remember workspace split(view project + main).
    */
   private workspaceSplit: SplitInfo = null;
+
+  /**
+   * Remember workspace split(main + call contract).
+   */
+  private workspaceSplitCallCt: SplitInfo = null;
 
   toolbarButtonsAreDisabled() {
     return this.state.hasStatus;
   }
 
-  async saveToBuild(isDeploy = false) {
-    // isViewFileDirty
+  isUpdateFile() {
     const groups = this.state.activeTabGroup;
-    let view = groups.currentView;
-    if (isViewFileDirty(view)) {
+    const view = groups.currentView;
+    const isDirty = isViewFileDirty(view);
+    return isDirty;
+  }
+
+  async saveToBuild() {
+    const { isBuildAndDeploy } = this.state;
+    const isDirty = this.isUpdateFile();
+    if (isDirty) {
       this.setState({ confirmDialog: true });
     } else {
-      await build();
-      // isDeploy && (await this.deploy.call(this));
-      isDeploy && this.setState({ deployDialog: true });
+      const res = await build();
+      if (res) {
+        isBuildAndDeploy && this.setState({ isDeploy: true });
+      } else {
+        this.setState({ isDeploy: false });
+      }
+
+      return res;
     }
   }
 
-  async saveCurrentTab() {
+  buildAndDeploy() {
+    this.setState({ isBuildAndDeploy: true }, () => {
+      this.saveToBuild();
+    });
+  }
+
+  saveCurrentTab() {
     this.setState({ confirmDialog: false });
     const activeGroup = this.state.activeTabGroup;
     activeGroup.currentView.file.save(this.status);
-    await build();
-    // this.state.isDeploy && (await this.deploy.call(this));
-    this.state.isDeploy && this.setState({ deployDialog: true });
-    this.setState({ isDeploy: false });
+    this.saveToBuild();
   }
 
-  async saveAllTab() {
+  saveAllTab() {
     this.setState({ confirmDialog: false });
     const groups = this.state.tabGroups;
     let views = groups[0].views.slice(0);
-    // console.log("I want to show views", views);
     for (let i = 0; i < views.length; i++) {
       views[i].file.save(this.status);
     }
-    await build();
-    // this.state.isDeploy && (await this.deploy.call(this));
-    this.state.isDeploy && this.setState({ deployDialog: true });
-    this.setState({ isDeploy: false });
+    this.saveToBuild();
   }
 
   makeToolbarButtons() {
@@ -665,7 +682,7 @@ export class App extends React.Component<AppProps, AppState> {
         title="Deploy"
         isDisabled={this.toolbarButtonsAreDisabled()}
         onClick={() => {
-          this.setState({ deployDialog: true });
+          this.setState({ isDeploy: true });
           // this.deploy.call(this);
         }}
       />
@@ -677,18 +694,10 @@ export class App extends React.Component<AppProps, AppState> {
             key="BuildAndRun"
             icon={<GoCheck />}
             label="Build &amp; Deploy"
-            title="Build &amp; Deploy Project: CtrlCmd + Alt + Enter"
+            title="Build &amp; Deploy Project" //: CtrlCmd + Alt + Enter
             isDisabled={this.toolbarButtonsAreDisabled()}
             onClick={() => {
-              // build().then(this.deploy.bind(this));
-              const groups = this.state.activeTabGroup;
-              let view = groups.currentView;
-              if (!isViewFileDirty(view)) {
-                this.saveToBuild(true);
-              } else {
-                this.setState({ isDeploy: true });
-                this.saveToBuild();
-              }
+              this.buildAndDeploy();
             }}
           />
           // <Button
@@ -743,25 +752,45 @@ export class App extends React.Component<AppProps, AppState> {
     if (this.props.embeddingParams.type === EmbeddingType.None) {
       toolbarButtons.push(
         <Button
-          key="GithubIssues"
-          icon={<GoOpenIssue />}
-          label="GitHub Issues"
-          title="GitHub Issues"
-          customClassName="issue"
-          href="https://github.com/TradaTech/icetea-studio"
-          target="_blank"
-          rel="noopener noreferrer"
-        />,
-        <Button
-          key="HelpAndPrivacy"
-          icon={<GoQuestion />}
-          label="Help & Privacy"
-          title="Help & Privacy"
-          customClassName="help"
+          key="Call"
+          icon={<GoThreeBars />}
+          title="Call Contracts"
+          customClassName="calCt"
           onClick={() => {
-            this.loadHelp();
+            const workspaceSplits = this.state.workspaceSplits;
+            const second = workspaceSplits[1];
+            const third = workspaceSplits[2];
+            if (this.workspaceSplitCallCt) {
+              Object.assign(third, this.workspaceSplitCallCt);
+              this.workspaceSplitCallCt = null;
+              delete second.value;
+            } else {
+              this.workspaceSplitCallCt = Object.assign({}, third);
+              third.min = third.max = 0;
+            }
+            this.setState({ workspaceSplits });
           }}
         />
+        // <Button
+        //   key="GithubIssues"
+        //   icon={<GoOpenIssue />}
+        //   label="GitHub Issues"
+        //   title="GitHub Issues"
+        //   customClassName="issue"
+        //   href="https://github.com/TradaTech/icetea-studio"
+        //   target="_blank"
+        //   rel="noopener noreferrer"
+        // />,
+        // <Button
+        //   key="HelpAndPrivacy"
+        //   icon={<GoQuestion />}
+        //   label="Help & Privacy"
+        //   title="Help & Privacy"
+        //   customClassName="help"
+        //   onClick={() => {
+        //     this.loadHelp();
+        //   }}
+        // />
       );
     }
     return toolbarButtons;
@@ -936,12 +965,12 @@ export class App extends React.Component<AppProps, AppState> {
             content={(props: any) => <div>Are you sure?</div>}
           />
         )}
-        {this.state.deployDialog && (
+        {this.state.isDeploy && (
           <DeployContractDialog
             isOpen={true}
             signer={this.state.signer}
             onCancel={() => {
-              this.setState({ deployDialog: false });
+              this.setState({ isDeploy: false });
             }}
             onDeploy={e => {
               // this.setState(Object.assign({}, e));
@@ -959,7 +988,7 @@ export class App extends React.Component<AppProps, AppState> {
                 fee,
               };
               this.deploy(params, options);
-              this.setState({ deployDialog: false });
+              this.setState({ isDeploy: false, isBuildAndDeploy: false });
             }}
           />
         )}

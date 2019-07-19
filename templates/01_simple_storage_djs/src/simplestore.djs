@@ -4,10 +4,10 @@ const { validate } = require('./helper.js')
 class NumberStore {
   @view @state value : number = 0
 
-  @transaction setValue (value) {
+  @transaction setValue (value : number): number {
     const oldValue = this.value
     this.value = validate(value)
     this.emitEvent('ValueSet', { by: msg.sender, oldValue: oldValue, newValue: this.value }, ['by'])
-    return oldValue
+    return value
   }
 }

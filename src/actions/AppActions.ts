@@ -31,6 +31,7 @@ import { Errors } from "../errors";
 import getConfig from "../config";
 import { rewriteHTML, RewriteSourcesContext } from "../utils/rewriteSources";
 import { runTask as runGulpTask, RunTaskExternals } from "../utils/taskRunner";
+import { RSA_NO_PADDING } from "constants";
 
 export enum AppActionType {
   ADD_FILE_TO = "ADD_FILE_TO",
@@ -347,8 +348,9 @@ export async function run() {
 
 export async function build() {
   pushStatus("Building Project");
-  await runTask("build", false, RunTaskExternals.Default, [] , {});
+  const rs = await runTask("build", false, RunTaskExternals.Default, [] , {});
   popStatus();
+  return rs;
 }
 
 export async function deploy(params, options) : Promise<any> {
