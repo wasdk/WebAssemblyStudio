@@ -227,7 +227,7 @@ a.bg-black:hover {
 }
 .badge-success {
   color: #fff;
-  background-color: #1bc98e;
+  /* background-color: #1bc98e; */
 }
 
 .badge-success[href]:focus,
@@ -240,6 +240,7 @@ a.bg-black:hover {
   color: #111;
   background-color: #e4d836;
 }
+
 .badge-warning[href]:focus,
 .badge-warning[href]:hover {
   color: #111;
@@ -511,11 +512,20 @@ a.bg-dark:hover {
 .text-danger {
   color: #e64759 !important;
 }
+.text-notDanger {
+  color: #46cfa0 !important;
+}
 
 a.text-danger:focus,
 a.text-danger:hover {
   color: #dc1e33 !important;
 }
+
+a.text-notDanger:focus,
+a.text-notDanger:hover {
+  color: #159c6e !important;
+}
+
 .btn-outline-warning {
   color: #e4d836;
   background-color: transparent;
@@ -657,4 +667,35 @@ a.text-danger:hover {
   position: relative;
   overflow: auto;
   padding: 10px;
+}
+
+.callCtResult {
+  background-color: #1bc98e;
+  position: relative;
+  padding-right: 8px;
+  padding-left: 8px;
+  border-radius: 0.25rem;
+  margin: 5px;
+}
+
+.callCtResultErr {
+  background-color: #e64759;
+  position: relative;
+  padding-right: 8px;
+  padding-left: 8px;
+  border-radius: 0.25rem;
+  margin: 5px;
+}
+
+.funcName {
+  position: relative;
+  padding: 10px;
+}
+
+.Success {
+  color: #159c6e
+}
+
+.Error {
+  color: #e64759;
 }
