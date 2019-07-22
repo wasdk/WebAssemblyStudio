@@ -163,8 +163,12 @@ a {
 
 .waHeaderText {
   vertical-align: middle;
-  margin-left: 1.2rem;
+  margin-left: 3.3rem;
   line-height: 40px;
+}
+
+.waHeaderTextCallCt {
+  margin-left: 1.2rem;
 }
 
 .terminal .xterm-viewport {
