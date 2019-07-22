@@ -551,7 +551,7 @@ export class App extends React.Component<AppProps, AppState> {
     this.saveToBuild();
   }
 
-  saveAllTab() {
+  saveAllTabs() {
     this.setState({ confirmDialog: false });
     const groups = this.state.tabGroups;
     let views = groups[0].views.slice(0);
@@ -957,7 +957,7 @@ export class App extends React.Component<AppProps, AppState> {
               this.saveCurrentTab();
             }}
             onSaveAll={() => {
-              this.saveAllTab();
+              this.saveAllTabs();
             }}
             onCancel={() => {
               this.setState({ confirmDialog: false });
