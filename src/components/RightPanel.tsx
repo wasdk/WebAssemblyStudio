@@ -33,6 +33,7 @@ export interface MethodInfo {
   name?: string;
   decorators?: string[];
   params?: { name?: string; type?: string }[];
+  returnType?: string[];
 }
 
 export interface RightPanelProps {
@@ -90,6 +91,17 @@ export function parseParamList(pText) {
     .map(tryParseJson);
 
   return params;
+}
+
+export function fmtType(t, convert) {
+  if (!t) return 'any';
+  if (!Array.isArray(t)) {
+    t = [t];
+  }
+  if (convert) {
+    t = t.map(item => (item === 'undefined' ? 'void' : item));
+  }
+  return t.join('|');
 }
 
 export function formatResult(r, isError) {
@@ -188,12 +200,14 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
             name: item,
             decorators: 'unknown',
             params: 'unknown',
+            returnType: 'unknown',
           };
         } else
           return {
             name: item,
             decorators: meta.decorators || [],
             params: meta.params || [],
+            returnType: fmtType(meta.fieldType || meta.returnType, meta.returnType),
           };
       });
 
@@ -219,6 +233,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
       if (params.length > 0) {
         this.setState({ isCallParam: true, funcInfo: func });
       } else {
+        document.getElementById('callCtResult').innerHTML = "<span class='callCtResult'>Result</span>";
         document.getElementById('funcName').innerHTML = func.name;
         document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
         const addr = this.state.addr;
@@ -236,7 +251,8 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
         }
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      document.getElementById('callCtResult').innerHTML = "<span class='callCtResultErr'>Result</span>";
       if (decotator === 'transaction') {
         document.getElementById('resultJson').innerHTML = formatResult(error, true);
       } else if (decotator === 'pure' || decotator === 'view') {
@@ -262,15 +278,26 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     const { address } = this.props;
     const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs } = this.state;
     // console.log('RightPanel', address);
+    const resultJson = document.getElementById('resultJson');
+    // console.log('resultJson', resultJson)
 
     const makeMethodCallContract = () => {
       return listFunc.map((func: MethodInfo, i: number) => {
+        // console.log('MethodInfo', func);
         return (
           <li className="list-group-item row">
             <div className="row">
               <div className="col-7">
-                <span className="badge badge-warning d-inline">function</span>
-                <span className="mx-1 px-1 text-danger">{func.name}</span>
+                <span className="badge badge-warning d-inline">
+                  {func.decorators[0] === 'u' ? 'function' : func.decorators[0]}
+                </span>
+                <span
+                  className={
+                    func.decorators[0] === 'transaction' ? 'mx-1 px-1 text-danger' : 'mx-1 px-1 text-notDanger'
+                  }
+                >
+                  {func.name}:&nbsp;{func.returnType}
+                </span>
               </div>
               <div className="col-2">
                 <button
@@ -327,7 +354,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                   <div id="collapse_contract" className="collapse show">
                     {address.length > 0 ? (
                       <div className="row contract-instance-address px-4 py-2 font-weight-bold text-pure-white">
-                        <span className="badge badge-success">Deployed contract address: </span>
+                        <span className="badge">Deployed contract address: </span>
                         <div className="py-1">
                           <select className="custom-select" id="callContractAddr" onChange={e => this.changeAddress(e)}>
                             {address.map((addr, i) => (
@@ -351,9 +378,9 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
             {address.length > 0 && (
               <div className="rightPanelfill">
                 <div style={{ height: 'calc(100% - 40px)' }}>
-                  <span>Result</span>
+                  <span id="callCtResult">Result</span>
                   <section id="result">
-                    <div>
+                    <div className="funcName">
                       <b id="funcName" />
                     </div>
                     <div className="callCtRes">

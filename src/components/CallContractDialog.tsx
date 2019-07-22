@@ -64,6 +64,7 @@ export default class CallContractDialog extends React.Component<
         });
         const name = funcInfo.name;
 
+        document.getElementById('callCtResult').innerHTML = "<span class='callCtResult'>Result</span>";
         document.getElementById('funcName').innerHTML = name;
         document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
         if (decotator === 'transaction') {
@@ -85,6 +86,7 @@ export default class CallContractDialog extends React.Component<
         }
       } catch (error) {
         // console.log(error);
+        document.getElementById('callCtResult').innerHTML = "<span class='callCtResultErr'>Result</span>";
         if (decotator === 'transaction') {
           document.getElementById('resultJson').innerHTML = formatResult(error, true);
         } else if (decotator === 'pure' || decotator === 'view') {
@@ -100,6 +102,7 @@ export default class CallContractDialog extends React.Component<
     const { funcInfo, address } = this.props;
     try {
       const name = funcInfo.name;
+      document.getElementById('callCtResult').innerHTML = "<span class='callCtResult'>Result</span>";
       document.getElementById('funcName').innerHTML = name;
       const params = parseParamsFromField('#params');
       document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
@@ -108,6 +111,7 @@ export default class CallContractDialog extends React.Component<
       document.getElementById('resultJson').innerHTML = formatResult(result, false);
     } catch (error) {
       // console.log(error);
+      document.getElementById('callCtResult').innerHTML = "<span class='callCtResultErr'>Result</span>";
       document.getElementById('resultJson').innerHTML = formatResult(error, true);
     }
     this.props.onCancel();
@@ -117,6 +121,7 @@ export default class CallContractDialog extends React.Component<
     const { funcInfo, address } = this.props;
     try {
       const name = funcInfo.name;
+      document.getElementById('callCtResult').innerHTML = "<span class='callCtResult'>Result</span>";
       document.getElementById('funcName').innerHTML = name;
       const params = parseParamsFromField('#params');
       document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
@@ -125,6 +130,7 @@ export default class CallContractDialog extends React.Component<
       document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
     } catch (error) {
       // console.log(error);
+      document.getElementById('callCtResult').innerHTML = "<span class='callCtResultErr'>Result</span>";
       document.getElementById('resultJson').innerHTML = tryStringifyJson(error);
     }
     this.props.onCancel();
@@ -134,6 +140,7 @@ export default class CallContractDialog extends React.Component<
     const { funcInfo, address } = this.props;
     try {
       const name = funcInfo.name;
+      document.getElementById('callCtResult').innerHTML = "<span class='callCtResult'>Result</span>";
       document.getElementById('funcName').innerHTML = name;
       const params = parseParamsFromField('#params');
       document.getElementById('resultJson').innerHTML = "<span class='Error'>sending...</span>";
@@ -142,6 +149,7 @@ export default class CallContractDialog extends React.Component<
       document.getElementById('resultJson').innerHTML = tryStringifyJson(result);
     } catch (error) {
       // console.log(error);
+      document.getElementById('callCtResult').innerHTML = "<span class='callCtResultErr'>Result</span>";
       document.getElementById('resultJson').innerHTML = tryStringifyJson(error);
     }
     this.props.onCancel();
@@ -165,7 +173,7 @@ export default class CallContractDialog extends React.Component<
                   // placeholder={params[key].type}
                   className="input-value input-value-textarea"
                   id={'param' + [key]}
-                  rows={4}
+                  rows={3}
                 />
               ) : (
                 <input placeholder={params[key].type} className="input-value" id={'param' + [key]} />

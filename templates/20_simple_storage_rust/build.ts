@@ -40,6 +40,7 @@ const deployJs = async (file: string) => {
   const deployResult = await tweb3.deployJs(inFile.getData(), params, options);
 
   logLn("TxHash: https://scan.icetea.io/tx/" + deployResult.hash);
+  logLn("Contract address: " + deployResult.address);
   
   return deployResult;
 }
@@ -73,6 +74,7 @@ const deployWasm = async (file: string) => {
   const deployResult = await tweb3.deployWasm(base64ArrayBuffer.encode(inFile.getData()), params, options);
 
   logLn("TxHash: https://scan.icetea.io/tx/" + deployResult.hash);
+  logLn("Contract address: " + deployResult.address);
 
   return deployResult;
 }
