@@ -317,7 +317,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     return (
       <div className="rightPanelContainer">
         <div className="wasmStudioHeader">
-          <span className="waHeaderText">Call Contracts</span>
+          <span className="waHeaderText waHeaderTextCallCt">Call Contracts</span>
         </div>
 
         <div style={{ height: 'calc(100% - 41px)' }}>
