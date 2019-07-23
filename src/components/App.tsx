@@ -798,7 +798,7 @@ export class App extends React.Component<AppProps, AppState> {
   render() {
     const { deployedAddresses } = this.state;
     //params, addr, from, payer, value, fee
-    console.log('project', appStore.getProject());
+    // console.log('project', appStore.getProject());
     const self = this;
 
     const makeEditorPanes = () => {

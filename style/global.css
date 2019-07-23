@@ -1211,3 +1211,10 @@ a {
 .ReactModal__Overlay--before-close{
   opacity: 0;
 }
+
+div.show-twisties div:nth-child(2) {
+  display: none;
+}
+div.show-twisties div:nth-child(3) {
+  display: none;
+}
