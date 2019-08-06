@@ -26,6 +26,7 @@ import { Project, File, Directory, ModelRef } from '../models';
 import { SplitOrientation, SplitInfo, Split } from './Split';
 import appStore from '../stores/AppStore';
 import CallContractDialog from './CallContractDialog';
+import CallChatBot from './CallChatBot';
 import { IceteaWeb3 } from '@iceteachain/web3';
 const tweb3 = new IceteaWeb3('https://rpc.icetea.io');
 
@@ -49,6 +50,7 @@ export interface RightPanelState {
   addr: String;
   isCallParam: boolean;
   isWasmFuncs: boolean;
+  isBot: boolean;
 }
 
 export function tryStringifyJsonHelper(p, replacer, space) {
@@ -160,6 +162,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
       addr: '',
       isCallParam: false,
       isWasmFuncs: false,
+      isBot: false,
     };
   }
 
@@ -193,6 +196,11 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   getFuncList(address) {
     tweb3.getMetadata(address).then(funcs => {
       // console.log('funcs', funcs);
+      const lookLikeBot = funcs.botInfo || (funcs.getName && funcs.getDescription);
+      if (!lookLikeBot) {
+        document.getElementById('lookLikeBot').style.display = 'none';
+      }
+      // console.log('lookLikeBot', lookLikeBot);
       const newFunc = Object.keys(funcs).map(item => {
         const meta = funcs[item];
         if (meta.type === 'unknown') {
@@ -274,10 +282,14 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     );
   }
 
+  chatWithBot() {
+    this.setState({ isBot: true });
+  }
+
   render() {
     const { address } = this.props;
-    const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs } = this.state;
-    // console.log('RightPanel', address);
+    const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs, isBot } = this.state;
+    // console.log('isBot', isBot);
     const resultJson = document.getElementById('resultJson');
     // console.log('resultJson', resultJson)
 
@@ -364,6 +376,16 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                             ))}
                           </select>
                         </div>
+                        <div id="lookLikeBot" className="hide">
+                          <span>This contract looks like a chatbot</span>
+                          <button
+                            className="btn btn-outline-warning py-0 px-3 ml-3"
+                            type="button"
+                            onClick={() => this.chatWithBot()}
+                          >
+                            Start chat
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <p style={{ flex: 1, padding: '8px' }}>
@@ -401,6 +423,15 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
               address={addr}
               onCancel={() => {
                 this.setState({ isCallParam: false, isWasmFuncs: false });
+              }}
+            />
+          )}
+          {isBot && (
+            <CallChatBot
+              isOpen={isBot}
+              botAddress={addr}
+              onCancel={() => {
+                this.setState({ isBot: false });
               }}
             />
           )}
