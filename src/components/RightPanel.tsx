@@ -26,7 +26,6 @@ import { Project, File, Directory, ModelRef } from '../models';
 import { SplitOrientation, SplitInfo, Split } from './Split';
 import appStore from '../stores/AppStore';
 import CallContractDialog from './CallContractDialog';
-import CallChatBot from './CallChatBot';
 import { IceteaWeb3 } from '@iceteachain/web3';
 const tweb3 = new IceteaWeb3('https://rpc.icetea.io');
 
