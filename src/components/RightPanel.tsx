@@ -293,7 +293,6 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   render() {
     const { address } = this.props;
     const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs } = this.state;
-    // console.log('isBot', isBot);
     const resultJson = document.getElementById('resultJson');
     // console.log('resultJson', resultJson)
 
