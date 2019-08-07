@@ -50,7 +50,6 @@ export interface RightPanelState {
   addr: String;
   isCallParam: boolean;
   isWasmFuncs: boolean;
-  isBot: boolean;
 }
 
 export function tryStringifyJsonHelper(p, replacer, space) {
@@ -162,7 +161,6 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
       addr: '',
       isCallParam: false,
       isWasmFuncs: false,
-      isBot: false,
     };
   }
 
@@ -289,14 +287,13 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
   }
 
   chatWithBot() {
-    // this.setState({ isBot: true });
     const url = 'https://devtools.icetea.io/botpoup.html' + '?address=' + this.state.addr;
     this.popupwindow(url, 'title', 800, 600)
   }
 
   render() {
     const { address } = this.props;
-    const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs, isBot } = this.state;
+    const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs } = this.state;
     // console.log('isBot', isBot);
     const resultJson = document.getElementById('resultJson');
     // console.log('resultJson', resultJson)
@@ -431,15 +428,6 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
               address={addr}
               onCancel={() => {
                 this.setState({ isCallParam: false, isWasmFuncs: false });
-              }}
-            />
-          )}
-          {isBot && (
-            <CallChatBot
-              isOpen={isBot}
-              botAddress={addr}
-              onCancel={() => {
-                this.setState({ isBot: false });
               }}
             />
           )}
