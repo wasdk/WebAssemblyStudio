@@ -20,9 +20,6 @@ module.exports = env => {
     resolve: {
       // Add '.ts' and '.tsx' as resolvable extensions.
       extensions: ['.ts', '.tsx', '.js', '.json'],
-      alias: {
-        vue: 'vue/dist/vue.min.js',
-      },
     },
 
     module: {
