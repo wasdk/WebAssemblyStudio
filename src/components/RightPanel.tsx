@@ -282,8 +282,16 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     );
   }
 
+  popupwindow (url, title, w, h) {
+    var left = (window.screen.width / 2) - (w / 2)
+    var top = (window.screen.height / 2) - (h / 2)
+    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left)
+  }
+
   chatWithBot() {
-    this.setState({ isBot: true });
+    // this.setState({ isBot: true });
+    const url = 'https://devtools.icetea.io/botpoup.html' + '?address=' + this.state.addr;
+    this.popupwindow(url, 'title', 800, 600)
   }
 
   render() {

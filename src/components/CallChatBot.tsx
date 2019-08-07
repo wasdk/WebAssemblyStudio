@@ -29,6 +29,15 @@ const tweb3 = new IceteaWeb3('https://rpc.icetea.io');
 import Vue from 'vue';
 import BotUI from 'botui';
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'bot-ui': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+      // 'my-botui-app': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+    }
+  }
+}
+
 // const initWeb3 = (privateKey, showAlert = true) => {
 //   try {
 //     tweb3.wallet.importAccount(privateKey);
@@ -227,7 +236,7 @@ function closeNav() {
  */
 export async function connectBot(botAddr, privateKey) {
   botui = new BotUI('my-botui-app', {
-    vue: Vue, // pass the dependency.
+    vue: Vue,
   });
   // if (!web3Inited) {
   //   web3Inited = initWeb3(privateKey);
@@ -335,10 +344,10 @@ export default class CallChatBot extends React.Component<
             <p>
               <label>Your address: {botAddress}</label>
             </p>
-          </div>
-          <div id="my-botui-app">
-            {/* <bot-ui /> */}
+            <div id="my-botui-app">
+              <bot-ui />
             </div>
+          </div>
           <footer className="modal-footer-bar">
             <Button customClassName="saveBtn" icon={<GoX />} label="Cancel" title="Cancel" onClick={this.cancel} />
           </footer>
