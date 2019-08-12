@@ -1080,7 +1080,7 @@ export class App extends React.Component<AppProps, AppState> {
                 </Split>
               </div>
             </div>
-            <RightPanel address={deployedAddresses} />
+            <RightPanel address={deployedAddresses.reverse()} />
           </Split>
         </div>
         <StatusBar />
