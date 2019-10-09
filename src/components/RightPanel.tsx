@@ -114,7 +114,7 @@ export function formatResult(r, isError) {
       '</span>' +
       '<br><b>Hash</b>: ';
     if (r.hash) {
-      msg += '<a href="/tx.html?hash=' + r.hash + '">' + r.hash + '</a>';
+      msg += '<a href="https://scan.icetea.io/tx/' + r.hash + '">' + r.hash + '</a>';
     } else {
       msg += 'N/A';
     }
@@ -125,7 +125,7 @@ export function formatResult(r, isError) {
       '<br><b>Returned Value</b>:  <span class="Success">' +
       tryStringifyJson(r.returnValue) +
       '</span>' +
-      '<br><b>Hash</b>: <a href="https://devtools.icetea.io/tx.html?hash=' +
+      '<br><b>Hash</b>: <a href="https://scan.icetea.io/tx/' +
       r.hash +
       '" target="_blank" rel="noopener noreferrer">' +
       r.hash +
@@ -294,7 +294,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     const { address } = this.props;
     const { funcInfo, listFunc, isCallParam, addr, isWasmFuncs } = this.state;
     const resultJson = document.getElementById('resultJson');
-    // console.log('resultJson', resultJson)
+    // console.log('address', address)
 
     const makeMethodCallContract = () => {
       return listFunc.map((func: MethodInfo, i: number) => {
