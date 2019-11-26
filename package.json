@@ -98,7 +98,7 @@
     "jest-enzyme": "^6.1.2",
     "jest-puppeteer": "^3.5.2",
     "monaco-editor-webpack-plugin": "^1.7.0",
-    "puppeteer": "^1.10.0",
+    "puppeteer": "^1.20.0",
     "react-test-renderer": "^16.6.3",
     "source-map-loader": "^0.2.4",
     "stryker": "^0.29.5",
@@ -114,6 +114,6 @@
     "webpack": "^4.26.1",
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "^3.9.0"
   }
 }
