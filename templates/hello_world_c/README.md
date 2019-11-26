@@ -15,7 +15,7 @@ This project prints `"Hello World"` using the well known C `printf` function. Th
 
 2. Open the `out/main.wasm` file and notice that there's quite a bit of code. This is somewhat surprising given that our program is so small. The vast majority of this code implements the `printf` function. 
 
-3. Notice the imports section, these are SysCalls. To get this WebAssembly module running you'll have to implement these functions first. However, note that these import names don't actually tell you what SysCalls are used, they are merely function stubs (one for each number of parameters). 
+3. Notice the imports section, these are SysCalls. To get this WebAssembly module running you'll have to implement these functions first. However, note that these import names don't actually tell you what SysCalls are used; they are merely function stubs (one for each number of the parameters). 
 
 ```
   (import "env" "__syscall0" (func $env.__syscall0 (type $t2)))
@@ -28,11 +28,11 @@ This project prints `"Hello World"` using the well known C `printf` function. Th
 
 5. Take a look at `src/main.js`, this file emulates these basic SysCalls in JavaScript.
 
-6. `brk()` can be stubbed to return `0`, which is the success error code. `brk()` is used to allocate more memory to a process. WebAssembly does handles memory differently, so there's no need to do special here. 
+6. `brk()` can be stubbed to return `0`, which is the success error code. `brk()` is used to allocate more memory to a process. WebAssembly handles memory differently, so there's no need to be special here. 
 
 7. `mmap2()` is used to request more memory within the process. In our example, it's implemented as a call to the WebAssembly `memory.grow()` function.
 
-8. `writev()` is used to write data to files. Its signature is `writev(int fd, const struct iovec *iov, int iovcnt)`. We can ignore the `fd` file descriptor parameter, and focus on the `iov` structure. The problem here is that on the JavaScript side we have a hard time pulling the `struct iovec` abart. We could figure it out, but a neat hack is to call back into the WebAssembly module and have some C code unpack it for us.
+8. `writev()` is used to write data to files. Its signature is `writev(int fd, const struct iovec *iov, int iovcnt)`. We can ignore the `fd` file descriptor parameter, and focus on the `iov` structure. The problem here is that on the JavaScript side we have a hard time pulling the `struct iovec` apart. We could figure it out, but a neat hack is to call back into the WebAssembly module and have some C code unpack it for us.
 
 9. Click Run
 
