@@ -68,8 +68,23 @@ export default async function registerLanguages() {
 
   // Rust
 
-  monaco.languages.onLanguage("rust", () => {
+  monaco.languages.onLanguage("rust", async () => {
     monaco.languages.setMonarchTokensProvider("rust", Rust.MonarchDefinitions as any);
+
+    const analyzer = await Rust.Analyzer();
+    monaco.languages.registerHoverProvider("rust", analyzer.HoverProvider);
+    monaco.languages.registerCodeLensProvider("rust", analyzer.CodeLensProvider);
+    monaco.languages.registerReferenceProvider("rust", analyzer.ReferenceProvider);
+    monaco.languages.registerDocumentHighlightProvider("rust", analyzer.DocumentHighlightProvider);
+    monaco.languages.registerRenameProvider("rust", analyzer.RenameProvider);
+    monaco.languages.registerCompletionItemProvider("rust", analyzer.CompletionItemProvider);
+    monaco.languages.registerSignatureHelpProvider("rust", analyzer.SignatureHelpProvider);
+    monaco.languages.registerDefinitionProvider("rust", analyzer.DefinitionProvider);
+    monaco.languages.registerTypeDefinitionProvider("rust", analyzer.TypeDefinitionProvider);
+    monaco.languages.registerImplementationProvider("rust", analyzer.ImplementationProvider);
+    monaco.languages.registerDocumentSymbolProvider("rust", analyzer.DocumentSymbolProvider);
+    monaco.languages.registerOnTypeFormattingEditProvider("rust", analyzer.OnTypeFormattingEditProvider);
+    monaco.languages.registerFoldingRangeProvider("rust", analyzer.FoldingRangeProvider);
   });
   monaco.languages.register({
     id: "rust"

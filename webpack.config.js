@@ -1,5 +1,6 @@
 const path = require("path");
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 
 module.exports = env => {
   const config = {
@@ -19,7 +20,7 @@ module.exports = env => {
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".ts", ".tsx", ".js", ".json"]
+        extensions: [".ts", ".tsx", ".js", ".json", ".wasm"]
     },
 
     module: {
@@ -43,7 +44,10 @@ module.exports = env => {
         "react-dom": "ReactDOM"
     },
     plugins: [
-        new MonacoWebpackPlugin()
+        new MonacoWebpackPlugin(),
+        new WasmPackPlugin({
+            crateDirectory: path.resolve(__dirname, "src/languages/rust-analyzer")
+        })
     ],
     optimization: {
         splitChunks: {
