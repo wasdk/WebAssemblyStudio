@@ -223,11 +223,11 @@ const MonarchDefinitions = {
 
 export const Rust = {
   Analyzer: async () => {
-    const { WorldState } = await import('./rust-analyzer/pkg')
+    const { WorldState } = await import('./rust_analyzer_wasm');
     const state = new WorldState();
 
     // TODO: handle multiple files
-    const model = monaco.editor.getModels().find(m => m.getModeId() === "rust")
+    const model = monaco.editor.getModels().find(m => m.getModeId() === "rust");
 
     function update() {
       const res = state.update(model.getValue());
