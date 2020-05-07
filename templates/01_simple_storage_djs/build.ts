@@ -36,7 +36,7 @@ const deployJs = async (file: string) => {
   if (!inFile) {
     throw new Error('You need to build the project first.');
   }
-  const deployResult = await tweb3.deploy({ mode: ContractMode.JS_RAW, data: inFile.getData(), arguments: params }, options);
+  const deployResult = await tweb3.deploy({ data: inFile.getData(), arguments: params }, options);
 
   logLn('TxHash: https://scan.icetea.io/tx/' + deployResult.hash);
   logLn('Contract address: ' + deployResult.address);
@@ -70,10 +70,7 @@ const deployWasm = async (file: string) => {
   if (!inFile) {
     throw new Error('You need to build the project first.');
   }
-  const deployResult = await tweb3.deploy(
-    { mode: ContractMode.WASM, data: base64ArrayBuffer.encode(inFile.getData()), arguments: params },
-    options
-  );
+  const deployResult = await tweb3.deploy({ mode: 'wasm', data: base64ArrayBuffer.encode(inFile.getData()), arguments: params }, options);
 
   logLn('TxHash: https://scan.icetea.io/tx/' + deployResult.hash);
   logLn('Contract address: ' + deployResult.address);

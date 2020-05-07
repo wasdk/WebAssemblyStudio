@@ -2,7 +2,6 @@ import * as gulp from 'gulp';
 import { Service, project, activeTab, params, options } from '@wasm/studio-utils';
 import { transpile } from '@iceteachain/sunseed';
 import { IceteaWeb3 } from '@iceteachain/web3';
-import { ContractMode } from '@iceteachain/common';
 import * as base64ArrayBuffer from 'base64-arraybuffer';
 
 const buildJs = async (file: string) => {
@@ -37,7 +36,7 @@ const deployJs = async (file: string) => {
   if (!inFile) {
     throw new Error('You need to build the project first.');
   }
-  const deployResult = await tweb3.deploy({ mode: ContractMode.JS_RAW, data: inFile.getData(), arguments: params }, options);
+  const deployResult = await tweb3.deploy({ data: inFile.getData(), arguments: params }, options);
 
   logLn('TxHash: https://scan.icetea.io/tx/' + deployResult.hash);
   logLn('Contract address: ' + deployResult.address);
@@ -71,10 +70,7 @@ const deployWasm = async (file: string) => {
   if (!inFile) {
     throw new Error('You need to build the project first.');
   }
-  const deployResult = await tweb3.deploy(
-    { mode: ContractMode.WASM, data: base64ArrayBuffer.encode(inFile.getData()), arguments: params },
-    options
-  );
+  const deployResult = await tweb3.deploy({ mode: 'wasm', data: base64ArrayBuffer.encode(inFile.getData()), arguments: params }, options);
 
   logLn('TxHash: https://scan.icetea.io/tx/' + deployResult.hash);
   logLn('Contract address: ' + deployResult.address);
