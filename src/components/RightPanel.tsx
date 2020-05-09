@@ -130,13 +130,7 @@ export function formatResult(r, isError) {
       '" target="_blank" rel="noopener noreferrer">' +
       r.hash +
       '</a>';
-    msg +=
-      '<br><b>Height</b>: ' +
-      r.height +
-      '<br><b>Tags</b>: ' +
-      tryStringifyJson(r.tags) +
-      '<br><b>Events:</b> ' +
-      tryStringifyJson(r.events);
+    msg += '<br><b>Height</b>: ' + r.height + '<br><b>Events:</b> ' + tryStringifyJson(r.events);
     return msg;
   }
 }
@@ -279,15 +273,26 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
     );
   }
 
-  popupwindow (url, title, w, h) {
-    var left = (window.screen.width / 2) - (w / 2)
-    var top = (window.screen.height / 2) - (h / 2)
-    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left)
+  popupwindow(url, title, w, h) {
+    var left = window.screen.width / 2 - w / 2;
+    var top = window.screen.height / 2 - h / 2;
+    return window.open(
+      url,
+      title,
+      'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' +
+        w +
+        ', height=' +
+        h +
+        ', top=' +
+        top +
+        ', left=' +
+        left
+    );
   }
 
   chatWithBot() {
     const url = 'https://devtools.icetea.io/botpoup.html' + '?address=' + this.state.addr;
-    this.popupwindow(url, 'title', 800, 600)
+    this.popupwindow(url, 'title', 800, 600);
   }
 
   render() {
@@ -303,23 +308,13 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
           <li className="list-group-item row">
             <div className="row">
               <div className="col-7">
-                <span className="badge badge-warning d-inline">
-                  {func.decorators[0] === 'u' ? 'function' : func.decorators[0]}
-                </span>
-                <span
-                  className={
-                    func.decorators[0] === 'transaction' ? 'mx-1 px-1 text-danger' : 'mx-1 px-1 text-notDanger'
-                  }
-                >
+                <span className="badge badge-warning d-inline">{func.decorators[0] === 'u' ? 'function' : func.decorators[0]}</span>
+                <span className={func.decorators[0] === 'transaction' ? 'mx-1 px-1 text-danger' : 'mx-1 px-1 text-notDanger'}>
                   {func.name}:&nbsp;{func.returnType}
                 </span>
               </div>
               <div className="col-2">
-                <button
-                  type="button"
-                  className="btn btn-outline-warning py-0 px-3 ml-3"
-                  onClick={() => this.callContractMethod(func)}
-                >
+                <button type="button" className="btn btn-outline-warning py-0 px-3 ml-3" onClick={() => this.callContractMethod(func)}>
                   Call
                 </button>
               </div>
@@ -381,11 +376,7 @@ export class RightPanel extends React.Component<RightPanelProps, RightPanelState
                         </div>
                         <div id="lookLikeBot" className="hide">
                           <span>This contract looks like a chatbot</span>
-                          <button
-                            className="btn btn-outline-warning py-0 px-3 ml-3"
-                            type="button"
-                            onClick={() => this.chatWithBot()}
-                          >
+                          <button className="btn btn-outline-warning py-0 px-3 ml-3" type="button" onClick={() => this.chatWithBot()}>
                             Start chat
                           </button>
                         </div>
