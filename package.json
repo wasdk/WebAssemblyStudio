@@ -59,7 +59,7 @@
   "homepage": "https://studio.icetea.io",
   "dependencies": {
     "@babel/core": "7.4.3",
-    "@iceteachain/sunseed": "github:TradaTech/sunseed",
+    "@iceteachain/sunseed": "github:TradaTech/sunseed#biznet",
     "@iceteachain/web3": "^0.2.5",
     "@types/flux": "^3.1.8",
     "@types/jszip": "^3.1.4",
@@ -89,6 +89,8 @@
     "tslint-react": "^3.6.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.8",
+    "@babel/cli": "^7.12.8",
     "@types/base64-js": "^1.2.5",
     "@types/enzyme": "^3.1.15",
     "@types/expect-puppeteer": "^2.2.4",
