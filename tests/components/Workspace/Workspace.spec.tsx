@@ -34,7 +34,6 @@ describe("Tests for Workspace", () => {
     const onMoveFile = jest.fn();
     const onClickFile = jest.fn();
     const onDoubleClickFile = jest.fn();
-    const onCreateGist = jest.fn();
     const { wrapper, project, fileA } = setup({
       onNewFile,
       onNewDirectory,
@@ -43,8 +42,7 @@ describe("Tests for Workspace", () => {
       onUploadFile,
       onMoveFile,
       onClickFile,
-      onDoubleClickFile,
-      onCreateGist
+      onDoubleClickFile
     });
     const header = wrapper.find(Header);
     const split = wrapper.find(Split);
@@ -62,7 +60,6 @@ describe("Tests for Workspace", () => {
     expect(directoryTree).toHaveProp("onMoveFile", onMoveFile);
     expect(directoryTree).toHaveProp("onClickFile", onClickFile);
     expect(directoryTree).toHaveProp("onDoubleClickFile", onDoubleClickFile);
-    expect(directoryTree).toHaveProp("onCreateGist", onCreateGist);
   });
   it("should update state when split changes", () => {
     const { wrapper } = setup();

@@ -41,7 +41,6 @@ export interface WorkspaceProps {
   onClickFile: (file: File) => void;
   onDoubleClickFile?: (file: File) => void;
   onUploadFile?: (directory: Directory) => void;
-  onCreateGist: (fileOrDirectory: File) => void;
 }
 
 export interface WorkSpaceState {
@@ -93,7 +92,6 @@ export class Workspace extends React.Component<WorkspaceProps, WorkSpaceState> {
             onMoveFile={this.props.onMoveFile}
             onClickFile={this.props.onClickFile}
             onDoubleClickFile={this.props.onDoubleClickFile}
-            onCreateGist={this.props.onCreateGist}
           />
         </Split>
       </div>

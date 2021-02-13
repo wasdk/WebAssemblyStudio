@@ -46,7 +46,6 @@ const Actions = {
   ViewAsBinary: { id: "x", label: "View as Binary", cssClass: "octicon-file-binary", enabled: true },
   Twiggy: { id: "x", label: "Twiggy", cssClass: "octicon-file-binary", enabled: true },
   Download: { id: "x", label: "Download", cssClass: "octicon-cloud-download", enabled: true },
-  Gist: { id: "x", label: "Create Gist", cssClass: "octicon-gist", enabled: true },
   Delete: { id: "x", label: "Delete", cssClass: "octicon-x", enabled: true },
   Edit: { id: "x", label: "Edit", cssClass: "octicon-pencil", enabled: true },
   NewFile: { id: "x", label: "New File", cssClass: "octicon-file-add", enabled: true },
@@ -373,29 +372,6 @@ describe("Tests for DirectoryTree", () => {
         const actions = getActions(file);
         expect(actions).toHaveLength(1);
         expect(actions[0]).toMatchObject(Actions.Download);
-        wrapper.unmount();
-      });
-    });
-    describe("Gist", () => {
-      it("should add the gist action if passing the onCreateGist prop", () => {
-        const onCreateGist = jest.fn();
-        const { wrapper, getActions } = setup({ onCreateGist });
-        const file = new File("file", FileType.JavaScript);
-        const actions = getActions(file);
-        actions.forEach(action => action.actionCallback());
-        expect(actions).toHaveLength(2);
-        expect(actions[0]).toMatchObject(Actions.Download);
-        expect(actions[1]).toMatchObject(Actions.Gist);
-        expect(onCreateGist).toHaveBeenCalledWith(file);
-        wrapper.unmount();
-      });
-      it("should never add the gist action for binary file types", () => {
-        const onCreateGist = jest.fn();
-        const { wrapper, getActions } = setup({ onCreateGist });
-        const file = new File("file", FileType.Wasm);
-        const actions = getActions(file);
-        const gistActions = actions.filter(action => action.label === "Create Gist");
-        expect(gistActions).toHaveLength(0);
         wrapper.unmount();
       });
     });
