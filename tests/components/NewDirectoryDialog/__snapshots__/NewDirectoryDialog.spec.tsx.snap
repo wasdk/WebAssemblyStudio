@@ -1,0 +1,131 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tests for NewDirectoryDialog renders correctly 1`] = `
+<Modal
+  ariaHideApp={false}
+  bodyOpenClassName="ReactModal__Body--open"
+  className="modal"
+  closeTimeoutMS={0}
+  contentLabel="Create New Directory"
+  isOpen={true}
+  overlayClassName="overlay"
+  parentSelector={[Function]}
+  portalClassName="ReactModalPortal"
+  role="dialog"
+  shouldCloseOnEsc={true}
+  shouldCloseOnOverlayClick={true}
+  shouldFocusAfterRender={true}
+  shouldReturnFocusAfterClose={true}
+>
+  <div
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "height": "100%",
+      }
+    }
+  >
+    <div
+      className="modal-title-bar"
+    >
+      Create New Directory
+    </div>
+    <div
+      style={
+        Object {
+          "flex": 1,
+          "padding": "8px",
+        }
+      }
+    >
+      <TextInputBox
+        error=""
+        label="Name:"
+        onChange={[Function]}
+        value=""
+      />
+    </div>
+    <div>
+      <Button
+        icon={<GoX />}
+        label="Cancel"
+        onClick={[Function]}
+        title="Cancel"
+      />
+      <Button
+        icon={<GoFile />}
+        isDisabled={true}
+        label="Create"
+        onClick={[Function]}
+        title="Create New Directory"
+      />
+    </div>
+  </div>
+</Modal>
+`;
+
+exports[`Tests for NewDirectoryDialog renders correctly on valid input 1`] = `
+<Modal
+  ariaHideApp={false}
+  bodyOpenClassName="ReactModal__Body--open"
+  className="modal"
+  closeTimeoutMS={0}
+  contentLabel="Create New Directory"
+  isOpen={true}
+  overlayClassName="overlay"
+  parentSelector={[Function]}
+  portalClassName="ReactModalPortal"
+  role="dialog"
+  shouldCloseOnEsc={true}
+  shouldCloseOnOverlayClick={true}
+  shouldFocusAfterRender={true}
+  shouldReturnFocusAfterClose={true}
+>
+  <div
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "height": "100%",
+      }
+    }
+  >
+    <div
+      className="modal-title-bar"
+    >
+      Create New Directory
+    </div>
+    <div
+      style={
+        Object {
+          "flex": 1,
+          "padding": "8px",
+        }
+      }
+    >
+      <TextInputBox
+        error=""
+        label="Name:"
+        onChange={[Function]}
+        value="valid"
+      />
+    </div>
+    <div>
+      <Button
+        icon={<GoX />}
+        label="Cancel"
+        onClick={[Function]}
+        title="Cancel"
+      />
+      <Button
+        icon={<GoFile />}
+        isDisabled={false}
+        label="Create"
+        onClick={[Function]}
+        title="Create New Directory"
+      />
+    </div>
+  </div>
+</Modal>
+`;

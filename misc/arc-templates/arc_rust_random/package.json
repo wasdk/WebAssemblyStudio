@@ -1,0 +1,15 @@
+{
+  "name": "@wasm/arc_rust",
+  "description": "",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "gulp --gulpfile ./build.ts"
+  },
+  "devDependencies": {
+  },
+  "wasmStudio": {
+    "name": "ARCH: External random() Function",
+    "description": "# Calling browser functions from Rust\n\nAn example that binds to the browsers `random()` function and implements a Game of Life. Contributed by @finnpauls.",
+    "icon": "rust-lang-file-icon"
+  }
+}

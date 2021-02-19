@@ -1,0 +1,226 @@
+@import url(../fonts/seti.css);
+@import url(../fonts/seti-extra.css);
+
+.show-file-icons .file-icon::before, .show-file-icons .folder-icon::before, .show-file-icons .rootfolder-icon::before { font-family: 'seti'; font-size: 150%; font-style: normal; }
+.show-file-icons .file-icon::before, .show-file-icons .txt-ext-file-icon.ext-file-icon.file-icon::before {  color: #d4d7d6; content: '\E01A'; }
+.show-file-icons .bat-lang-file-icon.file-icon::before {  color: #519aba; content: '\E07E'; }
+.show-file-icons .coffeescript-lang-file-icon.file-icon::before {  color: #cbcb41; content: '\E011'; }
+.show-file-icons .c-lang-file-icon.file-icon::before, .show-file-icons .objective-c-lang-file-icon.file-icon::before, .show-file-icons .h-ext-file-icon.ext-file-icon.file-icon::before {  color: #cbcb41; content: '\E009'; }
+.show-file-icons .cpp-lang-file-icon.file-icon::before {  color: #a074c4; content: '\E015'; }
+.show-file-icons .csharp-lang-file-icon.file-icon::before {  color: #519aba; content: '\E008'; }
+.show-file-icons .css-lang-file-icon.file-icon::before, .show-file-icons .css\.map-ext-file-icon.map-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .sss-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E016'; }
+.show-file-icons .dockerfile-lang-file-icon.file-icon::before, .show-file-icons .dockerignore-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .docker-healthcheck-name-file-icon.ext-file-icon.file-icon::before, .show-file-icons .docker-compose\.yml-name-file-icon.yml-ext-file-icon.ext-file-icon.file-icon::before {  color: #f55385; content: '\E01C'; }
+.show-file-icons .fsharp-lang-file-icon.file-icon::before {  color: #519aba; content: '\E024'; }
+.show-file-icons .go-lang-file-icon.file-icon::before {  color: #519aba; content: '\E02F'; }
+.show-file-icons .groovy-lang-file-icon.file-icon::before, .show-file-icons .gsp-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E031'; }
+.show-file-icons .handlebars-lang-file-icon.file-icon::before, .show-file-icons .hjs-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .mustache-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .stache-ext-file-icon.ext-file-icon.file-icon::before {  color: #e37933; content: '\E053'; }
+.show-file-icons .html-lang-file-icon.file-icon::before {  color: #e37933; content: '\E039'; }
+.show-file-icons .properties-lang-file-icon.file-icon::before, .show-file-icons .java-lang-file-icon.file-icon::before, .show-file-icons .class-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .classpath-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E041'; }
+.show-file-icons .javascriptreact-lang-file-icon.file-icon::before, .show-file-icons .typescriptreact-lang-file-icon.file-icon::before, .show-file-icons .cjsx-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E063'; }
+.show-file-icons .javascript-lang-file-icon.file-icon::before, .show-file-icons .js\.map-ext-file-icon.map-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .spec\.js-ext-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .es-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .es5-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .es7-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .jshintrc-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .jscsrc-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E042'; }
+.show-file-icons .json-lang-file-icon.file-icon::before, .show-file-icons .cson-ext-file-icon.ext-file-icon.file-icon::before {  color: #cbcb41; content: '\E046'; }
+.show-file-icons .less-lang-file-icon.file-icon::before {  color: #519aba; content: '\E049'; }
+.show-file-icons .lua-lang-file-icon.file-icon::before {  color: #519aba; content: '\E04E'; }
+.show-file-icons .makefile-lang-file-icon.file-icon::before, .show-file-icons .qmakefile-name-file-icon.ext-file-icon.file-icon::before, .show-file-icons .omakefile-name-file-icon.ext-file-icon.file-icon::before, .show-file-icons .cmakelists\.txt-name-file-icon.txt-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E04F'; }
+.show-file-icons .markdown-lang-file-icon.file-icon::before {  color: #519aba; content: '\E050'; }
+.show-file-icons .perl-lang-file-icon.file-icon::before {  color: #519aba; content: '\E05A'; }
+.show-file-icons .php-lang-file-icon.file-icon::before, .show-file-icons .php\.inc-ext-file-icon.inc-ext-file-icon.ext-file-icon.file-icon::before {  color: #a074c4; content: '\E05C'; }
+.show-file-icons .powershell-lang-file-icon.file-icon::before {  color: #519aba; content: '\E05D'; }
+.show-file-icons .jade-lang-file-icon.file-icon::before {  color: #cc3e44; content: '\E040'; }
+.show-file-icons .python-lang-file-icon.file-icon::before {  color: #519aba; content: '\E061'; }
+.show-file-icons .ruby-lang-file-icon.file-icon::before, .show-file-icons .erb\.html-ext-file-icon.html-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .html\.erb-ext-file-icon.erb-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E065'; }
+.show-file-icons .rust-lang-file-icon.file-icon::before {  color: #6d8086; content: '\E066'; }
+.show-file-icons .scss-lang-file-icon.file-icon::before, .show-file-icons .sass-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .sass-lint\.yml-name-file-icon.yml-ext-file-icon.ext-file-icon.file-icon::before {  color: #f55385; content: '\E068'; }
+.show-file-icons .shellscript-lang-file-icon.file-icon::before, .show-file-icons .fish-ext-file-icon.ext-file-icon.file-icon::before {  color: #4d5a5e; content: '\E06D'; }
+.show-file-icons .sql-lang-file-icon.file-icon::before {  color: #f55385; content: '\E019'; }
+.show-file-icons .swift-lang-file-icon.file-icon::before {  color: #e37933; content: '\E074'; }
+.show-file-icons .typescript-lang-file-icon.file-icon::before {  color: #519aba; content: '\E07A'; }
+.show-file-icons .xml-lang-file-icon.file-icon::before {  color: #e37933; content: '\E081'; }
+.show-file-icons .yaml-lang-file-icon.file-icon::before {  color: #a074c4; content: '\E083'; }
+.show-file-icons .bsl-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E007'; }
+.show-file-icons .mdo-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E052'; }
+.show-file-icons .asm-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .s-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E003'; }
+.show-file-icons .cfc-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .cfm-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E013'; }
+.show-file-icons .config-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .cfg-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .conf-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .toml-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .direnv-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .env-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .static-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .editorconfig-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .slugignore-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .htaccess-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .mime\.types-name-file-icon.types-ext-file-icon.ext-file-icon.file-icon::before {  color: #6d8086; content: '\E014'; }
+.show-file-icons .csv-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E017'; }
+.show-file-icons .xls-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .xlsx-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E080'; }
+.show-file-icons .cake-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E00A'; }
+.show-file-icons .ctp-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E00B'; }
+.show-file-icons .d-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E018'; }
+.show-file-icons .doc-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .docx-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E07F'; }
+.show-file-icons .ejs-ext-file-icon.ext-file-icon.file-icon::before {  color: #cbcb41; content: '\E01E'; }
+.show-file-icons .ex-ext-file-icon.ext-file-icon.file-icon::before {  color: #a074c4; content: '\E01F'; }
+.show-file-icons .exs-ext-file-icon.ext-file-icon.file-icon::before {  color: #a074c4; content: '\E020'; }
+.show-file-icons .elm-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E021'; }
+.show-file-icons .ico-ext-file-icon.ext-file-icon.file-icon::before {  color: #cbcb41; content: '\E025'; }
+.show-file-icons .gitignore-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .gitconfig-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .gitkeep-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .gitattributes-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .gitmodules-ext-file-icon.ext-file-icon.file-icon::before {  color: #41535b; content: '\E02A'; }
+.show-file-icons .slide-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .article-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E02E'; }
+.show-file-icons .gradle-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E030'; }
+.show-file-icons .haml-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E035'; }
+.show-file-icons .hs-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .lhs-ext-file-icon.ext-file-icon.file-icon::before {  color: #a074c4; content: '\E036'; }
+.show-file-icons .jinja-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .jinja2-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E044'; }
+.show-file-icons .jl-ext-file-icon.ext-file-icon.file-icon::before {  color: #a074c4; content: '\E047'; }
+.show-file-icons .liquid-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E04B'; }
+.show-file-icons .ls-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E04C'; }
+.show-file-icons .njk-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .nunjucks-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .nunjs-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .nunj-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .njs-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .nj-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E057'; }
+.show-file-icons .npm-debug\.log-ext-file-icon.log-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .npmignore-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .npmrc-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E055'; }
+.show-file-icons .ml-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .mli-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .cmx-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .cmxa-ext-file-icon.ext-file-icon.file-icon::before {  color: #e37933; content: '\E058'; }
+.show-file-icons .pug-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E05F'; }
+.show-file-icons .pp-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .epp-ext-file-icon.ext-file-icon.file-icon::before {  color: #cbcb41; content: '\E060'; }
+.show-file-icons .springbeans-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E070'; }
+.show-file-icons .slim-ext-file-icon.ext-file-icon.file-icon::before {  color: #e37933; content: '\E06E'; }
+.show-file-icons .smarty\.tpl-ext-file-icon.tpl-ext-file-icon.ext-file-icon.file-icon::before {  color: #cbcb41; content: '\E06F'; }
+.show-file-icons .sbt-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E069'; }
+.show-file-icons .scala-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E06A'; }
+.show-file-icons .styl-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E071'; }
+.show-file-icons .tf-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .tf\.json-ext-file-icon.json-ext-file-icon.ext-file-icon.file-icon::before {  color: #a074c4; content: '\E075'; }
+.show-file-icons .tex-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .sty-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .dtx-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .ins-ext-file-icon.ext-file-icon.file-icon::before {  color: #d4d7d6; content: '\E076'; }
+.show-file-icons .twig-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E079'; }
+.show-file-icons .vala-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .vapi-ext-file-icon.ext-file-icon.file-icon::before {  color: #6d8086; content: '\E07B'; }
+.show-file-icons .vue-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E07D'; }
+.show-file-icons .jar-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .zip-ext-file-icon.ext-file-icon.file-icon::before {  color: #6d8086; content: '\E084'; }
+.show-file-icons .ai-ext-file-icon.ext-file-icon.file-icon::before {  color: #cbcb41; content: '\E03C'; }
+.show-file-icons .psd-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E05B'; }
+.show-file-icons .pdf-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E059'; }
+.show-file-icons .eot-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .ttf-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .woff-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .woff2-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E029'; }
+.show-file-icons .gif-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .jpg-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .jpeg-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .png-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .pxm-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .svgx-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .webp-ext-file-icon.ext-file-icon.file-icon::before {  color: #a074c4; content: '\E03D'; }
+.show-file-icons .svg-ext-file-icon.ext-file-icon.file-icon::before {  color: #a074c4; content: '\E073'; }
+.show-file-icons .sublime-project-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .sublime-workspace-ext-file-icon.ext-file-icon.file-icon::before {  color: #e37933; content: '\E072'; }
+.show-file-icons .component-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .cls-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E067'; }
+.show-file-icons .mov-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .ogv-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .webm-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .avi-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .mpg-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .mp4-ext-file-icon.ext-file-icon.file-icon::before {  color: #f55385; content: '\E07C'; }
+.show-file-icons .mp3-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .ogg-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .wav-ext-file-icon.ext-file-icon.file-icon::before {  color: #a074c4; content: '\E004'; }
+.show-file-icons .babelrc-ext-file-icon.ext-file-icon.file-icon::before {  color: #cbcb41; content: '\E005'; }
+.show-file-icons .bowerrc-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .bower\.json-name-file-icon.json-ext-file-icon.ext-file-icon.file-icon::before {  color: #e37933; content: '\E006'; }
+.show-file-icons .codeclimate\.yml-ext-file-icon.yml-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E010'; }
+.show-file-icons .eslintrc-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .eslintrc\.js-ext-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .eslintrc\.yaml-ext-file-icon.yaml-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .eslintrc\.yml-ext-file-icon.yml-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .eslintrc\.json-ext-file-icon.json-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .eslintignore-ext-file-icon.ext-file-icon.file-icon::before {  color: #4d5a5e; content: '\E023'; }
+.show-file-icons .firebaserc-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .firebase\.json-name-file-icon.json-ext-file-icon.ext-file-icon.file-icon::before {  color: #e37933; content: '\E026'; }
+.show-file-icons .tmp-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .changelog\.md-name-file-icon.md-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .changelog-name-file-icon.ext-file-icon.file-icon::before, .show-file-icons .version\.md-name-file-icon.md-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .version-name-file-icon.ext-file-icon.file-icon::before {  color: #6d8086; content: '\E00F'; }
+.show-file-icons .key-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .cert-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E04D'; }
+.show-file-icons .ds_store-ext-file-icon.ext-file-icon.file-icon::before {  color: #41535b; content: '\E03B'; }
+.show-file-icons .mix-name-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E038'; }
+.show-file-icons .karma\.conf\.js-name-file-icon.conf\.js-ext-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .karma\.conf\.coffee-name-file-icon.conf\.coffee-ext-file-icon.coffee-ext-file-icon.ext-file-icon.file-icon::before {  color: #8dc149; content: '\E048'; }
+.show-file-icons .readme\.md-name-file-icon.md-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E03E'; }
+.show-file-icons .mvnw-name-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E051'; }
+.show-file-icons .jenkinsfile-name-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E043'; }
+.show-file-icons .geckodriver-name-file-icon.ext-file-icon.file-icon::before {  color: #e37933; content: '\E027'; }
+.show-file-icons .gruntfile\.js-name-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .gruntfile\.babel\.js-name-file-icon.babel\.js-ext-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .gruntfile\.coffee-name-file-icon.coffee-ext-file-icon.ext-file-icon.file-icon::before {  color: #e37933; content: '\E032'; }
+.show-file-icons .gulpfile-name-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E033'; }
+.show-file-icons .ionic\.config\.json-name-file-icon.config\.json-ext-file-icon.json-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .ionic\.project-name-file-icon.project-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E03F'; }
+.show-file-icons .rollup\.config\.js-name-file-icon.config\.js-ext-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E064'; }
+.show-file-icons .yarn\.clean-name-file-icon.clean-ext-file-icon.ext-file-icon.file-icon::before, .show-file-icons .yarn\.lock-name-file-icon.lock-ext-file-icon.ext-file-icon.file-icon::before {  color: #519aba; content: '\E082'; }
+.show-file-icons .license-name-file-icon.ext-file-icon.file-icon::before, .show-file-icons .licence-name-file-icon.ext-file-icon.file-icon::before, .show-file-icons .copying-name-file-icon.ext-file-icon.file-icon::before, .show-file-icons .compiling-name-file-icon.ext-file-icon.file-icon::before, .show-file-icons .contributing-name-file-icon.ext-file-icon.file-icon::before {  color: #cc3e44; content: '\E04A'; }
+.show-file-icons .procfile-name-file-icon.ext-file-icon.file-icon::before {  color: #a074c4; content: '\E037'; }
+.show-file-icons .todo-name-file-icon.ext-file-icon.file-icon::before {  content: '\E078'; }
+.show-file-icons .npm-debug\.log-name-file-icon.log-ext-file-icon.ext-file-icon.file-icon::before {  color: #41535b; content: '\E056'; }
+.vs .show-file-icons .file-icon::before, .vs .show-file-icons .txt-ext-file-icon.ext-file-icon.file-icon::before {  color: #bfc2c1; content: '\E01A'; }
+.vs .show-file-icons .bat-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E07E'; }
+.vs .show-file-icons .coffeescript-lang-file-icon.file-icon::before {  color: #b7b73b; content: '\E011'; }
+.vs .show-file-icons .c-lang-file-icon.file-icon::before, .vs .show-file-icons .objective-c-lang-file-icon.file-icon::before, .vs .show-file-icons .h-ext-file-icon.ext-file-icon.file-icon::before {  color: #b7b73b; content: '\E009'; }
+.vs .show-file-icons .cpp-lang-file-icon.file-icon::before {  color: #9068b0; content: '\E015'; }
+.vs .show-file-icons .csharp-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E008'; }
+.vs .show-file-icons .css-lang-file-icon.file-icon::before, .vs .show-file-icons .css\.map-ext-file-icon.map-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .sss-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E016'; }
+.vs .show-file-icons .dockerfile-lang-file-icon.file-icon::before, .vs .show-file-icons .dockerignore-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .docker-healthcheck-name-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .docker-compose\.yml-name-file-icon.yml-ext-file-icon.ext-file-icon.file-icon::before {  color: #dd4b78; content: '\E01C'; }
+.vs .show-file-icons .fsharp-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E024'; }
+.vs .show-file-icons .go-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E02F'; }
+.vs .show-file-icons .groovy-lang-file-icon.file-icon::before, .vs .show-file-icons .gsp-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E031'; }
+.vs .show-file-icons .handlebars-lang-file-icon.file-icon::before, .vs .show-file-icons .hjs-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .mustache-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .stache-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc6d2e; content: '\E053'; }
+.vs .show-file-icons .html-lang-file-icon.file-icon::before {  color: #cc6d2e; content: '\E039'; }
+.vs .show-file-icons .properties-lang-file-icon.file-icon::before, .vs .show-file-icons .java-lang-file-icon.file-icon::before, .vs .show-file-icons .class-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .classpath-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E041'; }
+.vs .show-file-icons .javascriptreact-lang-file-icon.file-icon::before, .vs .show-file-icons .typescriptreact-lang-file-icon.file-icon::before, .vs .show-file-icons .cjsx-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E063'; }
+.vs .show-file-icons .javascript-lang-file-icon.file-icon::before, .vs .show-file-icons .js\.map-ext-file-icon.map-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .spec\.js-ext-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .es-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .es5-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .es7-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .jshintrc-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .jscsrc-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E042'; }
+.vs .show-file-icons .json-lang-file-icon.file-icon::before, .vs .show-file-icons .cson-ext-file-icon.ext-file-icon.file-icon::before {  color: #b7b73b; content: '\E046'; }
+.vs .show-file-icons .less-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E049'; }
+.vs .show-file-icons .lua-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E04E'; }
+.vs .show-file-icons .makefile-lang-file-icon.file-icon::before, .vs .show-file-icons .qmakefile-name-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .omakefile-name-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .cmakelists\.txt-name-file-icon.txt-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E04F'; }
+.vs .show-file-icons .markdown-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E050'; }
+.vs .show-file-icons .perl-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E05A'; }
+.vs .show-file-icons .php-lang-file-icon.file-icon::before, .vs .show-file-icons .php\.inc-ext-file-icon.inc-ext-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E05C'; }
+.vs .show-file-icons .powershell-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E05D'; }
+.vs .show-file-icons .jade-lang-file-icon.file-icon::before {  color: #b8383d; content: '\E040'; }
+.vs .show-file-icons .python-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E061'; }
+.vs .show-file-icons .ruby-lang-file-icon.file-icon::before, .vs .show-file-icons .erb\.html-ext-file-icon.html-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .html\.erb-ext-file-icon.erb-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E065'; }
+.vs .show-file-icons .rust-lang-file-icon.file-icon::before {  color: #627379; content: '\E066'; }
+.vs .show-file-icons .scss-lang-file-icon.file-icon::before, .vs .show-file-icons .sass-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .sass-lint\.yml-name-file-icon.yml-ext-file-icon.ext-file-icon.file-icon::before {  color: #dd4b78; content: '\E068'; }
+.vs .show-file-icons .shellscript-lang-file-icon.file-icon::before, .vs .show-file-icons .fish-ext-file-icon.ext-file-icon.file-icon::before {  color: #455155; content: '\E06D'; }
+.vs .show-file-icons .sql-lang-file-icon.file-icon::before {  color: #dd4b78; content: '\E019'; }
+.vs .show-file-icons .swift-lang-file-icon.file-icon::before {  color: #cc6d2e; content: '\E074'; }
+.vs .show-file-icons .typescript-lang-file-icon.file-icon::before {  color: #498ba7; content: '\E07A'; }
+.vs .show-file-icons .xml-lang-file-icon.file-icon::before {  color: #cc6d2e; content: '\E081'; }
+.vs .show-file-icons .yaml-lang-file-icon.file-icon::before {  color: #9068b0; content: '\E083'; }
+.vs .show-file-icons .bsl-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E007'; }
+.vs .show-file-icons .mdo-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E052'; }
+.vs .show-file-icons .asm-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .s-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E003'; }
+.vs .show-file-icons .cfc-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .cfm-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E013'; }
+.vs .show-file-icons .config-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .cfg-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .conf-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .toml-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .direnv-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .env-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .static-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .editorconfig-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .slugignore-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .htaccess-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .mime\.types-name-file-icon.types-ext-file-icon.ext-file-icon.file-icon::before {  color: #627379; content: '\E014'; }
+.vs .show-file-icons .csv-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E017'; }
+.vs .show-file-icons .xls-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .xlsx-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E080'; }
+.vs .show-file-icons .cake-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E00A'; }
+.vs .show-file-icons .ctp-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E00B'; }
+.vs .show-file-icons .d-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E018'; }
+.vs .show-file-icons .doc-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .docx-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E07F'; }
+.vs .show-file-icons .ejs-ext-file-icon.ext-file-icon.file-icon::before {  color: #b7b73b; content: '\E01E'; }
+.vs .show-file-icons .ex-ext-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E01F'; }
+.vs .show-file-icons .exs-ext-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E020'; }
+.vs .show-file-icons .elm-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E021'; }
+.vs .show-file-icons .ico-ext-file-icon.ext-file-icon.file-icon::before {  color: #b7b73b; content: '\E025'; }
+.vs .show-file-icons .gitignore-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .gitconfig-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .gitkeep-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .gitattributes-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .gitmodules-ext-file-icon.ext-file-icon.file-icon::before {  color: #3b4b52; content: '\E02A'; }
+.vs .show-file-icons .slide-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .article-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E02E'; }
+.vs .show-file-icons .gradle-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E030'; }
+.vs .show-file-icons .haml-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E035'; }
+.vs .show-file-icons .hs-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .lhs-ext-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E036'; }
+.vs .show-file-icons .jinja-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .jinja2-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E044'; }
+.vs .show-file-icons .jl-ext-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E047'; }
+.vs .show-file-icons .liquid-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E04B'; }
+.vs .show-file-icons .ls-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E04C'; }
+.vs .show-file-icons .njk-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .nunjucks-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .nunjs-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .nunj-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .njs-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .nj-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E057'; }
+.vs .show-file-icons .npm-debug\.log-ext-file-icon.log-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .npmignore-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .npmrc-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E055'; }
+.vs .show-file-icons .ml-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .mli-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .cmx-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .cmxa-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc6d2e; content: '\E058'; }
+.vs .show-file-icons .pug-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E05F'; }
+.vs .show-file-icons .pp-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .epp-ext-file-icon.ext-file-icon.file-icon::before {  color: #b7b73b; content: '\E060'; }
+.vs .show-file-icons .springbeans-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E070'; }
+.vs .show-file-icons .slim-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc6d2e; content: '\E06E'; }
+.vs .show-file-icons .smarty\.tpl-ext-file-icon.tpl-ext-file-icon.ext-file-icon.file-icon::before {  color: #b7b73b; content: '\E06F'; }
+.vs .show-file-icons .sbt-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E069'; }
+.vs .show-file-icons .scala-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E06A'; }
+.vs .show-file-icons .styl-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E071'; }
+.vs .show-file-icons .tf-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .tf\.json-ext-file-icon.json-ext-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E075'; }
+.vs .show-file-icons .tex-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .sty-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .dtx-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .ins-ext-file-icon.ext-file-icon.file-icon::before {  color: #bfc2c1; content: '\E076'; }
+.vs .show-file-icons .twig-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E079'; }
+.vs .show-file-icons .vala-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .vapi-ext-file-icon.ext-file-icon.file-icon::before {  color: #627379; content: '\E07B'; }
+.vs .show-file-icons .vue-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E07D'; }
+.vs .show-file-icons .jar-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .zip-ext-file-icon.ext-file-icon.file-icon::before {  color: #627379; content: '\E084'; }
+.vs .show-file-icons .ai-ext-file-icon.ext-file-icon.file-icon::before {  color: #b7b73b; content: '\E03C'; }
+.vs .show-file-icons .psd-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E05B'; }
+.vs .show-file-icons .pdf-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E059'; }
+.vs .show-file-icons .eot-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .ttf-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .woff-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .woff2-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E029'; }
+.vs .show-file-icons .gif-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .jpg-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .jpeg-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .png-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .pxm-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .svgx-ext-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E03D'; }
+.vs .show-file-icons .svg-ext-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E073'; }
+.vs .show-file-icons .sublime-project-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .sublime-workspace-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc6d2e; content: '\E072'; }
+.vs .show-file-icons .component-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .cls-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E067'; }
+.vs .show-file-icons .mov-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .ogv-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .webm-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .avi-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .mpg-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .mp4-ext-file-icon.ext-file-icon.file-icon::before {  color: #dd4b78; content: '\E07C'; }
+.vs .show-file-icons .mp3-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .ogg-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .wav-ext-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E004'; }
+.vs .show-file-icons .babelrc-ext-file-icon.ext-file-icon.file-icon::before {  color: #b7b73b; content: '\E005'; }
+.vs .show-file-icons .bowerrc-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .bower\.json-name-file-icon.json-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc6d2e; content: '\E006'; }
+.vs .show-file-icons .codeclimate\.yml-ext-file-icon.yml-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E010'; }
+.vs .show-file-icons .eslintrc-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .eslintrc\.js-ext-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .eslintrc\.yaml-ext-file-icon.yaml-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .eslintrc\.yml-ext-file-icon.yml-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .eslintrc\.json-ext-file-icon.json-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .eslintignore-ext-file-icon.ext-file-icon.file-icon::before {  color: #455155; content: '\E023'; }
+.vs .show-file-icons .firebaserc-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .firebase\.json-name-file-icon.json-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc6d2e; content: '\E026'; }
+.vs .show-file-icons .tmp-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .changelog\.md-name-file-icon.md-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .changelog-name-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .version\.md-name-file-icon.md-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .version-name-file-icon.ext-file-icon.file-icon::before {  color: #627379; content: '\E00F'; }
+.vs .show-file-icons .key-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .cert-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E04D'; }
+.vs .show-file-icons .ds_store-ext-file-icon.ext-file-icon.file-icon::before {  color: #3b4b52; content: '\E03B'; }
+.vs .show-file-icons .mix-name-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E038'; }
+.vs .show-file-icons .karma\.conf\.js-name-file-icon.conf\.js-ext-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .karma\.conf\.coffee-name-file-icon.conf\.coffee-ext-file-icon.coffee-ext-file-icon.ext-file-icon.file-icon::before {  color: #7fae42; content: '\E048'; }
+.vs .show-file-icons .readme\.md-name-file-icon.md-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E03E'; }
+.vs .show-file-icons .mvnw-name-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E051'; }
+.vs .show-file-icons .jenkinsfile-name-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E043'; }
+.vs .show-file-icons .geckodriver-name-file-icon.ext-file-icon.file-icon::before {  color: #cc6d2e; content: '\E027'; }
+.vs .show-file-icons .gruntfile\.js-name-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .gruntfile\.babel\.js-name-file-icon.babel\.js-ext-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .gruntfile\.coffee-name-file-icon.coffee-ext-file-icon.ext-file-icon.file-icon::before {  color: #cc6d2e; content: '\E032'; }
+.vs .show-file-icons .gulpfile-name-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E033'; }
+.vs .show-file-icons .ionic\.config\.json-name-file-icon.config\.json-ext-file-icon.json-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .ionic\.project-name-file-icon.project-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E03F'; }
+.vs .show-file-icons .rollup\.config\.js-name-file-icon.config\.js-ext-file-icon.js-ext-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E064'; }
+.vs .show-file-icons .yarn\.clean-name-file-icon.clean-ext-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .yarn\.lock-name-file-icon.lock-ext-file-icon.ext-file-icon.file-icon::before {  color: #498ba7; content: '\E082'; }
+.vs .show-file-icons .license-name-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .licence-name-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .copying-name-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .compiling-name-file-icon.ext-file-icon.file-icon::before, .vs .show-file-icons .contributing-name-file-icon.ext-file-icon.file-icon::before {  color: #b8383d; content: '\E04A'; }
+.vs .show-file-icons .procfile-name-file-icon.ext-file-icon.file-icon::before {  color: #9068b0; content: '\E037'; }
+.vs .show-file-icons .npm-debug\.log-name-file-icon.log-ext-file-icon.ext-file-icon.file-icon::before {  color: #3b4b52; content: '\E056'; }
+
+.show-file-icons .wasm-lang-file-icon.file-icon::before { font-family: 'seti-extra'; color: #796dd2; content: '\E001'; }
+.show-file-icons .wat-lang-file-icon.file-icon::before { font-family: 'seti-extra'; color: #796dd2; content: '\E002'; }

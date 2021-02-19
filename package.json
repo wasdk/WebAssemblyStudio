@@ -1,0 +1,119 @@
+{
+  "name": "webassembly-studio",
+  "version": "1.0.0",
+  "description": "Learn, Teach, Work and Play in the WebAssembly Studio",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode production && npm run templates",
+    "build-watch": "webpack --watch --mode development",
+    "dev-server": "npm run templates && webpack-dev-server -d --https --port 28443",
+    "test": "webpack --mode production && node bin/check-bundle-size.js && npm run jest && npm run tslint",
+    "test:ci": "node bin/check-bundle-size.js && npm run tslint && npm run coverage && npm run e2e && npm run coveralls",
+    "jest": "jest --maxWorkers=2",
+    "coverage": "jest --maxWorkers=2 --coverage",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "clean": "rm -r dist/*",
+    "tslint": "tslint -p ./tsconfig.json; tslint -p ./tsconfig.test.json",
+    "templates": "npm run templates:build-templates && npm run templates:build-arc-templates",
+    "templates:build-templates": "node ./bin/bundle-templates.js templates dist/templates",
+    "templates:build-arc-templates": "node ./bin/bundle-templates.js misc/arc-templates dist/arc-templates",
+    "mutate": "./node_modules/.bin/stryker run",
+    "analyse": "mkdir -p ./stats && webpack --profile --json > ./stats/stats.json && webpack-bundle-analyzer ./stats/stats.json ./dist -r stats/index.html",
+    "e2e": "jest --maxWorkers=2 -c jest.e2e.config.json"
+  },
+  "jest": {
+    "setupTestFrameworkScriptFile": "./node_modules/jest-enzyme/lib/index.js",
+    "setupFiles": [
+      "<rootDir>/test-shim.js",
+      "<rootDir>/test-setup.js"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/test-preprocessor.js"
+    },
+    "testMatch": [
+      "**/tests/**/**/**.spec.(ts|tsx|js)"
+    ],
+    "collectCoverageFrom": [
+      "src/**/**.(ts|tsx|js)",
+      "!src/**/**.d.ts"
+    ],
+    "testURL": "https://webassembly.studio/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wasdk/WebAssemblyStudio.git"
+  },
+  "author": "Mozilla Foundation",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wasdk/WebAssemblyStudio/issues"
+  },
+  "homepage": "https://github.com/wasdk/WebAssemblyStudio",
+  "dependencies": {
+    "@types/flux": "^3.1.8",
+    "@types/jszip": "^3.1.4",
+    "@types/minimatch": "^3.0.3",
+    "@types/mousetrap": "^1.6.0",
+    "@types/pako": "^1.0.0",
+    "@types/react-icons": "^2.2.6",
+    "@types/react-modal": "^3.2.1",
+    "@types/xterm": "^3.0.0",
+    "cassowary": "0.0.2",
+    "flux": "^3.1.3",
+    "jszip": "^3.1.5",
+    "minimatch": "^3.0.4",
+    "monaco-editor": "^0.14.3",
+    "mousetrap": "^1.6.2",
+    "pako": "^1.0.7",
+    "raven-js": "^3.27.0",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-icons": "^2.2.7",
+    "react-modal": "^3.6.1",
+    "request": "^2.88.0",
+    "tar-js": "^0.3.0",
+    "tslint-react": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/base64-js": "^1.2.5",
+    "@types/enzyme": "^3.1.15",
+    "@types/expect-puppeteer": "^2.2.4",
+    "@types/jest": "^22.1.4",
+    "@types/jest-environment-puppeteer": "^2.2.1",
+    "@types/puppeteer": "^1.10.1",
+    "@types/react": "^16.7.8",
+    "@types/react-dom": "^16.0.11",
+    "base64-js": "^1.3.0",
+    "coveralls": "^3.0.2",
+    "css-loader": "^0.28.11",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "fs-extra": "^7.0.1",
+    "jest": "^22.4.4",
+    "jest-enzyme": "^6.1.2",
+    "jest-puppeteer": "^3.5.2",
+    "monaco-editor-webpack-plugin": "^1.7.0",
+    "puppeteer": "^1.10.0",
+    "react-test-renderer": "^16.6.3",
+    "source-map-loader": "^0.2.4",
+    "stryker": "^0.29.5",
+    "stryker-api": "^0.21.5",
+    "stryker-html-reporter": "^0.16.9",
+    "stryker-jest-runner": "^1.2.9",
+    "stryker-typescript": "^0.14.2",
+    "style-loader": "^0.21.0",
+    "ts-loader": "^4.5.0",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6",
+    "wait-until-promise": "^1.0.0",
+    "webpack": "^4.26.1",
+    "webpack-bundle-analyzer": "^2.13.1",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.10"
+  }
+}

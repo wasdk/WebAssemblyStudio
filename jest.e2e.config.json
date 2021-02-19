@@ -1,0 +1,19 @@
+{
+  "setupFiles": [
+    "<rootDir>/test-shim.js",
+    "<rootDir>/test-setup.js"
+  ],
+  "moduleFileExtensions": [
+    "ts",
+    "tsx",
+    "js"
+  ],
+  "transform": {
+    "^.+\\.(ts|tsx)$": "<rootDir>/test-preprocessor.js"
+  },
+  "testMatch": [
+    "**/tests/**/**/**.e2e.(ts|tsx|js)"
+  ],
+  "testURL": "https://webassembly.studio/",
+  "preset": "jest-puppeteer"
+}

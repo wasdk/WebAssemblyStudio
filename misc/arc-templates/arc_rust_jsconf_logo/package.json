@@ -1,0 +1,15 @@
+{
+  "name": "@wasm/arc_rust",
+  "description": "",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "gulp --gulpfile ./build.ts"
+  },
+  "devDependencies": {
+  },
+  "wasmStudio": {
+    "name": "ARCH: JSConf Logo in Rust",
+    "description": "# JSconf Logo in Rust\n\nA pulsating JSConf logo in Rust.",
+    "icon": "rust-lang-file-icon"
+  }
+}

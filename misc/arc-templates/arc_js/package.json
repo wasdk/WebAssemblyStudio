@@ -1,0 +1,15 @@
+{
+  "name": "@wasm/arc_js",
+  "description": "",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "gulp --gulpfile ./build.ts"
+  },
+  "devDependencies": {
+  },
+  "wasmStudio": {
+    "name": "ARCH JavaScript Project",
+    "description": "# ARCH JavaScript Project\n\nThis project comes with a small example to get started scripting the ARCH with JavaScript quickly.",
+    "icon": "js-lang-file-icon"
+  }
+}

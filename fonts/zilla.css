@@ -1,0 +1,6 @@
+@font-face {
+  font-family: 'Zilla Slab';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Zilla Slab'), local('ZillaSlab-Regular'), url(zilla.ttf) format('truetype');
+}

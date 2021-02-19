@@ -1,0 +1,1393 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tests for App render should render correctly (arc) 1`] = `
+<div
+  className="fill"
+>
+  <ToastContainer />
+  <NewProjectDialog
+    isOpen={true}
+    onCancel={[Function]}
+    onCreate={[Function]}
+  />
+  <div
+    style={
+      Object {
+        "height": "calc(100% - 22px)",
+      }
+    }
+  >
+    <Split
+      name="Workspace"
+      onChange={[Function]}
+      orientation={1}
+      splits={
+        Array [
+          Object {
+            "max": 400,
+            "min": 200,
+            "value": 200,
+          },
+          Object {
+            "min": 256,
+          },
+        ]
+      }
+    >
+      <Workspace
+        file={null}
+        onClickFile={[Function]}
+        onCreateGist={[Function]}
+        onDeleteFile={[Function]}
+        onDoubleClickFile={[Function]}
+        onEditFile={[Function]}
+        onMoveFile={[Function]}
+        onNewDirectory={[Function]}
+        onNewFile={[Function]}
+        onUploadFile={[Function]}
+        project={
+          ModelRef {
+            "obj": Project {
+              "buffer": Object {
+                "IEditorConstructionOptions": Object {
+                  "value": [Function],
+                },
+                "addAction": [Function],
+                "addCommand": [Function],
+                "applyEdits": [Function],
+                "create": [Function],
+                "createModel": [Function],
+                "defineTheme": [Function],
+                "getLineCount": [Function],
+                "getLineMaxColumn": [Function],
+                "getModel": [Function],
+                "getValue": [Function],
+                "layout": [Function],
+                "onContextMenu": [Function],
+                "onDidChangeContent": [Function],
+                "onDidFocusEditorText": [Function],
+                "onDidFocusEditorWidget": [Function],
+                "restoreViewState": [Function],
+                "revealLine": [Function],
+                "saveViewState": [Function],
+                "setModel": [Function],
+                "setModelLanguage": [Function],
+                "setModelMarkers": [Function],
+                "setValue": [Function],
+                "toString": [Function],
+                "updateOptions": [Function],
+                "uri": Object {
+                  "toString": [Function],
+                },
+              },
+              "bufferType": "directory",
+              "children": Array [],
+              "data": null,
+              "isBufferReadOnly": false,
+              "isDirty": false,
+              "isOpen": true,
+              "isTransient": false,
+              "key": "48",
+              "name": "Project",
+              "onChange": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Project Change",
+              },
+              "onDidChangeBuffer": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Buffer Change",
+              },
+              "onDidChangeChildren": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Directory Changed ",
+              },
+              "onDidChangeData": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Data Change",
+              },
+              "onDidChangeDirty": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Dirty Flag Change",
+              },
+              "onDidChangeProblems": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Problems Change",
+              },
+              "onDidChangeStatus": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Status Change",
+              },
+              "onDirtyFileUsed": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Dirty File Used",
+              },
+              "parent": null,
+              "problems": Array [],
+              "status": Array [
+                "Idle",
+              ],
+              "type": "directory",
+            },
+          }
+        }
+      />
+      <div
+        className="fill"
+      >
+        <div
+          style={
+            Object {
+              "height": "40px",
+            }
+          }
+        >
+          <Toolbar>
+            <Button
+              icon={<GoThreeBars />}
+              key="ViewWorkspace"
+              onClick={[Function]}
+              title="View Project Workspace"
+            />
+            <Button
+              icon={<GoRepoForked />}
+              isDisabled={false}
+              key="ForkProject"
+              label="Fork"
+              onClick={[Function]}
+              title="Fork Project"
+            />
+            <Button
+              icon={<GoBeaker />}
+              isDisabled={false}
+              key="Build"
+              label="Build"
+              onClick={[Function]}
+              title="Build Project: CtrlCmd + B"
+            />
+            <Button
+              icon={<GoGear />}
+              isDisabled={false}
+              key="Preview"
+              label="Preview"
+              onClick={[Function]}
+              title="Preview Project: CtrlCmd + Enter"
+            />
+            <Button
+              icon={<GoGear />}
+              isDisabled={false}
+              key="BuildAndPreview"
+              label="Build & Preview"
+              onClick={[Function]}
+              title="Build & Preview Project: CtrlCmd + Alt + Enter"
+            />
+          </Toolbar>
+        </div>
+        <div
+          style={
+            Object {
+              "height": "calc(100% - 40px)",
+            }
+          }
+        >
+          <Split
+            name="Console"
+            onChange={[Function]}
+            orientation={0}
+            splits={
+              Array [
+                Object {
+                  "min": 100,
+                },
+                Object {
+                  "min": 40,
+                  "value": 256,
+                },
+              ]
+            }
+          >
+            <Split
+              defaultSplit={
+                Object {
+                  "min": 128,
+                }
+              }
+              name="Editors"
+              onChange={[Function]}
+              orientation={1}
+              splits={Array []}
+            >
+              <ViewTabs
+                hasFocus={true}
+                key="editorPane0"
+                onChangeViewType={[Function]}
+                onClickView={[Function]}
+                onClose={[Function]}
+                onDoubleClickView={[Function]}
+                onFocus={[Function]}
+                onNewFile={[Function]}
+                onSplitViews={[Function]}
+                view={null}
+                views={Array []}
+              />
+            </Split>
+            <ControlCenter
+              onToggle={[Function]}
+              showSandbox={false}
+            />
+          </Split>
+        </div>
+      </div>
+    </Split>
+  </div>
+  <StatusBar />
+  <div
+    id="task-runner-content"
+  />
+</div>
+`;
+
+exports[`Tests for App render should render correctly (embedded) 1`] = `
+<div
+  className="fill"
+>
+  <ToastContainer />
+  <NewProjectDialog
+    isOpen={true}
+    onCancel={[Function]}
+    onCreate={[Function]}
+  />
+  <div
+    style={
+      Object {
+        "height": "calc(100% - 22px)",
+      }
+    }
+  >
+    <Split
+      name="Workspace"
+      onChange={[Function]}
+      orientation={1}
+      splits={
+        Array [
+          Object {
+            "max": 400,
+            "min": 200,
+            "value": 200,
+          },
+          Object {
+            "min": 256,
+          },
+        ]
+      }
+    >
+      <Workspace
+        file={null}
+        onClickFile={[Function]}
+        onCreateGist={[Function]}
+        onDeleteFile={[Function]}
+        onDoubleClickFile={[Function]}
+        onEditFile={[Function]}
+        onMoveFile={[Function]}
+        onNewDirectory={[Function]}
+        onNewFile={[Function]}
+        onUploadFile={[Function]}
+        project={
+          ModelRef {
+            "obj": Project {
+              "buffer": Object {
+                "IEditorConstructionOptions": Object {
+                  "value": [Function],
+                },
+                "addAction": [Function],
+                "addCommand": [Function],
+                "applyEdits": [Function],
+                "create": [Function],
+                "createModel": [Function],
+                "defineTheme": [Function],
+                "getLineCount": [Function],
+                "getLineMaxColumn": [Function],
+                "getModel": [Function],
+                "getValue": [Function],
+                "layout": [Function],
+                "onContextMenu": [Function],
+                "onDidChangeContent": [Function],
+                "onDidFocusEditorText": [Function],
+                "onDidFocusEditorWidget": [Function],
+                "restoreViewState": [Function],
+                "revealLine": [Function],
+                "saveViewState": [Function],
+                "setModel": [Function],
+                "setModelLanguage": [Function],
+                "setModelMarkers": [Function],
+                "setValue": [Function],
+                "toString": [Function],
+                "updateOptions": [Function],
+                "uri": Object {
+                  "toString": [Function],
+                },
+              },
+              "bufferType": "directory",
+              "children": Array [],
+              "data": null,
+              "isBufferReadOnly": false,
+              "isDirty": false,
+              "isOpen": true,
+              "isTransient": false,
+              "key": "46",
+              "name": "Project",
+              "onChange": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Project Change",
+              },
+              "onDidChangeBuffer": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Buffer Change",
+              },
+              "onDidChangeChildren": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Directory Changed ",
+              },
+              "onDidChangeData": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Data Change",
+              },
+              "onDidChangeDirty": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Dirty Flag Change",
+              },
+              "onDidChangeProblems": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Problems Change",
+              },
+              "onDidChangeStatus": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Status Change",
+              },
+              "onDirtyFileUsed": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Dirty File Used",
+              },
+              "parent": null,
+              "problems": Array [],
+              "status": Array [
+                "Idle",
+              ],
+              "type": "directory",
+            },
+          }
+        }
+      />
+      <div
+        className="fill"
+      >
+        <div
+          style={
+            Object {
+              "height": "40px",
+            }
+          }
+        >
+          <Toolbar>
+            <Button
+              icon={<GoThreeBars />}
+              key="ViewWorkspace"
+              onClick={[Function]}
+              title="View Project Workspace"
+            />
+            <Button
+              href="//webassembly.studio/?f=null"
+              icon={<GoPencil />}
+              isDisabled={true}
+              key="EditInWebAssemblyStudio"
+              label="Edit in WebAssembly Studio"
+              rel="noopener noreferrer"
+              target="wasm.studio"
+              title="Edit Project in WebAssembly Studio"
+            />
+            <Button
+              icon={<GoBeaker />}
+              isDisabled={false}
+              key="Build"
+              label="Build"
+              onClick={[Function]}
+              title="Build Project: CtrlCmd + B"
+            />
+            <Button
+              icon={<GoGear />}
+              isDisabled={false}
+              key="Run"
+              label="Run"
+              onClick={[Function]}
+              title="Run Project: CtrlCmd + Enter"
+            />
+            <Button
+              icon={<GoBeakerGear />}
+              isDisabled={false}
+              key="BuildAndRun"
+              label="Build & Run"
+              onClick={[Function]}
+              title="Build & Run Project: CtrlCmd + Alt + Enter"
+            />
+          </Toolbar>
+        </div>
+        <div
+          style={
+            Object {
+              "height": "calc(100% - 40px)",
+            }
+          }
+        >
+          <Split
+            name="Console"
+            onChange={[Function]}
+            orientation={0}
+            splits={
+              Array [
+                Object {
+                  "min": 100,
+                },
+                Object {
+                  "min": 40,
+                  "value": 256,
+                },
+              ]
+            }
+          >
+            <Split
+              defaultSplit={
+                Object {
+                  "min": 128,
+                }
+              }
+              name="Editors"
+              onChange={[Function]}
+              orientation={1}
+              splits={Array []}
+            >
+              <ViewTabs
+                hasFocus={true}
+                key="editorPane0"
+                onChangeViewType={[Function]}
+                onClickView={[Function]}
+                onClose={[Function]}
+                onDoubleClickView={[Function]}
+                onFocus={[Function]}
+                onNewFile={[Function]}
+                onSplitViews={[Function]}
+                view={null}
+                views={Array []}
+              />
+            </Split>
+            <ControlCenter
+              onToggle={[Function]}
+              showSandbox={true}
+            />
+          </Split>
+        </div>
+      </div>
+    </Split>
+  </div>
+  <StatusBar />
+  <div
+    id="task-runner-content"
+  />
+</div>
+`;
+
+exports[`Tests for App render should render correctly (fiddle) 1`] = `
+<div
+  className="fill"
+>
+  <ToastContainer />
+  <div
+    style={
+      Object {
+        "height": "calc(100% - 22px)",
+      }
+    }
+  >
+    <Split
+      name="Workspace"
+      onChange={[Function]}
+      orientation={1}
+      splits={
+        Array [
+          Object {
+            "max": 400,
+            "min": 200,
+            "value": 200,
+          },
+          Object {
+            "min": 256,
+          },
+        ]
+      }
+    >
+      <Workspace
+        file={null}
+        onClickFile={[Function]}
+        onCreateGist={[Function]}
+        onDeleteFile={[Function]}
+        onDoubleClickFile={[Function]}
+        onEditFile={[Function]}
+        onMoveFile={[Function]}
+        onNewDirectory={[Function]}
+        onNewFile={[Function]}
+        onUploadFile={[Function]}
+        project={
+          ModelRef {
+            "obj": Project {
+              "buffer": Object {
+                "IEditorConstructionOptions": Object {
+                  "value": [Function],
+                },
+                "addAction": [Function],
+                "addCommand": [Function],
+                "applyEdits": [Function],
+                "create": [Function],
+                "createModel": [Function],
+                "defineTheme": [Function],
+                "getLineCount": [Function],
+                "getLineMaxColumn": [Function],
+                "getModel": [Function],
+                "getValue": [Function],
+                "layout": [Function],
+                "onContextMenu": [Function],
+                "onDidChangeContent": [Function],
+                "onDidFocusEditorText": [Function],
+                "onDidFocusEditorWidget": [Function],
+                "restoreViewState": [Function],
+                "revealLine": [Function],
+                "saveViewState": [Function],
+                "setModel": [Function],
+                "setModelLanguage": [Function],
+                "setModelMarkers": [Function],
+                "setValue": [Function],
+                "toString": [Function],
+                "updateOptions": [Function],
+                "uri": Object {
+                  "toString": [Function],
+                },
+              },
+              "bufferType": "directory",
+              "children": Array [],
+              "data": null,
+              "isBufferReadOnly": false,
+              "isDirty": false,
+              "isOpen": true,
+              "isTransient": false,
+              "key": "52",
+              "name": "Project",
+              "onChange": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Project Change",
+              },
+              "onDidChangeBuffer": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Buffer Change",
+              },
+              "onDidChangeChildren": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Directory Changed ",
+              },
+              "onDidChangeData": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Data Change",
+              },
+              "onDidChangeDirty": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Dirty Flag Change",
+              },
+              "onDidChangeProblems": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Problems Change",
+              },
+              "onDidChangeStatus": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Status Change",
+              },
+              "onDirtyFileUsed": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Dirty File Used",
+              },
+              "parent": null,
+              "problems": Array [],
+              "status": Array [
+                "Idle",
+                "Downloading Project",
+              ],
+              "type": "directory",
+            },
+          }
+        }
+      />
+      <div
+        className="fill"
+      >
+        <div
+          style={
+            Object {
+              "height": "40px",
+            }
+          }
+        >
+          <Toolbar>
+            <Button
+              icon={<GoThreeBars />}
+              key="ViewWorkspace"
+              onClick={[Function]}
+              title="View Project Workspace"
+            />
+            <Button
+              icon={<GoBeaker />}
+              isDisabled={true}
+              key="Build"
+              label="Build"
+              onClick={[Function]}
+              title="Build Project: CtrlCmd + B"
+            />
+            <Button
+              icon={<GoGear />}
+              isDisabled={true}
+              key="Run"
+              label="Run"
+              onClick={[Function]}
+              title="Run Project: CtrlCmd + Enter"
+            />
+            <Button
+              icon={<GoBeakerGear />}
+              isDisabled={true}
+              key="BuildAndRun"
+              label="Build & Run"
+              onClick={[Function]}
+              title="Build & Run Project: CtrlCmd + Alt + Enter"
+            />
+          </Toolbar>
+        </div>
+        <div
+          style={
+            Object {
+              "height": "calc(100% - 40px)",
+            }
+          }
+        >
+          <Split
+            name="Console"
+            onChange={[Function]}
+            orientation={0}
+            splits={
+              Array [
+                Object {
+                  "min": 100,
+                },
+                Object {
+                  "min": 40,
+                  "value": 256,
+                },
+              ]
+            }
+          >
+            <Split
+              defaultSplit={
+                Object {
+                  "min": 128,
+                }
+              }
+              name="Editors"
+              onChange={[Function]}
+              orientation={1}
+              splits={Array []}
+            >
+              <ViewTabs
+                hasFocus={true}
+                key="editorPane0"
+                onChangeViewType={[Function]}
+                onClickView={[Function]}
+                onClose={[Function]}
+                onDoubleClickView={[Function]}
+                onFocus={[Function]}
+                onNewFile={[Function]}
+                onSplitViews={[Function]}
+                view={null}
+                views={Array []}
+              />
+            </Split>
+            <ControlCenter
+              onToggle={[Function]}
+              showSandbox={true}
+            />
+          </Split>
+        </div>
+      </div>
+    </Split>
+  </div>
+  <StatusBar />
+  <div
+    id="task-runner-content"
+  />
+</div>
+`;
+
+exports[`Tests for App render should render correctly (update) 1`] = `
+<div
+  className="fill"
+>
+  <ToastContainer />
+  <NewProjectDialog
+    isOpen={true}
+    onCancel={[Function]}
+    onCreate={[Function]}
+  />
+  <div
+    style={
+      Object {
+        "height": "calc(100% - 22px)",
+      }
+    }
+  >
+    <Split
+      name="Workspace"
+      onChange={[Function]}
+      orientation={1}
+      splits={
+        Array [
+          Object {
+            "max": 400,
+            "min": 200,
+            "value": 200,
+          },
+          Object {
+            "min": 256,
+          },
+        ]
+      }
+    >
+      <Workspace
+        file={null}
+        onClickFile={[Function]}
+        onCreateGist={[Function]}
+        onDeleteFile={[Function]}
+        onDoubleClickFile={[Function]}
+        onEditFile={[Function]}
+        onMoveFile={[Function]}
+        onNewDirectory={[Function]}
+        onNewFile={[Function]}
+        onUploadFile={[Function]}
+        project={
+          ModelRef {
+            "obj": Project {
+              "buffer": Object {
+                "IEditorConstructionOptions": Object {
+                  "value": [Function],
+                },
+                "addAction": [Function],
+                "addCommand": [Function],
+                "applyEdits": [Function],
+                "create": [Function],
+                "createModel": [Function],
+                "defineTheme": [Function],
+                "getLineCount": [Function],
+                "getLineMaxColumn": [Function],
+                "getModel": [Function],
+                "getValue": [Function],
+                "layout": [Function],
+                "onContextMenu": [Function],
+                "onDidChangeContent": [Function],
+                "onDidFocusEditorText": [Function],
+                "onDidFocusEditorWidget": [Function],
+                "restoreViewState": [Function],
+                "revealLine": [Function],
+                "saveViewState": [Function],
+                "setModel": [Function],
+                "setModelLanguage": [Function],
+                "setModelMarkers": [Function],
+                "setValue": [Function],
+                "toString": [Function],
+                "updateOptions": [Function],
+                "uri": Object {
+                  "toString": [Function],
+                },
+              },
+              "bufferType": "directory",
+              "children": Array [],
+              "data": null,
+              "isBufferReadOnly": false,
+              "isDirty": false,
+              "isOpen": true,
+              "isTransient": false,
+              "key": "50",
+              "name": "Project",
+              "onChange": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Project Change",
+              },
+              "onDidChangeBuffer": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Buffer Change",
+              },
+              "onDidChangeChildren": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Directory Changed ",
+              },
+              "onDidChangeData": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Data Change",
+              },
+              "onDidChangeDirty": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Dirty Flag Change",
+              },
+              "onDidChangeProblems": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Problems Change",
+              },
+              "onDidChangeStatus": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Status Change",
+              },
+              "onDirtyFileUsed": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Dirty File Used",
+              },
+              "parent": null,
+              "problems": Array [],
+              "status": Array [
+                "Idle",
+              ],
+              "type": "directory",
+            },
+          }
+        }
+      />
+      <div
+        className="fill"
+      >
+        <div
+          style={
+            Object {
+              "height": "40px",
+            }
+          }
+        >
+          <Toolbar>
+            <Button
+              icon={<GoThreeBars />}
+              key="ViewWorkspace"
+              onClick={[Function]}
+              title="View Project Workspace"
+            />
+            <Button
+              icon={<GoPencil />}
+              isDisabled={false}
+              key="UpdateProject"
+              label="Update"
+              onClick={[Function]}
+              title="Update Project"
+            />
+            <Button
+              icon={<GoRepoForked />}
+              isDisabled={false}
+              key="ForkProject"
+              label="Fork"
+              onClick={[Function]}
+              title="Fork Project"
+            />
+            <Button
+              icon={<GoGist />}
+              isDisabled={false}
+              key="CreateGist"
+              label="Create Gist"
+              onClick={[Function]}
+              title="Create GitHub Gist from Project"
+            />
+            <Button
+              icon={<GoDesktopDownload />}
+              isDisabled={false}
+              key="Download"
+              label="Download"
+              onClick={[Function]}
+              title="Download Project"
+            />
+            <Button
+              icon={<GoRocket />}
+              isDisabled={true}
+              key="Share"
+              label="Share"
+              onClick={[Function]}
+              title="Cannot share a project that has not been forked yet."
+            />
+            <Button
+              icon={<GoBeaker />}
+              isDisabled={false}
+              key="Build"
+              label="Build"
+              onClick={[Function]}
+              title="Build Project: CtrlCmd + B"
+            />
+            <Button
+              icon={<GoGear />}
+              isDisabled={false}
+              key="Run"
+              label="Run"
+              onClick={[Function]}
+              title="Run Project: CtrlCmd + Enter"
+            />
+            <Button
+              icon={<GoBeakerGear />}
+              isDisabled={false}
+              key="BuildAndRun"
+              label="Build & Run"
+              onClick={[Function]}
+              title="Build & Run Project: CtrlCmd + Alt + Enter"
+            />
+            <Button
+              customClassName="issue"
+              href="https://github.com/wasdk/WebAssemblyStudio"
+              icon={<GoOpenIssue />}
+              key="GithubIssues"
+              label="GitHub Issues"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="GitHub Issues"
+            />
+            <Button
+              customClassName="help"
+              icon={<GoQuestion />}
+              key="HelpAndPrivacy"
+              label="Help & Privacy"
+              onClick={[Function]}
+              title="Help & Privacy"
+            />
+          </Toolbar>
+        </div>
+        <div
+          style={
+            Object {
+              "height": "calc(100% - 40px)",
+            }
+          }
+        >
+          <Split
+            name="Console"
+            onChange={[Function]}
+            orientation={0}
+            splits={
+              Array [
+                Object {
+                  "min": 100,
+                },
+                Object {
+                  "min": 40,
+                  "value": 256,
+                },
+              ]
+            }
+          >
+            <Split
+              defaultSplit={
+                Object {
+                  "min": 128,
+                }
+              }
+              name="Editors"
+              onChange={[Function]}
+              orientation={1}
+              splits={Array []}
+            >
+              <ViewTabs
+                hasFocus={true}
+                key="editorPane0"
+                onChangeViewType={[Function]}
+                onClickView={[Function]}
+                onClose={[Function]}
+                onDoubleClickView={[Function]}
+                onFocus={[Function]}
+                onNewFile={[Function]}
+                onSplitViews={[Function]}
+                view={null}
+                views={Array []}
+              />
+            </Split>
+            <ControlCenter
+              onToggle={[Function]}
+              showSandbox={true}
+            />
+          </Split>
+        </div>
+      </div>
+    </Split>
+  </div>
+  <StatusBar />
+  <div
+    id="task-runner-content"
+  />
+</div>
+`;
+
+exports[`Tests for App render should render correctly 1`] = `
+<div
+  className="fill"
+>
+  <ToastContainer />
+  <NewProjectDialog
+    isOpen={true}
+    onCancel={[Function]}
+    onCreate={[Function]}
+  />
+  <div
+    style={
+      Object {
+        "height": "calc(100% - 22px)",
+      }
+    }
+  >
+    <Split
+      name="Workspace"
+      onChange={[Function]}
+      orientation={1}
+      splits={
+        Array [
+          Object {
+            "max": 400,
+            "min": 200,
+            "value": 200,
+          },
+          Object {
+            "min": 256,
+          },
+        ]
+      }
+    >
+      <Workspace
+        file={null}
+        onClickFile={[Function]}
+        onCreateGist={[Function]}
+        onDeleteFile={[Function]}
+        onDoubleClickFile={[Function]}
+        onEditFile={[Function]}
+        onMoveFile={[Function]}
+        onNewDirectory={[Function]}
+        onNewFile={[Function]}
+        onUploadFile={[Function]}
+        project={
+          ModelRef {
+            "obj": Project {
+              "buffer": Object {
+                "IEditorConstructionOptions": Object {
+                  "value": [Function],
+                },
+                "addAction": [Function],
+                "addCommand": [Function],
+                "applyEdits": [Function],
+                "create": [Function],
+                "createModel": [Function],
+                "defineTheme": [Function],
+                "getLineCount": [Function],
+                "getLineMaxColumn": [Function],
+                "getModel": [Function],
+                "getValue": [Function],
+                "layout": [Function],
+                "onContextMenu": [Function],
+                "onDidChangeContent": [Function],
+                "onDidFocusEditorText": [Function],
+                "onDidFocusEditorWidget": [Function],
+                "restoreViewState": [Function],
+                "revealLine": [Function],
+                "saveViewState": [Function],
+                "setModel": [Function],
+                "setModelLanguage": [Function],
+                "setModelMarkers": [Function],
+                "setValue": [Function],
+                "toString": [Function],
+                "updateOptions": [Function],
+                "uri": Object {
+                  "toString": [Function],
+                },
+              },
+              "bufferType": "directory",
+              "children": Array [],
+              "data": null,
+              "isBufferReadOnly": false,
+              "isDirty": false,
+              "isOpen": true,
+              "isTransient": false,
+              "key": "44",
+              "name": "Project",
+              "onChange": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Project Change",
+              },
+              "onDidChangeBuffer": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Buffer Change",
+              },
+              "onDidChangeChildren": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Directory Changed ",
+              },
+              "onDidChangeData": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Data Change",
+              },
+              "onDidChangeDirty": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Dirty Flag Change",
+              },
+              "onDidChangeProblems": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "File Problems Change",
+              },
+              "onDidChangeStatus": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Status Change",
+              },
+              "onDirtyFileUsed": EventDispatcher {
+                "callbacks": Array [
+                  [Function],
+                ],
+                "name": "Dirty File Used",
+              },
+              "parent": null,
+              "problems": Array [],
+              "status": Array [
+                "Idle",
+              ],
+              "type": "directory",
+            },
+          }
+        }
+      />
+      <div
+        className="fill"
+      >
+        <div
+          style={
+            Object {
+              "height": "40px",
+            }
+          }
+        >
+          <Toolbar>
+            <Button
+              icon={<GoThreeBars />}
+              key="ViewWorkspace"
+              onClick={[Function]}
+              title="View Project Workspace"
+            />
+            <Button
+              icon={<GoRepoForked />}
+              isDisabled={false}
+              key="ForkProject"
+              label="Fork"
+              onClick={[Function]}
+              title="Fork Project"
+            />
+            <Button
+              icon={<GoGist />}
+              isDisabled={false}
+              key="CreateGist"
+              label="Create Gist"
+              onClick={[Function]}
+              title="Create GitHub Gist from Project"
+            />
+            <Button
+              icon={<GoDesktopDownload />}
+              isDisabled={false}
+              key="Download"
+              label="Download"
+              onClick={[Function]}
+              title="Download Project"
+            />
+            <Button
+              icon={<GoRocket />}
+              isDisabled={true}
+              key="Share"
+              label="Share"
+              onClick={[Function]}
+              title="Cannot share a project that has not been forked yet."
+            />
+            <Button
+              icon={<GoBeaker />}
+              isDisabled={false}
+              key="Build"
+              label="Build"
+              onClick={[Function]}
+              title="Build Project: CtrlCmd + B"
+            />
+            <Button
+              icon={<GoGear />}
+              isDisabled={false}
+              key="Run"
+              label="Run"
+              onClick={[Function]}
+              title="Run Project: CtrlCmd + Enter"
+            />
+            <Button
+              icon={<GoBeakerGear />}
+              isDisabled={false}
+              key="BuildAndRun"
+              label="Build & Run"
+              onClick={[Function]}
+              title="Build & Run Project: CtrlCmd + Alt + Enter"
+            />
+            <Button
+              customClassName="issue"
+              href="https://github.com/wasdk/WebAssemblyStudio"
+              icon={<GoOpenIssue />}
+              key="GithubIssues"
+              label="GitHub Issues"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="GitHub Issues"
+            />
+            <Button
+              customClassName="help"
+              icon={<GoQuestion />}
+              key="HelpAndPrivacy"
+              label="Help & Privacy"
+              onClick={[Function]}
+              title="Help & Privacy"
+            />
+          </Toolbar>
+        </div>
+        <div
+          style={
+            Object {
+              "height": "calc(100% - 40px)",
+            }
+          }
+        >
+          <Split
+            name="Console"
+            onChange={[Function]}
+            orientation={0}
+            splits={
+              Array [
+                Object {
+                  "min": 100,
+                },
+                Object {
+                  "min": 40,
+                  "value": 256,
+                },
+              ]
+            }
+          >
+            <Split
+              defaultSplit={
+                Object {
+                  "min": 128,
+                }
+              }
+              name="Editors"
+              onChange={[Function]}
+              orientation={1}
+              splits={Array []}
+            >
+              <ViewTabs
+                hasFocus={true}
+                key="editorPane0"
+                onChangeViewType={[Function]}
+                onClickView={[Function]}
+                onClose={[Function]}
+                onDoubleClickView={[Function]}
+                onFocus={[Function]}
+                onNewFile={[Function]}
+                onSplitViews={[Function]}
+                view={null}
+                views={Array []}
+              />
+            </Split>
+            <ControlCenter
+              onToggle={[Function]}
+              showSandbox={true}
+            />
+          </Split>
+        </div>
+      </div>
+    </Split>
+  </div>
+  <StatusBar />
+  <div
+    id="task-runner-content"
+  />
+</div>
+`;

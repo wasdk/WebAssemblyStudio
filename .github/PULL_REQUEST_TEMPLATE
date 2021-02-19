@@ -1,0 +1,21 @@
+Associated Issue: #<issue number>
+
+Here's the contributing guide at https://github.com/wasdk/WebAssemblyStudio/wiki/Contributing
+
+### Summary of Changes
+
+* change 1
+* change 2
+
+### Test Plan
+
+Tell us a little a bit about how you tested your patch.
+
+Example test plan:
+
+- [x] Create C "hello, world" project
+- [x] Click Build button 
+- [x] Click Run button, and observe the Result panel
+- [x] Clicking the "x" on the Result panel closes it
+
+### Screenshots/Videos (OPTIONAL)

@@ -1,0 +1,99 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tests for NewProjectDialog component should render correctly 1`] = `
+<Modal
+  ariaHideApp={false}
+  bodyOpenClassName="ReactModal__Body--open"
+  className="modal show-file-icons"
+  closeTimeoutMS={0}
+  contentLabel="Create New Project"
+  isOpen={true}
+  overlayClassName="overlay"
+  parentSelector={[Function]}
+  portalClassName="ReactModalPortal"
+  role="dialog"
+  shouldCloseOnEsc={true}
+  shouldCloseOnOverlayClick={true}
+  shouldFocusAfterRender={true}
+  shouldReturnFocusAfterClose={true}
+>
+  <div
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+        "height": "100%",
+      }
+    }
+  >
+    <div
+      className="modal-title-bar"
+    >
+      Create New Project
+    </div>
+    <div>
+      <div
+        style={
+          Object {
+            "display": "flex",
+          }
+        }
+      >
+        <div
+          style={
+            Object {
+              "width": 200,
+            }
+          }
+        >
+          <ListBox
+            height={240}
+            onSelect={[Function]}
+            value={null}
+          />
+        </div>
+        <div
+          className="new-project-dialog-description"
+          style={
+            Object {
+              "flex": 1,
+            }
+          }
+        >
+          <div
+            className="md"
+            dangerouslySetInnerHTML={
+              Object {
+                "__html": "",
+              }
+            }
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      style={
+        Object {
+          "flex": 1,
+          "padding": "8px",
+        }
+      }
+    />
+    <div>
+      <Button
+        icon={<GoX />}
+        label="Cancel"
+        onClick={[Function]}
+        title="Cancel"
+      />
+      <Button
+        icon={<GoFile />}
+        isDisabled={true}
+        label="Create"
+        onClick={[Function]}
+        title="Create"
+      />
+    </div>
+  </div>
+</Modal>
+`;

@@ -1,0 +1,31 @@
+sudo: false
+language: node_js
+node_js:
+- '8'
+# skipping - '6'
+branches:
+  only:
+  - master
+cache:
+  directories:
+  - node_modules
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+before_install:
+#- npm update
+install:
+- npm install
+script:
+- npm run build
+- npm run test:ci
+- cp .gitignore.travis .gitignore
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN
+  email: travis@webassembly.studio
+  name: "WebAssemblyStudio bot"
+  on:
+    branch: master

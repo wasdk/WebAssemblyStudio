@@ -1,0 +1,17 @@
+{
+  "name": "@wasm/empty_ts",
+  "description": "",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "gulp"
+  },
+  "devDependencies": {
+    "assemblyscript": "AssemblyScript/assemblyscript",
+    "gulp": "^3"
+  },
+  "wasmStudio": {
+    "name": "Empty AssemblyScript Project",
+    "description": "# Empty AssemblyScript Project\n\n[AssemblyScript](https://github.com/AssemblyScript/assemblyscript) compiles strictly typed TypeScript to WebAssembly using Binaryen.\n\nSee the [AssemblyScript wiki](https://github.com/AssemblyScript/assemblyscript/wiki) for further instructions and documentation.",
+    "icon": "typescript-lang-file-icon"
+  }
+}

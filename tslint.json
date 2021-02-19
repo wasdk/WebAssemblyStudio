@@ -1,0 +1,49 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-react"
+    ],
+    "linterOptions": {
+        "exclude": [
+            "src/languages/*.ts",
+            "src/monaco-extra.ts",
+            "lib/**/*.ts"
+        ]
+    },
+    "jsRules": {},
+    "rules": {
+      "no-string-literal": false,
+      "semicolon": [true, "always"],
+      "no-bitwise": false,
+      "interface-name": [true, "always-prefix"],
+      "ban-types": false,
+      "max-classes-per-file": false,
+      "only-arrow-functions": false,
+      "member-ordering": false,
+      "no-console": false,
+      "object-literal-sort-keys": false,
+      "no-var-requires": false,
+      "prefer-for-of": false,
+      "trailing-comma": false,
+      "no-eval": false,
+      "max-line-length": [true, { "ignore-pattern": "<path([/s/S]*?)/>" }],
+      "no-shadowed-variable": false,
+      "no-conditional-assignment": false,
+      "member-access": false,
+      "ordered-imports": false,
+      "arrow-parens": false,
+      "interface-name": false,
+      "object-literal-shorthand": false,
+      "no-empty-interface": false,
+      "variable-name": [true, "check-format", "allow-leading-underscore", "allow-pascal-case"],
+      "jsx-wrap-multiline": false,
+      "jsx-no-multiline-js": false,
+      "jsx-no-lambda": false,
+      "jsx-boolean-value": false,
+      "file-header": [true, "(Mozilla Foundation|the Public Domain)"],
+      "no-namespace": false,
+      "no-unused-expression": false
+    },
+    "rulesDirectory": []
+}

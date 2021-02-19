@@ -1,0 +1,15 @@
+{
+  "name": "@wasm/arc_wat",
+  "description": "",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "gulp --gulpfile ./build.ts"
+  },
+  "devDependencies": {
+  },
+  "wasmStudio": {
+    "name": "Empty ARCH Wat Project",
+    "description": "# Empty ARCH Wat Project\n\nHigh-level languages are not for you? Write WebAssembly directly!",
+    "icon": "wat-lang-file-icon"
+  }
+}

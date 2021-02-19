@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+      "outDir": "./dist/",
+      "sourceMap": true,
+      "noImplicitAny": true,
+      "skipLibCheck": true,
+      "module": "esnext",
+      "moduleResolution": "node",
+      "target": "esnext",
+      "lib": ["dom", "esnext", "es2017.object"],
+      "jsx": "react",
+      "declaration": true,
+      "removeComments": false
+  },
+  "include": [
+      "./src/**/*",
+      "node_modules/monaco-editor/monaco.d.ts"
+  ],
+  "exclude": [
+      "./templates/**/*"
+  ]
+}
