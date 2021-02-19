@@ -29,8 +29,8 @@ gulp.task("build", callback => {
     "--binaryFile", "../out/main.wasm",
     "--sourceMap",
     "--measure",
-    "--runtime", "half",
-    "--optimize"
+    "--runtime", "stub", // Please use "incremental" if you need GC
+    "-O3"                // Please use "-O3z" if you need optimize for size
   ], callback);
 });
 
