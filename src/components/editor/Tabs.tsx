@@ -65,7 +65,7 @@ export class Tabs extends Component<TabsProps, TabsState> {
     e.preventDefault();
   }
 
-  onDoubleClick   = (e: MouseEvent<any>)  => { this.props.onDoubleClick(); };
+  onDoubleClick   = (e: any)              => { this.props.onDoubleClick(); };
   setContainerRef = (ref: HTMLDivElement) => { this.container = ref; };
 
   render() {
@@ -110,20 +110,20 @@ export class Tab extends PureComponent<TabProps, {}> {
     onClose: () => {},
   };
 
-  onMouseHandle = (e: MouseEvent<HTMLElement>, handler: Function) => {
+  onMouseHandle = (e: any, handler: Function) => {
     e.stopPropagation();
     handler(this.props.value);
   }
 
-  onClick = (e: MouseEvent<HTMLElement>) => {
+  onClick = (e: any) => {
     this.onMouseHandle(e, this.props.onClick);
   }
 
-  onDoubleClick = (e: MouseEvent<HTMLElement>) => {
+  onDoubleClick = (e: any) => {
     this.onMouseHandle(e, this.props.onDoubleClick);
   }
 
-  onClose = (e: MouseEvent<HTMLElement>) => {
+  onClose = (e: any) => {
     this.onMouseHandle(e, this.props.onClose);
   }
 
