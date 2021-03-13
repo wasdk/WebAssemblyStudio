@@ -61,7 +61,8 @@ export { Language } from "./compilerServices";
 
 function getProjectFilePath(file: File): string {
   const project = file.getProject();
-  return file.getPath(project);
+  const result = file.getPath(project);
+  return result;
 }
 
 export class ServiceWorker {
@@ -201,18 +202,17 @@ export class Service {
     return annotations;
   }
 
-  static async compileFiles(files: File[], from: Language, to: Language, options = ""): Promise<{ [name: string]: (string|ArrayBuffer); }> {
+  static async compileFiles(files: Array<any>, from: Language, to: Language, options = ""): Promise<{ [name: string]: (string|ArrayBuffer); }> {
     gaEvent("compile", "Service", `${from}->${to}`);
 
     const service = await createCompilerService(from, to);
-
-    const fileNameMap: {[name: string]: File} = files.reduce((acc: any, f: File) => {
+    const fileNameMap: {[name: string]: File} = files[0].reduce((acc: any, f: any) => {
       acc[getProjectFilePath(f)] = f;
       return acc;
     }, {} as any);
 
     const input = {
-      files: files.reduce((acc: any, f: File) => {
+      files: files[0].reduce((acc: any, f: File) => {
         acc[getProjectFilePath(f)] = {
           content: f.getData(),
         };
@@ -222,7 +222,7 @@ export class Service {
     };
     const result = await service.compile(input);
 
-    for (const file of files) {
+    for (const file of files[0]) {
       file.setProblems([]);
     }
 
