@@ -4,26 +4,6 @@
 import { Rust } from "../../src/languages/rust";
 
 describe("Tests for Rust", () => {
-  describe("CompletionItemProvider", () => {
-    it("should provide a correct provideCompletionItems function", () => {
-      expect(Rust.CompletionItemProvider.provideCompletionItems(null, null)).toEqual([]);
-    });
-  });
-  describe("HoverProvider", () => {
-    it("should provide a correct provideHover function", () => {
-      const model = {
-        getLineCount: () => 2,
-        getLineMaxColumn: () => 4
-      };
-      expect(Rust.HoverProvider.provideHover(model, 0)).toEqual({
-        range: { r: [1, 1, 2, 4] },
-        contents: [
-          "**DETAILS**",
-          { language: "html", value: "TODO" }
-        ]
-      });
-    });
-  });
   describe("LanguageConfiguration", () => {
     it("should expose the correct comments", () => {
       expect(Rust.LanguageConfiguration.comments).toEqual({
@@ -67,6 +47,8 @@ describe("Tests for Rust", () => {
         "abstract",
         "alignof",
         "as",
+        "async",
+        "await",
         "become",
         "box",
         "break",
@@ -107,6 +89,7 @@ describe("Tests for Rust", () => {
         "super",
         "trait",
         "true",
+        "try",
         "type",
         "typeof",
         "unsafe",
