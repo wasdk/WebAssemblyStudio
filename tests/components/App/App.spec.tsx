@@ -33,6 +33,11 @@ function mockFetch(returnValue) {
   return { restore: () => (global as any).fetch = undefined };
 }
 
+function mockClipboardReadText(returnValue) {
+  navigator.clipboard = {};
+  navigator.clipboard.readText = jest.fn().mockImplementation(() => Promise.resolve(returnValue));
+}
+
 function createActionSpies() {
   const spies = {
     initStore: jest.spyOn(appActions, "initStore"),
@@ -493,12 +498,14 @@ describe("Tests for App", () => {
         const showToast = jest.fn();
         App.prototype.toastContainer = { showToast } as any;
         Service.exportToGist.mockImplementation(() => "gist-url");
+        const token = "abcdefghijklmn";
         const fiddle = "fiddle-url";
         const embeddingParams = { type: EmbeddingType.None } as EmbeddingParams;
         const wrapper = setup({ embeddingParams, fiddle });
+        await mockClipboardReadText(token);
         await (wrapper.instance() as App).gist();
         expect(pushStatus).toHaveBeenCalledWith("Exporting Project");
-        expect(Service.exportToGist).toHaveBeenCalledWith((wrapper.state() as any).project.getModel(), fiddle);
+        expect(Service.exportToGist).toHaveBeenCalledWith((wrapper.state() as any).project.getModel(), token, fiddle);
         expect(popStatus).toHaveBeenCalled();
         expect(shallow(showToast.mock.calls[1][0])).toContainReact(<span>"Gist Created!" <a href={"gist-url"} target="_blank" className="toast-span">Open in new tab.</a></span>);
         App.prototype.toastContainer = undefined;
@@ -507,11 +514,13 @@ describe("Tests for App", () => {
       it("should export the provided file to a Gist", async () => {
         Service.exportToGist.mockImplementation(() => "gist-url");
         const file = new File("file", FileType.JavaScript);
+        const token = "abcdefghijklmn";
         const fiddle = "fiddle-url";
         const embeddingParams = { type: EmbeddingType.None } as EmbeddingParams;
         const wrapper = setup({ embeddingParams, fiddle });
+        await mockClipboardReadText(token);
         await (wrapper.instance() as App).gist(file);
-        expect(Service.exportToGist).toHaveBeenCalledWith(file, fiddle);
+        expect(Service.exportToGist).toHaveBeenCalledWith(file, token, fiddle);
       });
     });
     describe("Download", () => {
