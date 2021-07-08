@@ -24,6 +24,7 @@ import { Log } from "../languages/log";
 import { Rust } from "../languages/rust";
 import { Cton } from "../languages/cton";
 import { X86 } from "../languages/x86";
+import { Go} from "../languages/go";
 
 export default async function registerLanguages() {
 
@@ -73,6 +74,15 @@ export default async function registerLanguages() {
   });
   monaco.languages.register({
     id: "rust"
+  });
+
+  // Go
+
+  monaco.languages.onLanguage("go", () => {
+    monaco.languages.setMonarchTokensProvider("go", Go.MonatchDefinitions as any);
+  });
+  monaco.languages.register({
+    id: "go"
   });
 
   let response = await fetch("lib/lib.es6.d.ts");

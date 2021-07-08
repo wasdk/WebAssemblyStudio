@@ -3,6 +3,7 @@
   "clang": "//webassembly-studio-clang.herokuapp.com/build",
   "rustc": "//webassembly-studio-rust.herokuapp.com/rustc",
   "cargo": "//webassembly-studio-rust.herokuapp.com/cargo",
+  "go": "//webassembly-studio-go.herokuapp.com/go",
   "templates": {
     "default": "/dist/templates/index.js",
     "arc": "/dist/arc-templates/index.js"

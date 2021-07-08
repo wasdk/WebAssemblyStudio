@@ -24,7 +24,8 @@ export enum ServiceTypes {
   Rustc,
   Cargo,
   Clang,
-  Service
+  Service,
+  Go,
 }
 
 export interface IServiceRequestTask {
@@ -52,6 +53,8 @@ export async function getServiceURL(to: ServiceTypes): Promise<string> {
       return config.cargo;
     case ServiceTypes.Clang:
       return config.clang;
+    case ServiceTypes.Go:
+      return config.go;
     case ServiceTypes.Service:
       return config.serviceUrl;
     default:
