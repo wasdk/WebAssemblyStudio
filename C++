@@ -1,0 +1,84 @@
+
+Stack Overflow
+
+
+Questions Jobs Tags Users Badges Ask
+Up vote
+0
+Down vote
+
+WebAssembly.instantiate didn't call then nor catch in v8 embedded
+javascript c++ v8 webassembly embedded-v8
+I tried to ship WebAssembly feature in v8 7.2 for my Android Project. I have successfully imported v8 as a static library. But I came across an issue that WebAssembly didn't call either then nor catch callback. Here is my code below:
+
+std::unique_ptr<v8::Platform> platform;
+v8::Isolate *isolate;
+v8::Persistent<v8::Context> persistentContext;
+void runMain();
+void runScript();
+void _log(const v8::FunctionCallbackInfo<v8::Value>& info) {
+  v8::String::Utf8Value utf(isolate, info[0].As<v8::String>());
+  __android_log_print(ANDROID_LOG_DEBUG, "V8Native", "%s",*utf);
+}
+
+void JNICALL
+Java_com_hustunique_v8demoapplication_MainActivity_initV8(JNIEnv *env, jobject /* this */) {
+  // Initialize V8.
+  v8::V8::InitializeICU();
+  platform = v8::platform::NewDefaultPlatform();
+  v8::V8::InitializePlatform(&(*platform.get()));
+  v8::V8::Initialize();
+  runMain();
+}
+
+void runMain() {
+  // Create a new Isolate and make it the current one.
+
+  v8::Isolate::CreateParams create_params;
+  create_params.array_buffer_allocator = v8::ArrayBuffer::Allocator::NewDefaultAllocator();
+  isolate = v8::Isolate::New(create_params);
+//  isolate->Enter();
+  v8::Isolate::Scope isolate_scope(isolate);
+  v8::HandleScope scope(isolate);
+
+
+  auto global_template = v8::ObjectTemplate::New(isolate);
+  global_template->Set(v8::String::NewFromUtf8(isolate, "log"), v8::FunctionTemplate::New(isolate, _log));   // set log function here, as it is used in my sample javascript code
+  // Enter the context for compiling and running the sample script.
+  v8::Local<v8::Context> context = v8::Context::New(isolate, nullptr, global_template);
+  persistentContext.Reset(isolate, context);
+
+  // Run the script to get the result.
+  runScript();
+
+}
+
+void runScript() {
+  // sample wasm javascript code here.
+  const char *csource = R"(
+    WebAssembly.instantiate(new Uint8Array([0,97,115,109,1,0,0,0,1,8,2,96,1,127,0,96,0,0,2,8,1,2,106,
+      115,1,95,0,0,3,2,1,1,8,1,1,10,9,1,7,0,65,185,10,16,0,11]),
+      {js:{_:console.log('Called from WebAssembly Hello world')}}).then(function(obj) {
+        log('Called with instance ' + obj);
+      }).catch(function(err) {
+        log('Called with error ' + err);
+      });
+  )"; // should call my Hello World log and trigger the error or return the instance successfully
+
+  v8::HandleScope handle_scope(isolate);
+  auto ctx = persistentContext.Get(isolate);
+  v8::Context::Scope context_scope(ctx);
+  v8::TryCatch try_catch(isolate);
+  v8::Local<v8::String> source = v8::String::NewFromUtf8(isolate, csource,
+                                                         v8::NewStringType::kNormal).ToLocalChecked();
+
+  v8::Local<v8::Script> script =
+      v8::Script::Compile(ctx, source).ToLocalChecked();
+  v8::Local<v8::Value> result;
+  if (!script->Run(ctx).ToLocal(&result)) {
+    ReportException(isolate, &try_catch); // report exception, ignore the implementation here
+    return;
+  }
+  // Convert the result to an UTF8 string and print it.
+  v8::String::Utf8Value utf8(isolate, result);
+  __android_log_print(ANDROID_LOG_INFO, "V8Native", "%s\n", *utf8);
