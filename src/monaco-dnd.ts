@@ -19,16 +19,11 @@
  * SOFTWARE.
  */
 
+import { Directory, File } from "./models";
 import {
-  IDragAndDrop,
-  ITree,
-  IDragAndDropData,
-  DragMouseEvent,
-  IDragOverReaction,
-  DragOverBubble
+  DragMouseEvent, DragOverBubble, IDragAndDrop, IDragAndDropData, IDragOverReaction, ITree
 } from "./monaco-extra";
-import { File, Directory } from "./models";
-import { uploadFilesToDirectory, isUploadAllowedForMimeType } from "./util";
+import { isUploadAllowedForMimeType, uploadFilesToDirectory } from "./util";
 
 export class DragAndDrop implements IDragAndDrop {
   private target: any;

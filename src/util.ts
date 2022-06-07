@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { fileTypeForExtension, FileType, fileTypeForMimeType, nameForFileType, extensionForFileType, isBinaryFileType, Directory } from "./models";
+import { Directory, extensionForFileType, FileType, fileTypeForExtension, fileTypeForMimeType, isBinaryFileType, nameForFileType } from "./models";
 
 export function toAddress(n: number) {
   let s = n.toString(16);

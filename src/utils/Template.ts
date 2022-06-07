@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { File, FileType, Problem, Directory } from "../models";
+import { Directory, File, FileType, Problem } from "../models";
 
 export class Template {
   readonly label: HTMLAnchorElement;

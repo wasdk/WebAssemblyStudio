@@ -18,14 +18,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { File, Project, Directory, FileType, Problem, isBinaryFileType, fileTypeFromFileName, IStatusProvider } from "./models";
-import { padLeft, padRight, isBranch, toAddress, decodeRestrictedBase64ToBytes, base64EncodeBytes } from "./util";
-import { assert } from "./util";
+import { createCompilerService, Language } from "./compilerServices";
+import { IWorkerResponse, WorkerCommand } from "./message";
+import { Directory, File, FileType, fileTypeFromFileName, isBinaryFileType, IStatusProvider, Problem, Project } from "./models";
+import { assert, base64EncodeBytes, decodeRestrictedBase64ToBytes, isBranch, padLeft, padRight, toAddress } from "./util";
 import { gaEvent } from "./utils/ga";
-import { WorkerCommand, IWorkerResponse } from "./message";
 import { processJSFile, RewriteSourcesContext } from "./utils/rewriteSources";
 import { getCurrentRunnerInfo } from "./utils/taskRunner";
-import { createCompilerService, Language } from "./compilerServices";
 
 declare var capstone: {
   ARCH_X86: any;

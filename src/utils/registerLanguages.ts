@@ -19,10 +19,10 @@
  * SOFTWARE.
  */
 
-import { Wat } from "../languages/wat";
+import { Cton } from "../languages/cton";
 import { Log } from "../languages/log";
 import { Rust } from "../languages/rust";
-import { Cton } from "../languages/cton";
+import { Wat } from "../languages/wat";
 import { X86 } from "../languages/x86";
 
 export default async function registerLanguages() {

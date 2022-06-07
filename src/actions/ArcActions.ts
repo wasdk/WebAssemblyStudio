@@ -19,9 +19,9 @@
  * SOFTWARE.
  */
 
-import { pushStatus, popStatus, runTask } from "./AppActions";
-import { RunTaskExternals } from "../utils/taskRunner";
 import { notifyAboutFork } from "../arc";
+import { RunTaskExternals } from "../utils/taskRunner";
+import { popStatus, pushStatus, runTask } from "./AppActions";
 
 export async function publishArc() {
   pushStatus("Previewing Arc Project");

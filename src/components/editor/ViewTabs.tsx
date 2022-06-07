@@ -20,18 +20,17 @@
  */
 
 import * as React from "react";
-import { assert } from "../../util";
-import { Tabs, Tab, TabProps } from "./Tabs";
-import { EditorView } from "./Editor";
-import { getIconForFileType, FileType, IStatusProvider } from "../../models";
-import { Markdown, MarkdownView } from ".././Markdown";
-import { Button } from "../shared/Button";
-import { GoBook, GoClippy, GoFile, GoKebabHorizontal, GoEye, GoCode } from "../shared/Icons";
-import { View, ViewType, isViewFileDirty } from "./View";
-import { BinaryView } from "../Binary";
-import { VizView } from "../Viz";
-import { pushStatus, popStatus, logLn } from "../../actions/AppActions";
+import { logLn, popStatus, pushStatus } from "../../actions/AppActions";
+import { FileType, getIconForFileType, IStatusProvider } from "../../models";
 import appStore from "../../stores/AppStore";
+import { MarkdownView } from ".././Markdown";
+import { BinaryView } from "../Binary";
+import { Button } from "../shared/Button";
+import { GoBook, GoClippy, GoCode, GoEye } from "../shared/Icons";
+import { VizView } from "../Viz";
+import { EditorView } from "./Editor";
+import { Tab, Tabs } from "./Tabs";
+import { isViewFileDirty, View, ViewType } from "./View";
 
 export interface ViewTabsProps {
   /**

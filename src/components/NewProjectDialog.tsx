@@ -20,14 +20,13 @@
  */
 
 import * as React from "react";
-import { Service, IFiddleFile } from "../service";
 import * as ReactModal from "react-modal";
-import { Button } from "./shared/Button";
-import { GoGear, GoFile, GoX, Icon } from "./shared/Icons";
-import { KeyboardEvent, ChangeEvent, ChangeEventHandler } from "react";
-import { ListBox, ListItem, TextInputBox } from "./Widgets";
-import fetchTemplates from "../utils/fetchTemplates";
 import getConfig from "../config";
+import { IFiddleFile, Service } from "../service";
+import fetchTemplates from "../utils/fetchTemplates";
+import { Button } from "./shared/Button";
+import { GoFile, GoX } from "./shared/Icons";
+import { ListBox, ListItem } from "./Widgets";
 
 export interface Template {
   name: string;

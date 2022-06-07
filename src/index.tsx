@@ -21,21 +21,15 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Workspace } from "./components/Workspace";
-import { EditorView, ViewTabs, Tab, Tabs } from "./components/editor";
-import { Header } from "./components/Header";
-import { Split } from "./components/Split";
-import { Toolbar } from "./components/Toolbar";
-
 import { App, EmbeddingParams, EmbeddingType } from "./components/App";
-import { Service } from "./service";
-import { layout } from "./util";
-import { MonacoUtils } from "./monaco-utils";
 import { BrowserNotSupported } from "./components/BrowserNotSupported";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { MonacoUtils } from "./monaco-utils";
+import { layout } from "./util";
+import { Logger } from "./utils/Logger";
 import registerLanguages from "./utils/registerLanguages";
 import registerTheme from "./utils/registerTheme";
-import { Logger } from "./utils/Logger";
-import { ErrorBoundary } from "./components/ErrorBoundary";
+
 
 declare var window: any;
 declare var WebAssembly: any;

@@ -19,10 +19,10 @@
  * SOFTWARE.
  */
 
-import { assert } from "../util";
 import { Minimatch } from "minimatch";
-import { File } from "./File";
+import { assert } from "../util";
 import { EventDispatcher } from "./EventDispatcher";
+import { File } from "./File";
 import { FileType } from "./types";
 
 export class Directory extends File {

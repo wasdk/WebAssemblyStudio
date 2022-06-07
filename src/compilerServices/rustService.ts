@@ -18,12 +18,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { CompilerService, ServiceInput, ServiceOutput } from "./types";
-
-import { sendRequestJSON, ServiceTypes } from "./sendRequest";
-import { decodeBinary } from "./utils";
 import * as Tar from "tar-js";
 import { base64EncodeBytes } from "../util";
+import { sendRequestJSON, ServiceTypes } from "./sendRequest";
+import { CompilerService, ServiceInput, ServiceOutput } from "./types";
+import { decodeBinary } from "./utils";
+
 
 export class RustService implements CompilerService {
   async compile(input: ServiceInput): Promise<ServiceOutput> {

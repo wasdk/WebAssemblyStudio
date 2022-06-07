@@ -19,80 +19,42 @@
  * SOFTWARE.
  */
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import * as ReactModal from "react-modal";
-
-import { Workspace } from "./Workspace";
-import { EditorView, ViewTabs, View, Tab, Tabs } from "./editor";
-import { Header } from "./Header";
-import { Toolbar } from "./Toolbar";
-import { ViewType, defaultViewTypeForFileType } from "./editor/View";
-import { build, run, runTask, openFiles, pushStatus, popStatus } from "../actions/AppActions";
-
-import appStore from "../stores/AppStore";
-import {
-  addFileTo,
-  loadProject,
-  initStore,
-  updateFileNameAndDescription,
-  deleteFile,
-  splitGroup,
-  openProjectFiles,
-  openFile,
-  openView,
-  closeView,
-  closeTabs,
-  saveProject,
-  focusTabGroup,
-  setViewType,
-  logLn,
-} from "../actions/AppActions";
-import { Project, File, FileType, Directory, ModelRef } from "../models";
-import { Service, Language } from "../service";
-import { Split, SplitOrientation, SplitInfo } from "./Split";
-
-import { layout, assert, resetDOMSelection } from "../util";
-
 import * as Mousetrap from "mousetrap";
-import { Sandbox } from "./Sandbox";
-import { Gulpy } from "../gulpy";
-import {
-  GoDelete,
-  GoPencil,
-  GoGear,
-  GoVerified,
-  GoFileCode,
-  GoQuote,
-  GoFileBinary,
-  GoFile,
-  GoDesktopDownload,
-  GoBook,
-  GoRepoForked,
-  GoRocket,
-  GoBeaker,
-  GoBeakerGear,
-  GoThreeBars,
-  GoGist,
-  GoOpenIssue,
-  GoQuestion,
-} from "./shared/Icons";
-import { Button } from "./shared/Button";
-
-import { NewFileDialog } from "./NewFileDialog";
-import { EditFileDialog } from "./EditFileDialog";
-import { UploadFileDialog } from "./UploadFileDialog";
-import { ToastContainer } from "./Toasts";
-import { Spacer, Divider } from "./Widgets";
-import { ShareDialog } from "./ShareDialog";
-import { NewProjectDialog, Template } from "./NewProjectDialog";
-import { NewDirectoryDialog } from "./NewDirectoryDialog";
-import { Errors } from "../errors";
-import { ControlCenter } from "./ControlCenter";
+import * as React from "react";
+import { addFileTo, build, closeTabs, closeView, deleteFile, focusTabGroup, initStore, loadProject, logLn, openFile, openFiles, openProjectFiles, openView, popStatus, pushStatus, run, runTask, saveProject, setViewType, splitGroup, updateFileNameAndDescription } from "../actions/AppActions";
+import { notifyArcAboutFork, publishArc } from "../actions/ArcActions";
+import { Directory, File, FileType, ModelRef, Project } from "../models";
+import { Service } from "../service";
+import appStore from "../stores/AppStore";
+import { assert, layout, resetDOMSelection } from "../util";
 import Group from "../utils/group";
-import { StatusBar } from "./StatusBar";
-import { publishArc, notifyArcAboutFork } from "../actions/ArcActions";
 import { RunTaskExternals } from "../utils/taskRunner";
+import { ControlCenter } from "./ControlCenter";
+import { EditFileDialog } from "./EditFileDialog";
+import { View, ViewTabs } from "./editor";
+import { defaultViewTypeForFileType } from "./editor/View";
+import { NewDirectoryDialog } from "./NewDirectoryDialog";
+import { NewFileDialog } from "./NewFileDialog";
+import { NewProjectDialog, Template } from "./NewProjectDialog";
+import { Button } from "./shared/Button";
+import {
+  GoBeaker,
+  GoBeakerGear, GoDesktopDownload, GoGear, GoGist,
+  GoOpenIssue, GoPencil, GoQuestion, GoRepoForked,
+  GoRocket, GoThreeBars
+} from "./shared/Icons";
+import { ShareDialog } from "./ShareDialog";
+import { Split, SplitInfo, SplitOrientation } from "./Split";
+import { StatusBar } from "./StatusBar";
+import { ToastContainer } from "./Toasts";
+import { Toolbar } from "./Toolbar";
+import { UploadFileDialog } from "./UploadFileDialog";
+import { Workspace } from "./Workspace";
+
+
+
+
+
 
 export interface AppState {
   project: ModelRef<Project>;

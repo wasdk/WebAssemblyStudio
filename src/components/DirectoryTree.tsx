@@ -20,15 +20,15 @@
  */
 
 import * as React from "react";
-import { Project, File, Directory, FileType, ModelRef, isBinaryFileType, IStatusProvider } from "../models";
-import { Service } from "../service";
-import { ITree, ContextMenuEvent } from "../monaco-extra";
-import { MonacoUtils } from "../monaco-utils";
-import { ViewType } from "./editor/View";
-import { openFile, pushStatus, popStatus, logLn } from "../actions/AppActions";
-import { FileTemplate } from "../utils/Template";
+import { logLn, openFile, popStatus, pushStatus } from "../actions/AppActions";
+import { Directory, File, FileType, isBinaryFileType, IStatusProvider, ModelRef, Project } from "../models";
 import { createController } from "../monaco-controller";
 import { DragAndDrop } from "../monaco-dnd";
+import { ContextMenuEvent, ITree } from "../monaco-extra";
+import { MonacoUtils } from "../monaco-utils";
+import { Service } from "../service";
+import { FileTemplate } from "../utils/Template";
+import { ViewType } from "./editor/View";
 
 export interface DirectoryTreeProps {
   directory: ModelRef<Directory>;

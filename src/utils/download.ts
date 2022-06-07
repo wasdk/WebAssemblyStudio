@@ -19,8 +19,8 @@
  * SOFTWARE.
  */
 
-import { File, Project, Directory } from "../models";
 import * as JSZip from "jszip";
+import { Directory, File, Project } from "../models";
 
 export async function downloadProject(project: Project, uri?: string) {
   const zipFile: JSZip = new JSZip();

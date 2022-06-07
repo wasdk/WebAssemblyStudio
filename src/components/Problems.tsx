@@ -20,14 +20,14 @@
  */
 
 import * as React from "react";
-import appStore from "../stores/AppStore";
-import { File, Directory, Problem } from "../models";
-import { ITree } from "../monaco-extra";
-import { ProblemTemplate, FileTemplate } from "../utils/Template";
-import { MonacoUtils } from "../monaco-utils";
 import { openFile } from "../actions/AppActions";
-import { ViewType } from "./editor/View";
+import { Directory, File, Problem } from "../models";
 import { createController } from "../monaco-controller";
+import { ITree } from "../monaco-extra";
+import { MonacoUtils } from "../monaco-utils";
+import appStore from "../stores/AppStore";
+import { FileTemplate, ProblemTemplate } from "../utils/Template";
+import { ViewType } from "./editor/View";
 
 export interface ProblemsProps {
 }

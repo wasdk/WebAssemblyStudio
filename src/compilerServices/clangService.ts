@@ -18,8 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { CompilerService, ServiceInput, ServiceOutput, Language } from "./types";
 import { sendRequestJSON, ServiceTypes } from "./sendRequest";
+import { CompilerService, Language, ServiceInput, ServiceOutput } from "./types";
 import { decodeBinary } from "./utils";
 
 export class ClangService implements CompilerService {

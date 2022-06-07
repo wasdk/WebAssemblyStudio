@@ -20,14 +20,14 @@
  */
 
 import * as React from "react";
+import { ChangeEvent } from "react";
 import * as ReactModal from "react-modal";
+import { Directory, extensionForFileType, File, FileType, getIconForFileType, ModelRef, nameForFileType } from "../models";
+import appStore from "../stores/AppStore";
+import { validateFileName } from "../util";
 import { Button } from "./shared/Button";
 import { GoFile, GoX } from "./shared/Icons";
-import appStore from "../stores/AppStore";
-import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef, getIconForFileType } from "../models";
-import { ChangeEvent } from "react";
 import { ListBox, ListItem, TextInputBox } from "./Widgets";
-import { validateFileName } from "../util";
 
 interface NewFileDialogProps {
   isOpen: boolean;

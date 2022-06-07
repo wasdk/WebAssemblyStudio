@@ -19,8 +19,8 @@
  * SOFTWARE.
  */
 
+import { ContextMenuEvent, ITree } from "./monaco-extra";
 import { MonacoUtils } from "./monaco-utils";
-import { ITree, ContextMenuEvent } from "./monaco-extra";
 
 export function getController(target: any, getActionsFn?: Function, resolveMenuHeight?: Boolean) {
   return class Controller extends MonacoUtils.TreeDefaults.DefaultController {

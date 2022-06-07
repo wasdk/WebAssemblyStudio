@@ -21,15 +21,14 @@
 
 import * as React from "react";
 import * as ReactModal from "react-modal";
-import appStore from "../stores/AppStore";
-import { Button } from "./shared/Button";
-import { GoFile, GoX, GoCloudUpload, GoFileDirectory } from "./shared/Icons";
-import { File, Directory, ModelRef } from "../models";
-import { UploadInput } from "./Widgets";
-import { DirectoryTree } from "./DirectoryTree";
+import { addFileTo, updateFileNameAndDescription } from "../actions/AppActions";
+import { Directory, File, ModelRef } from "../models";
 import { uploadFilesToDirectory } from "../util";
+import { DirectoryTree } from "./DirectoryTree";
 import { EditFileDialog } from "./EditFileDialog";
-import { updateFileNameAndDescription, addFileTo } from "../actions/AppActions";
+import { Button } from "./shared/Button";
+import { GoCloudUpload, GoFile, GoFileDirectory, GoX } from "./shared/Icons";
+import { UploadInput } from "./Widgets";
 
 export interface UploadFileDialogProps {
   isOpen: boolean;

@@ -20,13 +20,12 @@
  */
 
 import * as React from "react";
-import { Service } from "../service";
-import * as ReactModal from "react-modal";
-import { Button } from "./shared/Button";
-import { GoFile, GoX, Icon } from "./shared/Icons";
-import appStore from "../stores/AppStore";
-import { Directory, ModelRef } from "../models";
 import { ChangeEvent } from "react";
+import * as ReactModal from "react-modal";
+import { Directory, ModelRef } from "../models";
+import appStore from "../stores/AppStore";
+import { Button } from "./shared/Button";
+import { GoFile, GoX } from "./shared/Icons";
 import { TextInputBox } from "./Widgets";
 
 export class NewDirectoryDialog extends React.Component<{

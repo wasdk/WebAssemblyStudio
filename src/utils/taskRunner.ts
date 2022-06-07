@@ -19,10 +19,10 @@
  * SOFTWARE.
  */
 
-import { Project, fileTypeForExtension, mimeTypeForFileType } from "../models";
-import { Gulpy } from "../gulpy";
-import { Service } from "../service";
 import { Arc } from "../arc";
+import { Gulpy } from "../gulpy";
+import { fileTypeForExtension, mimeTypeForFileType, Project } from "../models";
+import { Service } from "../service";
 
 export enum RunTaskExternals {
   Default,

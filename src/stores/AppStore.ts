@@ -19,32 +19,15 @@
  * SOFTWARE.
  */
 
-import { EventDispatcher, ModelRef, Project, File, Directory, FileType, SandboxRun } from "../models";
-import { Service } from "../service";
-
-import dispatcher from "../dispatcher";
 import {
-  AppActionType,
-  AppAction,
-  AddFileToAction,
-  DeleteFileAction,
-  UpdateFileNameAndDescriptionAction,
-  LoadProjectAction,
-  SetViewType,
-  LogLnAction,
-  OpenFilesAction,
-  FocusTabGroupAction,
-  PushStatusAction,
-  PopStatusAction,
-  SandboxRunAction,
-  OpenViewAction,
-  CloseViewAction,
-  CloseTabsAction,
-  OpenFileAction
+  AddFileToAction, AppAction, AppActionType, CloseTabsAction, CloseViewAction, DeleteFileAction, FocusTabGroupAction, LoadProjectAction, LogLnAction, OpenFileAction, OpenFilesAction, OpenViewAction, PushStatusAction, SandboxRunAction, SetViewType, UpdateFileNameAndDescriptionAction
 } from "../actions/AppActions";
-import Group from "../utils/group";
+import { defaultViewTypeForFileType, View, ViewType } from "../components/editor/View";
+import dispatcher from "../dispatcher";
+import { Directory, EventDispatcher, File, FileType, ModelRef, Project, SandboxRun } from "../models";
 import { assert } from "../util";
-import { ViewType, View, defaultViewTypeForFileType } from "../components/editor/View";
+import Group from "../utils/group";
+
 
 export class AppStore {
   private project: Project;

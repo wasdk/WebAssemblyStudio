@@ -21,12 +21,7 @@
 
 import * as React from "react";
 import {
-  Component,
-  PureComponent,
-  ReactElement,
-  ReactNode,
-  MouseEvent,
-  WheelEvent,
+  Component, MouseEvent, PureComponent, WheelEvent
 } from "react";
 import { clamp } from "../../util";
 

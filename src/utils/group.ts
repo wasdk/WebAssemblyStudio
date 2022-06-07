@@ -19,9 +19,9 @@
  * SOFTWARE.
  */
 
-import { assert } from "../util";
 import { View, ViewType } from "../components/editor/View";
 import { File } from "../models";
+import { assert } from "../util";
 
 export default class Group {
   currentView: View;

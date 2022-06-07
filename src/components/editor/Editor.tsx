@@ -20,10 +20,9 @@
  */
 
 import * as React from "react";
-import { languageForFileType, IStatusProvider } from "../../models";
-import { ViewTabs } from "./ViewTabs";
+import { build, logLn, popStatus, pushStatus, run } from "../../actions/AppActions";
+import { IStatusProvider, languageForFileType } from "../../models";
 import { View } from "./View";
-import { build, run, pushStatus, popStatus, logLn } from "../../actions/AppActions";
 
 declare var window: any;
 

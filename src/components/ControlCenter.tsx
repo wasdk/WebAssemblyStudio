@@ -20,15 +20,15 @@
  */
 
 import * as React from "react";
-import { Split, SplitOrientation, SplitInfo } from "./Split";
-import { EditorView, View, Tab, Tabs } from "./editor";
-import { Sandbox } from "./Sandbox";
-import { GoThreeBars, GoFile } from "./shared/Icons";
-import { Button } from "./shared/Button";
 import { File } from "../models";
-import { Problems } from "./Problems";
 import appStore from "../stores/AppStore";
 import { layout } from "../util";
+import { EditorView, Tab, Tabs, View } from "./editor";
+import { Problems } from "./Problems";
+import { Sandbox } from "./Sandbox";
+import { Button } from "./shared/Button";
+import { GoThreeBars } from "./shared/Icons";
+import { Split, SplitInfo, SplitOrientation } from "./Split";
 
 export class ControlCenter extends React.Component<{
   onToggle?: Function;

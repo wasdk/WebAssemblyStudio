@@ -20,11 +20,11 @@
  */
 
 import * as React from "react";
-import { Header } from "./Header";
-import { DirectoryTree } from "./DirectoryTree";
-import { Project, File, Directory, ModelRef } from "../models";
-import { SplitOrientation, SplitInfo, Split } from "./Split";
+import { Directory, File, ModelRef, Project } from "../models";
 import appStore from "../stores/AppStore";
+import { DirectoryTree } from "./DirectoryTree";
+import { Header } from "./Header";
+import { Split, SplitInfo, SplitOrientation } from "./Split";
 
 export interface WorkspaceProps {
   /**

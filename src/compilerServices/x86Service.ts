@@ -18,8 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { CompilerService, ServiceInput, ServiceOutput } from "./types";
 import { sendRequest, ServiceTypes } from "./sendRequest";
+import { CompilerService, ServiceInput, ServiceOutput } from "./types";
 import { encodeBinary } from "./utils";
 
 export class X86Service implements CompilerService {

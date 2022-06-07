@@ -18,9 +18,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { decodeRestrictedBase64ToBytes } from "../util";
-import { isZlibData, decompressZlib } from "../utils/zlib";
 import { fromByteArray } from "base64-js";
+import { decodeRestrictedBase64ToBytes } from "../util";
+import { decompressZlib, isZlibData } from "../utils/zlib";
 
 export async function decodeBinary(input: string): Promise<ArrayBuffer> {
   let data = decodeRestrictedBase64ToBytes(input);

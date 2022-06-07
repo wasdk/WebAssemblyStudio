@@ -20,14 +20,14 @@
  */
 
 import * as React from "react";
-import * as ReactModal from "react-modal";
-import { Button } from "./shared/Button";
-import { GoX, GoPencil } from "./shared/Icons";
-import appStore from "../stores/AppStore";
-import { File, FileType, Directory, extensionForFileType, nameForFileType, ModelRef } from "../models";
 import { ChangeEvent } from "react";
-import { TextInputBox, Spacer } from "./Widgets";
+import * as ReactModal from "react-modal";
+import { Directory, File, FileType, ModelRef } from "../models";
+import appStore from "../stores/AppStore";
 import { validateFileName } from "../util";
+import { Button } from "./shared/Button";
+import { GoPencil, GoX } from "./shared/Icons";
+import { Spacer, TextInputBox } from "./Widgets";
 
 export interface EditFileDialogProps {
   isOpen: boolean;

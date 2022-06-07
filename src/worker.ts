@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-import { IWorkerRequest, WorkerCommand, IWorkerResponse } from "./message";
+import { IWorkerRequest, IWorkerResponse, WorkerCommand } from "./message";
 
 declare var importScripts: Function;
 

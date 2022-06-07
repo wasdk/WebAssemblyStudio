@@ -19,16 +19,14 @@
  * SOFTWARE.
  */
 
-import dispatcher from "../dispatcher";
-import { File, Directory, Project } from "../models";
-import { App } from "../components/App";
-import { Template } from "../components/NewProjectDialog";
 import { View, ViewType } from "../components/editor/View";
-import appStore from "../stores/AppStore";
-import { Service, Language, IFiddleFile } from "../service";
-import Group from "../utils/group";
+import { Template } from "../components/NewProjectDialog";
+import dispatcher from "../dispatcher";
 import { Errors } from "../errors";
-import getConfig from "../config";
+import { Directory, File, Project } from "../models";
+import { Service } from "../service";
+import appStore from "../stores/AppStore";
+import Group from "../utils/group";
 import { rewriteHTML, RewriteSourcesContext } from "../utils/rewriteSources";
 import { runTask as runGulpTask, RunTaskExternals } from "../utils/taskRunner";
 

@@ -20,8 +20,8 @@
  */
 
 import { assert } from "../util";
-import { EventDispatcher } from "./EventDispatcher";
 import { Directory } from "./Directory";
+import { EventDispatcher } from "./EventDispatcher";
 
 export class Project extends Directory {
   onDidChangeStatus = new EventDispatcher("Status Change");

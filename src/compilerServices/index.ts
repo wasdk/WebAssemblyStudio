@@ -18,18 +18,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { CompilerService, Language } from "./types";
-import { RustService } from "./rustService";
 import { ClangService } from "./clangService";
+import { RustService } from "./rustService";
+import { CompilerService, Language } from "./types";
 import { X86Service } from "./x86Service";
 
 export {
-  ServiceInput,
-  ServiceOutput,
   CompilerService,
-  InputFile,
-  OutputItem,
-  Language,
+  InputFile, Language, OutputItem, ServiceInput,
+  ServiceOutput
 } from "./types";
 
 export async function createCompilerService(from: Language, to: Language): Promise<CompilerService> {

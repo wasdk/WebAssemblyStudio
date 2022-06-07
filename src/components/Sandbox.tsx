@@ -20,10 +20,10 @@
  */
 
 import * as React from "react";
-import { Split } from "./Split";
-import { Project, mimeTypeForFileType, SandboxRun } from "../models";
 import { logLn } from "../actions/AppActions";
+import { mimeTypeForFileType, Project, SandboxRun } from "../models";
 import appStore from "../stores/AppStore";
+import { Split } from "./Split";
 
 interface SandboxWindow extends Window {
   /**

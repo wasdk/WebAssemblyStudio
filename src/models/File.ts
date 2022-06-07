@@ -19,13 +19,13 @@
  * SOFTWARE.
  */
 
-import { assert, getNextKey } from "../util";
 import { Service } from "../service";
-import { FileType, IStatusProvider, isBinaryFileType, languageForFileType } from "./types";
+import { assert, getNextKey } from "../util";
 import { Directory } from "./Directory";
 import { EventDispatcher } from "./EventDispatcher";
 import { Problem } from "./Problem";
 import { Project } from "./Project";
+import { FileType, isBinaryFileType, IStatusProvider, languageForFileType } from "./types";
 
 export class File {
   name: string;
