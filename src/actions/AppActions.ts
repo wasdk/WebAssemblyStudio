@@ -118,7 +118,7 @@ export function deleteFile(file: File) {
 export interface LogLnAction extends AppAction {
   type: AppActionType.LOG_LN;
   message: string;
-  kind: ("" | "info" | "warn" | "error");
+  kind: "" | "info" | "warn" | "error";
 }
 
 export type logKind = "" | "info" | "warn" | "error";
@@ -137,7 +137,7 @@ export interface SplitGroupAction extends AppAction {
 
 export function splitGroup() {
   dispatcher.dispatch({
-    type: AppActionType.SPLIT_GROUP
+    type: AppActionType.SPLIT_GROUP,
   } as SplitGroupAction);
 }
 
@@ -151,7 +151,7 @@ export function openView(view: View, preview = true) {
   dispatcher.dispatch({
     type: AppActionType.OPEN_VIEW,
     view,
-    preview
+    preview,
   } as OpenViewAction);
 }
 
@@ -163,7 +163,7 @@ export interface CloseViewAction extends AppAction {
 export function closeView(view: View) {
   dispatcher.dispatch({
     type: AppActionType.CLOSE_VIEW,
-    view
+    view,
   } as CloseViewAction);
 }
 
@@ -175,7 +175,7 @@ export interface CloseTabsAction extends AppAction {
 export function closeTabs(file: File) {
   dispatcher.dispatch({
     type: AppActionType.CLOSE_TABS,
-    file
+    file,
   } as CloseTabsAction);
 }
 
@@ -192,14 +192,14 @@ export function openFile(file: File, type: ViewType = ViewType.Editor, preview =
     type: AppActionType.OPEN_FILE,
     file,
     viewType: type,
-    preview
+    preview,
   } as OpenFileAction);
 }
 
 export function openFiles(files: string[][]) {
   dispatcher.dispatch({
     type: AppActionType.OPEN_FILES,
-    files
+    files,
   } as OpenFilesAction);
 }
 
@@ -213,7 +213,7 @@ export async function openProjectFiles(template: Template) {
   await Service.loadFilesIntoProject(template.files, newProject, template.baseUrl);
   dispatcher.dispatch({
     type: AppActionType.LOAD_PROJECT,
-    project: newProject
+    project: newProject,
   } as LoadProjectAction);
   if (newProject.getFile("README.md")) {
     openFiles([["README.md"]]);
@@ -246,7 +246,7 @@ export interface FocusTabGroupAction extends AppAction {
 export function focusTabGroup(group: Group) {
   dispatcher.dispatch({
     type: AppActionType.FOCUS_TAB_GROUP,
-    group
+    group,
   } as FocusTabGroupAction);
 }
 
@@ -291,11 +291,11 @@ export async function runTask(
   if (gulpfile) {
     await run(appStore.getFileSource(gulpfile));
   } else {
-    if (gulpfile = appStore.getFileByName("build.ts")) {
+    if ((gulpfile = appStore.getFileByName("build.ts"))) {
       const output = await gulpfile.getModel().getEmitOutput();
       await run(output.outputFiles[0].text);
     } else {
-      if (gulpfile = appStore.getFileByName("build.js")) {
+      if ((gulpfile = appStore.getFileByName("build.js"))) {
         await run(appStore.getFileSource(gulpfile));
       } else {
         logLn(Errors.BuildFileMissing, "error");
@@ -309,8 +309,8 @@ export async function run() {
   const projectModel = appStore.getProject().getModel();
   const context = new RewriteSourcesContext(projectModel);
   context.logLn = logLn;
-  context.createFile = (src: ArrayBuffer|string, type: string) => {
-    const blob = new Blob([src], { type, });
+  context.createFile = (src: ArrayBuffer | string, type: string) => {
+    const blob = new Blob([src], { type });
     return window.URL.createObjectURL(blob);
   };
 
@@ -342,6 +342,6 @@ export function setViewType(view: View, type: ViewType) {
   dispatcher.dispatch({
     type: AppActionType.SET_VIEW_TYPE,
     view,
-    viewType: type
+    viewType: type,
   } as SetViewType);
 }

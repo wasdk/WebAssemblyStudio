@@ -34,6 +34,7 @@ export class File {
   data: string | ArrayBuffer;
   parent: Directory;
   onClose?: Function;
+  abspath: string;
   /**
    * True if the buffer is out of sync with the data.
    */
@@ -58,8 +59,8 @@ export class File {
   description: string;
   problems: Problem[] = [];
   constructor(name: string, type: FileType) {
-    debugger;
-    this.name = name;
+    this.abspath = name;
+    this.name = name.split("/").pop();
     this.type = type;
     this.data = null;
     if (isBinaryFileType(type)) {
@@ -68,6 +69,11 @@ export class File {
     } else {
       this.bufferType = type;
       this.buffer = monaco.editor.createModel(this.data as any, languageForFileType(type));
+    }
+    if (type === FileType.Directory) {
+      fs.mkdirSync(name, { recursive: true });
+    } else {
+      fs.writeFileSync(name, "");
     }
     this.buffer.updateOptions({ tabSize: 2, insertSpaces: true });
     this.buffer.onDidChangeContent((e) => {
@@ -85,6 +91,7 @@ export class File {
     });
     this.parent = null;
   }
+
   setNameAndDescription(name: string, description: string) {
     this.name = name;
     this.description = description;
@@ -120,6 +127,7 @@ export class File {
     }
   }
   private async updateBuffer(status?: IStatusProvider) {
+    debugger;
     if (this.type === FileType.Wasm) {
       const result = await Service.disassembleWasm(this.data as ArrayBuffer, status);
       this.buffer.setValue(result);
@@ -155,6 +163,13 @@ export class File {
   }
   setData(data: string | ArrayBuffer, status?: IStatusProvider) {
     assert(data != null);
+    // let filename = this.name;
+    // let parent = this.parent;
+    // while (parent) {
+    //   filename = `${parent.name}/${filename}`;
+    //   parent = parent.parent;
+    // }
+    // fs.writeFileSync(filename, data as string, {});
     this.data = data;
     this.notifyDidChangeData();
     this.updateBuffer(status);
@@ -203,6 +218,7 @@ export class File {
     return path.join("/");
   }
   async save(status: IStatusProvider) {
+    debugger;
     if (!this.isDirty) {
       return;
     }

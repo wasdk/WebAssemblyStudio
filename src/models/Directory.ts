@@ -24,6 +24,7 @@ import { assert } from "../util";
 import { EventDispatcher } from "./EventDispatcher";
 import { File } from "./File";
 import { FileType } from "./types";
+import { fs } from "../globals";
 
 export class Directory extends File {
   name: string;
@@ -33,6 +34,17 @@ export class Directory extends File {
   constructor(name: string) {
     super(name, FileType.Directory);
   }
+
+  public static resolve(dir: Directory, path?: string) {
+    let name = dir.name;
+    let parent = dir.parent;
+    while (parent) {
+      name = `${parent.name}/${name}`;
+      parent = parent.parent;
+    }
+    return path ? `${name}/${path}` : name;
+  }
+
   notifyDidChangeChildren(file: File) {
     let directory: Directory = this;
     while (directory) {
@@ -100,17 +112,23 @@ export class Directory extends File {
     this.notifyDidChangeChildren(file);
   }
   newDirectory(path: string | string[]): Directory {
+    let parts: string[];
     if (typeof path === "string") {
-      path = path.split("/");
+      parts = path.split("/");
+    } else {
+      parts = path;
     }
+    let abspath = "";
     let directory: Directory = this;
-    while (path.length) {
-      const name = path.shift();
+    while (parts.length) {
+      const name = parts.shift();
+      abspath = `${abspath}/${name}`;
       let file = directory.getImmediateChild(name);
       if (file) {
         directory = file as Directory;
       } else {
-        file = new Directory(name);
+        // debugger;
+        file = new Directory(abspath);
         directory.addFile(file);
         directory = file as Directory;
       }
@@ -131,7 +149,9 @@ export class Directory extends File {
     if (file && !handleNameCollision) {
       assert(file.type === type);
     } else {
-      file = new File(path[path.length - 1], type);
+      // debugger;
+      const filename = Directory.resolve(this, path[path.length - 1]);
+      file = new File(filename, type);
       directory.addFile(file);
     }
     file.isTransient = isTransient;

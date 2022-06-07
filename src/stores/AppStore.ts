@@ -20,14 +20,28 @@
  */
 
 import {
-  AddFileToAction, AppAction, AppActionType, CloseTabsAction, CloseViewAction, DeleteFileAction, FocusTabGroupAction, LoadProjectAction, LogLnAction, OpenFileAction, OpenFilesAction, OpenViewAction, PushStatusAction, SandboxRunAction, SetViewType, UpdateFileNameAndDescriptionAction
+  AddFileToAction,
+  AppAction,
+  AppActionType,
+  CloseTabsAction,
+  CloseViewAction,
+  DeleteFileAction,
+  FocusTabGroupAction,
+  LoadProjectAction,
+  LogLnAction,
+  OpenFileAction,
+  OpenFilesAction,
+  OpenViewAction,
+  PushStatusAction,
+  SandboxRunAction,
+  SetViewType,
+  UpdateFileNameAndDescriptionAction,
 } from "../actions/AppActions";
 import { defaultViewTypeForFileType, View, ViewType } from "../components/editor/View";
 import dispatcher from "../dispatcher";
 import { Directory, EventDispatcher, File, FileType, ModelRef, Project, SandboxRun } from "../models";
 import { assert } from "../util";
 import Group from "../utils/group";
-
 
 export class AppStore {
   private project: Project;
@@ -62,7 +76,8 @@ export class AppStore {
     this.tabGroups = [this.activeTabGroup];
     this.bindProject();
     this.isContentModified = false;
-    this.output = new File("output", FileType.Log);
+    // debugger;
+    this.output = new File("/studio/output", FileType.Log);
   }
 
   private loadProject(project: Project) {
@@ -177,9 +192,7 @@ export class AppStore {
     const lineCount = model.getLineCount();
     const lastLineLength = model.getLineMaxColumn(lineCount);
     const range = new monaco.Range(lineCount, lastLineLength, lineCount, lastLineLength);
-    model.applyEdits([
-      { forceMoveMarkers: true, range, text: message }
-    ]);
+    model.applyEdits([{ forceMoveMarkers: true, range, text: message }]);
     this.onOutputChanged.dispatch();
   }
 
@@ -188,7 +201,7 @@ export class AppStore {
     if (activeTabGroup.views.length === 0) {
       return;
     }
-    const activeGroupIndex = tabGroups.findIndex(group => group === activeTabGroup);
+    const activeGroupIndex = tabGroups.findIndex((group) => group === activeTabGroup);
 
     // Create a new group from the last file of currently active group
     const view = activeTabGroup.currentView.clone();
@@ -221,14 +234,14 @@ export class AppStore {
     const { tabGroups } = this;
     const groupsToClose: Group[] = [];
 
-    tabGroups.forEach(group => {
-      const viewFileDeleted = group.views.find(view => view.file === file);
+    tabGroups.forEach((group) => {
+      const viewFileDeleted = group.views.find((view) => view.file === file);
       group.close(viewFileDeleted);
       if (group.views.length === 0) {
         groupsToClose.push(group);
       }
     });
-    groupsToClose.forEach(group => {
+    groupsToClose.forEach((group) => {
       this.closeGroup(group);
     });
     this.onTabsChange.dispatch();
@@ -253,7 +266,7 @@ export class AppStore {
 
   private openFiles(files: string[][]) {
     const groups = files.map((paths: string[]) => {
-      const views = paths.map(file => {
+      const views = paths.map((file) => {
         const newFile = this.getFileByName(file).getModel();
         return new View(newFile, defaultViewTypeForFileType(newFile.type));
       });
@@ -283,7 +296,7 @@ export class AppStore {
     } as SandboxRun);
   }
 
-  public handleActions(action: AppAction ) {
+  public handleActions(action: AppAction) {
     switch (action.type) {
       case AppActionType.OPEN_VIEW: {
         const { view, preview } = action as OpenViewAction;

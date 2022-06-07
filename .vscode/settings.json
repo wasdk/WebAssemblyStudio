@@ -21,7 +21,6 @@
     "**/bower_components": true
   },
   "files.exclude": {
-    "node_modules/**": true,
     "**/.git": true,
     "**/.svn": true,
     "**/.hg": true,
