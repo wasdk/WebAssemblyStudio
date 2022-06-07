@@ -26,6 +26,7 @@ import { EventDispatcher } from "./EventDispatcher";
 import { Problem } from "./Problem";
 import { Project } from "./Project";
 import { FileType, isBinaryFileType, IStatusProvider, languageForFileType } from "./types";
+import { fs } from "../globals";
 
 export class File {
   name: string;
@@ -57,6 +58,7 @@ export class File {
   description: string;
   problems: Problem[] = [];
   constructor(name: string, type: FileType) {
+    debugger;
     this.name = name;
     this.type = type;
     this.data = null;
@@ -125,7 +127,8 @@ export class File {
       this.bufferType = FileType.Wat;
       this.notifyDidChangeBuffer();
       monaco.editor.setModelLanguage(this.buffer, languageForFileType(FileType.Wat));
-      this.description = "This .wasm file is editable as a .wat file, and is automatically reassembled to .wasm when saved.";
+      this.description =
+        "This .wasm file is editable as a .wat file, and is automatically reassembled to .wasm when saved.";
       return;
     } else {
       this.buffer.setValue(this.data as string);
@@ -133,7 +136,7 @@ export class File {
       this.notifyDidChangeBuffer();
     }
   }
-  setProblems(problems: Problem []) {
+  setProblems(problems: Problem[]) {
     this.problems = problems;
     let file: File = this;
     while (file) {

@@ -8,7 +8,7 @@ const path = require("path");
 const fs = require("fs");
 
 const fileSizes = {
-  "main.bundle.js": 300000
+  "main.bundle.js": 2000000,
 };
 
 const distPath = "./dist";
@@ -16,7 +16,7 @@ const distPath = "./dist";
 function checkFileSizes() {
   let success = true;
 
-  Object.keys(fileSizes).forEach(key => {
+  Object.keys(fileSizes).forEach((key) => {
     const fullDistPath = path.join(process.cwd(), distPath);
     const { size } = fs.statSync(path.join(fullDistPath, key));
 

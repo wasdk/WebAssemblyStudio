@@ -57,12 +57,14 @@ export class Directory extends File {
     }
   }
   mapEachFile<T>(fn: (file: File) => T, excludeTransientFiles = false): T[] {
-    return this.children.filter((file: File) => {
-      if (excludeTransientFiles && file.isTransient) {
-        return false;
-      }
-      return true;
-    }).map(fn);
+    return this.children
+      .filter((file: File) => {
+        if (excludeTransientFiles && file.isTransient) {
+          return false;
+        }
+        return true;
+      })
+      .map(fn);
   }
   handleNameCollision(name: string, isDirectory?: boolean) {
     for (let i = 1; i <= this.children.length; i++) {
@@ -160,7 +162,7 @@ export class Directory extends File {
       if (prefix) {
         prefix += "/";
       }
-      x.forEachFile(file => {
+      x.forEachFile((file) => {
         const path = prefix + file.name;
         if (file instanceof Directory) {
           recurse(path, file);
@@ -174,10 +176,10 @@ export class Directory extends File {
   }
   glob(pattern: string): string[] {
     const mm = new Minimatch(pattern);
-    return this.list().filter(path => mm.match(path));
+    return this.list().filter((path) => mm.match(path));
   }
   globFiles(pattern: string): File[] {
-    return this.glob(pattern).map(path => this.getFile(path));
+    return this.glob(pattern).map((path) => this.getFile(path));
   }
   hasChildren() {
     return this.children.length > 0;

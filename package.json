@@ -44,6 +44,15 @@
     ],
     "testURL": "https://webassembly.studio/"
   },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "@babel/plugin-syntax-jsx"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wasdk/WebAssemblyStudio.git"
@@ -80,6 +89,11 @@
     "tslint-react": "^3.6.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/plugin-syntax-jsx": "^7.17.12",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "@emotion/react": "^11.9.0",
     "@types/base64-js": "^1.2.5",
     "@types/enzyme": "^3.1.15",
     "@types/expect-puppeteer": "^2.2.4",
@@ -88,19 +102,28 @@
     "@types/puppeteer": "^1.10.1",
     "@types/react": "^16.7.8",
     "@types/react-dom": "^16.0.11",
+    "babel-loader": "^8.2.5",
     "base64-js": "^1.3.0",
     "coveralls": "^3.0.2",
     "css-loader": "^0.28.11",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
     "fs-extra": "^7.0.1",
+    "isomorphic-git": "^1.17.3",
     "jest": "^22.4.4",
     "jest-enzyme": "^6.1.2",
     "jest-puppeteer": "^3.5.2",
+    "memfs": "^3.4.4",
     "monaco-editor-webpack-plugin": "^1.7.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
     "puppeteer": "^1.10.0",
+    "react-resize-detector": "^7.1.1",
     "react-test-renderer": "^16.6.3",
+    "shelljs-core": "^1.1.0",
     "source-map-loader": "^0.2.4",
+    "string-argv": "^0.3.1",
     "stryker": "^0.29.5",
     "stryker-api": "^0.21.5",
     "stryker-html-reporter": "^0.16.9",
@@ -110,10 +133,16 @@
     "ts-loader": "^4.5.0",
     "tslint": "^5.11.0",
     "typescript": "^3.1.6",
+    "util": "^0.12.4",
     "wait-until-promise": "^1.0.0",
     "webpack": "^4.26.1",
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.10"
+    "webpack-dev-server": "^3.1.10",
+    "xterm": "^4.18.0",
+    "xterm-addon-fit": "^0.5.0",
+    "xterm-addon-web-links": "^0.5.1",
+    "xterm-addon-webgl": "^0.11.4",
+    "xterm-js-shell": "^1.1.3"
   }
 }

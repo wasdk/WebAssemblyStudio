@@ -1,20 +1,17 @@
 {
   "compilerOptions": {
-      "noImplicitAny": true,
-      "skipLibCheck": true,
-      "module": "commonjs",
-      "target": "es6",
-      "lib": ["dom", "es6"],
-      "jsx": "react",
-      "declaration": true,
-      "inlineSourceMap": true,
-      "allowSyntheticDefaultImports": true
+    "allowJs": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "lib": ["dom", "esnext", "es2017.object"],
+    "jsx": "react",
+    "declaration": false,
+    "inlineSourceMap": true,
+    "allowSyntheticDefaultImports": true
   },
-  "include": [
-      "./tests/**/*",
-      "node_modules/monaco-editor/monaco.d.ts"
-  ],
-  "exclude": [
-      "./templates/**/*"
-  ]
+  "include": ["./tests/**/*", "node_modules/monaco-editor/monaco.d.ts"],
+  "exclude": ["./templates/**/*"]
 }
