@@ -118,8 +118,8 @@ export class Directory extends File {
     } else {
       parts = path;
     }
-    let abspath = "";
     let directory: Directory = this;
+    let abspath = directory.abspath;
     while (parts.length) {
       const name = parts.shift();
       abspath = `${abspath}/${name}`;
@@ -148,7 +148,7 @@ export class Directory extends File {
     if (file && !handleNameCollision) {
       assert(file.type === type);
     } else {
-      const filename = Directory.resolve(this, path[path.length - 1]);
+      const filename = Directory.resolve(directory, path[path.length - 1]);
       file = new File(filename, type);
       directory.addFile(file);
     }

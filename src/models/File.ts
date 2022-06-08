@@ -142,7 +142,6 @@ export class File {
     }
   }
   private async updateBuffer(status?: IStatusProvider) {
-    debugger;
     if (this.type === FileType.Wasm) {
       const result = await Service.disassembleWasm(this.data as ArrayBuffer, status);
       this.buffer.setValue(result);
