@@ -123,6 +123,7 @@
     "react-test-renderer": "^16.6.3",
     "shelljs-core": "^1.1.0",
     "source-map-loader": "^0.2.4",
+    "spyfs": "^1.0.2",
     "string-argv": "^0.3.1",
     "stryker": "^0.29.5",
     "stryker-api": "^0.21.5",

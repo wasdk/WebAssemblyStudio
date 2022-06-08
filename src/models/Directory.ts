@@ -24,7 +24,6 @@ import { assert } from "../util";
 import { EventDispatcher } from "./EventDispatcher";
 import { File } from "./File";
 import { FileType } from "./types";
-import { fs } from "../globals";
 
 export class Directory extends File {
   name: string;
@@ -160,10 +159,35 @@ export class Directory extends File {
       return file.name === name;
     });
   }
-  getFile(path: string | string[]): File {
+  pathRelateiveParts(path: string | string[]): string[] {
+    let parts: string[];
+    // normalize the string into an array
     if (typeof path === "string") {
-      path = path.split("/");
+      parts = path.split("/");
+    } else {
+      parts = path;
     }
+    path = [...parts]; // copy list to avoid mutation
+
+    // path was provided with leading slash
+    if (parts.length > 1 && parts[0] === "") {
+      parts = parts.slice(1); // remove leading slash
+      // check if path starts in this directory
+      if (path.join("/").startsWith(this.abspath)) {
+        // remove the absolute path
+        parts = parts.slice(this.abspath.split("/").length - 1);
+        if (parts.length === 0) {
+          return ["."];
+        }
+      }
+    }
+    // if (parts.length === 1 && parts[0] === "") {
+    //   parts[0] = ".";
+    // }
+    return parts;
+  }
+  getFile(path: string | string[]): File {
+    path = this.pathRelateiveParts(path);
     const file = this.getImmediateChild(path[0]);
     if (path.length > 1) {
       if (file && file.type === FileType.Directory) {
@@ -171,6 +195,10 @@ export class Directory extends File {
       } else {
         return null;
       }
+    }
+    // couldn't find the file because we were searching for ourselves in ourself
+    if (!file && path.length === 1 && path[0] === ".") {
+      return this;
     }
     return file;
   }

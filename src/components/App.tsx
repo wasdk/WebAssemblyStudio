@@ -20,6 +20,7 @@
  */
 
 import { fs } from "memfs";
+import fsExtras from "../utils/fsExtentions";
 import * as Mousetrap from "mousetrap";
 import * as React from "react";
 import {
@@ -200,6 +201,7 @@ export class App extends React.Component<AppProps, AppState> {
     };
     fs.mkdirpSync("/studio/notes");
     fs.mkdirpSync("/tmp");
+    fsExtras();
   }
   private async initializeProject() {
     initStore();
