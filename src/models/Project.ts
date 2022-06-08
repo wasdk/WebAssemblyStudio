@@ -29,10 +29,10 @@ export class Project extends Directory {
   onDirtyFileUsed = new EventDispatcher("Dirty File Used");
 
   constructor() {
-    super("Project");
+    super("/project");
   }
 
-  private status: string [] = ["Idle"];
+  private status: string[] = ["Idle"];
   hasStatus() {
     return this.status.length > 1;
   }

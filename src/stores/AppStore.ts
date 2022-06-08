@@ -76,7 +76,6 @@ export class AppStore {
     this.tabGroups = [this.activeTabGroup];
     this.bindProject();
     this.isContentModified = false;
-    // debugger;
     this.output = new File("/studio/output", FileType.Log);
   }
 

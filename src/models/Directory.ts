@@ -127,7 +127,6 @@ export class Directory extends File {
       if (file) {
         directory = file as Directory;
       } else {
-        // debugger;
         file = new Directory(abspath);
         directory.addFile(file);
         directory = file as Directory;
@@ -149,7 +148,6 @@ export class Directory extends File {
     if (file && !handleNameCollision) {
       assert(file.type === type);
     } else {
-      // debugger;
       const filename = Directory.resolve(this, path[path.length - 1]);
       file = new File(filename, type);
       directory.addFile(file);

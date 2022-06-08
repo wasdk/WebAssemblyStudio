@@ -47,7 +47,6 @@ export class UploadFileDialog extends React.Component<UploadFileDialogProps, Upl
   uploadInput: UploadInput;
   constructor(props: any) {
     super(props);
-    debugger;
     this.root = ModelRef.getRef(new Directory("root"));
     this.root.getModel().onDidChangeChildren.register(() => this.onRootChildrenChange());
     this.state = { hasFilesToUpload: false };

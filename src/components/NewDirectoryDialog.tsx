@@ -91,7 +91,6 @@ export class NewDirectoryDialog extends React.Component<
               title="Create New Directory"
               isDisabled={!this.state.name || !!this.nameError()}
               onClick={() => {
-                // debugger;
                 const dirname = Directory.resolve(this.props.directory.obj, this.state.name);
                 const directory = new Directory(dirname);
                 return this.props.onCreate && this.props.onCreate(directory);

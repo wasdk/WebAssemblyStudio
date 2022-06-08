@@ -31,7 +31,7 @@ import { fs } from "../globals";
 export class File {
   name: string;
   type: FileType;
-  data: string | ArrayBuffer;
+  // data: string | ArrayBuffer;
   parent: Directory;
   onClose?: Function;
   abspath: string;
@@ -71,7 +71,7 @@ export class File {
       this.buffer = monaco.editor.createModel(this.data as any, languageForFileType(type));
     }
     if (type === FileType.Directory) {
-      fs.mkdirSync(name, { recursive: true });
+      fs.mkdirpSync(name);
     } else {
       fs.writeFileSync(name, "");
     }
@@ -90,6 +90,21 @@ export class File {
       monaco.editor.setModelMarkers(this.buffer, "compiler", []);
     });
     this.parent = null;
+  }
+
+  get data() {
+    if (this.type === FileType.Directory) {
+      return null;
+    }
+    return fs.readFileSync(this.abspath, { encoding: "utf8" }) as string;
+  }
+
+  set data(val: string | ArrayBuffer) {
+    if (this.type === FileType.Directory) {
+      return;
+    }
+    const dataToWrite = typeof val === "string" ? val : new Uint8Array(val);
+    fs.writeFileSync(this.abspath, dataToWrite);
   }
 
   setNameAndDescription(name: string, description: string) {
@@ -218,7 +233,6 @@ export class File {
     return path.join("/");
   }
   async save(status: IStatusProvider) {
-    debugger;
     if (!this.isDirty) {
       return;
     }

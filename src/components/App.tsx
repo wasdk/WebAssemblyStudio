@@ -198,7 +198,7 @@ export class App extends React.Component<AppProps, AppState> {
       hasStatus: false,
       isContentModified: false,
     };
-    fs.mkdirpSync("/studio");
+    fs.mkdirpSync("/studio/notes");
     fs.mkdirpSync("/tmp");
   }
   private async initializeProject() {
@@ -275,7 +275,6 @@ export class App extends React.Component<AppProps, AppState> {
   async loadReleaseNotes() {
     const response = await fetch("notes/notes.md");
     const src = await response.text();
-    // debugger;
     const notes = new File("/studio/notes/notes.md", FileType.Markdown);
     notes.setData(src);
     openFile(notes, defaultViewTypeForFileType(notes.type));
@@ -284,7 +283,6 @@ export class App extends React.Component<AppProps, AppState> {
   async loadHelp() {
     const response = await fetch("notes/help.md");
     const src = await response.text();
-    // debugger;
     const help = new File("/studio/notes/help.md", FileType.Markdown);
     help.setData(src);
     openFile(help, defaultViewTypeForFileType(help.type));

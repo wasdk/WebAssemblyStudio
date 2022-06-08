@@ -193,7 +193,6 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, NewFileDi
               title="Create New File"
               isDisabled={!this.state.fileType || !this.state.name || !!this.getNameError()}
               onClick={() => {
-                // debugger;
                 const filename = Directory.resolve(this.props.directory.obj, this.fileName());
                 const file = new File(filename, this.state.fileType);
                 return this.props.onCreate && this.props.onCreate(file);
