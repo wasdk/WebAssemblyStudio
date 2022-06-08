@@ -4,8 +4,9 @@ export const path = require("path-browserify");
 export const util = require("util/");
 export const process = require("process/browser");
 process.chdir = function (dir: string) {
-  this.cwd = () => {
-    return path.resolve(dir);
+  const abspath = path.resolve(dir);
+  process.cwd = () => {
+    return abspath;
   };
 };
 process.listenerCount = function (sym: any) {
