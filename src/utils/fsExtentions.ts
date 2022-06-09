@@ -20,7 +20,10 @@ function ensureExplorerFile(args: any[]) {
 
 function writeFile(args: any[]) {
   const err = new Error();
-  if (!err.stack.includes("at new File")) {
+  if (!err.stack.match(/at (new )?File/g)) {
+    if (args[0] === "project/assembly/main.ts") {
+      debugger;
+    }
     const file = ensureExplorerFile(args);
     file.data = args[1];
   }
