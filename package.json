@@ -108,6 +108,7 @@
     "css-loader": "^0.28.11",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.7.0",
+    "eventemitter3": "^4.0.7",
     "fs-extra": "^7.0.1",
     "isomorphic-git": "^1.17.3",
     "jest": "^22.4.4",

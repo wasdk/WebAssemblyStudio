@@ -1,8 +1,24 @@
-import { fs } from "memfs";
+import { EventEmitter } from "eventemitter3";
+import { fs as memfs } from "memfs";
+
+export const fsEvents = new EventEmitter();
+export const fs = new Proxy(memfs, {
+  get(target, prop, receiver) {
+    return (...args: any[]) => {
+      // @ts-ignore
+      fsEvents.emit(prop, args);
+      return Reflect.get(target, prop, receiver).apply(target, args);
+    };
+  },
+});
+
 export const os = require("os-browserify/browser");
 export const path = require("path-browserify");
 export const util = require("util/");
 export const process = require("process/browser");
+process.getMaxListeners = () => {
+  return 0;
+};
 process.chdir = function (dir: string) {
   const abspath = path.resolve(dir);
   process.cwd = () => {
@@ -23,7 +39,6 @@ process.stdout = {
 
 // @ts-ignore
 globalThis.fs = fs;
-export { fs } from "memfs";
 export default {
   fs,
   os,

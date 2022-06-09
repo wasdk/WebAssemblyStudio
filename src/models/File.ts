@@ -162,7 +162,6 @@ export class File {
         "This .wasm file is editable as a .wat file, and is automatically reassembled to .wasm when saved.";
       return;
     } else {
-      debugger;
       this.buffer.setValue(this.data as string);
       this.resetDirty();
       this.notifyDidChangeBuffer();
@@ -188,16 +187,8 @@ export class File {
   setData(data: string | ArrayBuffer, status?: IStatusProvider) {
     assert(data != null);
     this.data = data;
-    // this.notifyDidChangeData();
-    // this.updateBuffer(status);
   }
   getData(): string | ArrayBuffer {
-    // if (this.isDirty && !this.isBufferReadOnly) {
-    //   const project = this.getProject();
-    //   if (project) {
-    //     project.onDirtyFileUsed.dispatch(this);
-    //   }
-    // }
     return this.data;
   }
   getProject(): Project {
