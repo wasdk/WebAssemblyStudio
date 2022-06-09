@@ -44,7 +44,7 @@ export class Monaco extends React.Component<MonacoProps, {}> {
     this.status = {
       push: pushStatus,
       pop: popStatus,
-      logLn: logLn
+      logLn: logLn,
     };
   }
   revealLastLine() {
@@ -92,7 +92,7 @@ export class Monaco extends React.Component<MonacoProps, {}> {
 
   onLayout = () => {
     this.editor.layout();
-  }
+  };
 
   componentWillUnmount() {
     document.removeEventListener("layout", this.onLayout);
@@ -105,50 +105,64 @@ export class Monaco extends React.Component<MonacoProps, {}> {
     this.editor.addAction({
       id: "save",
       label: "Save",
-      keybindings: [
-        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S
-      ],
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S],
       precondition: null,
       keybindingContext: null,
-      run: function() {
+      run: function () {
         const view = self.props.view;
         if (view && !view.file.isBufferReadOnly) {
           view.file.save(self.status);
         }
         return null;
-      }
+      },
     });
 
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_B, function() {
-      build();
-    },  null);
+    this.editor.addCommand(
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_B,
+      function () {
+        build();
+      },
+      null
+    );
 
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function() {
-      run();
-    },  null);
+    this.editor.addCommand(
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+      function () {
+        run();
+      },
+      null
+    );
 
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.Enter, function() {
-      build().then(run);
-    },  null);
-
+    this.editor.addCommand(
+      monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.Enter,
+      function () {
+        build().then(run);
+      },
+      null
+    );
   }
 
   private ensureEditor() {
-    if (this.editor) { return; }
-    const options = Object.assign({
-      value: "",
-      theme: "fiddle-theme",
-      minimap: {
-        enabled: false
+    if (this.editor) {
+      return;
+    }
+    const options = Object.assign(
+      {
+        value: "",
+        theme: "fiddle-theme",
+        minimap: {
+          enabled: false,
+        },
+        fontWeight: "bold",
+        renderLineHighlight: "none",
       },
-      fontWeight: "bold",
-      renderLineHighlight: "none",
-    }, this.props.options);
+      this.props.options
+    );
     if (this.container.lastChild) {
       this.container.removeChild(this.container.lastChild);
     }
     this.editor = monaco.editor.create(this.container, options as any);
-    this.editor.onContextMenu(e => {
+    this.editor.onContextMenu((e) => {
       this.resolveMenuPosition(e);
       this.disableEditorScroll(); // This makes it possible to scroll inside the menu
     });
@@ -160,33 +174,35 @@ export class Monaco extends React.Component<MonacoProps, {}> {
   resolveMenuPosition(e: any) {
     const anchorOffset = { x: -10, y: -3 };
     const menu: HTMLElement = this.container.querySelector(".monaco-editor > .monaco-menu-container");
-    const top = (parseInt(menu.style.top, 10) + e.event.editorPos.y + anchorOffset.y);
-    const left = (parseInt(menu.style.left, 10) + e.event.editorPos.x + anchorOffset.x);
+    const top = parseInt(menu.style.top, 10) + e.event.editorPos.y + anchorOffset.y;
+    const left = parseInt(menu.style.left, 10) + e.event.editorPos.x + anchorOffset.x;
     const windowPadding = 10;
     menu.style.top = top + "px";
-    menu.style.left = left  + "px";
+    menu.style.left = left + "px";
     menu.style.maxHeight = Math.min(window.innerHeight - top - windowPadding, 380) + "px";
   }
   disableEditorScroll() {
     this.editor.updateOptions({
       scrollbar: {
-        handleMouseWheel: false
-      }
+        handleMouseWheel: false,
+      },
     });
   }
   enableEditorScroll() {
     this.editor.updateOptions({
       scrollbar: {
-        handleMouseWheel: true
-      }
+        handleMouseWheel: true,
+      },
     });
   }
   private setContainer(container: HTMLDivElement) {
-    if (container == null) { return; }
+    if (container == null) {
+      return;
+    }
     this.container = container;
   }
   render() {
-    return <div className="fill" ref={(ref) => this.setContainer(ref)}/>;
+    return <div className="fill" ref={(ref) => this.setContainer(ref)} />;
   }
 }
 
@@ -206,18 +222,23 @@ export class EditorView extends React.Component<EditorViewProps, {}> {
   render() {
     const file = this.props.view.file;
     if (file.description) {
-      return <div className="fill">
-        <div className="editor-status-bar">
-          <div className="status-bar-item">{file.description}</div>
+      return (
+        <div className="fill">
+          <div className="editor-status-bar">
+            <div className="status-bar-item">{file.description}</div>
+          </div>
+          <div className="editor-container">
+            <Monaco ref={(ref) => this.setMonaco(ref)} view={this.props.view} options={this.props.options} />
+          </div>
+          ;
         </div>
-        <div className="editor-container">
-          <Monaco ref={(ref) => this.setMonaco(ref)} view={this.props.view} options={this.props.options} />
-        </div>;
-      </div>;
+      );
     } else {
-      return <div className="fill">
-        <Monaco ref={(ref) => this.setMonaco(ref)} view={this.props.view} options={this.props.options} />
-      </div>;
+      return (
+        <div className="fill">
+          <Monaco ref={(ref) => this.setMonaco(ref)} view={this.props.view} options={this.props.options} />
+        </div>
+      );
     }
   }
 }

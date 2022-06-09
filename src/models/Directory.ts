@@ -181,9 +181,6 @@ export class Directory extends File {
         }
       }
     }
-    // if (parts.length === 1 && parts[0] === "") {
-    //   parts[0] = ".";
-    // }
     return parts;
   }
   getFile(path: string | string[]): File {

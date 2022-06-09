@@ -96,6 +96,12 @@ export class File {
     if (this.type === FileType.Directory) {
       return null;
     }
+    if (this.isDirty && !this.isBufferReadOnly) {
+      const project = this.getProject();
+      if (project) {
+        project.onDirtyFileUsed.dispatch(this);
+      }
+    }
     return fs.readFileSync(this.abspath, { encoding: "utf8" }) as string;
   }
 
@@ -105,6 +111,9 @@ export class File {
     }
     const dataToWrite = typeof val === "string" ? val : new Uint8Array(val);
     fs.writeFileSync(this.abspath, dataToWrite);
+    if (!this.buffer) return;
+    this.notifyDidChangeData();
+    this.updateBuffer();
   }
 
   setNameAndDescription(name: string, description: string) {
@@ -153,6 +162,7 @@ export class File {
         "This .wasm file is editable as a .wat file, and is automatically reassembled to .wasm when saved.";
       return;
     } else {
+      debugger;
       this.buffer.setValue(this.data as string);
       this.resetDirty();
       this.notifyDidChangeBuffer();
@@ -177,24 +187,17 @@ export class File {
   }
   setData(data: string | ArrayBuffer, status?: IStatusProvider) {
     assert(data != null);
-    // let filename = this.name;
-    // let parent = this.parent;
-    // while (parent) {
-    //   filename = `${parent.name}/${filename}`;
-    //   parent = parent.parent;
-    // }
-    // fs.writeFileSync(filename, data as string, {});
     this.data = data;
-    this.notifyDidChangeData();
-    this.updateBuffer(status);
+    // this.notifyDidChangeData();
+    // this.updateBuffer(status);
   }
   getData(): string | ArrayBuffer {
-    if (this.isDirty && !this.isBufferReadOnly) {
-      const project = this.getProject();
-      if (project) {
-        project.onDirtyFileUsed.dispatch(this);
-      }
-    }
+    // if (this.isDirty && !this.isBufferReadOnly) {
+    //   const project = this.getProject();
+    //   if (project) {
+    //     project.onDirtyFileUsed.dispatch(this);
+    //   }
+    // }
     return this.data;
   }
   getProject(): Project {
