@@ -34,7 +34,7 @@ describe("Tests for clangService", () => {
     expect(sendRequestJSON).toHaveBeenCalledWith({
       output: "wasm",
       compress: true,
-      files: [{ type: "c", name: "file.c", options: "options", src: "a" }]
+      files: [{ type: "c", name: "a.c", options: "options", src: "a" }]
     }, 2);
     expect(decodeBinary).toHaveBeenCalledWith("out");
     expect(output).toEqual({
@@ -56,11 +56,31 @@ describe("Tests for clangService", () => {
       console: "error"
     });
   });
-  it("should throw an error when trying to compile more than one file", async () => {
+  it("should compile when trying to compile more than one file", async () => {
     const clangService = await createCompilerService(Language.C, Language.Wasm);
-    const input = { files: { "a.c": { content: "a" },  "b.c": { content: "b" }}};
-    await expect(clangService.compile(input))
-      .rejects
-      .toThrow("Supporting compilation of a single file, but 2 file(s) found");
+    sendRequestJSON.mockImplementation(() => ({
+      success: true,
+      output: "out",
+      tasks: [{ console }],
+      message: "response-message"
+    }));
+    const input = { files: { "a.c": { content: "a" },  "b.c": { content: "b" }}, options: "options" };
+    const console = { log: jest.fn() };
+    const output = await clangService.compile(input);
+    expect(sendRequestJSON).toHaveBeenCalledWith({
+      output: "wasm",
+      compress: true,
+      files: [
+        { type: "c", name: "a.c", options: "options", src: "a" },
+        { type: "c", name: "b.c", options: "options", src: "b" }
+      ]
+    }, 2);
+    expect(decodeBinary).toHaveBeenCalledWith("out");
+    expect(output).toEqual({
+      success: true,
+      items: { "a.wasm": { content: "out", fileRef: "a.c", console, }},
+      console: "response-message"
+    });
+    decodeBinary.mockClear();
   });
 });
