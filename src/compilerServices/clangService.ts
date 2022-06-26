@@ -18,7 +18,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import { CompilerService, ServiceInput, ServiceOutput, Language } from "./types";
+import { CompilerService, ServiceInput, ServiceOutput, Language, InputFile } from "./types";
 import { sendRequestJSON, ServiceTypes } from "./sendRequest";
 import { decodeBinary } from "./utils";
 
@@ -31,23 +31,25 @@ export class ClangService implements CompilerService {
 
   async compile(input: ServiceInput): Promise<ServiceOutput> {
     const files = Object.values(input.files);
-    if (files.length !== 1) {
-      throw new Error(`Supporting compilation of a single file, but ${files.length} file(s) found`);
-    }
-    const [ fileRef ] = Object.keys(input.files);
-    const src = files[0].content;
-    const from = this.lang;
+    const [fileRef] = Object.keys(input.files);
+    const inputFile = Object.keys(input.files);
+    const File = function(inputFile: string[], files: InputFile[]) {
+      const compileFile = [];
+      for (let i = 0; i < inputFile.length; i++) {
+        const f = {
+          type: inputFile[i].split(".").slice(-1)[0],
+          name: inputFile[i].split("/").slice(-1)[0],
+          options: input.options,
+          src: files[i].content,
+        };
+        compileFile.push(f);
+      }
+      return compileFile;
+    };
     const project = {
       output: "wasm",
       compress: true,
-      files: [
-        {
-          type: from,
-          name: "file." + from,
-          options: input.options,
-          src
-        }
-      ]
+      files: File(inputFile, files)
     };
     const result = await sendRequestJSON(project, ServiceTypes.Clang);
     const items: any = {};
