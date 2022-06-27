@@ -61,6 +61,7 @@ async function loadWabt() {
   if (typeof wabt === "undefined") {
     (self as any).global = self; // Wabt installs itself on the global object.
     importScripts("../lib/wabt.js");
+    wabt!.ready;
   }
 }
 

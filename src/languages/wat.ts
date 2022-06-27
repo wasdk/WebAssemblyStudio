@@ -67,12 +67,12 @@ export function getWatCompletionItems() {
     { label: "f32.store", documentation: "(no conversion) store 4 bytes", kind: keyword, insertText: "f32.store" },
     { label: "f64.store", documentation: "(no conversion) store 8 bytes", kind: keyword, insertText: "f64.store" },
 
-    { label: "get_local", documentation: "read the current value of a local variable", kind: keyword, insertText: "get_local" },
-    { label: "set_local", documentation: "set the current value of a local variable", kind: keyword, insertText: "set_local" },
-    { label: "tee_local", documentation: "like `set_local`, but also returns the set value", kind: keyword, insertText: "tee_local" },
+    { label: "local.get", documentation: "read the current value of a local variable", kind: keyword, insertText: "local.get" },
+    { label: "local.set", documentation: "set the current value of a local variable", kind: keyword, insertText: "local.set" },
+    { label: "local.tee", documentation: "like `local.set`, but also returns the set value", kind: keyword, insertText: "local.tee" },
 
-    { label: "get_global", documentation: "get the current value of a global variable", kind: keyword, insertText: "get_global" },
-    { label: "set_global", documentation: "set the current value of a global variable", kind: keyword, insertText: "set_global" },
+    { label: "global.get", documentation: "get the current value of a global variable", kind: keyword, insertText: "global.get" },
+    { label: "global.set", documentation: "set the current value of a global variable", kind: keyword, insertText: "global.set" },
 
     { label: "nop", documentation: "no operation, no effect", kind: keyword, insertText: "nop" },
     { label: "block", documentation: "the beginning of a block construct, a sequence of instructions with a label at the end", kind: keyword, insertText: "block" },
@@ -377,11 +377,11 @@ const MonarchDefinitions = {
     "f64.convert_u/i64",
     "f64.reinterpret/i64",
 
-    "get_local",
-    "set_local",
-    "tee_local",
-    "get_global",
-    "set_global",
+    "local.get",
+    "local.set",
+    "local.tee",
+    "global.get",
+    "global.set",
 
     "drop",
     "select",
