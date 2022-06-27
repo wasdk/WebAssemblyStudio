@@ -26,20 +26,9 @@
 // https://github.com/mattgodbolt/compiler-explorer/blob/0a87dcb00abfc5931067a0eaf961b68a1d0a9bac/static/rust-mode.js
 
 import IRichLanguageConfiguration = monaco.languages.LanguageConfiguration;
-import ILanguage = monaco.languages.IMonarchLanguage;
 import IModel = monaco.editor.IModel;
 import IPosition = monaco.IPosition;
-
-let completionItems: monaco.languages.CompletionItem[] = null;
-function getCompletionItems(): monaco.languages.CompletionItem[] {
-  const keyword = monaco.languages.CompletionItemKind.Keyword;
-  if (completionItems) {
-    return completionItems;
-  }
-  return completionItems = [
-
-  ];
-}
+import { IRange } from 'monaco-editor';
 
 const LanguageConfiguration: IRichLanguageConfiguration = {
   comments: {
@@ -75,6 +64,8 @@ const MonarchDefinitions = {
     "abstract",
     "alignof",
     "as",
+    "async",
+    "await",
     "become",
     "box",
     "break",
@@ -115,6 +106,7 @@ const MonarchDefinitions = {
     "super",
     "trait",
     "true",
+    "try",
     "type",
     "typeof",
     "unsafe",
@@ -230,22 +222,129 @@ const MonarchDefinitions = {
 };
 
 export const Rust = {
-  MonarchDefinitions,
-  LanguageConfiguration,
-  CompletionItemProvider: {
-    provideCompletionItems: (model: IModel, position: IPosition): monaco.languages.CompletionItem[] => {
-      return getCompletionItems();
+  Analyzer: async () => {
+    const { WorldState } = await import('./rust_analyzer_wasm');
+    const state = new WorldState();
+
+    // TODO: handle multiple files
+    const model = monaco.editor.getModels().find(m => m.getModeId() === "rust");
+
+    function update() {
+      const res = state.update(model.getValue());
+      monaco.editor.setModelMarkers(model, "rust", res.diagnostics);
+    }
+    update();
+    model.onDidChangeContent(update);
+
+    return {
+      HoverProvider: {
+        provideHover: (_m: IModel, pos: IPosition) => state.hover(pos.lineNumber, pos.column),
+      },
+      CodeLensProvider: {
+        provideCodeLenses(model: IModel) {
+          type CodeLens = {
+            range: IRange,
+            command: {
+              positions: IPosition[],
+              id: string,
+              title: string,
+            }
+          };
+
+          const code_lenses: CodeLens[] = state.code_lenses();
+          const lenses = code_lenses.map(({ range, command }) => {
+            const position = {
+              column: range.startColumn,
+              lineNumber: range.startLineNumber,
+            };
+
+            const references = command.positions.map((pos) => ({ range: pos, uri: model.uri }));
+            return {
+              range,
+              command: {
+                id: command.id,
+                title: command.title,
+                arguments: [
+                  model.uri,
+                  position,
+                  references,
+                ],
+              },
+            };
+          });
+
+          return lenses;
+        },
+      },
+      ReferenceProvider: {
+        provideReferences(model: IModel, pos: IPosition, { includeDeclaration }: { includeDeclaration: boolean }) {
+          const references = state.references(pos.lineNumber, pos.column, includeDeclaration);
+          if (references) {
+            return references.map(({ range }: { range: IRange }) => ({ uri: model.uri, range }));
+          }
+        },
+      },
+      DocumentHighlightProvider: {
+        provideDocumentHighlights: (_m: IModel, pos: IPosition) => state.references(pos.lineNumber, pos.column, true),
+      },
+      RenameProvider: {
+        provideRenameEdits: (model: IModel, pos: IPosition, newName: string) => {
+          const edits = state.rename(pos.lineNumber, pos.column, newName);
+          if (edits) {
+            return {
+              edits: [{
+                resource: model.uri,
+                edits,
+              }],
+            };
+          }
+        },
+        resolveRenameLocation: (_m: IModel, pos: IPosition) => state.prepare_rename(pos.lineNumber, pos.column),
+      },
+      CompletionItemProvider: {
+        triggerCharacters: [".", ":", "="],
+        provideCompletionItems: (_m: any, pos: IPosition) => state.completions(pos.lineNumber, pos.column),
+      },
+      SignatureHelpProvider: {
+        signatureHelpTriggerCharacters: ['(', ','],
+        provideSignatureHelp: (_m: IModel, pos: IPosition) => state.signature_help(pos.lineNumber, pos.column),
+      },
+      DefinitionProvider: {
+        provideDefinition(model: IModel, pos: IPosition) {
+          const list: any[] = state.definition(pos.lineNumber, pos.column);
+          if (list) {
+            return list.map(def => ({ ...def, uri: model.uri }));
+          }
+        },
+      },
+      TypeDefinitionProvider: {
+        provideTypeDefinition(model: IModel, pos: IPosition) {
+          const list: any[] = state.type_definition(pos.lineNumber, pos.column);
+          if (list) {
+            return list.map(def => ({ ...def, uri: model.uri }));
+          }
+        },
+      },
+      ImplementationProvider: {
+        provideImplementation(model: IModel, pos: IPosition) {
+          const list: any[] = state.goto_implementation(pos.lineNumber, pos.column);
+          if (list) {
+            return list.map(def => ({ ...def, uri: model.uri }));
+          }
+        },
+      },
+      DocumentSymbolProvider: {
+        provideDocumentSymbols: () => state.document_symbols(),
+      },
+      OnTypeFormattingEditProvider: {
+        autoFormatTriggerCharacters: [".", "="],
+        provideOnTypeFormattingEdits: (_m: IModel, pos: IPosition, char: string) => state.type_formatting(pos.lineNumber, pos.column, char),
+      },
+      FoldingRangeProvider: {
+        provideFoldingRanges: () => state.folding_ranges(),
+      },
     }
   },
-  HoverProvider: {
-    provideHover: (model: IModel, position: IPosition): any => {
-      return {
-        range: new monaco.Range(1, 1, model.getLineCount(), model.getLineMaxColumn(model.getLineCount())),
-        contents: [
-          "**DETAILS**",
-          { language: "html", value: "TODO" }
-        ]
-      };
-    }
-  }
+  MonarchDefinitions,
+  LanguageConfiguration,
 };
