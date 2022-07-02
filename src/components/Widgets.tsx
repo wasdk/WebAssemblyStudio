@@ -101,6 +101,7 @@ export class UploadInput extends React.Component<{
 export class ListItem extends React.Component<{
   label: string;
   onClick?: Function;
+  onDoubleClick?: Function;
   icon?: string;
   selected?: boolean;
   value: any;
@@ -121,7 +122,7 @@ export class ListItem extends React.Component<{
           <div className="error">{this.props.error}</div>
         </div>;
     }
-    return <div className={className} onClick={this.props.onClick as any}>
+    return <div className={className} onClick={this.props.onClick as any} onDoubleClick={this.props.onDoubleClick as any}>
       <div className={"monaco-icon-label file-icon " + this.props.icon} />
       {content}
     </div>;
@@ -132,6 +133,7 @@ export class ListBox extends React.Component<{
   height: number;
   value?: any;
   onSelect?: (value: any) => void;
+  onDoubleClick?: (value: any) => void;
 }, {
 
   }> {
@@ -140,10 +142,13 @@ export class ListBox extends React.Component<{
   }
 
   render() {
-    const { children, onSelect } = this.props;
+    const { children, onSelect, onDoubleClick } = this.props;
 
     const newChildren = React.Children.map(children, (child: any, index) => {
       return React.cloneElement(child as any, {
+        onDoubleClick: () => {
+          return onDoubleClick && onDoubleClick(child.props.value);
+        },
         onClick: () => {
           return onSelect && onSelect(child.props.value);
         },

@@ -104,6 +104,11 @@ export class NewProjectDialog extends React.Component<{
                 onSelect={(template) => {
                   this.setTemplate(template);
                 }}
+                onDoubleClick={(template) => {
+                  this.setTemplate(template).then(() => {
+                    return this.props.onCreate && this.props.onCreate(this.state.template);
+                  });
+                }}
               >
               {
                 this.state.templates.map((template) => {
