@@ -378,8 +378,9 @@ export class App extends React.Component<AppProps, AppState> {
   }
   async gist(fileOrDirectory?: File) {
     pushStatus("Exporting Project");
+    const token = await navigator.clipboard.readText();
     const target: File = fileOrDirectory || this.state.project.getModel();
-    const gistURI = await Service.exportToGist(target, this.state.fiddle);
+    const gistURI = await Service.exportToGist(target, token, this.state.fiddle);
     popStatus();
     if (gistURI) {
       if (this.toastContainer) {

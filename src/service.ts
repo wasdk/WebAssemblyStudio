@@ -318,12 +318,15 @@ export class Service {
     output.setData(result);
   }
 
-  static async createGist(json: object): Promise<string> {
+  static async createGist(json: object, token: string): Promise<string> {
     const url = "https://api.github.com/gists";
     const response = await fetch(url, {
       method: "POST",
       body: JSON.stringify(json),
-      headers: new Headers({ "Content-type": "application/json; charset=utf-8" })
+      headers: new Headers({
+        "Content-type": "application/json; charset=utf-8",
+        "Authorization": `token ${token}`
+      })
     });
     return JSON.parse(await response.text()).html_url;
   }
@@ -363,7 +366,7 @@ export class Service {
     return uri;
   }
 
-  static async exportToGist(content: File, uri?: string): Promise<string> {
+  static async exportToGist(content: File, token: string, uri?: string): Promise<string> {
     gaEvent("export", "Service", "gist");
     const files: any = {};
     function serialize(file: File) {
@@ -378,7 +381,7 @@ export class Service {
     if (uri !== undefined) {
       json["description"] = json["description"] + `/?f=${uri}`;
     }
-    return await this.createGist(json);
+    return await this.createGist(json, token);
   }
 
   static async saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {

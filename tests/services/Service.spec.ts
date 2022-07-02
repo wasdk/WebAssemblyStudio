@@ -298,11 +298,15 @@ describe("Tests for Service", () => {
       const text = jest.fn(() => Promise.resolve(JSON.stringify({ html_url: "gist-url" })));
       const { restore } = mockFetch({ text });
       const json = { a: 1, b: 2 };
-      const result = await Service.createGist(json);
+      const token = "abcdefghijklmn";
+      const result = await Service.createGist(json, token);
       expect(window.fetch).toHaveBeenCalledWith("https://api.github.com/gists", {
         method: "POST",
         body: JSON.stringify(json),
-        headers: { "Content-type": "application/json; charset=utf-8" }
+        headers: {
+          "Content-type": "application/json; charset=utf-8",
+          "Authorization": `token ${token}`
+        }
       });
       expect(result).toEqual("gist-url");
       restore();
@@ -363,7 +367,8 @@ describe("Tests for Service", () => {
       createGist.mockImplementation(() => {});
       gaEvent.mockClear();
       const file = new File("file", FileType.JavaScript);
-      await Service.exportToGist(file);
+      const token = "abcdefghijklmn";
+      await Service.exportToGist(file, token);
       expect(gaEvent).toHaveBeenCalledWith("export", "Service", "gist");
       createGist.mockRestore();
     });
@@ -372,12 +377,13 @@ describe("Tests for Service", () => {
       createGist.mockImplementation(() => {});
       const file = new File("file.js", FileType.JavaScript);
       file.setData("file-data");
-      await Service.exportToGist(file);
+      const token = "abcdefghijklmn";
+      await Service.exportToGist(file, token);
       expect(createGist).toHaveBeenCalledWith({
         description: "source: https://webassembly.studio",
         public: true,
         files: { "file.js": { content: "file-data" }}
-      });
+      }, token);
       createGist.mockRestore();
     });
     it("should export the provided directory to a gist", async () => {
@@ -388,12 +394,13 @@ describe("Tests for Service", () => {
       const fileB = directory.newFile("fileB.js", FileType.JavaScript);
       fileA.setData("file-data");
       fileB.isTransient = true;
-      await Service.exportToGist(directory);
+      const token = "abcdefghijklmn";
+      await Service.exportToGist(directory, token);
       expect(createGist).toHaveBeenCalledWith({
         description: "source: https://webassembly.studio",
         public: true,
         files: { "fileA.js": { content: "file-data" }}
-      });
+      }, token);
       createGist.mockRestore();
     });
     it("should be possible to provide a fiddle url as an optional parameter", async () => {
@@ -401,12 +408,13 @@ describe("Tests for Service", () => {
       createGist.mockImplementation(() => {});
       const file = new File("file.js", FileType.JavaScript);
       file.setData("file-data");
-      await Service.exportToGist(file, "fiddle-uri");
+      const token = "abcdefghijklmn";
+      await Service.exportToGist(file, token, "fiddle-uri");
       expect(createGist).toHaveBeenCalledWith({
         description: "source: https://webassembly.studio/?f=fiddle-uri",
         public: true,
         files: { "file.js": { content: "file-data" }}
-      });
+      }, token);
       createGist.mockRestore();
     });
   });
