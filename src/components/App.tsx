@@ -376,20 +376,6 @@ export class App extends React.Component<AppProps, AppState> {
       notifyArcAboutFork(fiddle);
     }
   }
-  async gist(fileOrDirectory?: File) {
-    pushStatus("Exporting Project");
-    const target: File = fileOrDirectory || this.state.project.getModel();
-    const gistURI = await Service.exportToGist(target, this.state.fiddle);
-    popStatus();
-    if (gistURI) {
-      if (this.toastContainer) {
-        this.toastContainer.showToast(<span>"Gist Created!" <a href={gistURI} target="_blank" className="toast-span">Open in new tab.</a></span>);
-      }
-      console.log(`Gist created: ${gistURI}`);
-    } else {
-      console.log("Failed!");
-    }
-  }
   async download() {
     this.logLn("Downloading Project ...");
     const downloadService = await import("../utils/download");
@@ -473,16 +459,6 @@ export class App extends React.Component<AppProps, AppState> {
     }
     if (this.props.embeddingParams.type === EmbeddingType.None) {
       toolbarButtons.push(
-        <Button
-          key="CreateGist"
-          icon={<GoGist />}
-          label="Create Gist"
-          title="Create GitHub Gist from Project"
-          isDisabled={this.toolbarButtonsAreDisabled()}
-          onClick={() => {
-            this.gist();
-          }}
-        />,
         <Button
           key="Download"
           icon={<GoDesktopDownload />}
@@ -779,9 +755,6 @@ export class App extends React.Component<AppProps, AppState> {
             }}
             onNewDirectory={(directory: Directory) => {
               this.setState({ newDirectoryDialog: ModelRef.getRef(directory)});
-            }}
-            onCreateGist={(fileOrDirectory: File) => {
-                this.gist(fileOrDirectory);
             }}
           />
           <div className="fill">

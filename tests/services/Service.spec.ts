@@ -293,21 +293,6 @@ describe("Tests for Service", () => {
       assembleWat.mockRestore();
     });
   });
-  describe("Service.createGist", () => {
-    it("should create a new gist", async () => {
-      const text = jest.fn(() => Promise.resolve(JSON.stringify({ html_url: "gist-url" })));
-      const { restore } = mockFetch({ text });
-      const json = { a: 1, b: 2 };
-      const result = await Service.createGist(json);
-      expect(window.fetch).toHaveBeenCalledWith("https://api.github.com/gists", {
-        method: "POST",
-        body: JSON.stringify(json),
-        headers: { "Content-type": "application/json; charset=utf-8" }
-      });
-      expect(result).toEqual("gist-url");
-      restore();
-    });
-  });
   describe("Service.loadJSON", () => {
     it("should load a fiddle from the provided uri", async () => {
       const json = jest.fn(() => Promise.resolve("response"));
@@ -355,59 +340,6 @@ describe("Tests for Service", () => {
     it("should handle cases where no fiddle uri is present", () => {
       window.history.pushState({}, "", "https://webassembly.studio/");
       expect(Service.parseFiddleURI()).toEqual("");
-    });
-  });
-  describe("Service.exportToGist", () => {
-    it("should provide analytics to google (gaEvent)", async () => {
-      const createGist = jest.spyOn(Service, "createGist");
-      createGist.mockImplementation(() => {});
-      gaEvent.mockClear();
-      const file = new File("file", FileType.JavaScript);
-      await Service.exportToGist(file);
-      expect(gaEvent).toHaveBeenCalledWith("export", "Service", "gist");
-      createGist.mockRestore();
-    });
-    it("should export the provided file to a gist", async () => {
-      const createGist = jest.spyOn(Service, "createGist");
-      createGist.mockImplementation(() => {});
-      const file = new File("file.js", FileType.JavaScript);
-      file.setData("file-data");
-      await Service.exportToGist(file);
-      expect(createGist).toHaveBeenCalledWith({
-        description: "source: https://webassembly.studio",
-        public: true,
-        files: { "file.js": { content: "file-data" }}
-      });
-      createGist.mockRestore();
-    });
-    it("should export the provided directory to a gist", async () => {
-      const createGist = jest.spyOn(Service, "createGist");
-      createGist.mockImplementation(() => {});
-      const directory = new Directory("src");
-      const fileA = directory.newFile("fileA.js", FileType.JavaScript);
-      const fileB = directory.newFile("fileB.js", FileType.JavaScript);
-      fileA.setData("file-data");
-      fileB.isTransient = true;
-      await Service.exportToGist(directory);
-      expect(createGist).toHaveBeenCalledWith({
-        description: "source: https://webassembly.studio",
-        public: true,
-        files: { "fileA.js": { content: "file-data" }}
-      });
-      createGist.mockRestore();
-    });
-    it("should be possible to provide a fiddle url as an optional parameter", async () => {
-      const createGist = jest.spyOn(Service, "createGist");
-      createGist.mockImplementation(() => {});
-      const file = new File("file.js", FileType.JavaScript);
-      file.setData("file-data");
-      await Service.exportToGist(file, "fiddle-uri");
-      expect(createGist).toHaveBeenCalledWith({
-        description: "source: https://webassembly.studio/?f=fiddle-uri",
-        public: true,
-        files: { "file.js": { content: "file-data" }}
-      });
-      createGist.mockRestore();
     });
   });
   describe("Service.saveProject", () => {

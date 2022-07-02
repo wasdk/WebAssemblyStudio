@@ -318,16 +318,6 @@ export class Service {
     output.setData(result);
   }
 
-  static async createGist(json: object): Promise<string> {
-    const url = "https://api.github.com/gists";
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(json),
-      headers: new Headers({ "Content-type": "application/json; charset=utf-8" })
-    });
-    return JSON.parse(await response.text()).html_url;
-  }
-
   static async loadJSON(uri: string): Promise<ILoadFiddleResponse> {
     const url = "https://webassembly-studio-fiddles.herokuapp.com/fiddle/" + uri;
     const response = await fetch(url, {
@@ -361,24 +351,6 @@ export class Service {
       }
     }
     return uri;
-  }
-
-  static async exportToGist(content: File, uri?: string): Promise<string> {
-    gaEvent("export", "Service", "gist");
-    const files: any = {};
-    function serialize(file: File) {
-      if (file instanceof Directory) {
-        file.mapEachFile((file: File) => serialize(file), true);
-      } else {
-        files[file.name] = {content: file.data};
-      }
-    }
-    serialize(content);
-    const json: any = { description: "source: https://webassembly.studio", public: true, files};
-    if (uri !== undefined) {
-      json["description"] = json["description"] + `/?f=${uri}`;
-    }
-    return await this.createGist(json);
   }
 
   static async saveProject(project: Project, openedFiles: string[][], uri?: string): Promise<string> {
