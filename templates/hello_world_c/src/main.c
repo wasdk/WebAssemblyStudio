@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <sys/uio.h>
+#include "header.h"
 
 #define WASM_EXPORT __attribute__((visibility("default")))
 
 WASM_EXPORT
 int main(void) {
+  int c= hello(3,2);//you can define any function in headerfile and use it here.It is just an example.
+  printf("%d",c);
   printf("Hello World\n");
 }
 

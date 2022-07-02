@@ -30,7 +30,9 @@ export enum Language {
   JavaScript = "javascript",
   TypeScript = "typescript",
   Toml = "toml",
-  Text = "text"
+  Text = "text",
+  h = "h",
+  hpp = "hpp"
 }
 
 export interface InputFile {
