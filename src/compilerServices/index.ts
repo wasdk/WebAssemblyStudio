@@ -22,6 +22,7 @@ import { CompilerService, Language } from "./types";
 import { RustService } from "./rustService";
 import { ClangService } from "./clangService";
 import { X86Service } from "./x86Service";
+import { GoService } from './goService';
 
 export {
   ServiceInput,
@@ -41,6 +42,9 @@ export async function createCompilerService(from: Language, to: Language): Promi
   }
   if (from === Language.Wasm && to === Language.x86) {
     return new X86Service();
+  }
+  if (from === Language.Go && to === Language.Wasm) {
+    return new GoService();
   }
   throw new Error(`createCompilerService: not supported ${from}->${to}`);
 }

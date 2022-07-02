@@ -114,6 +114,7 @@ export class NewFileDialog extends React.Component<NewFileDialogProps, NewFileDi
                 <ListItem value={FileType.C} label={"C File (.c)"} icon={getIconForFileType(FileType.C)} />
                 <ListItem value={FileType.Cpp} label={"C++ File (.cpp)"} icon={getIconForFileType(FileType.Cpp)} />
                 <ListItem value={FileType.Rust} label={"Rust File (.rs)"} icon={getIconForFileType(FileType.Rust)} />
+                <ListItem value={FileType.Go} label={"Go File (.go)"} icon={getIconForFileType(FileType.Go)} />
 
                 <ListItem value={FileType.Cretonne} label={"Cretonne (.cton)"} icon={getIconForFileType(FileType.Cretonne)} />
                 <ListItem value={FileType.Wat} label={"Wat (.wat)"} icon={getIconForFileType(FileType.Wat)} />
